@@ -4,80 +4,18 @@
 - Check campaign, sandbox, multiplayer and Android controls only in the code the task touches. Do not open other files just to verify.
 - Smallest change that fully solves the task. Reuse what exists. No new abstraction, option or dependency.
 - Find files through the "Mapa" section below. Do not scan the project or read files the task does not need.
-- Reply with only the diff + 1 line of what changed.
+- Mapa = uma linha por pasta + arquivos-chave (scripts .gd, cenas .tscn principais, autoloads, recursos .tres de dados). Sem assets nem arquivos gerados (.import, .uid, .godot/).
+- Se o Mapa não cobrir a tarefa: busque por texto com `rg` se existir, senão `git grep -n "termo"` (no Windows não use grep nem findstr), e abra no máximo os arquivos que aparecerem. Para arquivo novo ainda não adicionado ao git, use `git grep -n --untracked "termo"`.
+- Antes de criar arquivo, procure um existente que sirva. Edite o existente. Só crie se nenhum servir.
+- Ao criar, mover ou apagar arquivo, atualize o Mapa na mesma tarefa.
+- Na resposta, liste cada arquivo criado/movido/apagado com 1 linha de motivo.
 
 # Mapa
-- `main.tscn` — cena principal do mundo.
-- `assets/models/vehicle.tscn` — cena de modelo de veículos.
-- `project.godot` — configuração do projeto e cena inicial.
-- `scripts/world.gd` — cidade, árvores, câmera, veículos e polícia/procurado.
-- `scripts/activities.gd` — campanha, missões, economia, lojas e armas.
-- `scripts/bank.gd` — banco, hack, cofre e roubo.
-- `scripts/city_life.gd` — prédios, elevadores, pedestres e tarefas.
-- `scripts/player.gd` — movimento, agachamento, rolagem e armas do jogador.
-- `scripts/car.gd` — direção, danos, reparos e explosões de veículos.
-- `scripts/vehicle_catalog.gd` — atributos e modelos de veículos e moto.
-- `scripts/pedestrian.gd` — rotas, dano e assaltos de pedestres.
-- `scripts/officer.gd` — polícia a pé, perseguição e tiros.
-- `scripts/police_station.gd` — delegacia e despacho de polícia/procurado.
-- `scripts/lan_session.gd` — menu multiplayer, salas, conexão e sincronização; não há chat identificado.
-- `scripts/session_rules.gd` — regras do host, missões coop, economia, polícia/procurado e combate.
-- `scripts/internet_access.gd` — conexão pela internet e encaminhamento UPnP.
-- `scripts/remote_player.gd` — representação e estado do jogador remoto.
-- `scripts/player_profile.gd` — nome, roupas e identificação de jogadores.
-- `scripts/build_version.gd` — versão e protocolo multiplayer.
-- `scripts/game_settings.gd` — gráficos, FPS e controles.
-- `scripts/pause_menu.gd` — menu, campanha, configurações e perfil.
-- `scripts/pause_map.gd` — mapa de pausa, navegação e zoom.
-- `scripts/hud.gd` — objetivos, minimapa, indicadores e economia.
-- `scripts/touch_controls.gd` — controles e edição de botões Android.
-- `scripts/gameplay_extra.gd` — socos, roda de armas, áudio e derrota.
-- `scripts/human_visual.gd` — aparência e animações humanas.
-- `scripts/visuals.gd` — modelos, materiais, veículos e árvores.
-- `scripts/interior_design.gd` — detalhes visuais de prédios e banco.
-- `scripts/atmosphere.gd` — nuvens e aviões.
-- `scripts/campaign_cutscene.gd` — cenas e transições da campanha.
-- `scripts/title_backdrop.gd` — fundo da tela inicial.
-- `scripts/fps_counter.gd` — contador de FPS.
-- `shaders/water.gdshader` — efeito visual da água.
-- `shaders/marble.gdshader` — efeito visual de mármore.
-- `shaders/defeat.gdshader` — filtro visual de derrota.
-- `tools/bake_far_car.gd` — prepara modelo distante de veículos.
-- `tools/bake_visuals.gd` — prepara recursos visuais.
-- `tools/benchmark_all_presets.gd` — mede desempenho por qualidade.
-- `tools/benchmark_game.gd` — mede desempenho em cenários do jogo.
-- `tools/profile_render.gd` — mede custos de renderização.
-- `tools/inspect_vehicle.gd` — inspeciona modelo de veículos.
-- `tools/playthrough.gd` — percorre cenários e registra verificações e desempenho.
-- `tools/preview_fleet.gd` — visualiza a frota de veículos.
-- `tools/preview_multiplayer.gd` — visualiza o menu multiplayer.
-- `tools/preview_profile.gd` — visualiza perfil de jogador.
-- `tools/preview_station.gd` — visualiza delegacia.
-- `tools/fetch_android_templates.py` — obtém templates de exportação Android.
-- `tools/fetch_visual_assets.py` — obtém recursos visuais.
-- `tests/action_preview.gd` — visualização de ações do jogador.
-- `tests/bank_design_preview.gd` — visualização do banco.
-- `tests/bank_flow.gd` — verifica fluxo do banco e polícia/procurado.
-- `tests/campaign_complete.gd` — verifica a campanha completa.
-- `tests/campaign_flow.gd` — verifica progresso e salvamento da campanha.
-- `tests/character_polish.gd` — verifica personagem, animação e fusquinha.
-- `tests/city_life.gd` — verifica pedestres, prédios e missões.
-- `tests/elevator_network.gd` — verifica elevadores e autoridade multiplayer.
-- `tests/fps_counter.gd` — verifica contador de FPS.
-- `tests/garage.gd` — verifica oficina e economia de veículos.
-- `tests/interior_update.gd` — verifica prédios, elevadores e missões.
-- `tests/internet_invites.gd` — verifica convites de internet.
-- `tests/new_features.gd` — verifica combate, missões e derrota.
-- `tests/pause_preview.gd` — visualização do menu de pausa.
-- `tests/player_profile.gd` — verifica perfil, roupas e jogadores remotos.
-- `tests/playthrough_regressions.gd` — verifica regressões de veículos, câmera e controles.
-- `tests/preview.gd` — visualização geral do jogo.
-- `tests/render_network.gd` — verifica gráficos e perfil multiplayer.
-- `tests/settings_menu.gd` — verifica configurações, pausa e mapa.
-- `tests/shared_session.gd` — verifica sessão, missões coop, polícia/procurado e economia.
-- `tests/smoke.gd` — verifica fluxo geral de jogo e combate.
-- `tests/touch_controls.gd` — verifica controles de toque.
-- `tests/touch_layout.gd` — verifica posição e tamanho dos controles Android.
-- `tests/vehicle_fleet.gd` — verifica frota, moto e concessionária.
-- `tests/vehicle_polish.gd` — verifica modelos e comportamento de veículos.
-- `tests/vehicle_polish_preview.gd` — visualização de veículos.
+- Raiz: `main.tscn` (mundo), `project.godot` (configuração, cena inicial e autoloads).
+- `assets/`: recursos visuais; `assets/models/vehicle.tscn` (modelos de veículos).
+- `scripts/`: `world.gd` (cidade, árvores, veículos, polícia/procurado); `activities.gd` (campanha, missões, economia); `bank.gd` (banco e roubo); `city_life.gd` (pedestres, prédios, elevadores); `player.gd` (movimento e armas); `car.gd` (direção e danos de veículos); `vehicle_catalog.gd` (veículos); `pedestrian.gd` (pedestres); `officer.gd` (polícia); `police_station.gd` (polícia/procurado); `lan_session.gd` (menu multiplayer, salas e conexão; chat); `session_rules.gd` (host, missões coop, economia, polícia/procurado); `internet_access.gd` (internet/UPnP); `remote_player.gd` (jogador remoto); `player_profile.gd` (perfil); `build_version.gd` (protocolo); `game_settings.gd` (gráficos e controles); `pause_menu.gd` (menu e campanha); `pause_map.gd` (mapa); `hud.gd` (objetivos e economia); `touch_controls.gd` (Android); `gameplay_extra.gd` (combate/áudio); `human_visual.gd` (personagem); `visuals.gd` (modelos, veículos e árvores); `interior_design.gd` (prédios); `atmosphere.gd` (céu); `campaign_cutscene.gd` (campanha); `title_backdrop.gd` (tela inicial); `fps_counter.gd` (FPS).
+- `shaders/`: `water.gdshader`, `marble.gdshader`, `defeat.gdshader`.
+- `tools/`: scripts de bake, benchmark, perfil, inspeção e preview; `bake_far_car.gd`, `bake_visuals.gd`, `benchmark_all_presets.gd`, `benchmark_game.gd`, `profile_render.gd`, `inspect_vehicle.gd`, `playthrough.gd`, `preview_fleet.gd`, `preview_multiplayer.gd`, `preview_profile.gd`, `preview_station.gd`, `fetch_android_templates.py`, `fetch_visual_assets.py`.
+- `tests/`: verificações de campanha, banco, cidade, elevadores, sessão, multiplayer, controles Android, veículos e previews; arquivos `.gd` de teste.
+- `assets/models/`, `assets/fonts/`, `assets/licenses/`, `assets/sky/`, `assets/textures/`, `assets/ui/`: modelos e recursos visuais por pasta.
+- `.build-tools/`, `artifacts/`, `build/`: ferramentas, resultados e builds gerados.
