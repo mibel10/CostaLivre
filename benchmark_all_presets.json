@@ -1,0 +1,166 @@
+{
+	"adapter": "ANGLE (Intel, Intel(R) HD Graphics Family (0x00000A16) Direct3D11 vs_5_0 ps_5_0, D3D11-20.19.15.5171)",
+	"fps_limit": 0,
+	"godot": "4.7.2-stable (official)",
+	"sample_seconds_per_scene": 6,
+	"samples": [
+		{
+			"average_fps": 43.3,
+			"one_percent_low_fps": 21.8,
+			"quality": "Batata",
+			"scenes": [
+				{
+					"average_fps": 38.4,
+					"draw_calls": 185.0,
+					"frames": 231,
+					"p99_ms": 39.45,
+					"scene": "rua",
+					"seconds": 6.017711
+				},
+				{
+					"average_fps": 51.9,
+					"draw_calls": 135.0,
+					"frames": 312,
+					"p99_ms": 32.8,
+					"scene": "banco",
+					"seconds": 6.013031
+				},
+				{
+					"average_fps": 39.7,
+					"draw_calls": 187.0,
+					"frames": 239,
+					"p99_ms": 40.82,
+					"scene": "perseguicao",
+					"seconds": 6.02494
+				}
+			]
+		},
+		{
+			"average_fps": 38.2,
+			"one_percent_low_fps": 9.7,
+			"quality": "Baixo",
+			"scenes": [
+				{
+					"average_fps": 34.1,
+					"draw_calls": 202.0,
+					"frames": 205,
+					"p99_ms": 42.25,
+					"scene": "rua",
+					"seconds": 6.008027
+				},
+				{
+					"average_fps": 46.9,
+					"draw_calls": 135.0,
+					"frames": 282,
+					"p99_ms": 39.03,
+					"scene": "banco",
+					"seconds": 6.011358
+				},
+				{
+					"average_fps": 33.5,
+					"draw_calls": 223.0,
+					"frames": 201,
+					"p99_ms": 48.43,
+					"scene": "perseguicao",
+					"seconds": 6.006416
+				}
+			]
+		},
+		{
+			"average_fps": 18.6,
+			"one_percent_low_fps": 14.6,
+			"quality": "Médio",
+			"scenes": [
+				{
+					"average_fps": 17.2,
+					"draw_calls": 303.0,
+					"frames": 104,
+					"p99_ms": 68.95,
+					"scene": "rua",
+					"seconds": 6.029926
+				},
+				{
+					"average_fps": 21.1,
+					"draw_calls": 359.0,
+					"frames": 127,
+					"p99_ms": 63.09,
+					"scene": "banco",
+					"seconds": 6.017524
+				},
+				{
+					"average_fps": 17.5,
+					"draw_calls": 379.0,
+					"frames": 106,
+					"p99_ms": 66.21,
+					"scene": "perseguicao",
+					"seconds": 6.041972
+				}
+			]
+		},
+		{
+			"average_fps": 16.6,
+			"one_percent_low_fps": 12.8,
+			"quality": "Alto",
+			"scenes": [
+				{
+					"average_fps": 15.5,
+					"draw_calls": 403.0,
+					"frames": 94,
+					"p99_ms": 71.44,
+					"scene": "rua",
+					"seconds": 6.057758
+				},
+				{
+					"average_fps": 18.7,
+					"draw_calls": 369.0,
+					"frames": 113,
+					"p99_ms": 63.25,
+					"scene": "banco",
+					"seconds": 6.043106
+				},
+				{
+					"average_fps": 15.5,
+					"draw_calls": 387.0,
+					"frames": 94,
+					"p99_ms": 83.82,
+					"scene": "perseguicao",
+					"seconds": 6.045346
+				}
+			]
+		},
+		{
+			"average_fps": 16.0,
+			"one_percent_low_fps": 12.4,
+			"quality": "Ultra",
+			"scenes": [
+				{
+					"average_fps": 14.8,
+					"draw_calls": 560.0,
+					"frames": 89,
+					"p99_ms": 76.28,
+					"scene": "rua",
+					"seconds": 6.026507
+				},
+				{
+					"average_fps": 18.7,
+					"draw_calls": 415.0,
+					"frames": 113,
+					"p99_ms": 65.0,
+					"scene": "banco",
+					"seconds": 6.04341
+				},
+				{
+					"average_fps": 14.5,
+					"draw_calls": 379.0,
+					"frames": 87,
+					"p99_ms": 81.7,
+					"scene": "perseguicao",
+					"seconds": 6.006283
+				}
+			]
+		}
+	],
+	"viewport": "(1028, 720)",
+	"vsync": "disabled",
+	"warmup_seconds_per_scene": 5
+}

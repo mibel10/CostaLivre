@@ -1,0 +1,48 @@
+﻿# Godot generated cache/import data
+.godot/
+.import/
+*.import
+
+# Builds and exports
+.build-tools/
+build/
+/build/
+/export/
+/exports/
+*.apk
+*.aab
+*.exe
+*.pck
+*.app/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Credentials and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*secret*
+*password*
+*credential*
+
+# Existing generated previews
+preview.png
+preview_*.png
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/

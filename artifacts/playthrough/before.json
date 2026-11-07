@@ -1,0 +1,160 @@
+{
+	"adapter": "ANGLE (Intel, Intel(R) HD Graphics Family (0x00000A16) Direct3D11 vs_5_0 ps_5_0, D3D11-20.19.15.5171)",
+	"cap": 0,
+	"checks": [
+		{
+			"check": "mode selection",
+			"pass": true
+		},
+		{
+			"check": "walk with physical movement",
+			"pass": false
+		},
+		{
+			"check": "walk returns to idle",
+			"pass": true
+		},
+		{
+			"check": "enter starter car",
+			"pass": true
+		},
+		{
+			"check": "drive and brake",
+			"pass": true
+		},
+		{
+			"check": "exit car",
+			"pass": true
+		},
+		{
+			"check": "walk through interior 1",
+			"pass": true
+		},
+		{
+			"check": "walk through interior 2",
+			"pass": true
+		},
+		{
+			"check": "walk through interior 3",
+			"pass": true
+		},
+		{
+			"check": "walk through interior 4",
+			"pass": true
+		},
+		{
+			"check": "walk through interior 5",
+			"pass": true
+		},
+		{
+			"check": "walk through interior 6",
+			"pass": true
+		},
+		{
+			"check": "solve three bank circuits",
+			"pass": true
+		},
+		{
+			"check": "bank loot pays only at exit",
+			"pass": true
+		},
+		{
+			"check": "pause during pursuit",
+			"pass": true
+		},
+		{
+			"check": "resume",
+			"pass": true
+		}
+	],
+	"method": "automated inputs; repositioned between checkpoints; screenshots; 2s warmup + 3s sample per area",
+	"quality": "Baixo",
+	"samples": [
+		{
+			"area": "spawn",
+			"draws": 172.0,
+			"fps": 40.8,
+			"p95_ms": 31.9,
+			"triangles": 154463.0
+		},
+		{
+			"area": "interior_1",
+			"draws": 216.0,
+			"fps": 32.1,
+			"p95_ms": 45.6,
+			"triangles": 164535.0
+		},
+		{
+			"area": "interior_2",
+			"draws": 150.0,
+			"fps": 48.9,
+			"p95_ms": 27.6,
+			"triangles": 151795.0
+		},
+		{
+			"area": "interior_3",
+			"draws": 220.0,
+			"fps": 37.6,
+			"p95_ms": 33.4,
+			"triangles": 152430.0
+		},
+		{
+			"area": "interior_4",
+			"draws": 119.0,
+			"fps": 46.6,
+			"p95_ms": 28.8,
+			"triangles": 80177.0
+		},
+		{
+			"area": "interior_5",
+			"draws": 81.0,
+			"fps": 49.5,
+			"p95_ms": 32.4,
+			"triangles": 94427.0
+		},
+		{
+			"area": "interior_6",
+			"draws": 130.0,
+			"fps": 49.9,
+			"p95_ms": 27.8,
+			"triangles": 102771.0
+		},
+		{
+			"area": "bank",
+			"draws": 131.0,
+			"fps": 49.1,
+			"p95_ms": 29.1,
+			"triangles": 96164.0
+		},
+		{
+			"area": "coast",
+			"draws": 31.0,
+			"fps": 67.9,
+			"p95_ms": 23.7,
+			"triangles": 10446.0
+		},
+		{
+			"area": "east",
+			"draws": 28.0,
+			"fps": 76.1,
+			"p95_ms": 21.5,
+			"triangles": 10086.0
+		},
+		{
+			"area": "downtown",
+			"draws": 140.0,
+			"fps": 40.4,
+			"p95_ms": 34.8,
+			"triangles": 104641.0
+		},
+		{
+			"area": "pursuit",
+			"draws": 68.0,
+			"fps": 43.8,
+			"p95_ms": 42.4,
+			"triangles": 55570.0
+		}
+	],
+	"tag": "before",
+	"viewport": "(1028, 720)"
+}

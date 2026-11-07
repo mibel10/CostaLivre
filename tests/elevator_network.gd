@@ -1,0 +1,110 @@
+extends SceneTree
+
+func _initialize() -> void:
+	call_deferred("run")
+
+func wait_until(condition: Callable, seconds := 8.0) -> bool:
+	var deadline := Time.get_ticks_msec()+int(seconds*1000)
+	while not condition.call() and Time.get_ticks_msec()<deadline:
+		await process_frame
+	return condition.call()
+
+func run() -> void:
+	var host_api:=SceneMultiplayer.new()
+	var client_api:=SceneMultiplayer.new()
+	var host_view:=SubViewport.new()
+	host_view.name="Host"
+	host_view.own_world_3d=true
+	root.add_child(host_view)
+	var client_view:=SubViewport.new()
+	client_view.name="Client"
+	client_view.own_world_3d=true
+	root.add_child(client_view)
+	set_multiplayer(host_api,NodePath("/root/Host/World"))
+	set_multiplayer(client_api,NodePath("/root/Client/World"))
+	var host=load("res://main.tscn").instantiate()
+	host.name="World"
+	host_view.add_child(host)
+	var client=load("res://main.tscn").instantiate()
+	client.name="World"
+	client_view.add_child(client)
+	host.start_mode("sandbox")
+	client.start_mode("sandbox")
+	host.network.host()
+	client.network.address_field.text=client.network.make_internet_code("127.0.0.1",28960,host.network.code)
+	client.network.join_room()
+	if not await wait_until(func(): return client.network.joined and host.network.members.size()==2):
+		push_error("Multiplayer connection timed out")
+		quit(1)
+		return
+	var id:=client_api.get_unique_id()
+	var inv: Dictionary=host.network.rules.sheets[id].inventory
+	inv.clips[1]=1
+	inv.reserves[1]=10
+	inv.reload_weapon=1
+	inv.reload_time=0.1
+	inv.fire_cooldown=0.1
+	host.activities.clips[1]=3
+	host.activities.reserves[1]=6
+	host.activities.reload_weapon=1
+	host.activities.reload_time=0.1
+	host.activities.fire_cooldown=0.1
+	await create_timer(0.4).timeout
+	inv=host.network.rules.sheets[id].inventory
+	assert(inv.clips[1]==11 and inv.reserves[1]==0 and inv.fire_cooldown==0,"Client reload and cooldown progress on host")
+	assert(host.activities.clips[1]==9 and host.activities.reserves[1]==0 and host.activities.fire_cooldown==0,"Host reload and cooldown progress")
+	host.player.position=Vector3(20,0.3,0)
+	host.network.members[1]["crouch"]=false
+	host.network.members[id]["car_position"]=Vector3(10,0.3,0)
+	host.network.members[id]["crouch"]=true
+	assert(host.network.rules.police_target_actor(Vector3.ZERO)[0]==1,"Police can target a visible player instead of a hidden crouching player")
+	for building in ["apartment","tower"]:
+		var start: Vector3=client.life.elevator_position(building,0)
+		client.player.position=start
+		client.player.velocity=Vector3.ZERO
+		if not await wait_until(func(): return host.network.members[id].position.distance_to(start)<2):
+			push_error("Host did not receive the elevator position")
+			quit(1)
+			return
+		assert(client.life.elevator_building_at(start)==building)
+		assert(client.life.prompt().contains("elevador"))
+		client.life.use_elevator(5)
+		if not await wait_until(func(): return client.player.position.y>29.5):
+			push_error("Elevator arrival timed out: "+building)
+			quit(1)
+			return
+		assert(host.network.members[id].position.y>29.5,"Host owns elevator arrival")
+		await create_timer(2.0).timeout
+	var before: Vector3=host.network.members[id].position
+	client.network.rules.send_action("elevator",{"to":9})
+	await create_timer(0.4).timeout
+	assert(host.network.members[id].position.distance_to(before)<2.0,"Tower rejects non-existent floors")
+	host.life.leisure_cooldown=0.3
+	await create_timer(0.5).timeout
+	assert(host.life.leisure_cooldown<=0,"Leisure cooldown expires without a player holding the action")
+	var remote_car: Node=client.car_by_id(1)
+	client.active_car=remote_car
+	remote_car.driving=true
+	remote_car.speed=10.0
+	if not await wait_until(func(): return int(host.network.owners.get(1,0))==id):
+		push_error("Host did not assign the client's vehicle")
+		quit(1)
+		return
+	assert(client.engine_audio.pitch_scale>0.7,"Engine audio updates in multiplayer")
+	host.network.rules.punch_peer(id,0.0)
+	assert(not host.network.rules.last_actions.has(str(id)+"punch_hit"),"Host rejects punches from vehicles")
+	var host_car: Node=host.car_by_id(1)
+	host_car.take_hit(10000)
+	host_car.wreck_timer=0.15
+	if not await wait_until(func(): return is_instance_valid(host_car) and host_car.exploded, 3.0):
+		push_error("Host did not detonate the disabled client vehicle")
+		quit(1)
+		return
+	print("PASS: host authoritative elevators and vehicle explosion, multiplayer audio and cooldown")
+	client.network.disconnect_room()
+	host.network.disconnect_room()
+	host.queue_free()
+	client.queue_free()
+	await process_frame
+	await create_timer(0.25).timeout
+	quit()

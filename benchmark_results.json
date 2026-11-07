@@ -1,0 +1,66 @@
+{
+	"adapter": "ANGLE (Intel, Intel(R) HD Graphics Family (0x00000A16) Direct3D11 vs_5_0 ps_5_0, D3D11-20.19.15.5171)",
+	"scenes": [
+		{
+			"average_fps": 50.4,
+			"cap": 0,
+			"draws": 152.0,
+			"median_ms": 16.93,
+			"p95_ms": 30.58,
+			"p99_ms": 35.05,
+			"quality": "Baixo",
+			"scene": "rua_sem_limite"
+		},
+		{
+			"average_fps": 48.3,
+			"cap": 0,
+			"draws": 164.0,
+			"median_ms": 17.69,
+			"p95_ms": 33.95,
+			"p99_ms": 36.93,
+			"quality": "Baixo",
+			"scene": "dirigindo_sem_limite"
+		},
+		{
+			"average_fps": 64.7,
+			"cap": 0,
+			"draws": 69.0,
+			"median_ms": 13.48,
+			"p95_ms": 25.73,
+			"p99_ms": 27.91,
+			"quality": "Baixo",
+			"scene": "banco_sem_limite"
+		},
+		{
+			"average_fps": 41.1,
+			"cap": 0,
+			"draws": 204.0,
+			"median_ms": 20.64,
+			"p95_ms": 38.09,
+			"p99_ms": 40.08,
+			"quality": "Baixo",
+			"scene": "perseguicao_sem_limite"
+		},
+		{
+			"average_fps": 30.0,
+			"cap": 30,
+			"draws": 252.0,
+			"median_ms": 33.37,
+			"p95_ms": 35.73,
+			"p99_ms": 38.38,
+			"quality": "Baixo",
+			"scene": "perseguicao_limitada_30"
+		},
+		{
+			"average_fps": 30.0,
+			"cap": 30,
+			"draws": 117.0,
+			"median_ms": 33.34,
+			"p95_ms": 33.91,
+			"p99_ms": 34.1,
+			"quality": "Baixo",
+			"scene": "rua_limitada_30"
+		}
+	],
+	"viewport": "(1028, 720)"
+}

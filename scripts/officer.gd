@@ -1,0 +1,86 @@
+extends CharacterBody3D
+
+var world: Node3D
+var hp := 80.0
+var fire_time := 1.0
+var model: Node3D
+var mission_stair := false
+var mission_stair_route: Array[Vector3]=[]
+var mission_stair_index := 0
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_PAUSABLE
+	collision_layer = 4
+	collision_mask = 7
+	platform_floor_layers=1
+	platform_wall_layers=0
+	var collider := CollisionShape3D.new()
+	var shape := CapsuleShape3D.new()
+	shape.radius = 0.33
+	shape.height = 1.8
+	collider.shape = shape
+	collider.position.y = 0.9
+	add_child(collider)
+	model = preload("res://scripts/human_visual.gd").new()
+	model.police = true
+	add_child(model)
+	world.box(model, Vector3(0.32, 1.15, -0.4), Vector3(0.1, 0.12, 0.5), Color("161e28"))
+
+func _physics_process(delta: float) -> void:
+	if world.network!=null and world.network.is_client():
+		return
+	if hp <= 0 or world.finished:
+		return
+	var player_target: Vector3=world.police_target(self)
+	var target: Vector3=player_target
+	if mission_stair and mission_stair_index<mission_stair_route.size():
+		if position.distance_to(mission_stair_route[mission_stair_index])<0.85:
+			mission_stair_index+=1
+		if mission_stair_index<mission_stair_route.size():
+			target=mission_stair_route[mission_stair_index]
+	var offset: Vector3=target-position
+	var direction := offset.normalized()
+	var climbing:=mission_stair and mission_stair_index<mission_stair_route.size()
+	var moving: bool = climbing or (world.heat > 0 and offset.length() > 10)
+	if climbing:
+		velocity=direction*3.2
+	else:
+		velocity.x = direction.x * 4 if moving else 0.0
+		velocity.z = direction.z * 4 if moving else 0.0
+		velocity.y = -4 if is_on_floor() else velocity.y - delta * 22
+	move_and_slide()
+	model.animate(Vector2(velocity.x, velocity.z).length())
+	if world.heat > 0:
+		model.rotation.y = atan2(-offset.x, -offset.z)
+	fire_time -= delta
+	var response_threshold:=12 if world.network!=null and world.network.active() else 20
+	if (world.heat < response_threshold and not mission_stair) or position.distance_to(player_target)>32 or fire_time > 0:
+		return
+	fire_time = 1.8
+	var from := position + Vector3(0, 1.4, 0)
+	var to: Vector3 = player_target + Vector3(0, 1, 0)
+	var query := PhysicsRayQueryParameters3D.create(from, to, 7)
+	query.exclude = [get_rid()]
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if not hit.is_empty():
+		world.activities.trace(from,to,Color("ff8264"))
+		if world.network!=null and world.network.active():
+			var target_peer := int(hit.collider.get_meta("peer_id",0))
+			if target_peer==0 and hit.collider is CharacterBody3D and hit.collider.get_script()==preload("res://scripts/car.gd"):
+				target_peer=int(world.network.owners.get(hit.collider.net_id,0))
+			if target_peer>0:
+				world.network.rules.damage_peer(target_peer,6,0)
+		elif hit.collider==world.player or hit.collider==world.active_car:
+			world.damage(3 if world.active_car!=null else 6)
+
+func take_hit(amount: float) -> void:
+	if world.network!=null and world.network.is_client():
+		world.network.rules.send_action("ram_officer",{"index":world.activities.officers.find(self)})
+		return
+	if hp <= 0:
+		return
+	hp = maxf(0, hp - amount)
+	world.raise_heat(8)
+	if hp <= 0:
+		model.rotation.z = PI / 2
+		collision_layer = 0

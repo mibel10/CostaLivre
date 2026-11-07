@@ -1,0 +1,33 @@
+; Costa Livre — original open-world driving prototype.
+config_version=5
+
+[application]
+config/name="Costa Livre"
+config/version="1.5.1"
+config/icon="res://icon.svg"
+config/quit_on_go_back=false
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/description="Explore a costa, encontre um carro e faça três entregas enquanto despista a polícia."
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=0
+
+[input_devices]
+pointing/emulate_mouse_from_touch=true
+
+[rendering]
+textures/vram_compression/import_etc2_astc=true
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.55, 0.72, 0.82, 1)
+textures/default_filters/use_nearest_mipmap_filter=false
+anti_aliasing/quality/msaa_3d=0
+textures/default_filters/anisotropic_filtering_level=2
+

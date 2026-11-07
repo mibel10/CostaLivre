@@ -1,0 +1,42 @@
+{
+	"adapter": "ANGLE (Intel, Intel(R) HD Graphics Family (0x00000A16) Direct3D11 vs_5_0 ps_5_0, D3D11-20.19.15.5171)",
+	"fps_limit": 0,
+	"godot": "4.7.2-stable (official)",
+	"sample_seconds_per_scene": 6,
+	"samples": [
+		{
+			"average_fps": 49.7,
+			"one_percent_low_fps": 25.7,
+			"quality": "Baixo",
+			"scenes": [
+				{
+					"average_fps": 41.3,
+					"draw_calls": 222.0,
+					"frames": 248,
+					"p99_ms": 33.63,
+					"scene": "rua",
+					"seconds": 6.006165
+				},
+				{
+					"average_fps": 64.3,
+					"draw_calls": 128.0,
+					"frames": 386,
+					"p99_ms": 26.95,
+					"scene": "banco",
+					"seconds": 6.00487
+				},
+				{
+					"average_fps": 43.5,
+					"draw_calls": 182.0,
+					"frames": 262,
+					"p99_ms": 37.36,
+					"scene": "perseguicao",
+					"seconds": 6.01738
+				}
+			]
+		}
+	],
+	"viewport": "(1028, 720)",
+	"vsync": "disabled",
+	"warmup_seconds_per_scene": 2
+}
