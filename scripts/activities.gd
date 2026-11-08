@@ -348,6 +348,8 @@ func save_campaign() -> bool:
 	var save := ConfigFile.new()
 	save.set_value("story", "next_mission", campaign_index)
 	save.set_value("story", "cash", world.cash)
+	save.set_value("story", "home_floor", world.life.owned_home)
+	save.set_value("story", "homes", world.life.owned_homes)
 	save.set_value("story", "health", world.health)
 	save.set_value("story", "completed", completed)
 	save.set_value("story", "weapon", weapon)
@@ -366,6 +368,8 @@ func save_campaign() -> bool:
 	return true
 
 func load_campaign() -> void:
+	world.life.owned_home = -1
+	world.life.owned_homes.clear()
 	var save := ConfigFile.new()
 	if save.load(campaign_save_path) != OK:
 		var legacy := ConfigFile.new()
@@ -373,6 +377,8 @@ func load_campaign() -> void:
 		return
 	campaign_index = clampi(save.get_value("story", "next_mission", 0), 0, CAMPAIGN_LENGTH)
 	world.cash = int(save.get_value("story", "cash", world.cash))
+	world.life.owned_home = clampi(int(save.get_value("story", "home_floor", -1)), -1, 11)
+	world.life.owned_homes.assign(save.get_value("story", "homes", []))
 	world.health = float(save.get_value("story", "health", world.health))
 	completed = int(save.get_value("story", "completed", campaign_index))
 	weapon = clampi(save.get_value("story", "weapon", 1), 0, 4)
@@ -393,6 +399,8 @@ func has_campaign_save() -> bool:
 	return FileAccess.file_exists(campaign_save_path)
 
 func new_campaign() -> void:
+	world.life.owned_home = -1
+	world.life.owned_homes.clear()
 	campaign_index = 0
 	completed = 0
 	world.cash = 900

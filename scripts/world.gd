@@ -22,6 +22,7 @@ var health := 100.0
 var cash := 900
 var activities: Node
 var bust_progress := 0.0
+var retry_after_death := false
 var finished := false
 var won := false
 var elapsed := 0.0
@@ -152,6 +153,9 @@ func start_mode(mode: String) -> void:
 	if mode == "campaign" and network != null and network.active():
 		notify("Desconecte da sala para jogar a campanha.")
 		return
+	if mode == "sandbox" and game_mode == "campaign":
+		life.owned_home = -1
+		life.owned_homes.clear()
 	game_mode = mode
 	if is_instance_valid(pause_menu.menu_music):
 		pause_menu.menu_music.stop()
@@ -372,8 +376,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			player.position = Vector3(-5, 1, 12)
 	if event.is_action_pressed("restart") and finished:
-		Engine.time_scale = 1
-		get_tree().reload_current_scene()
+		respawn_local()
 
 func interact() -> void:
 	if car_transition:
@@ -605,10 +608,61 @@ func finish(success: bool) -> void:
 	if finished:
 		return
 	finished = true
+	retry_after_death = game_mode == "campaign" and activities.job >= 0
+	activities.job = -1
+	activities.progress = 0
+	activities.robbery_progress = 0
+	activities.pedestrian_robbery_progress = 0
+	life.task_progress = 0
+	life.stair_chase_started = false
+	for officer in activities.officers.duplicate():
+		if bool(officer.get_meta("mission_stair", false)):
+			activities.officers.erase(officer)
+			officer.queue_free()
+	marker.visible = false
 	activities.bank.hacking = false
 	won = success
 	extra.begin_death()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+func respawn_local() -> void:
+	if active_car != null: active_car.driving = false
+	active_car = null
+	car_transition = false
+	var home: int = life.owned_home
+	player.position = life.HOME_BUILDING + Vector3(0,home * 6 + 0.3,5) if home >= 0 else Vector3(-5,0.3,12)
+	player.velocity = Vector3.ZERO
+	player.visible = true
+	player.collision_layer = 2
+	player.model.visible = true
+	player.model.process_mode = Node.PROCESS_MODE_INHERIT
+	player.model.position = Vector3.ZERO
+	player.model.rotation = Vector3.ZERO
+	player.roll_time = 0
+	health = 100
+	heat = 0
+	finished = false
+	Engine.time_scale = 1
+	extra.death_filter.hide()
+	camera.position = player.position + Vector3(0,4,7)
+	camera_check_timer = 0
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if retry_after_death:
+		retry_after_death = false
+		if activities.campaign_index == 5:
+			activities.bank.phase = 0
+			activities.bank.taken = [false, false, false]
+			activities.bank.mistakes = 0
+			activities.bank.lockout = 0
+			activities.bank.door.rotation.y = 0
+			activities.bank.security_light.material_override = material(Color("ef9d6b"), true)
+			activities.bank.screen.material_override = material(Color("66bbcc"), true)
+			for bag in activities.bank.bag_models: bag.visible = true
+		activities.save_campaign()
+		activities.start_job(activities.campaign_index)
+	else:
+		if game_mode == "campaign": activities.save_campaign()
+		notify("Você renasceu.")
 
 func setup_audio() -> void:
 	var wav := AudioStreamWAV.new()

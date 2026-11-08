@@ -37,7 +37,7 @@ func _draw() -> void:
 	if world.finished:
 		draw_rect(Rect2(0, 270, 1280, 155), Color(0, 0, 0, 0.45))
 		text("VOCÊ FOI CALADO.", Vector2(340, 365), 57, Color("d34d50"))
-		text("ENTER · recomeçar", Vector2(550, 459), 18)
+		text("Renascendo...", Vector2(550, 459), 18)
 		return
 	if world.extra != null and world.extra.wheel:
 		draw_wheel()
@@ -110,7 +110,7 @@ func _draw() -> void:
 		panel(Rect2(375, 245, 530, 210))
 		text("FIM DA LINHA", Vector2(411, 301), 30, gold)
 		text("%d contratos concluídos   ·   $ %d" % [a.completed, world.cash], Vector2(413, 342), 18)
-		text("ENTER · recomeçar", Vector2(413, 406), 19, gold)
+		text("Renascendo...", Vector2(413, 406), 19, gold)
 
 func center_note(value: String, y: float, color: Color) -> void:
 	var width := font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 28
@@ -279,6 +279,8 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 		if x < left or x > left + 372: continue
 		var z := -105.0 if ix == 12 else 105.0
 		draw_circle(map_point(Vector3(x,0,z + 14), origin, map_size), 2, Color("9fd4b5"))
+	if 861 >= left and 861 <= left + 372:
+		draw_circle(map_point(Vector3(861,0,-93), origin, map_size), 3, Color("b6d9d4"))
 	for point in a.ROBBERIES:
 		if point.x >= left and point.x <= left + 372:
 			text("$", map_point(point, origin, map_size) + Vector2(-3, 3), 12, Color("fda487"))

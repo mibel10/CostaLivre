@@ -133,6 +133,7 @@ func _draw() -> void:
 		var x := -147.0 + ix * 42
 		var z := -105.0 if ix == 12 else 105.0
 		dot(Vector3(x,0,z + 14), Color("9fd4b5"))
+	dot(Vector3(861,0,-93), Color("b6d9d4"), "Apartamentos")
 	dot(a.GUN_SHOP, Color("9ed8ff"), "Arsenal")
 	dot(a.DEALER, Color("c7afff"), "APEX")
 	dot(a.GARAGE, Color("8ddbb5"), "Oficina")

@@ -1,8 +1,11 @@
 extends Node3D
 
 const Pedestrian = preload("res://scripts/pedestrian.gd")
+const HOME_BUILDING := Vector3(861,0,-105)
 const PLACES := [Vector3(-63,0,21),Vector3(63,0,21),Vector3(-63,0,63),Vector3(-105,0,-21),Vector3(105,0,-63),Vector3(147,0,63)]
 const TITLES := ["CAFÉ MARÉ", "CLÍNICA COSTA", "RESIDENCIAL COSTA", "OFICINA DO PORTO", "MERCADO DA PRAIA", "ESTÚDIO SOLAR"]
+var owned_home := -1
+var owned_homes: Array[int] = []
 var world: Node3D
 var people: Array[CharacterBody3D] = []
 var rooms: Array[Node3D] = []
@@ -96,6 +99,8 @@ func on_apartment_tenth_floor(at: Vector3) -> bool:
 	return local.y>=54.0 and local.y<59.8 and absf(local.x)<12.0 and absf(local.z)<12.0
 
 func elevator_building_at(at: Vector3) -> String:
+	var housing := at - HOME_BUILDING
+	if Vector2(housing.x - 8, housing.z + 6.5).length_squared() < 9.0 and housing.y >= -0.5 and housing.y < 72.0: return "housing"
 	var apartment:=at-PLACES[2]
 	if Vector2(apartment.x-8,apartment.z+6.7).length_squared()<9.0 and apartment.y>=-0.5 and apartment.y<60.0:
 		return "apartment"
@@ -105,6 +110,7 @@ func elevator_building_at(at: Vector3) -> String:
 	return ""
 
 func elevator_position(building: String, floor_number: int) -> Vector3:
+	if building == "housing": return HOME_BUILDING + Vector3(8,floor_number*6+0.2,-6.5)
 	return (PLACES[2] if building=="apartment" else PLACES[5])+Vector3(8,floor_number*6+0.2,-6.7 if building=="apartment" else 9.0)
 
 func mission_position() -> Vector3:
@@ -132,6 +138,8 @@ func task_label() -> String:
 	return "%s / %d%% / segure F" % [task[2+mini(a.stage,2)],roundi(task_progress/BUILDING_TASK_DURATION*100)]
 
 func inside_room(at: Vector3) -> bool:
+	var housing := at - HOME_BUILDING
+	if absf(housing.x) < 12 and absf(housing.z) < 12 and housing.y >= -0.5 and housing.y < 72: return true
 	for room in rooms:
 		var local: Vector3 = at-room.position
 		if absf(local.x)<12.2 and absf(local.z)<11.7 and local.y>=-0.5 and local.y<5.8:
@@ -148,15 +156,15 @@ func build_elevator_menu() -> void:
 	layer.add_child(elevator_ui)
 	var panel := PanelContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	panel.position = Vector2(-220,-250)
-	panel.size = Vector2(440,500)
+	panel.position = Vector2(-220,-290)
+	panel.size = Vector2(440,580)
 	elevator_ui.add_child(panel)
 	var column := VBoxContainer.new()
 	panel.add_child(column)
 	var title := Label.new()
 	title.text = "ESCOLHA O ANDAR / ELEVADOR"
 	column.add_child(title)
-	for floor_number in 10:
+	for floor_number in 12:
 		var button := Button.new()
 		button.text = "Andar %02d" % (floor_number+1)
 		button.custom_minimum_size.y = 36
@@ -172,15 +180,15 @@ func use_elevator(floor_number: int) -> void:
 	if elevator_traveling:
 		return
 	var building:=elevator_building_at(world.player.position)
-	if building=="" or floor_number<0 or floor_number>9:
+	if building=="" or floor_number<0 or floor_number>11:
 		world.notify("Aproxime-se do elevador para escolher um andar.")
 		return
 	var apartment:=building=="apartment"
-	var base:Vector3=PLACES[2] if apartment else PLACES[5]
-	if not apartment and floor_number>7:
-		world.notify("Este elevador atende os andares 1 a 8.")
+	var base:Vector3=HOME_BUILDING if building=="housing" else (PLACES[2] if apartment else PLACES[5])
+	if (building=="tower" and floor_number>7) or (apartment and floor_number>9):
+		world.notify("Este elevador atende os andares 1 a %d." % (10 if apartment else 8))
 		return
-	var current_floor:=clampi(roundi((world.player.position.y-base.y)/6.0),0,9 if apartment else 7)
+	var current_floor:=clampi(roundi((world.player.position.y-base.y)/6.0),0,11 if building=="housing" else (9 if apartment else 7))
 	elevator_traveling=true
 	elevator_ui.hide()
 	if apartment:
@@ -250,15 +258,52 @@ func animate_remote_elevator(source: int, destination: int) -> void:
 	set_elevator_doors(source,false)
 	set_elevator_doors(destination,false)
 
+func home_floor_at(at: Vector3) -> int:
+	var local := at - HOME_BUILDING
+	var floor_number := roundi(local.y / 6.0)
+	if floor_number < 0 or floor_number >= 12 or absf(local.y - floor_number * 6.0) > 2.0: return -1
+	return floor_number if Vector2(local.x, local.z - 11.0).length() < 2.5 else -1
+
+func buy_home(floor_number: int) -> void:
+	if world.network != null and world.network.active():
+		var id: int = world.network.rules.context_peer if world.network.rules.context_peer > 0 else multiplayer.get_unique_id()
+		world.network.rules.buy_home(id, floor_number)
+		return
+	if owned_homes.has(floor_number):
+		world.notify("Este apartamento já é seu.")
+	elif world.cash < 1000:
+		world.notify("Dinheiro insuficiente: apartamento custa $1000.")
+	else:
+		world.cash -= 1000
+		owned_homes.append(floor_number)
+		var previous_home := owned_home
+		owned_home = floor_number
+		if world.activities.game_mode == "campaign" and not world.activities.save_campaign():
+			owned_homes.erase(floor_number)
+			owned_home = previous_home
+			world.cash += 1000
+			return
+		world.notify("Apartamento comprado por $1000.")
+
 func prompt() -> String:
 	if world.active_car != null:
 		return ""
 	var at: Vector3 = world.player.position
+	var home_floor := home_floor_at(at)
+	if home_floor >= 0:
+		if world.network != null and world.network.active():
+			for id in world.network.rules.sheets:
+				if home_floor in world.network.rules.sheets[id].get("homes", []):
+					return "Seu apartamento" if id == multiplayer.get_unique_id() else "Apartamento ocupado"
+		elif owned_homes.has(home_floor):
+			return "Seu apartamento"
+		return "F / Comprar apartamento - $1000"
 	if elevator_building_at(at)!="":
 		return "F / Escolher andar do elevador"
 	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:
 		return task_label()
 	if inside_room(at):
+		if absf(at.x - HOME_BUILDING.x) < 12 and absf(at.z - HOME_BUILDING.z) < 12 and at.y >= 0 and at.y < 72: return ""
 		return "F / Atendimento, descanso ou servico local"
 	return ""
 
@@ -266,6 +311,10 @@ func interact() -> bool:
 	if world.active_car != null:
 		return false
 	var at: Vector3 = world.player.position
+	var home_floor := home_floor_at(at)
+	if home_floor >= 0:
+		buy_home(home_floor)
+		return true
 	if elevator_building_at(at)!="":
 		world.activities.set_menu("elevator")
 		elevator_ui.show()

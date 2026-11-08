@@ -128,6 +128,9 @@ func begin_death() -> void:
 func _process(delta: float) -> void:
 	if world.finished:
 		var seconds := (Time.get_ticks_msec() - death_started) / 1000.0
+		if seconds >= 3.0:
+			world.respawn_local()
+			return
 		world.player.model.rotation.z = move_toward(world.player.model.rotation.z, 1.4, delta * 2)
 		death_filter.material.set_shader_parameter("strength", clampf(seconds / 1.5, 0, 1))
 		world.hud.queue_redraw()

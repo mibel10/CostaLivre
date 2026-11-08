@@ -40,7 +40,7 @@ func inventory() -> Dictionary:
 
 func add_peer(id: int) -> Vector3:
 	var inv := {"weapon":1,"rifle_owned":false,"shotgun_owned":false,"smg_owned":false,"clips":[0,12,0,0,0],"reserves":[0,36,0,0,0],"fire_cooldown":0.0,"reload_time":0.0,"reload_weapon":0}
-	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0}
+	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0,"home":-1,"homes":[]}
 	if id==1:
 		sheets[id].cash=world.cash
 		sheets[id].inventory=inventory()
@@ -242,6 +242,23 @@ func award_all(amount: int) -> void:
 	for id in sheets:
 		award(id,amount)
 
+func buy_home(id: int, floor_number: int) -> void:
+	if not multiplayer.is_server() or not sheets.has(id) or int(network.members[id].get("car", -1)) >= 0 or world.life.home_floor_at(position_of(id)) != floor_number: return
+	if floor_number in sheets[id].get("homes", []):
+		private_notice(id,"Este apartamento já é seu.")
+		return
+	for peer_id in sheets:
+		if floor_number in sheets[peer_id].get("homes", []):
+			private_notice(id,"Este apartamento já tem dono.")
+			return
+	if world.cash < 1000:
+		private_notice(id,"Dinheiro insuficiente: apartamento custa $1000.")
+		return
+	world.cash -= 1000
+	sheets[id]["homes"].append(floor_number)
+	sheets[id]["home"] = floor_number
+	private_notice(id,"Apartamento comprado por $1000.")
+
 func send_action(kind: String, data := {}) -> void:
 	if multiplayer.is_server():
 		action(local_id(),kind,data)
@@ -342,6 +359,10 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if car.position.distance_to(officer.position)<5:
 					officer.take_hit(absf(car.speed)*5)
 		"interact":
+			var floor_number: int = world.life.home_floor_at(position_of(id))
+			if floor_number >= 0:
+				with_actor(id,func(): buy_home(id,floor_number))
+				return
 			with_actor(id,func():
 				if world.life.interact():
 					return
@@ -353,9 +374,9 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 			if int(network.members[id].get("car",-1))>=0 or building=="":
 				return
 			var start: Vector3=position_of(id)
-			var from:=clampi(roundi(start.y/6.0),0,9)
+			var from:=clampi(roundi(start.y/6.0),0,11 if building=="housing" else 9)
 			var to:=int(data.get("to",-1))
-			if to<0 or to>(9 if building=="apartment" else 7):
+			if to<0 or to>(11 if building=="housing" else (9 if building=="apartment" else 7)):
 				return
 			var arrival: Vector3=world.life.elevator_position(building,to)
 			network.members[id]["position"]=arrival
@@ -566,7 +587,8 @@ func physics(delta: float) -> void:
 				sheets[id].health=100.0
 				sheets[id].life+=1
 				sheets[id].protected_until=Time.get_ticks_msec()+5000
-				var at := next_spawn()
+				var home_floor: int = int(sheets[id].get("home", -1))
+				var at: Vector3 = world.life.HOME_BUILDING + Vector3(0,home_floor*6+0.3,5) if home_floor >= 0 else next_spawn()
 				network.members[id].position=at
 				network.members[id].car_position=at
 				network.members[id].car=-1
