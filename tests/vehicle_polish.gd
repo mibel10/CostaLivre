@@ -42,6 +42,20 @@ func run() -> void:
 		assert(wheel.basis.x.is_equal_approx(Vector3.RIGHT),"Wheel spin must preserve its local axle")
 	for hub in car.steering_hubs:
 		assert(hub.basis.y.is_equal_approx(Vector3.UP),"Steering cannot tilt the axle")
+	var wall: Node3D = world.box(world,Vector3(0,2,-8),Vector3(12,4,0.5),Color.GRAY,true)
+	car.position = Vector3(0,0.3,-3)
+	car.heading = 0
+	car.speed = 200
+	var health_before: float = world.health
+	var bounced := false
+	for i in 20:
+		await physics_frame
+		if car.speed < 0:
+			bounced = true
+			assert(absf(car.speed) <= 4.0, "Wall bounce is small")
+			break
+	assert(bounced and world.health == health_before, "Fast wall impact bounces without killing driver")
+	wall.queue_free()
 	world.extra.play("cash")
 	var stream: AudioStream = world.extra.audio.stream
 	world.extra.play("step")

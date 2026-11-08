@@ -179,11 +179,11 @@ func _physics_process(delta: float) -> void:
 			continue
 		if absf(hit.get_normal().y) < 0.5 and absf(speed) > 6:
 			if driving and hit_cooldown <= 0:
-				world.damage(absf(speed) * 0.48)
 				hit_cooldown = 1
 				if hit.get_collider() is CharacterBody3D and absf(speed) > 12:
 					world.raise_heat(3)
-			speed *= -0.25
+			speed = -signf(speed) * minf(absf(speed) * 0.15, 4.0)
+			break
 	# Use actual travel, so wheels do not keep spinning when blocked by a wall.
 	var travel := Vector2(get_real_velocity().x,get_real_velocity().z).length() * delta
 	wheel_angle = fposmod(wheel_angle + travel / (0.36 if tier >= 4 else 0.384 * 0.95) * signf(speed),TAU)
