@@ -29,6 +29,7 @@ var steering_hubs: Array[Node3D] = []
 var wheel_angle := 0.0
 var steering_angle := 0.0
 var engine_upgrade := 0.0
+var suspension_height := 0.0
 var intact_materials := {}
 var rider: Node3D
 var wreck_timer := -1.0
@@ -345,6 +346,9 @@ func repaint(color: Color) -> void:
 	intact_materials.clear()
 	world.visuals.build_car(self)
 	world.settings.register_visuals(self)
+	var height := suspension_height
+	suspension_height = 0
+	set_suspension(height)
 
 func apply_network_health(value: float) -> void:
 	if value<=0 and hp>0:
@@ -424,3 +428,16 @@ func show_explosion_effect() -> void:
 	ring_tween.tween_property(ring,"scale",Vector3(10.5,0.18,10.5),0.65)
 	ring_tween.tween_property(ring_material,"albedo_color:a",0.0,0.65)
 	ring_tween.chain().tween_callback(ring.queue_free)
+
+func set_suspension(value: float) -> void:
+	value = clampf(value,0,0.6)
+	var change := value-suspension_height
+	if is_zero_approx(change): return
+	suspension_height = value
+	var body: Node3D = get_node("Fusquinha" if tier == 0 else ("DetailedBody" if tier < 4 else "CustomVehicle"))
+	body.position.y += change
+	for wheel in wheels:
+		wheel.get_parent().position.y -= change/body.scale.y
+	var collider: CollisionShape3D = get_child(0)
+	collider.shape.size.y = Catalog.SIZES[tier].y+value
+	collider.position.y = collider.shape.size.y/2

@@ -510,7 +510,7 @@ func _process(delta: float) -> void:
 				apply_car(id,members[id])
 		var cars: Array = []
 		for car in world.cars:
-			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"engine":car.engine_upgrade,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer})
+			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer})
 		var people: Array = []
 		for person in world.life.people:
 			people.append([person.position,person.model.rotation.y,person.hp,person.robbed])
@@ -574,6 +574,7 @@ func snapshot(data: Dictionary) -> void:
 		car.police_phase=state.phase
 		car.owned=state.owned
 		car.engine_upgrade=state.engine
+		car.set_suspension(float(state.get("suspension",0)))
 	for car in world.cars.duplicate():
 		if not present.has(car.net_id):
 			world.cars.erase(car)

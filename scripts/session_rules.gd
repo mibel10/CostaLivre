@@ -346,7 +346,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"buy":
 			with_actor(id,func():
 				var menu: String=str(data.get("menu",""))
-				if world.activities.nearby_place()!=menu:
+				if world.activities.nearby_place() != ("garage" if menu == "garage_cars" else menu):
 					return
 				world.activities.menu=menu
 				world.activities.car_page=clampi(int(data.get("page",0)),0,2)

@@ -19,7 +19,7 @@ const FIRE_INTERVAL := [0.0,0.32,0.11,0.65,0.075,1.8,1.2,0.12]
 const WEAPON_NAMES := ["Punhos","Pistola","Fuzil","Escopeta","SMG","Bazuca","Sniper","Canhão de pulso"]
 const GUN_SHOP := Vector3(-21, 0, 34)
 const DEALER := Vector3(21, 0, 34)
-const GARAGE := Vector3(-21, 0, 76)
+const GARAGE := Vector3(-21, 0, 63)
 const ROBBERIES := [Vector3(-63, 0, -8), Vector3(63, 0, -50), Vector3(21, 0, -89), Vector3(264.8, 0, -111.0), Vector3(264.8, 0, -105.5), Vector3(264.8, 0, -100.0), Vector3(264.8, 0, -94.5), Vector3(264.8, 0, -89.0), Vector3(768.8, 0, -111.0), Vector3(768.8, 0, -105.5), Vector3(768.8, 0, -100.0), Vector3(768.8, 0, -94.5), Vector3(768.8, 0, -89.0)]
 const RACE := [Vector3(-126, 0, 84), Vector3(-126, 0, -84), Vector3(84, 0, -84), Vector3(84, 0, 84), Vector3(0, 0, 84)]
 const CAR_PRICES := [2200,4800,8500,9500,12000,15000,1200,1800,3200]
@@ -118,7 +118,7 @@ func handle_input(event: InputEvent) -> bool:
 		set_menu("" if menu == "credits" else "credits")
 		return true
 	if menu != "":
-		if menu == "cars" and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT,KEY_LEFT]:
+		if menu in ["cars","garage_cars"] and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT,KEY_LEFT]:
 			car_page = posmod(car_page+(1 if event.physical_keycode == KEY_RIGHT else -1),ceili(CAR_PRICES.size()/3.0))
 			world.hud.queue_redraw()
 			return true
@@ -134,7 +134,7 @@ func handle_input(event: InputEvent) -> bool:
 			if menu == "jobs" and choice >= 0 and choice < 7 and choice + job_page * 7 < job_count():
 				set_menu("")
 				start_job(choice + job_page * 7)
-			elif choice >= 0 and choice < (5 if menu == "guns" else (4 if menu == "heavy_guns" else 3)):
+			elif choice >= 0 and choice < (5 if menu in ["guns","garage"] else (4 if menu == "heavy_guns" else 3)):
 				buy(choice)
 		return true
 	if world.get_tree().paused or world.finished:
@@ -168,10 +168,7 @@ func handle_input(event: InputEvent) -> bool:
 		if nearby in ["guns", "heavy_guns", "cars"]:
 			set_menu(nearby)
 		elif nearby == "garage":
-			if world.active_car != null:
-				set_menu("garage")
-			else:
-				world.notify("Entre em um carro para usar a oficina.")
+			set_menu("garage")
 		return true
 	if event.is_action_pressed("reload"):
 		if world.network!=null and world.network.active():
@@ -201,15 +198,22 @@ func buy(choice: int) -> void:
 	if world.network!=null and world.network.is_client():
 		world.network.rules.send_action("buy",{"menu":menu,"choice":choice,"page":car_page})
 		return
-	if choice < 0 or choice > (4 if menu == "guns" else (3 if menu == "heavy_guns" else 2)):
+	if choice < 0 or choice > (4 if menu in ["guns","garage"] else (3 if menu == "heavy_guns" else 2)):
 		return
 	if menu == "garage":
+		if choice == 4:
+			set_menu("garage_cars")
+			return
 		if world.active_car == null:
+			world.notify("Entre em um carro para usar este servico.")
 			return
 		if choice != 0 and world.active_car.hp <= 0:
 			world.notify("Repare o veículo antes de personalizar.")
 			return
-		var price: int = [250,300,500][choice]
+		var price: int = [250,300,500,800][choice]
+		if choice == 3 and world.active_car.suspension_height >= 0.6:
+			world.notify("Suspensao ja esta na altura maxima.")
+			return
 		if choice == 2 and world.active_car.engine_upgrade >= 10:
 			world.notify("Motor já está no nível máximo.")
 			return
@@ -222,6 +226,8 @@ func buy(choice: int) -> void:
 			var colors := [Color("e04959"),Color("30c9bf"),Color("b894ed"),Color("e4b84c"),Color("ececec"),Color("343b49")]
 			var current: int = colors.find(world.active_car.paint)
 			world.active_car.repaint(colors[(current+1)%colors.size()])
+		elif choice == 3:
+			world.active_car.set_suspension(world.active_car.suspension_height+0.15)
 		else:
 			world.active_car.engine_upgrade = minf(10.0,world.active_car.engine_upgrade+2.5)
 		world.notify("Serviço da oficina concluído.")
@@ -275,11 +281,11 @@ func buy(choice: int) -> void:
 			if smg_owned:
 				reserves[4] += 96
 		world.notify("Compra concluída.")
-	elif menu == "cars":
+	elif menu in ["cars","garage_cars"]:
 		choice += car_page*3
 		if choice >= CAR_PRICES.size():
 			return
-		var at := Vector3(18, 0.3, 44)
+		var at := Vector3(-21,0.3,78.5) if menu == "garage_cars" else Vector3(18, 0.3, 44)
 		for car in world.cars:
 			if car.position.distance_to(at) < 5:
 				world.notify("Libere a saída da concessionária antes de comprar.")

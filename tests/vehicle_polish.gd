@@ -56,6 +56,15 @@ func run() -> void:
 			break
 	assert(bounced and world.health == health_before, "Fast wall impact bounces without killing driver")
 	wall.queue_free()
+	car.position = world.activities.GARAGE+Vector3.UP*0.3
+	world.cash = 5000
+	var wheel_y: float = car.wheels[0].global_position.y
+	world.activities.menu = "garage"
+	world.activities.buy(3)
+	assert(is_equal_approx(car.suspension_height,0.15) and world.cash == 4200)
+	assert(absf(car.wheels[0].global_position.y-wheel_y)<0.001, "Suspension raises body while wheels stay grounded")
+	car.repaint(car.paint)
+	assert(is_equal_approx(car.suspension_height,0.15))
 	world.extra.play("cash")
 	var stream: AudioStream = world.extra.audio.stream
 	world.extra.play("step")
