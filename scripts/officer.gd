@@ -32,6 +32,7 @@ func _physics_process(delta: float) -> void:
 	if hp <= 0 or world.finished:
 		return
 	var contract: bool = has_meta("mission_contract")
+	if contract and int(get_meta("mission_contract")) != world.activities.job: return
 	var player_target: Vector3=world.police_target(self)
 	if contract and position.distance_to(player_target) > 60:
 		model.animate(0)
@@ -69,7 +70,9 @@ func _physics_process(delta: float) -> void:
 	if not hit.is_empty():
 		if world.network != null and world.network.active(): world.network.shot_effect.rpc(from,to,1)
 		else: world.activities.trace(from,to,Color("ff8264"))
-		if world.network!=null and world.network.active():
+		if contract and int(get_meta("mission_vehicle",-1)) >= 0 and hit.collider == world.car_by_id(int(get_meta("mission_vehicle"))):
+			hit.collider.take_hit(12)
+		elif world.network!=null and world.network.active():
 			var target_peer := int(hit.collider.get_meta("peer_id",0))
 			if target_peer==0 and hit.collider is CharacterBody3D and hit.collider.get_script()==preload("res://scripts/car.gd"):
 				target_peer=int(world.network.owners.get(hit.collider.net_id,0))

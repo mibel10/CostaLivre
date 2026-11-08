@@ -495,6 +495,8 @@ func update_dispatch(delta: float) -> void:
 		station.dispatch(delta)
 
 func police_target(observer: Node3D) -> Vector3:
+	var mission_vehicle: Node = car_by_id(int(observer.get_meta("mission_vehicle",-1)))
+	if mission_vehicle != null and mission_vehicle.hp > 0: return mission_vehicle.position
 	if network!=null and network.active():
 		var assigned: int = int(observer.get_meta("police_target_peer",0))
 		if assigned > 0 and network.members.has(assigned) and not network.rules.is_dead(assigned):

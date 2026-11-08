@@ -82,7 +82,7 @@ func run() -> void:
 				assert(a.job == 8, "Rescue needs an escape before delivery")
 				world.heat = 0
 				a.tick_mission(0.1)
-			17,18,19,20,21,22,23:
+			20,21,22,23:
 				world.active_car = null
 				for step in 3:
 					world.player.position = world.life.mission_position()
@@ -97,6 +97,15 @@ func run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(a.campaign_path))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(a.campaign_save_path))
 	world.activities.set_menu("")
+	a.game_mode = "sandbox"
+	a.start_job(18)
+	world.cutscene.finish()
+	world.active_car = a.target_car
+	var driver_health: float = world.health
+	for speed in [60,0,60]:
+		a.target_car.speed = speed
+		a.tick_mission(0.1)
+	assert(a.job == -1 and a.shipment_integrity <= 0 and world.health == driver_health, "Impacts destroy cargo without killing the driver")
 	world.queue_free()
 	await process_frame
 	print("PASS: all 24 chapters through objective rules, bank, cutscene transitions and campaign ending")
@@ -160,4 +169,22 @@ func finish_action(world: Node, car: Node) -> void:
 			assert(a.job == 15, "Waiting alone cannot win the defense")
 			for guard in a.officers:
 				if int(guard.get_meta("mission_contract",-1)) == a.job: guard.take_hit(1000)
+			a.tick_mission(0.1)
+		"cargo":
+			world.active_car = null
+			for point in spec.points:
+				world.player.position = point
+				assert(a.interact_campaign())
+			world.active_car = car
+			car.position = spec.drop
+			car.speed = 0
+			world.heat = 0
+			a.tick_mission(0.1)
+		"escort":
+			world.active_car = car
+			car.position = a.target_car.position+Vector3(4,0,0)
+			assert(a.interact_campaign())
+			assert(a.target_car.traffic and a.contract_guards_alive() == 3)
+			a.target_car.position = spec.drop
+			car.position = spec.drop+Vector3(4,0,0)
 			a.tick_mission(0.1)

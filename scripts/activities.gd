@@ -14,7 +14,10 @@ const ACTION_JOBS := {
 	13: {"name":"Corrida pela vida","kind":"rescue","story":"Pegue o carro de atendimento da clinica, resgate o morador no morro e volte com o veiculo inteiro.","reward":4000,"model":8,"spawn":Vector3(63,0.3,38),"pickup":Vector3(714,9.9,4.5),"drop":Vector3(63,0,38),"min_hp":80,"time":210.0},
 	14: {"name":"Becos sem freio","kind":"drive","story":"Pegue a moto e cruze as vielas da favela antes do tempo acabar. Os pontos estreitos exigem controle.","reward":3400,"model":9,"spawn":Vector3(378,10.2,4.5),"points":[Vector3(382.75,9.9,14),Vector3(382.75,9.9,20),Vector3(397,9.9,31),Vector3(420,7.4,31)],"radius":2.5,"time":100.0},
 	15: {"name":"Ultimo refugio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 30 segundos e elimine os tres invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":30.0,"time":160.0},
-	16: {"name":"Cacada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0}}
+	16: {"name":"Cacada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0},
+	17: {"name":"Roubo de suprimentos","kind":"cargo","story":"Recolha tres caixas no supermercado, consiga um carro e leve a carga a oficina depois de despistar a policia.","reward":4200,"points":[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)],"drop":Vector3(-21,0,63),"time":220.0},
+	18: {"name":"Carga instavel","kind":"drive","story":"Transporte a carga fragil entre os mercados. Colisoes e trancos destroem a mercadoria.","reward":4600,"model":8,"spawn":Vector3(798,0.3,-78.5),"points":[Vector3(882,0,-84),Vector3(882,0,84),Vector3(294,0,-78.5)],"fragile":true,"time":210.0},
+	19: {"name":"Comboio sob fogo","kind":"escort","story":"Aproxime-se do comboio e use F para partir. Siga o veiculo e proteja-o dos atiradores ate o destino.","reward":5200,"model":8,"spawn":Vector3(210,0.3,84),"track":[Vector3(210,0.3,84),Vector3(462,0.3,84),Vector3(462,0.3,126),Vector3(630,0.3,126)],"drop":Vector3(630,0,126),"guards":[Vector3(462,0.2,70),Vector3(462,0.2,110),Vector3(588,0.2,116)],"time":190.0}}
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
@@ -54,6 +57,8 @@ var progress := 0.0
 const INFORMANT_PICKUP := Vector3(378,9.9,4.5)
 const INFORMANT_SAFEHOUSE := Vector3(189,0,126)
 var passenger_car := -1
+var shipment_integrity := 100.0
+var previous_mission_speed := 0.0
 var target_car: CharacterBody3D
 var targets: Array[CharacterBody3D] = []
 var robbery_cooldowns := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -1126,6 +1131,19 @@ func interact_campaign() -> bool:
 			world.raise_heat(40)
 			world.notify("Invasores chegando! Fique no refugio, resista e elimine os tres.")
 			return true
+		if spec.kind == "cargo" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
+			stage += 1
+			world.raise_heat(15)
+			world.notify("Caixa recolhida. Busque a proxima." if stage < spec.points.size() else "Carga reunida! Consiga um carro, despiste e leve a carga a oficina.")
+			return true
+		if spec.kind == "escort" and stage == 0 and is_instance_valid(target_car) and world.subject_position().distance_to(target_car.position) < 10:
+			stage = 1
+			target_car.route.assign(spec.track)
+			target_car.traffic = true
+			spawn_action_guards()
+			world.raise_heat(45)
+			world.notify("Comboio em movimento. Fique perto e proteja o veiculo dos atiradores!")
+			return true
 		return false
 	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
 		passenger_car = world.active_car.net_id
@@ -1138,6 +1156,8 @@ func interact_campaign() -> bool:
 func setup_action_job() -> void:
 	var spec: Dictionary = ACTION_JOBS[job]
 	clock = float(spec.time)
+	shipment_integrity = 100.0
+	previous_mission_speed = 0.0
 	if spec.has("model"):
 		target_car = world.spawn_car(spec.spawn,Color("fafafa") if spec.kind == "rescue" else Color("e5c86a"),false,int(spec.model))
 		target_car.owned = spec.kind != "intercept"
@@ -1147,7 +1167,7 @@ func setup_action_job() -> void:
 			target_car.route.assign(spec.track)
 
 func action_requires_car() -> bool:
-	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["drive","rescue"]
+	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()))
 
 func action_destination() -> Vector3:
 	var spec: Dictionary = ACTION_JOBS[job]
@@ -1159,6 +1179,8 @@ func action_destination() -> Vector3:
 				return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.pickup
 			var car: Node = world.car_by_id(passenger_car)
 			return car.position if car != null and world.active_car != car else spec.drop
+		"cargo": return spec.points[stage] if stage < spec.points.size() else spec.drop
+		"escort": return target_car.position if is_instance_valid(target_car) else spec.drop
 		"defend": return spec.point
 		"precision": return spec.points[stage] if stage < spec.points.size() else spec.exit
 		"escape_file": return spec.pickup if stage == 0 else spec.exit
@@ -1173,10 +1195,13 @@ func action_objective() -> String:
 		"rescue":
 			text = "Busque o passageiro de carro / F para embarcar" if stage == 0 else "Leve o passageiro ao destino"
 			if stage == 0 and spec.has("model") and world.active_car != target_car: text = "Pegue o carro de atendimento marcado"
+		"cargo": text = "F / Recolha a caixa %d/%d" % [stage+1,spec.points.size()] if stage < spec.points.size() else "Despiste e entregue a carga de carro na oficina"
+		"escort": text = "F / Autorizar saida do comboio" if stage == 0 else "Proteja o comboio / veiculo %d%%" % roundi(target_car.hp/target_car.MAX_HP*100)
 		"defend": text = "F / Iniciar defesa no oitavo andar" if stage == 0 else "Resista %ds / invasores restantes: %d" % [maxi(0,ceili(float(spec.duration)-progress)),contract_guards_alive()]
 		"precision": text = "Atire no transmissor %d/%d / andar %d" % [stage+1,spec.points.size(),floori(spec.points[stage].y/6)+1] if stage < spec.points.size() else "Saia do estudio e despiste o alarme"
 		"escape_file": text = ["Pegue o arquivo no decimo andar / F","Desca e saia do predio cercado","Despiste a policia com o arquivo"][mini(stage,2)]
 		"intercept": text = ["Danifique o carro do mensageiro sem destrui-lo","Saia do carro e use F para recolher a maleta","Despiste e entregue a maleta"][mini(stage,2)]
+	if bool(spec.get("fragile",false)): text += " / carga %d%%" % maxi(0,roundi(shipment_integrity))
 	return "%s / %ds" % [text,ceili(clock)]
 
 func tick_action_job(delta: float) -> void:
@@ -1188,6 +1213,13 @@ func tick_action_job(delta: float) -> void:
 	var stopped: bool = world.active_car != null and absf(world.active_car.speed) < 3
 	match str(spec.kind):
 		"drive":
+			if bool(spec.get("fragile",false)) and is_instance_valid(target_car):
+				var shock: float = absf(target_car.speed-previous_mission_speed)
+				if shock > maxf(8.0,delta*45.0): shipment_integrity -= minf(40.0,shock*0.7)
+				previous_mission_speed = target_car.speed
+				if shipment_integrity <= 0:
+					fail_job("A carga fragil foi destruida pelos impactos.")
+					return
 			if not is_instance_valid(target_car) or target_car.hp <= float(spec.get("min_hp",0)):
 				fail_job("O veiculo do contrato ficou danificado demais.")
 			elif world.active_car == target_car and world.subject_position().distance_to(spec.points[stage]) < float(spec.get("radius",8)) and (stage < spec.points.size()-1 or stopped):
@@ -1197,6 +1229,18 @@ func tick_action_job(delta: float) -> void:
 			var car: Node = world.car_by_id(passenger_car)
 			if (spec.has("model") and (not is_instance_valid(target_car) or target_car.hp <= float(spec.get("min_hp",0)))) or (stage > 0 and (car == null or car.hp <= float(spec.get("min_hp",0)))): fail_job("O carro do passageiro ficou danificado demais.")
 			elif stage > 0 and world.active_car == car and stopped and world.subject_position().distance_to(spec.drop) < 6: complete_job()
+		"cargo":
+			if stage >= spec.points.size() and stopped and world.heat <= 0 and world.subject_position().distance_to(spec.drop) < 7: complete_job()
+		"escort":
+			if not is_instance_valid(target_car) or target_car.hp <= 0:
+				fail_job("O veiculo do comboio foi destruido.")
+			elif stage == 1:
+				progress = progress+delta if world.subject_position().distance_to(target_car.position) > 80 else 0.0
+				if progress > 12: fail_job("Voce abandonou o comboio.")
+				elif target_car.position.distance_to(spec.drop) < 7:
+					target_car.traffic = false
+					target_car.speed = 0
+					complete_job()
 		"defend":
 			if stage == 1:
 				var distance: float = world.subject_position().distance_to(spec.point)
@@ -1224,6 +1268,10 @@ func tick_action_job(delta: float) -> void:
 func action_prompt() -> String:
 	if not ACTION_JOBS.has(job): return ""
 	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind == "cargo" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
+		return "F / Recolher caixa de suprimentos"
+	if spec.kind == "escort" and stage == 0 and is_instance_valid(target_car) and world.subject_position().distance_to(target_car.position) < 10:
+		return "F / Iniciar escolta do comboio"
 	if spec.kind == "defend" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.point) < 3:
 		return "F / Iniciar defesa do refugio"
 	if spec.kind == "drive" and is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
@@ -1251,6 +1299,7 @@ func spawn_action_guards() -> void:
 		var guard := Officer.new()
 		guard.world = world
 		guard.set_meta("mission_contract",job)
+		if ACTION_JOBS[job].kind == "escort": guard.set_meta("mission_vehicle",target_car.net_id)
 		world.add_child(guard)
 		guard.position = at
 		officers.append(guard)

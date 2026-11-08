@@ -13929,3 +13929,27 @@ visible = false
 material = SubResource("StandardMaterial3D_wjjbu")
 metadata/contract_job = 11
 metadata/contract_stage = 2
+
+[node name="Carga17_0" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(298, 0.5, -88)
+size = Vector3(1, 1, 1)
+visible = false
+material = SubResource("StandardMaterial3D_6b1f1")
+metadata/contract_job = 17
+metadata/contract_stage = 0
+
+[node name="Carga17_1" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(298, 0.5, -99)
+size = Vector3(1, 1, 1)
+visible = false
+material = SubResource("StandardMaterial3D_6b1f1")
+metadata/contract_job = 17
+metadata/contract_stage = 1
+
+[node name="Carga17_2" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(298, 0.5, -110)
+size = Vector3(1, 1, 1)
+visible = false
+material = SubResource("StandardMaterial3D_6b1f1")
+metadata/contract_job = 17
+metadata/contract_stage = 2
