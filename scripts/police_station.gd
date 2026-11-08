@@ -6,19 +6,6 @@ var repair_clock := 0.0
 
 func _ready() -> void:
 	position=CENTER
-	world.box(self,Vector3(0,0.02,-5),Vector3(26,0.15,16),Color("82969b"),true)
-	world.box(self,Vector3(0,7,-5),Vector3(26,0.35,16),Color("354c59"),true)
-	world.box(self,Vector3(0,3.5,-12.8),Vector3(26,7,0.3),Color("afbbb9"),true)
-	for side in [-1,1]:
-		world.box(self,Vector3(side*12.8,3.5,-5),Vector3(0.3,7,16),Color("afbbb9"),true)
-		world.box(self,Vector3(side*8,3.5,2.8),Vector3(10,7,0.3),Color("496674"),true)
-	world.box(self,Vector3(0,5.8,2.8),Vector3(6,2.4,0.3),Color("496674"),true)
-	world.box(self,Vector3(-6,0.9,-3),Vector3(5,1.8,2),Color("4e645c"),true)
-	for x in range(4,12):
-		world.box(self,Vector3(x,2,-8),Vector3(0.09,4,0.09),Color("273b46"),true)
-	world.box(self,Vector3(6,7.7,-8),Vector3(3,1.2,2),Color("d5d6c4"))
-	world.sign_text("POLICIA COSTA / DELEGACIA",CENTER+Vector3(0,5,3.1))
-	world.batch_city_geometry(self)
 	for i in 5:
 		var home := CENTER+Vector3(-10+i*5,0.15,8)
 		var car: CharacterBody3D=world.spawn_car(home,Color("24394b"),true,1)

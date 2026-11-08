@@ -1,7 +1,6 @@
 extends Node3D
 
 const Pedestrian = preload("res://scripts/pedestrian.gd")
-const Design = preload("res://scripts/interior_design.gd")
 const PLACES := [Vector3(-63,0,21),Vector3(63,0,21),Vector3(-63,0,63),Vector3(-105,0,-21),Vector3(105,0,-63),Vector3(147,0,63)]
 const TITLES := ["CAFÉ MARÉ", "CLÍNICA COSTA", "RESIDENCIAL COSTA", "OFICINA DO PORTO", "MERCADO DA PRAIA", "ESTÚDIO SOLAR"]
 var world: Node3D
@@ -39,13 +38,12 @@ const NEW_TASKS := {
 const WORK_POINTS := [Vector3(-4,0,4),Vector3(4,0,1),Vector3(0,0,-6)]
 
 func _ready() -> void:
+	for i in 22:
+		rooms.append(world.interiors.get_node("Rooms/Room%d" % i))
 	apartment_elevator_doors.resize(10)
-	for i in PLACES.size():
-		build_room(i)
-	for floor_number in range(1,10):
-		build_room(2,floor_number)
-	for floor_number in range(1,8):
-		build_room(5,floor_number)
+	for floor_number in 10:
+		var room: Node = rooms[2 if floor_number == 0 else floor_number + 5]
+		apartment_elevator_doors[floor_number] = [room.get_node("ElevatorLeft"), room.get_node("ElevatorRight")]
 	build_elevator_menu()
 	for i in 32:
 		var center := Vector3(-105+(i%4)*42,0,-63+((i/4)%4)*42)
@@ -77,144 +75,6 @@ func _ready() -> void:
 		add_child(contact)
 		contact.position = PLACES[i]+Vector3(1,0,5)
 		people.append(contact)
-
-func build_room(index: int, floor_number := 0) -> void:
-	var room := Node3D.new()
-	room.position = PLACES[index]+Vector3(0,floor_number*6,0)
-	add_child(room)
-	rooms.append(room)
-	var colors := [Color("8e6246"),Color("789999"),Color("8c8b79")]
-	var floor_color: Color=colors[index%3]
-	var floor_material: Material=world.material([Color("84694e"),Color("a9b6b2"),Color("96846b")][index%3])
-	if index==2 and floor_number>0:
-		build_stairwell_floor(room,Vector3(0,-0.2,0),Vector3(25,0.2,24),floor_color,true)
-		build_stairwell_floor(room,Vector3(0,-0.075,0),Vector3(24.5,0.02,23.5),floor_color,false,floor_material)
-	else:
-		world.box(room,Vector3(0,-0.2,0),Vector3(25,0.2,24),floor_color,true)
-		var floor_visual: MeshInstance3D = world.box(room,Vector3(0,-0.075,0),Vector3(24.5,0.02,23.5),floor_color)
-		floor_visual.material_override=floor_material
-	if index!=2 or floor_number==9:
-		world.box(room,Vector3(0,5.8,0),Vector3(25,0.2,24),Color("bcc0b5"),true)
-	for side in [-1,1]:
-		world.box(room,Vector3(side*12.4,2.9,0),Vector3(0.3,5.8,24),colors[index%3],true)
-		world.box(room,Vector3(side*7.5,2.9,11.8),Vector3(9,5.8,0.3),colors[index%3],true)
-	world.box(room,Vector3(0,2.9,-11.8),Vector3(25,5.8,0.3),colors[index%3],true)
-	world.box(room,Vector3(0,4.8,11.8),Vector3(6,2,0.3),colors[index%3],true)
-	if index == 2:
-		for side in [-1,1]:
-			for pane in [-7,0,7]:
-				world.box(room,Vector3(side*12.58,3,pane),Vector3(0.04,1.7,2.5),Color("67979d"))
-	if floor_number > 0:
-		world.box(room,Vector3(0,1.3,11.8),Vector3(6,2.6,0.3),Color("56717a"),true)
-	var title: String = TITLES[index]
-	world.sign_text(("RESIDENCIAL COSTA / ANDAR %d" % (floor_number+1)) if index == 2 else title,room.position+Vector3(0,4.8,12.1))
-	if index == 3:
-		world.box(room,Vector3(-7,0.9,-7),Vector3(7,0.16,1.7),Color("675443"),true)
-		for x in [-9,-5]:
-			world.box(room,Vector3(x,0.4,-7),Vector3(0.15,0.8,1.5),Color("36434a"),true)
-		for x in [-9,-7,-5]:
-			world.box(room,Vector3(x,1.2,-7),Vector3(0.8,0.5,0.5),Color("a64636"))
-		world.box(room,Vector3(8,1.3,-8),Vector3(3,2.6,1.5),Color("3b5961"),true)
-	elif index == 4:
-		for x in [-7,7]:
-			for z in [-6,0]:
-				world.box(room,Vector3(x,1,z),Vector3(3,2,1.2),Color("3d5557"),true)
-				for shelf in 3:
-					for product in 4:
-						world.box(room,Vector3(x-1.1+product*0.7,0.5+shelf*0.65,z+0.67),Vector3(0.4,0.4,0.22),[Color("c99951"),Color("809a65"),Color("b35e49")][shelf])
-		world.box(room,Vector3(-7,0.7,7),Vector3(5,1.4,1.2),Color("6d5240"),true)
-	elif index == 0:
-		world.box(room,Vector3(-7,0.7,-7),Vector3(6,1.4,1.3),Color("593c2c"),true)
-		for x in [-5,5]:
-			for z in [-3,5]:
-				Design.cylinder(world,room,Vector3(x,0.9,z),1.1,0.12,Color("7c523a"))
-				Design.cylinder(world,room,Vector3(x,0.45,z),0.12,0.9,Color("34444b"))
-				Design.chair(world,room,Vector3(x,0,z+1.5))
-	elif index == 1:
-		world.box(room,Vector3(-7,0.6,-7),Vector3(6,1.2,1.3),Color("385a60"),true)
-		for x in [-6,6]:
-			world.box(room,Vector3(x,0.6,0),Vector3(2,0.3,3.5),Color("c4d5ce"),true)
-			world.box(room,Vector3(x,0.9,-1),Vector3(1.5,0.22,0.6),Color("e6e4d3"))
-	elif index == 5:
-		world.sign_text("DATA CENTER / ACESSO RESTRITO",room.position+Vector3(0,3.4,-11.4))
-		for x in [-8,-4,0,4,8]:
-			world.box(room,Vector3(x,1.65,-7),Vector3(2.2,3.3,1.6),Color("263d4b"),true)
-			for y in [0.65,1.15,1.65,2.15,2.65]:
-				world.box(room,Vector3(x-0.68,y,-6.16),Vector3(0.12,0.08,0.04),Color("71d5c2"),false,true)
-		world.box(room,Vector3(0,1.05,0),Vector3(4.4,0.14,1.2),Color("26333c"),true)
-		world.box(room,Vector3(0,1.5,-0.45),Vector3(1.1,0.72,0.08),Color("37b99c"),false,true)
-	else:
-		world.box(room,Vector3(-6,0.5,-4),Vector3(3,0.8,4),Color("52766b"),true)
-		world.box(room,Vector3(6,0.5,-3),Vector3(4,1,1.2),Color("715c44"),true)
-		world.box(room,Vector3(0,0.8,-10),Vector3(5,1.6,0.5),Color("22333d"))
-	world.box(room,Vector3(0,5.5,0),Vector3(3,0.08,0.4),Color("fff1ca"),false,true)
-	for i in WORK_POINTS.size():
-		world.box(room,WORK_POINTS[i]+Vector3(0,0.65,0),Vector3(1.2,1.3,0.7),Color("376b70"),true)
-		world.box(room,WORK_POINTS[i]+Vector3(0,1.4,0),Vector3(0.7,0.3,0.15),Color("7cd3b4"),false,true)
-	if index in [2,5]:
-		if index==2:
-			build_apartment_elevator(room,floor_number)
-		else:
-			world.box(room,Vector3(8,1.4,7.8),Vector3(3,2.8,0.2),Color("4c6570"))
-			world.box(room,Vector3(10,1.2,8),Vector3(0.25,0.5,0.2),Color("d6b56e"))
-			world.sign_text("F / ELEVADOR / TORRE",room.position+Vector3(8,3,8))
-	if index==2 and floor_number<9:
-		build_apartment_stairs(room)
-	world.batch_city_geometry(room)
-
-func build_stairwell_floor(parent: Node3D, center: Vector3, size: Vector3, color: Color, solid: bool, floor_material: Material = null) -> void:
-	var left: float=-size.x/2
-	var right: float=size.x/2
-	var back: float=-size.z/2
-	var front: float=size.z/2
-	var pieces: Array=[
-		[Vector3((left-11.0)/2,center.y,0),Vector3(-11.0-left,size.y,size.z)],
-		[Vector3((-5.0+right)/2,center.y,0),Vector3(right+5.0,size.y,size.z)],
-		[Vector3(-8.0,center.y,(back-10.0)/2),Vector3(6.0,size.y,-10.0-back)],
-		[Vector3(-8.0,center.y,(-6.0+front)/2),Vector3(6.0,size.y,front+6.0)]
-	]
-	for piece in pieces:
-		var floor_piece: MeshInstance3D=world.box(parent,piece[0],piece[1],color,solid)
-		if floor_material!=null:
-			floor_piece.material_override=floor_material
-
-func build_apartment_stairs(room: Node3D) -> void:
-	var wood:=Color("77644f")
-	var flight_one: MeshInstance3D=world.box(room,Vector3(-8,1.5,-9),Vector3(4.9,0.22,2.1),Color("62666a"),true)
-	flight_one.rotation.z=atan2(3.0,4.8)
-	var flight_two: MeshInstance3D=world.box(room,Vector3(-8,4.5,-7),Vector3(4.9,0.22,2.1),Color("62666a"),true)
-	flight_two.rotation.z=-atan2(3.0,4.8)
-	world.box(room,Vector3(-6,3.02,-8),Vector3(1.8,0.2,2.4),Color("62666a"),true)
-	for step in 11:
-		world.box(room,Vector3(-10.1+step*0.4,0.14+step*0.28,-9),Vector3(0.42,0.16,1.9),wood)
-		world.box(room,Vector3(-6.0-step*0.4,3.14+step*0.28,-7),Vector3(0.42,0.16,1.9),wood)
-	for side in [-1.0,1.0]:
-		var rail_one: MeshInstance3D=world.box(room,Vector3(-8,1.92,-9+side),Vector3(4.9,0.08,0.08),Color("a38c69"))
-		rail_one.rotation.z=atan2(3.0,4.8)
-		var rail_two: MeshInstance3D=world.box(room,Vector3(-8,4.92,-7+side),Vector3(4.9,0.08,0.08),Color("a38c69"))
-		rail_two.rotation.z=-atan2(3.0,4.8)
-
-func build_apartment_elevator(room: Node3D, floor_number: int) -> void:
-	world.box(room,Vector3(8,1.45,-11.05),Vector3(4.0,2.9,0.2),Color("303c43"),true)
-	for side in [-1.0,1.0]:
-		world.box(room,Vector3(8+side*1.95,1.45,-9.35),Vector3(0.2,2.9,3.6),Color("59676b"),true)
-	world.box(room,Vector3(8,1.4,-8.08),Vector3(2.75,2.55,0.08),Color("151d21"))
-	world.box(room,Vector3(8,2.92,-7.88),Vector3(3.7,0.22,0.2),Color("b0a17f"))
-	for side in [-1.0,1.0]:
-		world.box(room,Vector3(8+side*1.82,1.4,-7.88),Vector3(0.18,2.8,0.2),Color("b0a17f"))
-	var left_door: MeshInstance3D=world.box(room,Vector3(7.3,1.4,-7.86),Vector3(1.34,2.56,0.14),Color("829093"))
-	var right_door: MeshInstance3D=world.box(room,Vector3(8.7,1.4,-7.86),Vector3(1.34,2.56,0.14),Color("829093"))
-	for door in [left_door,right_door]:
-		door.set_meta("keep_mesh",true)
-		door.set_meta("closed_position",door.position)
-		var inset: MeshInstance3D=world.box(door,Vector3(0,0,0.09),Vector3(0.08,2.25,0.025),Color("aab2ac"))
-		inset.set_meta("keep_mesh",true)
-	apartment_elevator_doors[floor_number]=[left_door,right_door]
-	world.box(room,Vector3(10.15,1.5,-7.8),Vector3(0.45,0.88,0.16),Color("25343a"))
-	world.box(room,Vector3(10.15,1.88,-7.69),Vector3(0.25,0.18,0.035),Color("79d2ba"),false,true)
-	for button in 3:
-		world.box(room,Vector3(10.15,1.52-button*0.22,-7.67),Vector3(0.12,0.12,0.035),Color("d5bd8d"),false,true)
-	world.sign_text("ELEVADOR / ANDAR %02d" % (floor_number+1),room.position+Vector3(8,3.45,-7.8))
 
 func apartment_stair_route() -> Array[Vector3]:
 	var route: Array[Vector3]=[]

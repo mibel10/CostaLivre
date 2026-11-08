@@ -37,6 +37,7 @@ var settings: Node
 var pause_menu: Control
 var hud_clock := 0.0
 var extra: Node
+var interiors: Node3D
 var life: Node3D
 var fps_counter: CanvasLayer
 var car_transition := false
@@ -60,6 +61,8 @@ func _ready() -> void:
 	rng.seed = 185
 	setup_input()
 	rng.state = -3374745113267529202
+	interiors = preload("res://interiors.tscn").instantiate()
+	add_child(interiors)
 	var atmosphere := preload("res://scripts/atmosphere.gd").new()
 	atmosphere.world = self
 	add_child(atmosphere)

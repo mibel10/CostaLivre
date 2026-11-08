@@ -59,10 +59,6 @@ func _ready() -> void:
 		JOBS.append_array(["Sincronização do estoque [COOP]", "Bloqueio do mercado [COOP]"])
 		REWARDS.append_array([6200,7400,8600,9000,10000])
 		STORY_BEATS.append_array(["Desligue as cameras, invada o servidor, baixe os arquivos e escape da policia.","Cruze os andares sem ser visto, hackeie o controle central e saia com a chave-mestra.","Apague os rastros no mainframe e fuja do predio antes da equipe tatica.","Dois parceiros devem ativar os dois controles ao mesmo tempo.","Dois parceiros devem operar os terminais simultaneamente."])
-	for entry in [[GUN_SHOP, "ARSENAL  /  ARMAS", Color("96bfe3")], [DEALER, "APEX  /  VEÍCULOS", Color("ae91e2")], [GARAGE, "OFICINA  /  PERSONALIZAÇÃO", Color("86cba3")]]:
-		place(entry[0], entry[1], entry[2])
-	for i in 2:
-		place(ROBBERIES[i], "MERCADO 24H", Color("eb9b76"))
 	bank = Bank.new()
 	bank.world = world
 	world.add_child(bank)
@@ -71,11 +67,6 @@ func _ready() -> void:
 	setup_shot_audio()
 	world.toast = "M: missões  •  TAB: mapa e lojas  •  ESC: controles"
 	world.toast_time = 5
-
-func place(at: Vector3, title: String, color: Color) -> void:
-	world.box(world, at + Vector3(0, 0.12, 0), Vector3(3, 0.12, 2.5), color)
-	world.box(world, at + Vector3(0, 1.1, -0.5), Vector3(0.8, 2, 0.6), color)
-	world.sign_text(title, at + Vector3(0, 3.1, 0))
 
 func job_count() -> int:
 	return JOBS.size() if world.network!=null and world.network.active() else CAMPAIGN_LENGTH

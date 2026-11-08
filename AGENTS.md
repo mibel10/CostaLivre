@@ -11,7 +11,7 @@
 - Na resposta, liste cada arquivo criado/movido/apagado com 1 linha de motivo.
 
 # Mapa
-- Raiz: `main.tscn` (mundo), `project.godot` (configuração, cena inicial e autoloads).
+- Raiz: `main.tscn` (mundo), `interiors.tscn` (interiores fixos), `project.godot` (configuração, cena inicial e autoloads).
 - `assets/`: recursos visuais; `assets/models/vehicle.tscn` (modelos de veículos).
 - `scripts/`: `world.gd` (cidade, árvores, veículos, polícia/procurado); `activities.gd` (campanha, missões, economia); `bank.gd` (banco e roubo); `city_life.gd` (pedestres, prédios, elevadores); `player.gd` (movimento e armas); `car.gd` (direção e danos de veículos); `vehicle_catalog.gd` (veículos); `pedestrian.gd` (pedestres); `officer.gd` (polícia); `police_station.gd` (polícia/procurado); `lan_session.gd` (menu multiplayer, salas e conexão; chat); `session_rules.gd` (host, missões coop, economia, polícia/procurado); `internet_access.gd` (internet/UPnP); `remote_player.gd` (jogador remoto); `player_profile.gd` (perfil); `build_version.gd` (protocolo); `game_settings.gd` (gráficos e controles); `pause_menu.gd` (menu e campanha); `pause_map.gd` (mapa); `hud.gd` (objetivos e economia); `touch_controls.gd` (Android); `gameplay_extra.gd` (combate/áudio); `human_visual.gd` (personagem); `visuals.gd` (modelos, veículos e árvores); `interior_design.gd` (prédios); `atmosphere.gd` (céu); `campaign_cutscene.gd` (campanha); `title_backdrop.gd` (tela inicial); `fps_counter.gd` (FPS).
 - `shaders/`: `water.gdshader`, `marble.gdshader`, `defeat.gdshader`.
