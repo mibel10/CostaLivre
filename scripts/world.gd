@@ -376,6 +376,7 @@ func build_supermarkets() -> void:
 func build_city() -> void:
 	build_hills()
 	build_hillside_homes()
+	build_supermarkets()
 	# Continuous high collision rails close the four corners, even during jumps.
 	for x in [-186,938]:
 		var rail := box(self,Vector3(x,6,0),Vector3(2,16,294),Color("b0aa99"),true)
