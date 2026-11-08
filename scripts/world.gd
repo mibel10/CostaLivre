@@ -397,6 +397,17 @@ func build_city() -> void:
 			if Vector2(x,z) in [Vector2(-63,21),Vector2(63,21),Vector2(-63,63)]:
 				continue
 			box(self, Vector3(x, 0.015, z), Vector3(29, 0.22, 29), Color("b8b4a2"))
+			if ix >= 8 and ix <= 17 and iz == (0 if ix == 12 else 5):
+				var facade: Color = colors[ix % colors.size()]
+				for side in [-1, 1]:
+					box(self, Vector3(x + side * 12, 3, z), Vector3(0.3, 6, 24), facade, true)
+					box(self, Vector3(x + side * 7.5, 3, z + 12), Vector3(9, 6, 0.3), facade, true)
+				box(self, Vector3(x, 3, z - 12), Vector3(24, 6, 0.3), facade, true)
+				box(self, Vector3(x, 5, z + 12), Vector3(6, 2, 0.3), facade, true)
+				box(self, Vector3(x, 6.1, z), Vector3(24, 0.2, 24), facade.darkened(0.25), true)
+				box(self, Vector3(x - 7, 0.6, z - 7), Vector3(5, 1.2, 1.5), Color("715c44"), true)
+				box(self, Vector3(x + 7, 0.6, z - 7), Vector3(5, 1.2, 1.5), Color("52766b"), true)
+				continue
 			if (ix == 0 or (ix >= 8 and ix % 6 == 0)) and iz in [1, 3, 4]:
 				box(self, Vector3(x, 0.15, z), Vector3(26, 0.12, 26), Color("7e986c"))
 				for j in 5:
