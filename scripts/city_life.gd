@@ -27,6 +27,15 @@ const TASKS := {
 	14: [2,3,"Verificar energia","Consertar painel","Ativar seguranca"],
 	15: [2,7,"Consultar cameras","Reforcar fechadura","Proteger documentos"],
 	16: [0,0,"Preparar cafe","Servir mesa","Fechar caixa"]}
+const NEW_TASKS := {
+	17: [[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)], ["Conferir entrega", "Organizar estoque", "Registrar produtos"]],
+	18: [[Vector3(802,0,-88),Vector3(802,0,-99),Vector3(802,0,-110)], ["Receber mercadoria", "Repor prateleiras", "Concluir entrega"]],
+	19: [[Vector3(189,0,105),Vector3(231,0,105),Vector3(273,0,105)], ["Verificar escritório", "Recolher documentos", "Entregar relatório"]],
+	20: [[Vector3(315,0,105),Vector3(357,0,-105),Vector3(399,0,105)], ["Inspecionar sala", "Conferir instalações", "Finalizar vistoria"]],
+	21: [[Vector3(290,0,-88),Vector3(290,0,-99),Vector3(290,0,-110)], ["Recolher pedidos", "Separar suprimentos", "Conferir carga"]],
+	22: [[Vector3(441,0,105),Vector3(483,0,105),Vector3(525,0,105)], ["Consultar arquivo", "Buscar assinatura", "Protocolar documentos"]],
+	23: [[Vector3(567,0,105),Vector3(802,0,-99),Vector3(294,0,-78)], ["Recolher encomenda", "Entregar pedido", "Finalizar contrato"]]
+}
 const WORK_POINTS := [Vector3(-4,0,4),Vector3(4,0,1),Vector3(0,0,-6)]
 
 func _ready() -> void:
@@ -240,11 +249,12 @@ func elevator_position(building: String, floor_number: int) -> Vector3:
 
 func mission_position() -> Vector3:
 	var a: Node = world.activities
-	if a.job>=17:
-		var floors: Array = {17:[2,5,3],18:[4,6,1],19:[7,5,3]}[a.job]
+	if a.job>=24:
+		var floors: Array = {24:[2,5,3],25:[4,6,1],26:[7,5,3]}[a.job]
 		if a.stage>=3:
 			return PLACES[5]+Vector3(0,0,17)
 		return PLACES[5]+Vector3(0,floors[a.stage]*6,0)+WORK_POINTS[a.stage%WORK_POINTS.size()]
+	if NEW_TASKS.has(a.job): return NEW_TASKS[a.job][0][mini(a.stage,2)]
 	if not TASKS.has(a.job):
 		return Vector3.ZERO
 	var task: Array = TASKS[a.job]
@@ -252,9 +262,10 @@ func mission_position() -> Vector3:
 
 func task_label() -> String:
 	var a: Node = world.activities
-	if a.job>=17:
-		var tasks: Array={17:["Desativar cameras","Hackear o servidor central","Baixar arquivos do mainframe","Sair do predio sem ser visto"],18:["Entrar agachado no controle","Hackear o sistema de acesso","Copiar a chave-mestra","Escapar da equipe policial"],19:["Achar o terminal no oitavo andar","Invadir o servidor protegido","Apagar os rastros digitais","Descer e sumir da busca"]}[a.job]
+	if a.job>=24:
+		var tasks: Array={24:["Desativar cameras","Hackear o servidor central","Baixar arquivos do mainframe","Sair do predio sem ser visto"],25:["Entrar agachado no controle","Hackear o sistema de acesso","Copiar a chave-mestra","Escapar da equipe policial"],26:["Achar o terminal no oitavo andar","Invadir o servidor protegido","Apagar os rastros digitais","Descer e sumir da busca"]}[a.job]
 		return "%s / %d%% / agache (Z) e segure F" % [tasks[a.stage],roundi(task_progress/OPERATION_TASK_DURATION*100)]
+	if NEW_TASKS.has(a.job): return "%s / %d%% / segure F" % [NEW_TASKS[a.job][1][mini(a.stage,2)], roundi(task_progress/BUILDING_TASK_DURATION*100)]
 	if not TASKS.has(a.job):
 		return "Explore a cidade"
 	var task: Array = TASKS[a.job]
@@ -385,7 +396,7 @@ func prompt() -> String:
 	var at: Vector3 = world.player.position
 	if elevator_building_at(at)!="":
 		return "F / Escolher andar do elevador"
-	if (TASKS.has(world.activities.job) or world.activities.job>=17) and at.distance_to(mission_position())<2.5:
+	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job>=24) and at.distance_to(mission_position())<2.5:
 		return task_label()
 	if inside_room(at):
 		return "F / Atendimento, descanso ou servico local"
@@ -399,7 +410,7 @@ func interact() -> bool:
 		world.activities.set_menu("elevator")
 		elevator_ui.show()
 		return true
-	if (TASKS.has(world.activities.job) or world.activities.job>=17) and at.distance_to(mission_position())<2.5:
+	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job>=24) and at.distance_to(mission_position())<2.5:
 		return true # Holding F advances the work in tick_tasks.
 	if leisure_cooldown>0:
 		return false
@@ -433,8 +444,8 @@ func tick_leisure(delta: float) -> void:
 
 func tick_tasks(delta: float) -> void:
 	var a: Node = world.activities
-	var special:bool=a.job>=17
-	if (not TASKS.has(a.job) and not special) or world.active_car!=null or world.player.position.distance_to(mission_position())>2.5 or not world.activity_held() or (special and not world.player.is_crouching):
+	var special:bool=a.job>=24
+	if (not TASKS.has(a.job) and not NEW_TASKS.has(a.job) and not special) or world.active_car!=null or world.player.position.distance_to(mission_position())>2.5 or not world.activity_held() or (special and not world.player.is_crouching):
 		task_progress=0
 		return
 	if special and a.stage==1 and world.network!=null and world.network.active():

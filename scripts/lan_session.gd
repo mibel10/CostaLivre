@@ -184,7 +184,7 @@ func open_menu() -> void:
 
 func show_mission_offer(index: int, host_name: String) -> void:
 	var titles: Array=world.activities.JOBS
-	offer_text.text="%s convida voce para: %s\n\nOperacao cooperativa dentro de um predio. Aceitar inicia a missao para a sala." % [host_name,titles[clampi(index,17,titles.size()-1)]]
+	offer_text.text="%s convida voce para: %s\n\nOperacao cooperativa dentro de um predio. Aceitar inicia a missao para a sala." % [host_name,titles[clampi(index,24,titles.size()-1)]]
 	offer_panel.show()
 
 func hide_mission_offer() -> void:

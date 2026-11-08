@@ -3,7 +3,7 @@ extends Node
 const Officer = preload("res://scripts/officer.gd")
 const Bank = preload("res://scripts/bank.gd")
 const Catalog = preload("res://scripts/vehicle_catalog.gd")
-const CAMPAIGN_LENGTH := 17
+const CAMPAIGN_LENGTH := 24
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Correio a pe", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
@@ -52,6 +52,9 @@ var campaign_save_path := "user://campaign_save.cfg"
 
 func _ready() -> void:
 	if JOBS.size()==17:
+		JOBS.append_array(["Estoque da costa", "Entrega ao mercado", "Serviço na avenida", "Inspeção do bairro", "Abastecimento urgente", "Documentos do leste", "Última entrega"])
+		REWARDS.append_array([2400, 2600, 2800, 3000, 3200, 3400, 4000])
+		STORY_BEATS.append_array(["Organize o estoque do supermercado.", "Faça a entrega no supermercado do leste.", "Ajude nos serviços da avenida.", "Inspecione os prédios do bairro novo.", "Prepare o abastecimento do mercado.", "Reúna os documentos nos escritórios.", "Conclua a última entrega na cidade nova."])
 		JOBS.append_array(["Invasao ao Data Center [COOP]","Protocolo Fantasma [COOP]","Arquivo Zero [COOP]"])
 		REWARDS.append_array([6200,7400,8600])
 		STORY_BEATS.append_array(["Desligue as cameras, invada o servidor, baixe os arquivos e escape da policia.","Cruze os andares sem ser visto, hackeie o controle central e saia com a chave-mestra.","Apague os rastros no mainframe e fuja do predio antes da equipe tatica."])
@@ -306,7 +309,7 @@ func start_job(index: int) -> void:
 	if world.network!=null and world.network.is_client():
 		world.network.rules.send_action("job",{"index":index})
 		return
-	if index>=17 and (world.network==null or not world.network.active()):
+	if index>=24 and (world.network==null or not world.network.active()):
 		world.notify("Esta operacao e exclusiva do multiplayer.")
 		return
 	if index < 0 or index >= JOBS.size():
@@ -321,7 +324,7 @@ func start_job(index: int) -> void:
 	targets.clear()
 	job = index
 	stage = 0
-	clock = (360.0 if job >= 17 else ((160.0 if job == 8 else 100.0) if job >= 7 else (95.0 if job == 3 else 0.0)))
+	clock = (360.0 if job >= 24 else ((160.0 if job == 8 else 100.0) if job >= 7 else (95.0 if job == 3 else 0.0)))
 	progress = 0
 	if job == 2:
 		target_car = world.spawn_car(Vector3(-84, 0.2, 42), CAR_COLORS[1], false, 2)
@@ -332,7 +335,7 @@ func start_job(index: int) -> void:
 			targets.append(car)
 	elif job == 6:
 		world.raise_heat(80)
-	elif job>=17:
+	elif job>=24:
 		world.raise_heat(42)
 	world.notify("Contrato: %s. Recompensa $%d." % [JOBS[job], REWARDS[job]])
 	if world.cutscene != null:
@@ -410,7 +413,7 @@ func new_campaign() -> void:
 
 func advance_campaign() -> void:
 	if campaign_index >= CAMPAIGN_LENGTH:
-		world.play_cutscene("COSTA LIVRE", "Você concluiu os 17 capítulos e mudou o destino da cidade.", func(): world.pause_menu.show_campaign_complete())
+		world.play_cutscene("COSTA LIVRE", "Você concluiu os 24 capítulos e mudou o destino da cidade.", func(): world.pause_menu.show_campaign_complete())
 	else:
 		start_job(campaign_index)
 
@@ -427,9 +430,9 @@ func remove_car(car: CharacterBody3D) -> void:
 	car.queue_free()
 
 func destination() -> Vector3:
-	if job>=17:
+	if job>=24:
 		return world.life.mission_position()
-	if job in [7,9,10,11,12,13,14,15,16]:
+	if job in [7,9,10,11,12,13,14,15,16] or world.life.NEW_TASKS.has(job):
 		return world.life.mission_position()
 	if bank.inside() and bank.phase < 5:
 		return bank.next_position()
@@ -452,9 +455,9 @@ func destination() -> Vector3:
 	return world.subject_position()
 
 func objective() -> String:
-	if job>=17:
+	if job>=24:
 		return "%s  /  %d:%02d" % [world.life.task_label(),int(clock)/60,int(clock)%60]
-	if job in [7,9,10,11,12,13,14,15,16]:
+	if job in [7,9,10,11,12,13,14,15,16] or world.life.NEW_TASKS.has(job):
 		return world.life.task_label()
 	if bank.inside() or (bank.phase == 4):
 		return bank.objective()
@@ -569,7 +572,7 @@ func tick_mission(delta: float) -> void:
 		6:
 			if world.heat <= 0:
 				complete_job()
-		17,18,19:
+		24,25,26:
 			clock-=delta
 			if clock<=0:
 				fail_job("A janela da operacao fechou. Os dados foram perdidos.")

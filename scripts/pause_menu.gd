@@ -91,7 +91,7 @@ func _ready() -> void:
 	ending_shade.size = Vector2(1280,720)
 	pages.ending.add_child(ending_shade)
 	label(pages.ending,"CAMPANHA CONCLUÍDA",Vector2(390,190),38,Color("ffd18a"))
-	label(pages.ending,"Os 17 capítulos foram concluídos. A cidade está livre.",Vector2(392,260),20)
+	label(pages.ending,"Os 24 capítulos foram concluídos. A cidade está livre.",Vector2(392,260),20)
 	button(pages.ending,"CONTINUAR NO JOGO LIVRE",Rect2(392,340,440,58),func(): world.start_mode("sandbox"))
 	button(pages.ending,"VOLTAR À ESCOLHA DE MODO",Rect2(392,420,440,58),show_mode_select)
 	button(pages.mode,"NOME E ROUPA",Rect2(70,567,440,48),func(): show_page("character"))

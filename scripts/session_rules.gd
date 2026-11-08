@@ -108,7 +108,7 @@ func new_mission_round() -> void:
 	mission_round_time=14.0
 
 func begin_mission_hack(id: int) -> void:
-	if mission_hacking_peer!=0 or world.activities.job<17 or world.activities.stage!=1:
+	if mission_hacking_peer!=0 or world.activities.job<24 or world.activities.stage!=1:
 		return
 	if not held(id) or int(network.members[id].get("car",-1))>=0 or not bool(network.members[id].get("crouch",false)):
 		return
@@ -150,7 +150,7 @@ func enter_mission_digit(id: int,digit: int) -> void:
 
 func tick_mission_hack(delta: float) -> void:
 	if mission_hacking_peer==0: return
-	if not sheets.has(mission_hacking_peer) or is_dead(mission_hacking_peer) or world.activities.job<17 or world.activities.stage!=1:
+	if not sheets.has(mission_hacking_peer) or is_dead(mission_hacking_peer) or world.activities.job<24 or world.activities.stage!=1:
 		mission_hacking_peer=0
 		return
 	mission_reveal_time=maxf(0,mission_reveal_time-delta)
@@ -249,7 +249,7 @@ func send_action(kind: String, data := {}) -> void:
 		network.game_action.rpc_id(1,kind,data)
 
 func propose_mission(id: int,index: int) -> void:
-	if world.activities.job>=0 or pending_mission>=17:
+	if world.activities.job>=0 or pending_mission>=24:
 		private_notice(id,"Conclua o contrato atual antes de abrir outra operacao.")
 		return
 	var recipients:=[]
@@ -270,7 +270,7 @@ func propose_mission(id: int,index: int) -> void:
 	private_notice(id,"Convite enviado. A operacao comeca quando um parceiro aceitar.")
 
 func respond_to_mission(id: int,accept: bool) -> void:
-	if pending_mission<17 or Time.get_ticks_msec()>mission_offer_deadline or not mission_invites.has(id) or not network.members.has(id):
+	if pending_mission<24 or Time.get_ticks_msec()>mission_offer_deadline or not mission_invites.has(id) or not network.members.has(id):
 		network.personal.rpc_id(id,"mission_offer_close",{})
 		return
 	network.personal.rpc_id(id,"mission_offer_close",{})
@@ -289,7 +289,7 @@ func respond_to_mission(id: int,accept: bool) -> void:
 	private_notice(id,"Convite aceito. Operacao iniciada!")
 
 func tick_mission_offer() -> void:
-	if pending_mission>=17 and Time.get_ticks_msec()>mission_offer_deadline:
+	if pending_mission>=24 and Time.get_ticks_msec()>mission_offer_deadline:
 		for peer_id in network.members:
 			if peer_id!=mission_offer_from:
 				network.personal.rpc_id(peer_id,"mission_offer_close",{})
@@ -311,8 +311,8 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"punch": punch_peer(id,float(data.get("yaw",0)))
 		"reload": with_actor(id,world.activities.reload)
 		"job":
-			var requested_job:=clampi(int(data.get("index",0)),0,19)
-			if requested_job>=17:
+			var requested_job:=clampi(int(data.get("index",0)),0,26)
+			if requested_job>=24:
 				propose_mission(id,requested_job)
 			elif world.activities.job>=0:
 				private_notice(id,"Conclua o contrato atual da sala primeiro.")
@@ -418,7 +418,7 @@ func receive_event(kind: String, data: Dictionary) -> void:
 		"equip": world.activities.weapon=clampi(int(data.get("weapon",1)),0,4)
 		"notice": world.notify(str(data.get("text","")))
 		"menu": world.activities.set_menu(str(data.get("value","")))
-		"mission_offer": network.show_mission_offer(int(data.get("index",17)),str(data.get("host","Host")))
+		"mission_offer": network.show_mission_offer(int(data.get("index",24)),str(data.get("host","Host")))
 		"mission_offer_close": network.hide_mission_offer()
 		"elevator":
 			if int(data.get("actor",0))==local_id():
@@ -601,8 +601,8 @@ func physics(delta: float) -> void:
 		a.robbery_progress=0
 		a.pedestrian_robbery_progress=0
 	if a.job>=0:
-		var actor := choose_actor(a.destination(),false,a.job in [0,2,3],a.job==8 or a.job>=17)
-		if actor==0 and not is_dead(1) and a.job<17:
+		var actor := choose_actor(a.destination(),false,a.job in [0,2,3],a.job==8 or a.job>=24)
+		if actor==0 and not is_dead(1) and a.job<24:
 			actor=1
 		if a.job==2:
 			for id in participants():
