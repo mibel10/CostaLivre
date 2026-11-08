@@ -7,6 +7,10 @@ const CAMPAIGN_LENGTH := 24
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Correio a pe", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
+const HILL_RESIDENT := Vector3(714,9.9,23)
+const HILL_MEDICINE := Vector3(63,0,27)
+var hill_errand_stage := 0
+var hill_errand_owner := 0
 const SUPPLY_PICKUP := Vector3(368.5,9.9,31)
 const SUPPLY_ALLEY := Vector3(382.75,9.9,14)
 var supply_stage := 0
@@ -160,7 +164,7 @@ func handle_input(event: InputEvent) -> bool:
 			else:
 				world.network.rules.send_action("interact",{})
 			return true
-		if interact_supply():
+		if interact_hill_errand() or interact_supply():
 			return true
 		if world.life != null and world.life.interact():
 			return true
@@ -324,6 +328,8 @@ func nearby_place() -> String:
 	return ""
 
 func prompt() -> String:
+	var errand := hill_errand_prompt()
+	if errand != "": return errand
 	var supply := supply_prompt()
 	if supply != "": return supply
 	if world.life != null:
@@ -412,6 +418,7 @@ func save_campaign() -> bool:
 	save.set_value("story", "smg_owned", smg_owned)
 	save.set_value("story", "heavy_owned", heavy_owned)
 	save.set_value("story", "supply_stage", supply_stage)
+	save.set_value("story", "hill_errand_stage", hill_errand_stage)
 	save.set_value("story", "purchased_cars", purchased_cars)
 	var error := save.save(campaign_save_path)
 	if error != OK:
@@ -445,6 +452,8 @@ func load_campaign() -> void:
 	smg_owned = save.get_value("story", "smg_owned", false)
 	purchased_cars = save.get_value("story", "purchased_cars", []).duplicate(true)
 	for car in purchased_cars: car["net_id"] = -1
+	hill_errand_stage = int(save.get_value("story", "hill_errand_stage", 0))
+	hill_errand_owner = 0
 	supply_stage = int(save.get_value("story", "supply_stage", 0))
 	if supply_stage in [2,3]: supply_stage = 1
 	heavy_owned = save.get_value("story", "heavy_owned", [false,false,false]).duplicate()
@@ -469,6 +478,8 @@ func new_campaign() -> void:
 	world.life.owned_homes.clear()
 	campaign_index = 0
 	supply_stage = 0
+	hill_errand_stage = 0
+	hill_errand_owner = 0
 	purchased_cars.clear()
 	completed = 0
 	world.cash = 900
@@ -924,6 +935,10 @@ func interact_supply() -> bool:
 	return false
 
 func tick_supply() -> void:
+	if hill_errand_stage in [1,2] and world.network != null and world.network.active():
+		if not world.network.members.has(hill_errand_owner) or world.network.rules.is_dead(hill_errand_owner):
+			hill_errand_stage = 0
+			hill_errand_owner = 0
 	if supply_stage in [1,2,3] and world.network != null and world.network.active():
 		if not world.network.members.has(supply_owner) or world.network.rules.is_dead(supply_owner):
 			supply_stage = 0
@@ -999,3 +1014,36 @@ func recall_car(index: int) -> void:
 	if game_mode == "campaign": save_campaign()
 	world.notify("Veiculo comprado retirado sem nova cobranca.")
 	set_menu("")
+
+func hill_errand_prompt() -> String:
+	var pos: Vector3 = world.subject_position()
+	if hill_errand_stage == 0 and pos.distance_to(HILL_RESIDENT) < 3:
+		return "F / Ajudar morador: buscar remedios na Clinica Costa (+$1800)"
+	if world.network != null and world.network.active() and hill_errand_owner != multiplayer.get_unique_id(): return ""
+	if hill_errand_stage == 1 and pos.distance_to(HILL_MEDICINE) < 3:
+		return "F / Recolher os remedios do morador"
+	if hill_errand_stage == 2 and pos.distance_to(HILL_RESIDENT) < 3:
+		return "F / Entregar os remedios ao morador"
+	return ""
+
+func interact_hill_errand() -> bool:
+	if world.active_car != null: return false
+	var actor: int = world.network.rules.context_peer if world.network != null and world.network.active() else 0
+	if world.network != null and world.network.active() and actor == 0: actor = multiplayer.get_unique_id()
+	var pos: Vector3 = world.subject_position()
+	if hill_errand_stage == 0 and pos.distance_to(HILL_RESIDENT) < 3:
+		hill_errand_owner = actor
+		hill_errand_stage = 1
+		world.notify("Morador: Busque meu pacote de remedios na Clinica Costa e traga ao morro. Pago $1800.")
+	elif hill_errand_stage == 1 and actor == hill_errand_owner and pos.distance_to(HILL_MEDICINE) < 3:
+		hill_errand_stage = 2
+		world.notify("Remedios recolhidos. Volte ao morador no morro perto dos apartamentos.")
+	elif hill_errand_stage == 2 and actor == hill_errand_owner and pos.distance_to(HILL_RESIDENT) < 3:
+		hill_errand_stage = 3
+		if world.network != null and world.network.active(): world.network.rules.award(actor,1800)
+		else: world.cash += 1800
+		world.notify("Morador: Muito obrigado! / Entrega concluida: +$1800.")
+	else:
+		return false
+	if game_mode == "campaign": save_campaign()
+	return true

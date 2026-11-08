@@ -59,6 +59,14 @@ func run() -> void:
 	assert(world.life.owned_homes == [0] and world.cash == 4000, "Only one apartment per player")
 	world.respawn_local()
 	assert(world.player.position.y > 6 and world.player.position.y < 7, "Respawn above reception")
+	world.player.position = world.activities.HILL_RESIDENT
+	assert(world.activities.interact_hill_errand())
+	world.player.position = world.activities.HILL_MEDICINE
+	assert(world.activities.interact_hill_errand())
+	world.player.position = world.activities.HILL_RESIDENT
+	var errand_cash: int = world.cash
+	assert(world.activities.interact_hill_errand())
+	assert(world.cash == errand_cash+1800 and not world.activities.interact_hill_errand(), "Hill errand pays once")
 	world.activities.heavy_owned = [true,true,true]
 	world.activities.weapon = 7
 	world.activities.clips[7] = 11

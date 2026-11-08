@@ -13053,3 +13053,175 @@ position = Vector3(0, 1.6, 0)
 text = "MEUS VEICULOS / F\nRETIRADA"
 font_size = 28
 pixel_size = 0.014
+
+[node name="CasaMorro0" type="Node3D" parent="."]
+position = Vector3(695, 9.9, -13)
+
+[node name="Estrutura" type="CSGBox3D" parent="CasaMorro0"]
+position = Vector3(0, 1.6, 0)
+size = Vector3(8, 3.2, 8)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Telhado" type="CSGBox3D" parent="CasaMorro0"]
+position = Vector3(0, 3.3, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="Porta" type="CSGBox3D" parent="CasaMorro0"]
+position = Vector3(0, 1.2, 4.05)
+size = Vector3(1.4, 2.4, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="Janela" type="CSGBox3D" parent="CasaMorro0"]
+position = Vector3(-2.3, 1.8, 4.05)
+size = Vector3(1.4, 1.0, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="CasaMorro1" type="Node3D" parent="."]
+position = Vector3(714, 9.9, -13)
+
+[node name="Estrutura" type="CSGBox3D" parent="CasaMorro1"]
+position = Vector3(0, 1.6, 0)
+size = Vector3(8, 3.2, 8)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Telhado" type="CSGBox3D" parent="CasaMorro1"]
+position = Vector3(0, 3.3, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="Porta" type="CSGBox3D" parent="CasaMorro1"]
+position = Vector3(0, 1.2, 4.05)
+size = Vector3(1.4, 2.4, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="Janela" type="CSGBox3D" parent="CasaMorro1"]
+position = Vector3(-2.3, 1.8, 4.05)
+size = Vector3(1.4, 1.0, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="CasaMorro2" type="Node3D" parent="."]
+position = Vector3(733, 9.9, -13)
+
+[node name="Estrutura" type="CSGBox3D" parent="CasaMorro2"]
+position = Vector3(0, 1.6, 0)
+size = Vector3(8, 3.2, 8)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Telhado" type="CSGBox3D" parent="CasaMorro2"]
+position = Vector3(0, 3.3, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="Porta" type="CSGBox3D" parent="CasaMorro2"]
+position = Vector3(0, 1.2, 4.05)
+size = Vector3(1.4, 2.4, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="Janela" type="CSGBox3D" parent="CasaMorro2"]
+position = Vector3(-2.3, 1.8, 4.05)
+size = Vector3(1.4, 1.0, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="CasaMorro3" type="Node3D" parent="."]
+position = Vector3(695, 9.9, 13)
+
+[node name="Estrutura" type="CSGBox3D" parent="CasaMorro3"]
+position = Vector3(0, 1.6, 0)
+size = Vector3(8, 3.2, 8)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Telhado" type="CSGBox3D" parent="CasaMorro3"]
+position = Vector3(0, 3.3, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="Porta" type="CSGBox3D" parent="CasaMorro3"]
+position = Vector3(0, 1.2, 4.05)
+size = Vector3(1.4, 2.4, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="Janela" type="CSGBox3D" parent="CasaMorro3"]
+position = Vector3(-2.3, 1.8, 4.05)
+size = Vector3(1.4, 1.0, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="CasaMorro4" type="Node3D" parent="."]
+position = Vector3(714, 9.9, 13)
+
+[node name="Estrutura" type="CSGBox3D" parent="CasaMorro4"]
+position = Vector3(0, 1.6, 0)
+size = Vector3(8, 3.2, 8)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Telhado" type="CSGBox3D" parent="CasaMorro4"]
+position = Vector3(0, 3.3, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="Porta" type="CSGBox3D" parent="CasaMorro4"]
+position = Vector3(0, 1.2, 4.05)
+size = Vector3(1.4, 2.4, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="Janela" type="CSGBox3D" parent="CasaMorro4"]
+position = Vector3(-2.3, 1.8, 4.05)
+size = Vector3(1.4, 1.0, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="CasaMorro5" type="Node3D" parent="."]
+position = Vector3(733, 9.9, 13)
+
+[node name="Estrutura" type="CSGBox3D" parent="CasaMorro5"]
+position = Vector3(0, 1.6, 0)
+size = Vector3(8, 3.2, 8)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Telhado" type="CSGBox3D" parent="CasaMorro5"]
+position = Vector3(0, 3.3, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="Porta" type="CSGBox3D" parent="CasaMorro5"]
+position = Vector3(0, 1.2, 4.05)
+size = Vector3(1.4, 2.4, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="Janela" type="CSGBox3D" parent="CasaMorro5"]
+position = Vector3(-2.3, 1.8, 4.05)
+size = Vector3(1.4, 1.0, 0.08)
+material = SubResource("Material_contato_arma")
+use_collision = false
+
+[node name="MoradorDoMorro" type="Node3D" parent="."]
+position = Vector3(714, 9.9, 20)
+script = ExtResource("Script_contato")
+
+[node name="PedidoDoMorador" type="Label3D" parent="."]
+position = Vector3(714, 12.5, 20)
+text = "MORADOR / F\nENTREGA DE REMEDIOS / $1800"
+font_size = 32
+pixel_size = 0.012
