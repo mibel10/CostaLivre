@@ -8483,31 +8483,6 @@ mesh = SubResource("BoxMesh_u5n6x")
 [node name="@CollisionShape3D@12" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@11/@StaticBody3D@13" unique_id=745693886]
 shape = SubResource("BoxShape3D_urjpx")
 
-[node name="@MeshInstance3D@14" type="MeshInstance3D" parent="ResidencialNovo" unique_id=536719807]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 3, 12)
-material_override = SubResource("StandardMaterial3D_exqix")
-mesh = SubResource("BoxMesh_v5vo4")
-
-[node name="@StaticBody3D@16" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@14" unique_id=328840527]
-
-[node name="@CollisionShape3D@15" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@14/@StaticBody3D@16" unique_id=971328467]
-shape = SubResource("BoxShape3D_sy6fx")
-
-[node name="@MeshInstance3D@17" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1068013716]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 3, 12)
-material_override = SubResource("StandardMaterial3D_nomoj")
-mesh = SubResource("BoxMesh_gbgrx")
-
-[node name="@StaticBody3D@19" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@17" unique_id=1387669450]
-
-[node name="@CollisionShape3D@18" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@17/@StaticBody3D@19" unique_id=1660664845]
-shape = SubResource("BoxShape3D_lu0ab")
-
-[node name="@MeshInstance3D@20" type="MeshInstance3D" parent="ResidencialNovo" unique_id=633246563]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 12)
-material_override = SubResource("StandardMaterial3D_wdb7h")
-mesh = SubResource("BoxMesh_pbq5c")
-
 [node name="@MeshInstance3D@23" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2019182591]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -5)
 material_override = SubResource("StandardMaterial3D_u0s2d")
@@ -13225,3 +13200,177 @@ position = Vector3(714, 12.5, 20)
 text = "MORADOR / F\nENTREGA DE REMEDIOS / $1800"
 font_size = 32
 pixel_size = 0.012
+
+[node name="@StaticBody3D@25" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@23" unique_id=14670524]
+
+
+[node name="@CollisionShape3D@24" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@23/@StaticBody3D@25" unique_id=395891193]
+shape = SubResource("BoxShape3D_wukvi")
+
+
+[node name="@StaticBody3D@28" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@26" unique_id=1085502161]
+
+
+[node name="@CollisionShape3D@27" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@26/@StaticBody3D@28" unique_id=1152937284]
+shape = SubResource("BoxShape3D_nxq86")
+
+
+[node name="@StaticBody3D@31" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@29" unique_id=508900414]
+
+
+[node name="@CollisionShape3D@30" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@29/@StaticBody3D@31" unique_id=924305482]
+shape = SubResource("BoxShape3D_dcd6b")
+
+
+[node name="@StaticBody3D@207" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@205" unique_id=1338591454]
+
+
+[node name="@CollisionShape3D@206" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@205/@StaticBody3D@207" unique_id=1060650260]
+shape = SubResource("BoxShape3D_j3kpn")
+
+
+[node name="@StaticBody3D@210" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@208" unique_id=1377530339]
+
+
+[node name="@CollisionShape3D@209" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@208/@StaticBody3D@210" unique_id=2047996555]
+shape = SubResource("BoxShape3D_1wim0")
+
+
+[node name="@StaticBody3D@213" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@211" unique_id=1465517658]
+
+
+[node name="@CollisionShape3D@212" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@211/@StaticBody3D@213" unique_id=715389902]
+shape = SubResource("BoxShape3D_oxft1")
+
+
+[node name="@StaticBody3D@221" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@219" unique_id=1248164195]
+
+
+[node name="@CollisionShape3D@220" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@219/@StaticBody3D@221" unique_id=1574475422]
+shape = SubResource("BoxShape3D_epocl")
+
+
+[node name="@StaticBody3D@224" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@222" unique_id=1486129064]
+
+
+[node name="@CollisionShape3D@223" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@222/@StaticBody3D@224" unique_id=768634462]
+shape = SubResource("BoxShape3D_lkouv")
+
+
+[node name="@StaticBody3D@227" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@225" unique_id=1624068581]
+
+
+[node name="@CollisionShape3D@226" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@225/@StaticBody3D@227" unique_id=1626702965]
+shape = SubResource("BoxShape3D_d8mae")
+
+
+[node name="@StaticBody3D@233" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@231" unique_id=707645109]
+
+
+[node name="@CollisionShape3D@232" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@231/@StaticBody3D@233" unique_id=440031739]
+shape = SubResource("BoxShape3D_d3mgw")
+
+
+[node name="@StaticBody3D@236" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@234" unique_id=1259514181]
+
+
+[node name="@CollisionShape3D@235" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@234/@StaticBody3D@236" unique_id=525841903]
+shape = SubResource("BoxShape3D_7uk8d")
+
+
+[node name="@StaticBody3D@239" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@237" unique_id=1675592611]
+
+
+[node name="@CollisionShape3D@238" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@237/@StaticBody3D@239" unique_id=614765818]
+shape = SubResource("BoxShape3D_y3qnv")
+
+
+[node name="@StaticBody3D@247" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@245" unique_id=1148937973]
+
+
+[node name="@CollisionShape3D@246" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@245/@StaticBody3D@247" unique_id=1050209891]
+shape = SubResource("BoxShape3D_lidcm")
+
+
+[node name="@StaticBody3D@250" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@248" unique_id=1095669805]
+
+
+[node name="@CollisionShape3D@249" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@248/@StaticBody3D@250" unique_id=76278502]
+shape = SubResource("BoxShape3D_g4oip")
+
+
+[node name="@StaticBody3D@253" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@251" unique_id=1408622948]
+
+
+[node name="@CollisionShape3D@252" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@251/@StaticBody3D@253" unique_id=1646697547]
+shape = SubResource("BoxShape3D_f7swa")
+
+
+[node name="@StaticBody3D@259" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@257" unique_id=1245416306]
+
+
+[node name="@CollisionShape3D@258" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@257/@StaticBody3D@259" unique_id=122147431]
+shape = SubResource("BoxShape3D_14lsn")
+
+
+[node name="@StaticBody3D@262" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@260" unique_id=821561773]
+
+
+[node name="@CollisionShape3D@261" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@260/@StaticBody3D@262" unique_id=1623055893]
+shape = SubResource("BoxShape3D_4f8o0")
+
+
+[node name="@StaticBody3D@265" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@263" unique_id=448956546]
+
+
+[node name="@CollisionShape3D@264" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@263/@StaticBody3D@265" unique_id=1493050375]
+shape = SubResource("BoxShape3D_oyfw5")
+
+
+[node name="@StaticBody3D@273" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@271" unique_id=1477964732]
+
+
+[node name="@CollisionShape3D@272" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@271/@StaticBody3D@273" unique_id=978401294]
+shape = SubResource("BoxShape3D_bc1bj")
+
+
+[node name="@StaticBody3D@276" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@274" unique_id=1066992811]
+
+
+[node name="@CollisionShape3D@275" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@274/@StaticBody3D@276" unique_id=1437383167]
+shape = SubResource("BoxShape3D_gmlpq")
+
+
+[node name="@StaticBody3D@279" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@277" unique_id=1370901610]
+
+
+[node name="@CollisionShape3D@278" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@277/@StaticBody3D@279" unique_id=427058390]
+shape = SubResource("BoxShape3D_7cj1e")
+
+
+[node name="@StaticBody3D@285" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@283" unique_id=832497903]
+
+
+[node name="@CollisionShape3D@284" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@283/@StaticBody3D@285" unique_id=436514737]
+shape = SubResource("BoxShape3D_88bd8")
+
+
+[node name="@StaticBody3D@288" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@286" unique_id=1808412865]
+
+
+[node name="@CollisionShape3D@287" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@286/@StaticBody3D@288" unique_id=290011437]
+shape = SubResource("BoxShape3D_bfjc4")
+
+
+[node name="@StaticBody3D@291" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@289" unique_id=1465629489]
+
+
+[node name="@CollisionShape3D@290" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@289/@StaticBody3D@291" unique_id=1123348504]
+shape = SubResource("BoxShape3D_ddhr3")
+
+
+[node name="@StaticBody3D@299" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@297" unique_id=2062608900]
+
+
+[node name="@CollisionShape3D@298" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@297/@StaticBody3D@299" unique_id=1677015284]
+shape = SubResource("BoxShape3D_uqo8r")
