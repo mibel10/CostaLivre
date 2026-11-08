@@ -13898,3 +13898,8 @@ position = Vector3(0, 4.5, -8.3)
 text = "POSTO COSTA LESTE / 7 VIATURAS"
 font_size = 34
 pixel_size = 0.014
+
+[node name="InformanteCampanha" type="Node3D" parent="."]
+position = Vector3(378, 9.9, 6.5)
+visible = false
+script = ExtResource("Script_contato")

@@ -5,7 +5,7 @@ const Bank = preload("res://scripts/bank.gd")
 const Catalog = preload("res://scripts/vehicle_catalog.gd")
 const CAMPAIGN_LENGTH := 24
 
-var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Correio a pe", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
+var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
 const HILL_RESIDENT := Vector3(714,9.9,23)
 const HILL_MEDICINE := Vector3(63,0,27)
@@ -30,7 +30,7 @@ const ROBBERIES := [Vector3(-63, 0, -8), Vector3(63, 0, -50), Vector3(21, 0, -89
 const RACE := [Vector3(-126, 0, 84), Vector3(-126, 0, -84), Vector3(84, 0, -84), Vector3(84, 0, 84), Vector3(0, 0, 84)]
 const CAR_PRICES := [2200,4800,8500,9500,12000,15000,1200,1800,3200]
 const CAR_COLORS := [Color("30c9bf"),Color("e04959"),Color("b894ed"),Color("e9c24c"),Color("385b9d"),Color("dd6336"),Color("7b9c87"),Color("b4bdc7"),Color("bb3945")]
-var STORY_BEATS := ["O primeiro serviço vai colocar você no mapa.","O caixa da praia pode resolver uma dívida urgente.","Um carro raro espera na rua. Leve-o até a garagem.","Cruze a cidade antes que o tempo acabe.","Dois veículos rivais estão atrapalhando o plano.","O Banco Costa esconde um cofre atrás da segurança.","A polícia fechou o cerco. Sobreviva e despiste a busca.","Um cliente precisa de uma rota rápida pela costa.","Faça a entrega a pé sem perder tempo.","Atravesse a avenida leste no limite.","Uma rota noturna exige precisão.","A carga urgente não pode esperar.","Complete o circuito costeiro para fechar o contrato.","A clínica precisa de ajuda para atender a vizinhança.","Uma reunião importante depende de você.","Proteja um contato no apartamento seguro.","O café precisa de uma última mão antes do amanhecer."]
+var STORY_BEATS := ["O primeiro serviço vai colocar você no mapa.","O caixa da praia pode resolver uma dívida urgente.","Um carro raro espera na rua. Leve-o até a garagem.","Cruze a cidade antes que o tempo acabe.","Dois veículos rivais estão atrapalhando o plano.","O Banco Costa esconde um cofre atrás da segurança.","A polícia fechou o cerco. Sobreviva e despiste a busca.","Um cliente precisa de uma rota rápida pela costa.","Busque o informante de carro na favela, despiste a policia e leve-o ao esconderijo.","Atravesse a avenida leste no limite.","Uma rota noturna exige precisão.","A carga urgente não pode esperar.","Complete o circuito costeiro para fechar o contrato.","A clínica precisa de ajuda para atender a vizinhança.","Uma reunião importante depende de você.","Proteja um contato no apartamento seguro.","O café precisa de uma última mão antes do amanhecer."]
 var world: Node3D
 var menu := ""
 var officers: Array[CharacterBody3D] = []
@@ -40,6 +40,9 @@ var stage := 0
 var completed := 0
 var clock := 0.0
 var progress := 0.0
+const INFORMANT_PICKUP := Vector3(378,9.9,4.5)
+const INFORMANT_SAFEHOUSE := Vector3(189,0,126)
+var passenger_car := -1
 var target_car: CharacterBody3D
 var targets: Array[CharacterBody3D] = []
 var robbery_cooldowns := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -164,7 +167,7 @@ func handle_input(event: InputEvent) -> bool:
 			else:
 				world.network.rules.send_action("interact",{})
 			return true
-		if interact_hill_errand() or interact_supply():
+		if interact_campaign() or interact_hill_errand() or interact_supply():
 			return true
 		if world.life != null and world.life.interact():
 			return true
@@ -328,6 +331,8 @@ func nearby_place() -> String:
 	return ""
 
 func prompt() -> String:
+	if job == 8 and stage == 0 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
+		return "F / Embarcar informante" if world.active_car != null else "Traga um carro para resgatar o informante"
 	var errand := hill_errand_prompt()
 	if errand != "": return errand
 	var supply := supply_prompt()
@@ -376,8 +381,9 @@ func start_job(index: int) -> void:
 	target_car = null
 	targets.clear()
 	job = index
+	passenger_car = -1
 	stage = 0
-	clock = (360.0 if job >= 24 else ((160.0 if job == 8 else 100.0) if job >= 7 else (95.0 if job == 3 else 0.0)))
+	clock = (360.0 if job >= 24 else ((180.0 if job == 8 else 100.0) if job >= 7 else (95.0 if job == 3 else 0.0)))
 	progress = 0
 	if job == 2:
 		target_car = world.spawn_car(Vector3(-84, 0.2, 42), CAR_COLORS[1], false, 2)
@@ -521,14 +527,12 @@ func destination() -> Vector3:
 	if bank.inside() and bank.phase < 5:
 		return bank.next_position()
 	match job:
-		8:
-			var routes := [[Vector3(168,0,84),Vector3(168,0,-84),Vector3(0,0,84)], [Vector3(0,0,42),Vector3(42,0,42),Vector3(42,0,0)], [Vector3(168,0,-84),Vector3(168,0,84),Vector3(84,0,0)], [Vector3(-168,0,84),Vector3(-168,0,-84),Vector3(-84,0,0)], [Vector3(126,0,126),Vector3(-126,0,126),Vector3(-168,0,0)], [Vector3(-168,0,-84),Vector3(168,0,-84),Vector3(168,0,84)]]
-			return routes[job - 7][mini(stage,2)]
+		8: return INFORMANT_PICKUP if stage == 0 else INFORMANT_SAFEHOUSE
 		0: return world.STOPS[mini(stage, 2)]
 		1: return ROBBERIES[0]
 		2:
 			if world.active_car == target_car:
-				return Vector3(-42, 0, 84)
+				return GARAGE
 			return target_car.position if is_instance_valid(target_car) else Vector3(-84, 0, 42)
 		3: return RACE[mini(stage, RACE.size() - 1)]
 		4:
@@ -547,7 +551,9 @@ func objective() -> String:
 	if bank.inside() or (bank.phase == 4):
 		return bank.objective()
 	match job:
-		8: return "%s %d/3 - %ds" % [JOBS[job], stage+1, ceili(clock)]
+		8:
+			if stage == 0: return "Resgate: chegue de carro ao informante e aperte F / %ds" % ceili(clock)
+			return ("Despiste a policia com o informante a bordo" if world.heat > 0 else "Leve o informante ao esconderijo marcado") + " / %ds" % ceili(clock)
 		0: return "Entrega %d/3 · pare no marcador" % (stage + 1)
 		1: return "Despiste a polícia" if stage > 0 else "Assalte o mercado marcado e fuja"
 		2: return "Entregue o Tempestade na garagem" if world.active_car == target_car else "Roube o Tempestade marcado"
@@ -619,12 +625,13 @@ func tick_mission(delta: float) -> void:
 	match job:
 		8:
 			clock -= delta
+			var rescue_car: Node = world.car_by_id(passenger_car)
 			if clock <= 0:
-				fail_job("Tempo esgotado.")
-			elif distance < 7 and (world.active_car == null if job == 8 else world.active_car != null):
-				stage += 1
-				if stage >= 3:
-					complete_job()
+				fail_job("O tempo do resgate acabou.")
+			elif stage > 0 and (rescue_car == null or rescue_car.hp <= 0):
+				fail_job("O carro com o informante foi destruido.")
+			elif stage > 0 and world.active_car == rescue_car and world.heat <= 0 and distance < 7 and stopped:
+				complete_job()
 		0:
 			progress = progress + delta if distance < 7 and stopped else 0.0
 			if progress > 1.5:
@@ -954,6 +961,8 @@ func tick_supply() -> void:
 		world.play_cutscene("CONTATO CONFIRMADO", "Contato, abaixando a arma: Foi mal. Estava esperando voce. Pode deixar a carga aqui.")
 
 func _process(_delta: float) -> void:
+	var informant: Node3D = world.get_node_or_null("InformanteCampanha") if world != null else null
+	if informant != null: informant.visible = job == 8 and stage == 0
 	var gun: Node3D = world.get_node_or_null("ContatoBeco/Arma") if world != null else null
 	if gun != null:
 		gun.rotation.x = PI/2 if supply_stage >= 3 else 0.0
@@ -1047,3 +1056,12 @@ func interact_hill_errand() -> bool:
 		return false
 	if game_mode == "campaign": save_campaign()
 	return true
+
+func interact_campaign() -> bool:
+	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
+		passenger_car = world.active_car.net_id
+		stage = 1
+		world.raise_heat(60)
+		world.notify("Informante a bordo! Despiste a policia antes de leva-lo ao esconderijo.")
+		return true
+	return false
