@@ -12790,3 +12790,167 @@ position = Vector3(8, 74.3, -6.7)
 text = "ELEVADOR / F\nANDAR 12"
 font_size = 28
 pixel_size = 0.012
+
+[node name="PortariaMercado0" type="Node3D" parent="."]
+position = Vector3(294, 0, -83)
+
+[node name="PilarEsquerdo" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-4.5, 3, 1)
+size = Vector3(1, 6, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PilarDireito" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(4.5, 3, 1)
+size = Vector3(1, 6, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Marquise" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(0, 6, 2)
+size = Vector3(11, 0.6, 5)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Entrada" type="Label3D" parent="PortariaMercado0"]
+position = Vector3(0, 4.7, 2.5)
+text = "SUPERMERCADO / ENTRADA"
+font_size = 44
+pixel_size = 0.015
+
+[node name="Caixa0" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 0.55, -28.0)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora0" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 1.3, -28.0)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa1" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 0.55, -22.5)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora1" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 1.3, -22.5)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa2" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 0.55, -17.0)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora2" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 1.3, -17.0)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa3" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 0.55, -11.5)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora3" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 1.3, -11.5)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa4" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 0.55, -6.0)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora4" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-31, 1.3, -6.0)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="PortariaMercado1" type="Node3D" parent="."]
+position = Vector3(798, 0, -83)
+
+[node name="PilarEsquerdo" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-4.5, 3, 1)
+size = Vector3(1, 6, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PilarDireito" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(4.5, 3, 1)
+size = Vector3(1, 6, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Marquise" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(0, 6, 2)
+size = Vector3(11, 0.6, 5)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Entrada" type="Label3D" parent="PortariaMercado1"]
+position = Vector3(0, 4.7, 2.5)
+text = "SUPERMERCADO / ENTRADA"
+font_size = 44
+pixel_size = 0.015
+
+[node name="Caixa0" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 0.55, -28.0)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora0" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 1.3, -28.0)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa1" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 0.55, -22.5)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora1" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 1.3, -22.5)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa2" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 0.55, -17.0)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora2" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 1.3, -17.0)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa3" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 0.55, -11.5)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora3" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 1.3, -11.5)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")
+
+[node name="Caixa4" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 0.55, -6.0)
+size = Vector3(1.3, 1.1, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Registradora4" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-31, 1.3, -6.0)
+size = Vector3(0.5, 0.4, 0.6)
+material = SubResource("Material_contato_arma")

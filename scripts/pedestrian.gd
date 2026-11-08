@@ -7,6 +7,8 @@ var hp := 60.0
 var model: Node3D
 var tint := Color.WHITE
 var stationary := false
+var shopper := false
+var shopping_pause := 0.0
 var robbed := false
 var scared := false
 var appearance_index := 0
@@ -29,9 +31,16 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if hp <= 0 or stationary or route.is_empty() or world.finished:
 		return
+	if shopper and shopping_pause > 0 and world.heat < 20:
+		shopping_pause -= delta
+		model.animate(0)
+		return
 	var direction := route[point] - position
 	direction.y = 0
 	if direction.length() < 0.8:
+		if shopper:
+			shopping_pause = 2.5 if point in [1,3,5] else 0.0
+			if point in [1,5]: model.rotation.y = PI/2
 		point = (point + 1) % route.size()
 		return
 	var speed := 0.4 if scared else (3.8 if world.heat > 20 and position.distance_to(world.subject_position()) < 25 else 1.6)

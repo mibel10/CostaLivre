@@ -9,7 +9,7 @@ func run() -> void:
 	root.add_child(world)
 	world.start_mode("sandbox")
 	world.set_process(false)
-	assert(world.life.rooms.size() == 22 and world.life.people.size() == 41)
+	assert(world.life.rooms.size() == 22 and world.life.people.size() == 67)
 	await physics_frame
 	for side in [-1, 1]:
 		for step in 5:
@@ -62,6 +62,17 @@ func run() -> void:
 	world.activities.handle_input(key)
 	assert(world.activities.job_page == 0)
 	world.activities.set_menu("")
+	for store in 2:
+		for cashier in 5:
+			assert(world.life.get_node("Mercado%dCaixa%d" % [store,cashier]).stationary)
+		for customer in 8:
+			assert(world.life.get_node("Mercado%dCliente%d" % [store,customer]).route.size() > 5)
+	world.player.position = world.activities.ROBBERIES[3]
+	var cash_before: int = world.cash
+	Input.action_press("activity")
+	world.activities.tick_robbery(5.1)
+	Input.action_release("activity")
+	assert(world.cash == cash_before+1200 and world.activities.robbery_cooldowns[3] > 0)
 	print("PASS: walking pedestrians, animated roll, six accessible interiors, four interior contracts and four job pages")
 	world.queue_free()
 	await process_frame

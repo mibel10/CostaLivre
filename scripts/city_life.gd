@@ -78,6 +78,30 @@ func _ready() -> void:
 		add_child(contact)
 		contact.position = PLACES[i]+Vector3(1,0,5)
 		people.append(contact)
+	for store in 2:
+		var cx: float = [294,798][store]
+		for cashier in 5:
+			var staff := Pedestrian.new()
+			staff.name = "Mercado%dCaixa%d" % [store,cashier]
+			staff.world = world
+			staff.appearance_index = cashier+store
+			staff.stationary = true
+			add_child(staff)
+			staff.position = Vector3(cx-33,0,-111+cashier*5.5)
+			staff.model.rotation.y = -PI/2
+			people.append(staff)
+		for i in 8:
+			var shopper := Pedestrian.new()
+			shopper.world = world
+			shopper.name = "Mercado%dCliente%d" % [store,i]
+			shopper.appearance_index = i+store
+			shopper.shopper = true
+			var aisle := cx-22.5+(i%6)*9.0
+			shopper.route.assign([Vector3(aisle,0,-84),Vector3(aisle,0,-94.5),Vector3(cx-29.2,0,-94.5),Vector3(cx-29.2,0,-111+(i%5)*5.5),Vector3(cx-29.2,0,-114.5),Vector3(aisle,0,-114.5),Vector3(aisle,0,-84),Vector3(cx,0,-84),Vector3(cx,0,-80),Vector3(cx,0,-84)])
+			add_child(shopper)
+			shopper.position = shopper.route[i%shopper.route.size()]
+			shopper.point = (i+1)%shopper.route.size()
+			people.append(shopper)
 
 func apartment_stair_route() -> Array[Vector3]:
 	var route: Array[Vector3]=[]

@@ -20,7 +20,7 @@ const WEAPON_NAMES := ["Punhos","Pistola","Fuzil","Escopeta","SMG","Bazuca","Sni
 const GUN_SHOP := Vector3(-21, 0, 34)
 const DEALER := Vector3(21, 0, 34)
 const GARAGE := Vector3(-21, 0, 76)
-const ROBBERIES := [Vector3(-63, 0, -8), Vector3(63, 0, -50), Vector3(21, 0, -89)]
+const ROBBERIES := [Vector3(-63, 0, -8), Vector3(63, 0, -50), Vector3(21, 0, -89), Vector3(264.8, 0, -111.0), Vector3(264.8, 0, -105.5), Vector3(264.8, 0, -100.0), Vector3(264.8, 0, -94.5), Vector3(264.8, 0, -89.0), Vector3(768.8, 0, -111.0), Vector3(768.8, 0, -105.5), Vector3(768.8, 0, -100.0), Vector3(768.8, 0, -94.5), Vector3(768.8, 0, -89.0)]
 const RACE := [Vector3(-126, 0, 84), Vector3(-126, 0, -84), Vector3(84, 0, -84), Vector3(84, 0, 84), Vector3(0, 0, 84)]
 const CAR_PRICES := [2200,4800,8500,9500,12000,15000,1200,1800,3200]
 const CAR_COLORS := [Color("30c9bf"),Color("e04959"),Color("b894ed"),Color("e9c24c"),Color("385b9d"),Color("dd6336"),Color("7b9c87"),Color("b4bdc7"),Color("bb3945")]
@@ -36,7 +36,7 @@ var clock := 0.0
 var progress := 0.0
 var target_car: CharacterBody3D
 var targets: Array[CharacterBody3D] = []
-var robbery_cooldowns := [0.0, 0.0, 0.0]
+var robbery_cooldowns := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 var robbery_index := -1
 var robbery_progress := 0.0
 var weapon := 1
@@ -303,8 +303,8 @@ func nearby_place() -> String:
 		return "cars"
 	if pos.distance_to(GARAGE) < 5:
 		return "garage"
-	for i in 2:
-		if pos.distance_to(ROBBERIES[i]) < 5:
+	for i in ROBBERIES.size():
+		if pos.distance_to(ROBBERIES[i]) < (5 if i < 3 else 2.3):
 			return "robbery"
 	return ""
 
@@ -651,8 +651,8 @@ func tick_mission(delta: float) -> void:
 
 func tick_robbery(delta: float) -> void:
 	var nearby := -1
-	for i in 2:
-		if world.subject_position().distance_to(ROBBERIES[i]) < 5:
+	for i in ROBBERIES.size():
+		if world.subject_position().distance_to(ROBBERIES[i]) < (5 if i < 3 else 2.3):
 			nearby = i
 	if nearby < 0 or world.active_car != null or weapon == 0 or not world.activity_held():
 		robbery_progress = 0
