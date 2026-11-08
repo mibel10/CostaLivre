@@ -10,6 +10,14 @@ func run() -> void:
 	world.start_mode("sandbox")
 	world.set_process(false)
 	assert(world.life.rooms.size() == 22 and world.life.people.size() == 41)
+	await physics_frame
+	for side in [-1, 1]:
+		for step in 5:
+			var x := 344.0 + step * 1.2
+			var ground := (x - 294.0) * 10.0 / 56.0 - 0.1
+			var from := Vector3(x, ground + 1, side * 31.0)
+			var hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 2, 1))
+			assert(not hit.is_empty() and absf(hit.position.y - ground) < 0.02, "Favela steps must not block the walking ramp")
 	var ped = world.life.people[0]
 	world.player.position = ped.position + Vector3(2,0,0)
 	world.life._process(1)
