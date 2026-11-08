@@ -276,7 +276,7 @@ func explode() -> void:
 	if world.network!=null and world.network.active() and not multiplayer.is_server(): return
 	var query:=PhysicsShapeQueryParameters3D.new()
 	var shape:=SphereShape3D.new()
-	shape.radius=10
+	shape.radius=7.5
 	query.shape=shape
 	query.transform=Transform3D(Basis.IDENTITY,global_position+Vector3(0,1,0))
 	query.collision_mask=7
@@ -292,7 +292,7 @@ func explode() -> void:
 			if struck.has(id): continue
 			struck[id]=true
 			var distance := global_position.distance_to(victim.global_position)
-			var damage := 200.0 if distance <= 5.0 else lerpf(200.0, 80.0, clampf((distance - 5.0) / 5.0, 0.0, 1.0))
+			var damage := 200.0 if distance <= 3.75 else lerpf(200.0, 80.0, clampf((distance - 3.75) / 3.75, 0.0, 1.0))
 			if world.network!=null and world.network.active(): world.network.rules.damage_peer(id,damage,0)
 			elif victim==world.player or victim==world.active_car: world.damage(damage)
 		elif victim.has_method("take_hit") and not struck.has(victim.get_instance_id()):
@@ -306,9 +306,9 @@ func explode() -> void:
 			var key: String="car_position" if int(state.get("car",-1))>=0 else "position"
 			var at: Vector3=state.get(key,Vector3.ZERO)
 			var distance:=global_position.distance_to(at)
-			if distance>10.0:
+			if distance>7.5:
 				continue
-			var damage:=200.0 if distance<=5.0 else lerpf(200.0,80.0,(distance-5.0)/5.0)
+			var damage:=200.0 if distance<=3.75 else lerpf(200.0,80.0,(distance-3.75)/3.75)
 			struck[id]=true
 			world.network.rules.damage_peer(id,damage,0)
 	if world.network==null or not world.network.active() or multiplayer.is_server():
@@ -371,7 +371,7 @@ func show_explosion_effect() -> void:
 	var flash := OmniLight3D.new()
 	flash.light_color=Color(1.0,0.3,0.05)
 	flash.light_energy=8.0
-	flash.omni_range=16.0
+	flash.omni_range=12.0
 	world.add_child(flash)
 	flash.global_position=global_position+Vector3.UP
 	var tween:=world.create_tween()
@@ -385,9 +385,9 @@ func show_explosion_effect() -> void:
 	var process_material:=ParticleProcessMaterial.new()
 	process_material.direction=Vector3.UP
 	process_material.spread=180.0
-	process_material.initial_velocity_min=7.0
-	process_material.initial_velocity_max=19.0
-	process_material.gravity=Vector3(0,-9.0,0)
+	process_material.initial_velocity_min=5.25
+	process_material.initial_velocity_max=14.25
+	process_material.gravity=Vector3(0,-6.75,0)
 	process_material.scale_min=0.35
 	process_material.scale_max=1.8
 	process_material.color=Color(1.0,0.32,0.04,0.95)
@@ -421,6 +421,6 @@ func show_explosion_effect() -> void:
 	world.add_child(ring)
 	ring.global_position=global_position+Vector3.UP*0.12
 	var ring_tween:=world.create_tween().set_parallel(true)
-	ring_tween.tween_property(ring,"scale",Vector3(14,0.18,14),0.65)
+	ring_tween.tween_property(ring,"scale",Vector3(10.5,0.18,10.5),0.65)
 	ring_tween.tween_property(ring_material,"albedo_color:a",0.0,0.65)
 	ring_tween.chain().tween_callback(ring.queue_free)
