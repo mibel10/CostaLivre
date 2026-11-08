@@ -11,7 +11,10 @@ const ACTION_JOBS := {
 	10: {"name":"Interceptacao na praia","kind":"intercept","story":"Pare o carro do mensageiro sem destrui-lo, recolha a maleta a pe e fuja ate o mercado.","reward":3800,"model":1,"spawn":Vector3(-126,0.3,-84),"track":[Vector3(-126,0.3,-84),Vector3(84,0.3,-84),Vector3(84,0.3,84),Vector3(-126,0.3,84)],"drop":Vector3(105,0,-49),"time":220.0},
 	11: {"name":"Sinal pirata","kind":"precision","story":"Derrube os tres transmissores nos andares 3, 5 e 7 do estudio. Saia e despiste o alarme.","reward":4200,"points":[Vector3(143,13.4,67),Vector3(151,25.4,64),Vector3(147,37.4,57)],"exit":Vector3(147,0,84),"time":220.0},
 	12: {"name":"Cerco no decimo","kind":"escape_file","story":"Pegue o arquivo no decimo andar, sobreviva a invasao e desca para despistar a policia.","reward":4800,"pickup":Vector3(-67,54,67),"exit":Vector3(-63,0,80),"time":240.0},
-	13: {"name":"Corrida pela vida","kind":"rescue","story":"Pegue o carro de atendimento da clinica, resgate o morador no morro e volte com o veiculo inteiro.","reward":4000,"model":8,"spawn":Vector3(63,0.3,38),"pickup":Vector3(714,9.9,4.5),"drop":Vector3(63,0,38),"min_hp":80,"time":210.0}}
+	13: {"name":"Corrida pela vida","kind":"rescue","story":"Pegue o carro de atendimento da clinica, resgate o morador no morro e volte com o veiculo inteiro.","reward":4000,"model":8,"spawn":Vector3(63,0.3,38),"pickup":Vector3(714,9.9,4.5),"drop":Vector3(63,0,38),"min_hp":80,"time":210.0},
+	14: {"name":"Becos sem freio","kind":"drive","story":"Pegue a moto e cruze as vielas da favela antes do tempo acabar. Os pontos estreitos exigem controle.","reward":3400,"model":9,"spawn":Vector3(378,10.2,4.5),"points":[Vector3(382.75,9.9,14),Vector3(382.75,9.9,20),Vector3(397,9.9,31),Vector3(420,7.4,31)],"radius":2.5,"time":100.0},
+	15: {"name":"Ultimo refugio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 30 segundos e elimine os tres invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":30.0,"time":160.0},
+	16: {"name":"Cacada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0}}
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
@@ -387,6 +390,10 @@ func start_job(index: int) -> void:
 	if index < 0 or index >= JOBS.size():
 		return
 	# Replacing a contract cannot leave unbounded parked mission vehicles behind.
+	for guard in officers.duplicate():
+		if guard.has_meta("mission_contract"):
+			officers.erase(guard)
+			guard.queue_free()
 	for loan in world.cars.duplicate():
 		if loan != world.active_car and bool(loan.get_meta("mission_loan",false)): remove_car(loan)
 	if is_instance_valid(target_car) and target_car != world.active_car:
@@ -909,6 +916,12 @@ func tick_police(delta: float) -> void:
 					officers.append(officer)
 					break
 	for i in range(officers.size() - 1, -1, -1):
+		var contract: int = int(officers[i].get_meta("mission_contract",-1))
+		if contract >= 0:
+			if contract != job:
+				officers[i].queue_free()
+				officers.remove_at(i)
+			continue
 		var target:Vector3=world.police_target(officers[i]) if world.network!=null and world.network.active() else world.subject_position()
 		var mission_stair:bool=bool(officers[i].get_meta("mission_stair",false))
 		if (mission_stair and job!=12) or (not mission_stair and (world.heat < response_threshold or officers[i].position.distance_to(target) > 70)):
@@ -1107,6 +1120,12 @@ func interact_campaign() -> bool:
 			world.raise_heat(40)
 			world.notify("Maleta recolhida! Despiste a policia e entregue no destino marcado.")
 			return true
+		if spec.kind == "defend" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.point) < 3:
+			stage = 1
+			spawn_action_guards()
+			world.raise_heat(40)
+			world.notify("Invasores chegando! Fique no refugio, resista e elimine os tres.")
+			return true
 		return false
 	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
 		passenger_car = world.active_car.net_id
@@ -1140,6 +1159,7 @@ func action_destination() -> Vector3:
 				return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.pickup
 			var car: Node = world.car_by_id(passenger_car)
 			return car.position if car != null and world.active_car != car else spec.drop
+		"defend": return spec.point
 		"precision": return spec.points[stage] if stage < spec.points.size() else spec.exit
 		"escape_file": return spec.pickup if stage == 0 else spec.exit
 		"intercept": return target_car.position if stage < 2 and is_instance_valid(target_car) else spec.drop
@@ -1153,6 +1173,7 @@ func action_objective() -> String:
 		"rescue":
 			text = "Busque o passageiro de carro / F para embarcar" if stage == 0 else "Leve o passageiro ao destino"
 			if stage == 0 and spec.has("model") and world.active_car != target_car: text = "Pegue o carro de atendimento marcado"
+		"defend": text = "F / Iniciar defesa no oitavo andar" if stage == 0 else "Resista %ds / invasores restantes: %d" % [maxi(0,ceili(float(spec.duration)-progress)),contract_guards_alive()]
 		"precision": text = "Atire no transmissor %d/%d / andar %d" % [stage+1,spec.points.size(),floori(spec.points[stage].y/6)+1] if stage < spec.points.size() else "Saia do estudio e despiste o alarme"
 		"escape_file": text = ["Pegue o arquivo no decimo andar / F","Desca e saia do predio cercado","Despiste a policia com o arquivo"][mini(stage,2)]
 		"intercept": text = ["Danifique o carro do mensageiro sem destrui-lo","Saia do carro e use F para recolher a maleta","Despiste e entregue a maleta"][mini(stage,2)]
@@ -1176,6 +1197,14 @@ func tick_action_job(delta: float) -> void:
 			var car: Node = world.car_by_id(passenger_car)
 			if (spec.has("model") and (not is_instance_valid(target_car) or target_car.hp <= float(spec.get("min_hp",0)))) or (stage > 0 and (car == null or car.hp <= float(spec.get("min_hp",0)))): fail_job("O carro do passageiro ficou danificado demais.")
 			elif stage > 0 and world.active_car == car and stopped and world.subject_position().distance_to(spec.drop) < 6: complete_job()
+		"defend":
+			if stage == 1:
+				var distance: float = world.subject_position().distance_to(spec.point)
+				if distance > 30:
+					fail_job("Voce abandonou o refugio.")
+					return
+				if distance < 18: progress += delta
+				if progress >= float(spec.duration) and contract_guards_alive() == 0: complete_job()
 		"precision":
 			if stage >= spec.points.size() and world.heat <= 0 and world.subject_position().distance_to(spec.exit) < 7: complete_job()
 		"escape_file":
@@ -1195,6 +1224,8 @@ func tick_action_job(delta: float) -> void:
 func action_prompt() -> String:
 	if not ACTION_JOBS.has(job): return ""
 	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind == "defend" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.point) < 3:
+		return "F / Iniciar defesa do refugio"
 	if spec.kind == "drive" and is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
 		return "E / Entrar no veiculo do contrato"
 	if spec.kind == "rescue" and stage == 0 and world.subject_position().distance_to(spec.pickup) < 5:
@@ -1214,3 +1245,15 @@ func campaign_target_hit(target: Node) -> bool:
 		world.notify("Transmissor derrubado. Va ao proximo alvo." if stage < spec.points.size() else "Sinal cortado! Saia do estudio e despiste o alarme.")
 		return true
 	return false
+
+func spawn_action_guards() -> void:
+	for at in ACTION_JOBS[job].get("guards",[]):
+		var guard := Officer.new()
+		guard.world = world
+		guard.set_meta("mission_contract",job)
+		world.add_child(guard)
+		guard.position = at
+		officers.append(guard)
+
+func contract_guards_alive() -> int:
+	return officers.filter(func(guard): return is_instance_valid(guard) and int(guard.get_meta("mission_contract",-1)) == job and guard.hp > 0).size()

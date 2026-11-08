@@ -82,7 +82,7 @@ func run() -> void:
 				assert(a.job == 8, "Rescue needs an escape before delivery")
 				world.heat = 0
 				a.tick_mission(0.1)
-			14,15,16,17,18,19,20,21,22,23:
+			17,18,19,20,21,22,23:
 				world.active_car = null
 				for step in 3:
 					world.player.position = world.life.mission_position()
@@ -151,4 +151,13 @@ func finish_action(world: Node, car: Node) -> void:
 			a.tick_mission(0.1)
 			assert(a.stage == 2 and not world.life.stair_chase_started)
 			world.heat = 0
+			a.tick_mission(0.1)
+		"defend":
+			world.active_car = null
+			world.player.position = spec.point
+			assert(a.interact_campaign())
+			a.tick_mission(float(spec.duration)+0.1)
+			assert(a.job == 15, "Waiting alone cannot win the defense")
+			for guard in a.officers:
+				if int(guard.get_meta("mission_contract",-1)) == a.job: guard.take_hit(1000)
 			a.tick_mission(0.1)

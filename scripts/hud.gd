@@ -50,7 +50,7 @@ func _draw() -> void:
 		text("VOCE FOI CALADO.",Vector2(400,345),40,Color("d34d50"))
 		text("Renascendo em outro ponto da cidade...",Vector2(420,395),19)
 		return
-	panel(Rect2(24, 24, 365, 48))
+	panel(Rect2(24, 24, 740 if a.ACTION_JOBS.has(a.job) or a.job == 8 else 365, 48))
 	text(a.objective(), Vector2(38, 45), 15)
 	var detail := ""
 	if world.marker.visible:

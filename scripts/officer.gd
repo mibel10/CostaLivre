@@ -31,7 +31,11 @@ func _physics_process(delta: float) -> void:
 		return
 	if hp <= 0 or world.finished:
 		return
+	var contract: bool = has_meta("mission_contract")
 	var player_target: Vector3=world.police_target(self)
+	if contract and position.distance_to(player_target) > 60:
+		model.animate(0)
+		return
 	var target: Vector3=player_target
 	if mission_stair and mission_stair_index<mission_stair_route.size():
 		if position.distance_to(mission_stair_route[mission_stair_index])<0.85:
@@ -41,7 +45,7 @@ func _physics_process(delta: float) -> void:
 	var offset: Vector3=target-position
 	var direction := offset.normalized()
 	var climbing:=mission_stair and mission_stair_index<mission_stair_route.size()
-	var moving: bool = climbing or (world.heat > 0 and offset.length() > 10)
+	var moving: bool = climbing or ((world.heat > 0 or contract) and offset.length() > 10)
 	if climbing:
 		velocity=direction*3.2
 	else:
@@ -50,11 +54,11 @@ func _physics_process(delta: float) -> void:
 		velocity.y = -4 if is_on_floor() else velocity.y - delta * 22
 	move_and_slide()
 	model.animate(Vector2(velocity.x, velocity.z).length())
-	if world.heat > 0:
+	if world.heat > 0 or contract:
 		model.rotation.y = atan2(-offset.x, -offset.z)
 	fire_time -= delta
 	var response_threshold:=12 if world.network!=null and world.network.active() else 20
-	if (world.heat < response_threshold and not mission_stair) or position.distance_to(player_target)>32 or fire_time > 0:
+	if (world.heat < response_threshold and not mission_stair and not contract) or position.distance_to(player_target)>32 or fire_time > 0:
 		return
 	fire_time = 1.8
 	var from := position + Vector3(0, 1.4, 0)
@@ -63,7 +67,8 @@ func _physics_process(delta: float) -> void:
 	query.exclude = [get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
-		world.activities.trace(from,to,Color("ff8264"))
+		if world.network != null and world.network.active(): world.network.shot_effect.rpc(from,to,1)
+		else: world.activities.trace(from,to,Color("ff8264"))
 		if world.network!=null and world.network.active():
 			var target_peer := int(hit.collider.get_meta("peer_id",0))
 			if target_peer==0 and hit.collider is CharacterBody3D and hit.collider.get_script()==preload("res://scripts/car.gd"):
