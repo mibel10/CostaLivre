@@ -168,7 +168,8 @@ func _draw() -> void:
 	dot(a.DEALER, Color("c7afff"), "APEX")
 	dot(a.GARAGE, Color("8ddbb5"), "Oficina")
 	if world.station!=null:
-		dot(world.station.CENTER,Color("8db8ef"),"Delegacia")
+		for station in world.station.STATIONS:
+			dot(station.center,Color("8db8ef"),"Delegacia / %d viaturas" % int(station.count))
 	dot(a.HEAVY_SHOP,Color("9ed8ff"),"Arsenal da favela")
 	dot(a.SUPPLY_PICKUP,Color("ffd18a"),"Entrega no beco")
 	dot(a.HILL_RESIDENT,Color("ffd18a"),"Morador / entrega de remedios")

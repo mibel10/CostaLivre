@@ -38,7 +38,7 @@ func run() -> void:
 	client=load("res://main.tscn").instantiate()
 	client.name="World"
 	client_view.add_child(client)
-	assert(host.station.fleet.size()==5)
+	assert(host.station.fleet.size()==27)
 	var initial_cars: int=host.cars.size()
 	host.network.host()
 	client.network.address_field.text=client.network.make_internet_code("127.0.0.1",28960,host.network.code)
@@ -48,6 +48,20 @@ func run() -> void:
 	var id: int=client_api.get_unique_id()
 	assert(host.player.position!=client.player.position,"Different spawn points")
 	assert(host.network.rules.sheets.has(id))
+	host.heat = 100
+	host.response_delay = 0
+	host.station.dispatch(0)
+	assert(host.cops.size() == 14, "Two five-star targets use fourteen cars")
+	for peer in [1,id]:
+		assert(host.cops.filter(func(car): return car.get_meta("police_target_peer") == peer).size() == 7)
+	host.heat = 0
+	host.station.dispatch(0)
+	assert(host.cops.is_empty())
+	for car in host.station.fleet:
+		car.position = car.police_home
+		car.police_phase = "parked"
+		car.speed = 0
+		car.velocity = Vector3.ZERO
 	var theft: Dictionary=host.network.members[id].duplicate()
 	theft.car=1
 	theft.car_position=host.car_by_id(1).position

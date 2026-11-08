@@ -111,7 +111,8 @@ func _physics_process(delta: float) -> void:
 		speed=0
 		velocity=Vector3(0,-4,0)
 	elif police and police_phase in ["exit","return","dock"]:
-		var aim := Vector3(position.x,0,42) if police_phase=="exit" else (Vector3(police_home.x,0,42) if police_phase=="return" else police_home)
+		var exit_point: Vector3 = get_meta("station_exit",Vector3(police_home.x,0,42))
+		var aim := exit_point if police_phase in ["exit","return"] else police_home
 		steer=ai_steer(aim)
 		speed=move_toward(speed,7.0,delta*6)
 		if position.distance_to(aim)<3:
