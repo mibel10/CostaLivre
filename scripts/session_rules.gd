@@ -311,7 +311,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"punch": punch_peer(id,float(data.get("yaw",0)))
 		"reload": with_actor(id,world.activities.reload)
 		"job":
-			var requested_job:=clampi(int(data.get("index",0)),0,26)
+			var requested_job:=clampi(int(data.get("index",0)),0,28)
 			if requested_job>=24:
 				propose_mission(id,requested_job)
 			elif world.activities.job>=0:
@@ -661,13 +661,13 @@ func export_state() -> Dictionary:
 		sheets[1].inventory=inventory()
 	var a: Node=world.activities
 	var bank: Node=a.bank
-	return {"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
+	return {"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
 
 func apply_state(data: Dictionary) -> void:
 	sheets=data.get("sheets",{})
 	world.heat=float(data.get("heat",0))
 	var a: Node=world.activities
-	for key in ["job","stage","clock","completed","robbery_cooldowns"]:
+	for key in ["job","stage","clock","progress","completed","robbery_cooldowns"]:
 		a.set(key,data[key])
 	a.target_car=world.car_by_id(int(data.target_car))
 	a.targets.clear()

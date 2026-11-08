@@ -249,7 +249,7 @@ func elevator_position(building: String, floor_number: int) -> Vector3:
 
 func mission_position() -> Vector3:
 	var a: Node = world.activities
-	if a.job>=24:
+	if a.job in [24,25,26]:
 		var floors: Array = {24:[2,5,3],25:[4,6,1],26:[7,5,3]}[a.job]
 		if a.stage>=3:
 			return PLACES[5]+Vector3(0,0,17)
@@ -262,7 +262,7 @@ func mission_position() -> Vector3:
 
 func task_label() -> String:
 	var a: Node = world.activities
-	if a.job>=24:
+	if a.job in [24,25,26]:
 		var tasks: Array={24:["Desativar cameras","Hackear o servidor central","Baixar arquivos do mainframe","Sair do predio sem ser visto"],25:["Entrar agachado no controle","Hackear o sistema de acesso","Copiar a chave-mestra","Escapar da equipe policial"],26:["Achar o terminal no oitavo andar","Invadir o servidor protegido","Apagar os rastros digitais","Descer e sumir da busca"]}[a.job]
 		return "%s / %d%% / agache (Z) e segure F" % [tasks[a.stage],roundi(task_progress/OPERATION_TASK_DURATION*100)]
 	if NEW_TASKS.has(a.job): return "%s / %d%% / segure F" % [NEW_TASKS[a.job][1][mini(a.stage,2)], roundi(task_progress/BUILDING_TASK_DURATION*100)]
@@ -396,7 +396,7 @@ func prompt() -> String:
 	var at: Vector3 = world.player.position
 	if elevator_building_at(at)!="":
 		return "F / Escolher andar do elevador"
-	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job>=24) and at.distance_to(mission_position())<2.5:
+	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:
 		return task_label()
 	if inside_room(at):
 		return "F / Atendimento, descanso ou servico local"
@@ -410,7 +410,7 @@ func interact() -> bool:
 		world.activities.set_menu("elevator")
 		elevator_ui.show()
 		return true
-	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job>=24) and at.distance_to(mission_position())<2.5:
+	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:
 		return true # Holding F advances the work in tick_tasks.
 	if leisure_cooldown>0:
 		return false
@@ -444,7 +444,7 @@ func tick_leisure(delta: float) -> void:
 
 func tick_tasks(delta: float) -> void:
 	var a: Node = world.activities
-	var special:bool=a.job>=24
+	var special:bool=a.job in [24,25,26]
 	if (not TASKS.has(a.job) and not NEW_TASKS.has(a.job) and not special) or world.active_car!=null or world.player.position.distance_to(mission_position())>2.5 or not world.activity_held() or (special and not world.player.is_crouching):
 		task_progress=0
 		return

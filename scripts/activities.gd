@@ -56,8 +56,9 @@ func _ready() -> void:
 		REWARDS.append_array([2400, 2600, 2800, 3000, 3200, 3400, 4000])
 		STORY_BEATS.append_array(["Organize o estoque do supermercado.", "Faça a entrega no supermercado do leste.", "Ajude nos serviços da avenida.", "Inspecione os prédios do bairro novo.", "Prepare o abastecimento do mercado.", "Reúna os documentos nos escritórios.", "Conclua a última entrega na cidade nova."])
 		JOBS.append_array(["Invasao ao Data Center [COOP]","Protocolo Fantasma [COOP]","Arquivo Zero [COOP]"])
-		REWARDS.append_array([6200,7400,8600])
-		STORY_BEATS.append_array(["Desligue as cameras, invada o servidor, baixe os arquivos e escape da policia.","Cruze os andares sem ser visto, hackeie o controle central e saia com a chave-mestra.","Apague os rastros no mainframe e fuja do predio antes da equipe tatica."])
+		JOBS.append_array(["Sincronização do estoque [COOP]", "Bloqueio do mercado [COOP]"])
+		REWARDS.append_array([6200,7400,8600,9000,10000])
+		STORY_BEATS.append_array(["Desligue as cameras, invada o servidor, baixe os arquivos e escape da policia.","Cruze os andares sem ser visto, hackeie o controle central e saia com a chave-mestra.","Apague os rastros no mainframe e fuja do predio antes da equipe tatica.","Dois parceiros devem ativar os dois controles ao mesmo tempo.","Dois parceiros devem operar os terminais simultaneamente."])
 	for entry in [[GUN_SHOP, "ARSENAL  /  ARMAS", Color("96bfe3")], [DEALER, "APEX  /  VEÍCULOS", Color("ae91e2")], [GARAGE, "OFICINA  /  PERSONALIZAÇÃO", Color("86cba3")]]:
 		place(entry[0], entry[1], entry[2])
 	for i in 2:
@@ -312,6 +313,9 @@ func start_job(index: int) -> void:
 	if index>=24 and (world.network==null or not world.network.active()):
 		world.notify("Esta operacao e exclusiva do multiplayer.")
 		return
+	if index in [27,28] and world.network.rules.participants().size() < 2:
+		world.notify("Esta missão exige dois jogadores ativos.")
+		return
 	if index < 0 or index >= JOBS.size():
 		return
 	# Replacing a contract cannot leave unbounded parked mission vehicles behind.
@@ -430,6 +434,7 @@ func remove_car(car: CharacterBody3D) -> void:
 	car.queue_free()
 
 func destination() -> Vector3:
+	if job in [27,28]: return Vector3(294 if job == 27 else 798,0,-99)
 	if job>=24:
 		return world.life.mission_position()
 	if job in [7,9,10,11,12,13,14,15,16] or world.life.NEW_TASKS.has(job):
@@ -455,6 +460,7 @@ func destination() -> Vector3:
 	return world.subject_position()
 
 func objective() -> String:
+	if job in [27,28]: return "Dois jogadores: segurem F a 4m nos lados leste e oeste / %d%%" % roundi(progress / 8.0 * 100)
 	if job>=24:
 		return "%s  /  %d:%02d" % [world.life.task_label(),int(clock)/60,int(clock)%60]
 	if job in [7,9,10,11,12,13,14,15,16] or world.life.NEW_TASKS.has(job):
@@ -571,6 +577,23 @@ func tick_mission(delta: float) -> void:
 				complete_job()
 		6:
 			if world.heat <= 0:
+				complete_job()
+		27,28:
+			clock -= delta
+			if clock <= 0:
+				fail_job("Tempo esgotado na operação cooperativa.")
+				return
+			var left := 0
+			var right := 0
+			var center := destination()
+			for id in world.network.rules.participants():
+				if not world.network.rules.held(id) or int(world.network.members[id].get("car", -1)) >= 0: continue
+				var at: Vector3 = world.network.rules.position_of(id)
+				if at.distance_to(center + Vector3(-4,0,0)) < 1.8: left = id
+				if at.distance_to(center + Vector3(4,0,0)) < 1.8: right = id
+			progress = progress + delta if left > 0 and right > 0 and left != right else 0.0
+			if progress >= 8.0:
+				world.life.task_progress = 0
 				complete_job()
 		24,25,26:
 			clock-=delta
