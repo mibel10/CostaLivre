@@ -353,6 +353,26 @@ func build_hillside_homes() -> void:
 			var x := 344.0 + step * 1.2
 			var ground := (x - 294.0) * 10.0 / 56.0 - 0.1
 			box(self, Vector3(x, ground + 0.1, side * 31.0), Vector3(1.3, 0.2, 2), Color("b8b4a2"), true)
+func build_supermarkets() -> void:
+	for center in [294.0, 798.0]:
+		var wall := Color("c3b9a1")
+		box(self, Vector3(center, 0.02, -100), Vector3(72, 0.2, 34), Color("b8b4a2"))
+		box(self, Vector3(center, 7, -117), Vector3(72, 14, 0.4), wall, true)
+		for side in [-1, 1]:
+			box(self, Vector3(center + side * 36, 7, -100), Vector3(0.4, 14, 34), wall, true)
+			box(self, Vector3(center + side * 20, 7, -83), Vector3(32, 14, 0.4), wall, true)
+		box(self, Vector3(center, 10.5, -83), Vector3(8, 7, 0.4), wall, true)
+		box(self, Vector3(center, 14.1, -100), Vector3(72, 0.2, 34), Color("81938f"), true)
+		box(self, Vector3(center, 0.04, -70), Vector3(72, 0.08, 26), Color("62696a"))
+		for x in range(-30, 31, 6):
+			box(self, Vector3(center + x, 0.09, -70), Vector3(0.12, 0.02, 10), Color("e7d4a2"))
+		for x in range(-27, 28, 9):
+			for z in [-109, -99, -89]:
+				box(self, Vector3(center + x, 1.1, z), Vector3(2, 2.2, 7), Color("3d5557"), true)
+				for shelf in 3:
+					box(self, Vector3(center + x + 1.05, 0.5 + shelf * 0.65, z), Vector3(0.2, 0.35, 6), [Color("c99951"), Color("809a65"), Color("b35e49")][shelf])
+		sign_text("SUPERMERCADO", Vector3(center, 8.5, -82.7))
+
 func build_city() -> void:
 	build_hills()
 	build_hillside_homes()
@@ -371,6 +391,7 @@ func build_city() -> void:
 			var x := -147.0 + ix * 42
 			var z := -105.0 + iz * 42
 			if absf(z) < 35 and (absf(x - 378) < 84 or absf(x - 714) < 84): continue
+			if ix in [10, 11, 22, 23] and iz in [0, 1]: continue
 			if Vector2(x, z) in [Vector2(21,-105),Vector2(-63,21),Vector2(63,21),Vector2(-63,63),Vector2(-105,-21),Vector2(105,-63),Vector2(147,63),Vector2(105,21)]:
 				continue # The bank has its own accessible building and interior.
 			if Vector2(x,z) in [Vector2(-63,21),Vector2(63,21),Vector2(-63,63)]:
