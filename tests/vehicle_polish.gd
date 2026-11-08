@@ -29,6 +29,8 @@ func run() -> void:
 			assert(mat.cull_mode == BaseMaterial3D.CULL_DISABLED,"Keep the source shell's double-sided surfaces")
 			tested += 1
 	assert(tested >= 3)
+	while world.car_transition:
+		await process_frame
 	Input.action_press("forward")
 	Input.action_press("left")
 	for i in 24:

@@ -17,7 +17,7 @@ func run() -> void:
 	a.campaign_save_path = "res://artifacts/playthrough/full_campaign_save_test.cfg"
 	a.start_job(0)
 	var car = world.cars[0]
-	for chapter in 17:
+	for chapter in 24:
 		assert(a.job == chapter,"Campaign chapters remain sequential")
 		world.cutscene.finish()
 		world.active_car = car
@@ -76,7 +76,7 @@ func run() -> void:
 					world.active_car = null
 					world.player.position = a.destination()
 					a.tick_mission(0.1)
-			7,9,10,11,12,13,14,15,16:
+			7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23:
 				world.active_car = null
 				for step in 3:
 					world.player.position = world.life.mission_position()
@@ -93,5 +93,5 @@ func run() -> void:
 	world.activities.set_menu("")
 	world.queue_free()
 	await process_frame
-	print("PASS: all 17 chapters through objective rules, bank, cutscene transitions and campaign ending")
+	print("PASS: all 24 chapters through objective rules, bank, cutscene transitions and campaign ending")
 	quit()

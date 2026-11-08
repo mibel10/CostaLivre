@@ -50,9 +50,11 @@ func run() -> void:
 	world.activities.handle_input(key)
 	assert(world.activities.job_page == 2)
 	world.activities.handle_input(key)
+	assert(world.activities.job_page == 3)
+	world.activities.handle_input(key)
 	assert(world.activities.job_page == 0)
 	world.activities.set_menu("")
-	print("PASS: walking pedestrians, animated roll, six accessible interiors, four interior contracts and three job pages")
+	print("PASS: walking pedestrians, animated roll, six accessible interiors, four interior contracts and four job pages")
 	world.queue_free()
 	await process_frame
 	await create_timer(0.2).timeout
