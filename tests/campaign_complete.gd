@@ -22,6 +22,8 @@ func run() -> void:
 		world.cutscene.finish()
 		world.active_car = car
 		car.speed = 0
+		if a.ACTION_JOBS.has(chapter):
+			finish_action(world,car)
 		match chapter:
 			0:
 				for stop in world.STOPS:
@@ -80,7 +82,7 @@ func run() -> void:
 				assert(a.job == 8, "Rescue needs an escape before delivery")
 				world.heat = 0
 				a.tick_mission(0.1)
-			7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23:
+			11,12,13,14,15,16,17,18,19,20,21,22,23:
 				world.active_car = null
 				for step in 3:
 					world.player.position = world.life.mission_position()
@@ -99,3 +101,36 @@ func run() -> void:
 	await process_frame
 	print("PASS: all 24 chapters through objective rules, bank, cutscene transitions and campaign ending")
 	quit()
+
+func finish_action(world: Node, car: Node) -> void:
+	var a: Node = world.activities
+	var spec: Dictionary = a.ACTION_JOBS[a.job]
+	var original_stage: int = a.stage
+	Input.action_press("activity")
+	world.life.tick_tasks(1000)
+	Input.action_release("activity")
+	assert(a.stage == original_stage, "Holding the old service button cannot finish the new mission")
+	match str(spec.kind):
+		"drive":
+			world.active_car = a.target_car
+			a.target_car.speed = 0
+			for point in spec.points:
+				a.target_car.position = point
+				a.tick_mission(0.1)
+		"rescue":
+			world.active_car = a.target_car if a.target_car != null else car
+			world.active_car.position = spec.pickup
+			world.active_car.speed = 0
+			assert(a.interact_campaign())
+			world.active_car.position = spec.drop
+			a.tick_mission(0.1)
+		"intercept":
+			a.target_car.take_hit(102)
+			a.tick_mission(0.1)
+			assert(a.stage == 1)
+			world.active_car = null
+			world.player.position = a.target_car.position+Vector3(3,0,0)
+			assert(a.interact_campaign())
+			world.player.position = spec.drop
+			world.heat = 0
+			a.tick_mission(0.1)

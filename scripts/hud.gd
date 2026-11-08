@@ -58,7 +58,7 @@ func _draw() -> void:
 	if a.bank.inside():
 		detail += "   ·   Banco Costa"
 	elif a.job >= 0:
-		if world.life != null and (world.life.TASKS.has(a.job) or world.life.NEW_TASKS.has(a.job) or (a.job in [24,25,26] and a.stage < 3)):
+		if world.life != null and ((world.life.TASKS.has(a.job) or world.life.NEW_TASKS.has(a.job)) and not a.ACTION_JOBS.has(a.job) or (a.job in [24,25,26] and a.stage < 3)):
 			detail += "   ·   %dº andar" % (roundi(world.life.mission_position().y / 6.0) + 1)
 		detail += "   ·   " + a.JOBS[a.job]
 	text(detail, Vector2(38, 63), 11, muted)

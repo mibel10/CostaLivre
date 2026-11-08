@@ -85,12 +85,18 @@ func run() -> void:
 	await wait_for(func(): return host.activities.job==9 and client.activities.job==9)
 	host.cutscene.finish()
 	client.cutscene.finish()
-	for stage in 3:
-		client.player.position=client.life.mission_position()+Vector3(1.5,0.1,0)
-		await create_timer(0.3).timeout
-		Input.action_press("activity")
-		await create_timer(host.life.BUILDING_TASK_DURATION+0.3).timeout
-		Input.action_release("activity")
+	var rescue_car: Node = client.car_by_id(1)
+	client.player.position = rescue_car.position+Vector3(2.6,0.3,0)
+	client.interact()
+	await create_timer(0.5).timeout
+	assert(client.active_car == rescue_car)
+	rescue_car.position = client.activities.ACTION_JOBS[9].pickup+Vector3.UP*0.3
+	rescue_car.speed = 0
+	await create_timer(0.4).timeout
+	client.network.rules.send_action("interact",{})
+	await wait_for(func(): return client.activities.stage == 1 and client.activities.passenger_car == rescue_car.net_id)
+	rescue_car.position = client.activities.ACTION_JOBS[9].drop+Vector3.UP*0.3
+	rescue_car.speed = 0
 	await wait_for(func(): return host.activities.job==-1 and client.activities.job==-1)
 	assert(client.cash>=900+host.activities.REWARDS[9],"Cooperative reward")
 	host.network.rules.sheets[id].protected_until=0

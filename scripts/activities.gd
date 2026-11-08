@@ -5,6 +5,11 @@ const Bank = preload("res://scripts/bank.gd")
 const Catalog = preload("res://scripts/vehicle_catalog.gd")
 const CAMPAIGN_LENGTH := 24
 
+const ACTION_JOBS := {
+	7: {"name":"Fuga de teste","kind":"drive","story":"Teste o Aurora X no circuito e devolva-o inteiro a oficina.","reward":3000,"model":3,"spawn":Vector3(-105,0.3,-5),"points":[Vector3(-126,0,-84),Vector3(84,0,-84),Vector3(84,0,84),Vector3(-21,0,63)],"time":120.0,"min_hp":80},
+	9: {"name":"Resgate na avenida","kind":"rescue","story":"Busque o ferido na avenida e leve-o de carro a Clinica Costa antes do tempo acabar.","reward":3200,"pickup":Vector3(168,0,-84),"drop":Vector3(63,0,38),"time":150.0},
+	10: {"name":"Interceptacao na praia","kind":"intercept","story":"Pare o carro do mensageiro sem destrui-lo, recolha a maleta a pe e fuja ate o mercado.","reward":3800,"model":1,"spawn":Vector3(-126,0.3,-84),"track":[Vector3(-126,0.3,-84),Vector3(84,0.3,-84),Vector3(84,0.3,84),Vector3(-126,0.3,84)],"drop":Vector3(105,0,-49),"time":220.0}}
+
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
 const HILL_RESIDENT := Vector3(714,9.9,23)
@@ -84,6 +89,10 @@ func _ready() -> void:
 	world.add_child(bank)
 	for i in 3:
 		world.spawn_car(Vector3(24 + i * 35, 0.2, -126), CAR_COLORS[i], false, i + 1)
+	for index in ACTION_JOBS:
+		JOBS[index] = ACTION_JOBS[index].name
+		STORY_BEATS[index] = ACTION_JOBS[index].story
+		REWARDS[index] = int(ACTION_JOBS[index].reward)
 	setup_shot_audio()
 	world.toast = "M: missões  •  TAB: mapa e lojas  •  ESC: controles"
 	world.toast_time = 5
@@ -331,6 +340,8 @@ func nearby_place() -> String:
 	return ""
 
 func prompt() -> String:
+	var contract := action_prompt()
+	if contract != "": return contract
 	if job == 8 and stage == 0 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
 		return "F / Embarcar informante" if world.active_car != null else "Traga um carro para resgatar o informante"
 	var errand := hill_errand_prompt()
@@ -373,7 +384,9 @@ func start_job(index: int) -> void:
 	if index < 0 or index >= JOBS.size():
 		return
 	# Replacing a contract cannot leave unbounded parked mission vehicles behind.
-	if target_car != null and target_car != world.active_car:
+	for loan in world.cars.duplicate():
+		if loan != world.active_car and bool(loan.get_meta("mission_loan",false)): remove_car(loan)
+	if is_instance_valid(target_car) and target_car != world.active_car:
 		remove_car(target_car)
 	for car in targets:
 		if is_instance_valid(car) and car != world.active_car:
@@ -385,6 +398,7 @@ func start_job(index: int) -> void:
 	stage = 0
 	clock = (360.0 if job >= 24 else ((180.0 if job == 8 else 100.0) if job >= 7 else (95.0 if job == 3 else 0.0)))
 	progress = 0
+	if ACTION_JOBS.has(job): setup_action_job()
 	if job == 2:
 		target_car = world.spawn_car(Vector3(-84, 0.2, 42), CAR_COLORS[1], false, 2)
 	elif job == 4:
@@ -398,7 +412,7 @@ func start_job(index: int) -> void:
 		world.raise_heat(42)
 	world.notify("Contrato: %s. Recompensa $%d." % [JOBS[job], REWARDS[job]])
 	if world.cutscene != null:
-		world.play_cutscene("CAPÍTULO %02d  ·  %s" % [index + 1, JOBS[index].to_upper()], ("Entre no predio e realize os tres servicos marcados. Nos andares altos, use F no elevador." if index in [7,9,10,11,12,13,14,15,16] else STORY_BEATS[index]))
+		world.play_cutscene("CAPÍTULO %02d  ·  %s" % [index + 1, JOBS[index].to_upper()], ("Entre no predio e realize os tres servicos marcados. Nos andares altos, use F no elevador." if index in [7,9,10,11,12,13,14,15,16] and not ACTION_JOBS.has(index) else STORY_BEATS[index]))
 
 func begin_campaign() -> void:
 	load_campaign()
@@ -515,10 +529,12 @@ func fail_job(message: String) -> void:
 		world.play_cutscene("MISSÃO FALHOU", "%s  ·  Vamos tentar de novo." % JOBS[failed_index], func(): start_job(campaign_index))
 
 func remove_car(car: CharacterBody3D) -> void:
+	if not is_instance_valid(car): return
 	world.cars.erase(car)
 	car.queue_free()
 
 func destination() -> Vector3:
+	if ACTION_JOBS.has(job): return action_destination()
 	if job in [27,28]: return Vector3(294 if job == 27 else 798,0,-99)
 	if job>=24:
 		return world.life.mission_position()
@@ -543,6 +559,7 @@ func destination() -> Vector3:
 	return world.subject_position()
 
 func objective() -> String:
+	if ACTION_JOBS.has(job): return action_objective()
 	if job in [27,28]: return "Dois jogadores: segurem F a 4m nos lados leste e oeste / %d%%" % roundi(progress / 8.0 * 100)
 	if job>=24:
 		return "%s  /  %d:%02d" % [world.life.task_label(),int(clock)/60,int(clock)%60]
@@ -618,6 +635,9 @@ func tick(delta: float) -> void:
 	tick_mission(delta)
 
 func tick_mission(delta: float) -> void:
+	if ACTION_JOBS.has(job):
+		tick_action_job(delta)
+		return
 	if job < 0:
 		return
 	var distance: float = world.subject_position().distance_to(destination())
@@ -962,7 +982,9 @@ func tick_supply() -> void:
 
 func _process(_delta: float) -> void:
 	var informant: Node3D = world.get_node_or_null("InformanteCampanha") if world != null else null
-	if informant != null: informant.visible = job == 8 and stage == 0
+	if informant != null:
+		informant.visible = stage == 0 and (job == 8 or (ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "rescue"))
+		if informant.visible: informant.position = (ACTION_JOBS[job].pickup if ACTION_JOBS.has(job) else INFORMANT_PICKUP)+Vector3(0,0,2)
 	var gun: Node3D = world.get_node_or_null("ContatoBeco/Arma") if world != null else null
 	if gun != null:
 		gun.rotation.x = PI/2 if supply_stage >= 3 else 0.0
@@ -1058,6 +1080,19 @@ func interact_hill_errand() -> bool:
 	return true
 
 func interact_campaign() -> bool:
+	if ACTION_JOBS.has(job):
+		var spec: Dictionary = ACTION_JOBS[job]
+		if spec.kind == "rescue" and stage == 0 and world.active_car != null and (target_car == null or world.active_car == target_car) and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(spec.pickup) < 5:
+			passenger_car = world.active_car.net_id
+			stage = 1
+			world.notify("Passageiro a bordo. Chegue ao destino antes do tempo acabar.")
+			return true
+		if spec.kind == "intercept" and stage == 1 and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
+			stage = 2
+			world.raise_heat(40)
+			world.notify("Maleta recolhida! Despiste a policia e entregue no destino marcado.")
+			return true
+		return false
 	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
 		passenger_car = world.active_car.net_id
 		stage = 1
@@ -1065,3 +1100,77 @@ func interact_campaign() -> bool:
 		world.notify("Informante a bordo! Despiste a policia antes de leva-lo ao esconderijo.")
 		return true
 	return false
+
+func setup_action_job() -> void:
+	var spec: Dictionary = ACTION_JOBS[job]
+	clock = float(spec.time)
+	if spec.has("model"):
+		target_car = world.spawn_car(spec.spawn,Color("e5c86a"),false,int(spec.model))
+		target_car.owned = spec.kind != "intercept"
+		target_car.set_meta("mission_loan",true)
+		if spec.kind == "intercept":
+			target_car.traffic = true
+			target_car.route.assign(spec.track)
+
+func action_requires_car() -> bool:
+	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["drive","rescue"]
+
+func action_destination() -> Vector3:
+	var spec: Dictionary = ACTION_JOBS[job]
+	match str(spec.kind):
+		"drive":
+			return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.points[mini(stage,spec.points.size()-1)]
+		"rescue":
+			if stage == 0:
+				return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.pickup
+			var car: Node = world.car_by_id(passenger_car)
+			return car.position if car != null and world.active_car != car else spec.drop
+		"intercept": return target_car.position if stage < 2 and is_instance_valid(target_car) else spec.drop
+	return Vector3.ZERO
+
+func action_objective() -> String:
+	var spec: Dictionary = ACTION_JOBS[job]
+	var text := ""
+	match str(spec.kind):
+		"drive": text = "Pegue o veiculo marcado" if world.active_car != target_car else "Circuito %d/%d / preserve o carro" % [stage+1,spec.points.size()]
+		"rescue": text = "Busque o passageiro de carro / F para embarcar" if stage == 0 else "Leve o passageiro ao destino"
+		"intercept": text = ["Danifique o carro do mensageiro sem destrui-lo","Saia do carro e use F para recolher a maleta","Despiste e entregue a maleta"][mini(stage,2)]
+	return "%s / %ds" % [text,ceili(clock)]
+
+func tick_action_job(delta: float) -> void:
+	var spec: Dictionary = ACTION_JOBS[job]
+	clock -= delta
+	if clock <= 0:
+		fail_job("O tempo da operacao acabou.")
+		return
+	var stopped: bool = world.active_car != null and absf(world.active_car.speed) < 3
+	match str(spec.kind):
+		"drive":
+			if not is_instance_valid(target_car) or target_car.hp <= float(spec.get("min_hp",0)):
+				fail_job("O veiculo do contrato ficou danificado demais.")
+			elif world.active_car == target_car and world.subject_position().distance_to(spec.points[stage]) < float(spec.get("radius",8)) and (stage < spec.points.size()-1 or stopped):
+				stage += 1
+				if stage >= spec.points.size(): complete_job()
+		"rescue":
+			var car: Node = world.car_by_id(passenger_car)
+			if stage > 0 and (car == null or car.hp <= 0): fail_job("O carro do passageiro foi destruido.")
+			elif stage > 0 and world.active_car == car and stopped and world.subject_position().distance_to(spec.drop) < 6: complete_job()
+		"intercept":
+			if stage < 2 and (not is_instance_valid(target_car) or target_car.hp <= 0):
+				fail_job("A maleta foi perdida na explosao do mensageiro.")
+			elif stage == 0 and target_car.hp <= 100:
+				target_car.traffic = false
+				target_car.speed = 0
+				stage = 1
+			elif stage == 2 and world.heat <= 0 and world.subject_position().distance_to(spec.drop) < 5: complete_job()
+
+func action_prompt() -> String:
+	if not ACTION_JOBS.has(job): return ""
+	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind == "drive" and is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
+		return "E / Entrar no veiculo do contrato"
+	if spec.kind == "rescue" and stage == 0 and world.subject_position().distance_to(spec.pickup) < 5:
+		return "F / Embarcar passageiro" if world.active_car != null else "Traga um carro para buscar o passageiro"
+	if spec.kind == "intercept" and stage == 1 and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
+		return "F / Recolher a maleta"
+	return ""

@@ -628,10 +628,13 @@ func physics(delta: float) -> void:
 		a.robbery_progress=0
 		a.pedestrian_robbery_progress=0
 	if a.job>=0:
-		var actor := choose_actor(a.destination(),false,a.job in [0,2,3,8],a.job>=24)
+		var actor := choose_actor(a.destination(),false,a.job in [0,2,3,8] or a.action_requires_car(),a.job>=24)
 		if actor==0 and not is_dead(1) and a.job<24:
 			actor=1
-		if a.job==2:
+		if a.passenger_car >= 0:
+			for id in participants():
+				if int(network.members[id].get("car",-1)) == a.passenger_car: actor = id
+		if a.job==2 or (a.ACTION_JOBS.has(a.job) and a.ACTION_JOBS[a.job].kind == "drive"):
 			for id in participants():
 				if a.target_car!=null and int(network.members[id].get("car",-1))==a.target_car.net_id:
 					actor=id

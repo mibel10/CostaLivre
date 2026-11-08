@@ -149,6 +149,7 @@ func elevator_position(building: String, floor_number: int) -> Vector3:
 
 func mission_position() -> Vector3:
 	var a: Node = world.activities
+	if a.ACTION_JOBS.has(a.job): return a.action_destination()
 	if a.job in [24,25,26]:
 		var floors: Array = {24:[2,5,3],25:[4,6,1],26:[7,5,3]}[a.job]
 		if a.stage>=3:
@@ -162,6 +163,7 @@ func mission_position() -> Vector3:
 
 func task_label() -> String:
 	var a: Node = world.activities
+	if a.ACTION_JOBS.has(a.job): return a.action_objective()
 	if a.job in [24,25,26]:
 		var tasks: Array={24:["Desativar cameras","Hackear o servidor central","Baixar arquivos do mainframe","Sair do predio sem ser visto"],25:["Entrar agachado no controle","Hackear o sistema de acesso","Copiar a chave-mestra","Escapar da equipe policial"],26:["Achar o terminal no oitavo andar","Invadir o servidor protegido","Apagar os rastros digitais","Descer e sumir da busca"]}[a.job]
 		return "%s / %d%% / agache (Z) e segure F" % [tasks[a.stage],roundi(task_progress/OPERATION_TASK_DURATION*100)]
@@ -396,6 +398,9 @@ func tick_leisure(delta: float) -> void:
 
 func tick_tasks(delta: float) -> void:
 	var a: Node = world.activities
+	if a.ACTION_JOBS.has(a.job):
+		task_progress = 0
+		return
 	var special:bool=a.job in [24,25,26]
 	if (not TASKS.has(a.job) and not NEW_TASKS.has(a.job) and not special) or world.active_car!=null or world.player.position.distance_to(mission_position())>2.5 or not world.activity_held() or (special and not world.player.is_crouching):
 		task_progress=0
