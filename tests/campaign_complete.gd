@@ -82,7 +82,7 @@ func run() -> void:
 				assert(a.job == 8, "Rescue needs an escape before delivery")
 				world.heat = 0
 				a.tick_mission(0.1)
-			11,12,13,14,15,16,17,18,19,20,21,22,23:
+			14,15,16,17,18,19,20,21,22,23:
 				world.active_car = null
 				for step in 3:
 					world.player.position = world.life.mission_position()
@@ -132,5 +132,23 @@ func finish_action(world: Node, car: Node) -> void:
 			world.player.position = a.target_car.position+Vector3(3,0,0)
 			assert(a.interact_campaign())
 			world.player.position = spec.drop
+			world.heat = 0
+			a.tick_mission(0.1)
+		"precision":
+			world.active_car = null
+			for i in spec.points.size():
+				a.weapon_impact({"collider":world.get_node("ObjetivosCampanha/Alvo%d_%d" % [a.job,i])},spec.points[i],1)
+			assert(a.stage == spec.points.size())
+			world.player.position = spec.exit
+			world.heat = 0
+			a.tick_mission(0.1)
+		"escape_file":
+			world.active_car = null
+			world.player.position = spec.pickup
+			assert(a.interact_campaign())
+			assert(world.life.stair_chase_started)
+			world.player.position = spec.exit
+			a.tick_mission(0.1)
+			assert(a.stage == 2 and not world.life.stair_chase_started)
 			world.heat = 0
 			a.tick_mission(0.1)

@@ -43,6 +43,7 @@ func run() -> void:
 		var query := PhysicsRayQueryParameters3D.create(room.to_global(Vector3(0,1,15)),room.to_global(Vector3(0,1,8)),1)
 		assert(world.get_world_3d().direct_space_state.intersect_ray(query).is_empty(), "New interiors have real entrances")
 	for index in range(13,17):
+		if world.activities.ACTION_JOBS.has(index): continue
 		world.activities.start_job(index)
 		world.cutscene.finish()
 		for step in 3:

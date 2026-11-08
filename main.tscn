@@ -13903,3 +13903,29 @@ pixel_size = 0.014
 position = Vector3(378, 9.9, 6.5)
 visible = false
 script = ExtResource("Script_contato")
+
+[node name="ObjetivosCampanha" type="Node3D" parent="."]
+
+[node name="Alvo11_0" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(143, 13.4, 67)
+size = Vector3(0.8, 0.8, 0.3)
+visible = false
+material = SubResource("StandardMaterial3D_wjjbu")
+metadata/contract_job = 11
+metadata/contract_stage = 0
+
+[node name="Alvo11_1" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(151, 25.4, 64)
+size = Vector3(0.8, 0.8, 0.3)
+visible = false
+material = SubResource("StandardMaterial3D_wjjbu")
+metadata/contract_job = 11
+metadata/contract_stage = 1
+
+[node name="Alvo11_2" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(147, 37.4, 57)
+size = Vector3(0.8, 0.8, 0.3)
+visible = false
+material = SubResource("StandardMaterial3D_wjjbu")
+metadata/contract_job = 11
+metadata/contract_stage = 2
