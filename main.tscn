@@ -4922,6 +4922,18 @@ size = Vector3(0.09, 0.12, 0.5)
 [sub_resource type="StandardMaterial3D" id="Material_contato_arma"]
 albedo_color = Color(0.06, 0.07, 0.08, 1)
 
+[sub_resource type="StandardMaterial3D" id="Material_horizonte_predio"]
+albedo_color = Color(0.40, 0.48, 0.50, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Material_horizonte_rua"]
+albedo_color = Color(0.23, 0.28, 0.30, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Material_horizonte_mar"]
+albedo_color = Color(0.20, 0.36, 0.43, 1)
+roughness = 0.65
+
 [node name="CostaLivre" type="Node3D" unique_id=130586917]
 script = ExtResource("1_q1fcy")
 
@@ -13374,3 +13386,461 @@ shape = SubResource("BoxShape3D_ddhr3")
 
 [node name="@CollisionShape3D@298" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@297/@StaticBody3D@299" unique_id=1677015284]
 shape = SubResource("BoxShape3D_uqo8r")
+
+[node name="HorizonteContinuo" type="Node3D" parent="."]
+
+[node name="Norte" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(376, -2, -420)
+size = Vector3(1124, 2, 550)
+material = SubResource("StandardMaterial3D_wjjbu")
+cast_shadow = 0
+
+[node name="Sul" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(376, -2, 420)
+size = Vector3(1124, 2, 550)
+material = SubResource("StandardMaterial3D_wjjbu")
+cast_shadow = 0
+
+[node name="Leste" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1228, -2, 0)
+size = Vector3(580, 2, 1400)
+material = SubResource("StandardMaterial3D_wjjbu")
+cast_shadow = 0
+
+[node name="MarAberto" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-508.5, -2.5, 0)
+size = Vector3(645, 2, 1800)
+material = SubResource("Material_horizonte_mar")
+cast_shadow = 0
+
+[node name="Estrada0_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-126, -0.94, -320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada0_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-126, -0.94, 320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada1_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(84, -0.94, -320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada1_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(84, -0.94, 320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada2_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(294, -0.94, -320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada2_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(294, -0.94, 320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada3_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(546, -0.94, -320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada3_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(546, -0.94, 320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada4_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(798, -0.94, -320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada4_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(798, -0.94, 320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada5_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(924, -0.94, -320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Estrada5_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(924, -0.94, 320)
+size = Vector3(8, 0.1, 350)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="EstradaLeste0" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1130, -0.94, -84)
+size = Vector3(385, 0.1, 8)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="EstradaLeste1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1130, -0.94, 0)
+size = Vector3(385, 0.1, 8)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="EstradaLeste2" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1130, -0.94, 84)
+size = Vector3(385, 0.1, 8)
+material = SubResource("Material_horizonte_rua")
+cast_shadow = 0
+
+[node name="Bairro0_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-145, 5.0, -192)
+size = Vector3(18, 12, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro0_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-145, 5.0, 192)
+size = Vector3(18, 12, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro1_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-99, 11.5, -236)
+size = Vector3(22, 25, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro1_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-99, 11.5, 236)
+size = Vector3(22, 25, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro2_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-53, 18.0, -280)
+size = Vector3(26, 38, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro2_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-53, 18.0, 280)
+size = Vector3(26, 38, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro3_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-7, 5.5, -192)
+size = Vector3(18, 13, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro3_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(-7, 5.5, 192)
+size = Vector3(18, 13, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro4_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(39, 12.0, -236)
+size = Vector3(22, 26, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro4_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(39, 12.0, 236)
+size = Vector3(22, 26, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro5_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(85, 18.5, -280)
+size = Vector3(26, 39, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro5_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(85, 18.5, 280)
+size = Vector3(26, 39, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro6_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(131, 6.0, -192)
+size = Vector3(18, 14, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro6_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(131, 6.0, 192)
+size = Vector3(18, 14, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro7_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(177, 12.5, -236)
+size = Vector3(22, 27, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro7_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(177, 12.5, 236)
+size = Vector3(22, 27, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro8_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(223, 19.0, -280)
+size = Vector3(26, 40, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro8_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(223, 19.0, 280)
+size = Vector3(26, 40, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro9_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(269, 6.5, -192)
+size = Vector3(18, 15, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro9_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(269, 6.5, 192)
+size = Vector3(18, 15, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro10_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(315, 13.0, -236)
+size = Vector3(22, 28, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro10_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(315, 13.0, 236)
+size = Vector3(22, 28, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro11_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(361, 19.5, -280)
+size = Vector3(26, 41, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro11_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(361, 19.5, 280)
+size = Vector3(26, 41, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro12_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(407, 7.0, -192)
+size = Vector3(18, 16, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro12_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(407, 7.0, 192)
+size = Vector3(18, 16, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro13_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(453, 13.5, -236)
+size = Vector3(22, 29, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro13_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(453, 13.5, 236)
+size = Vector3(22, 29, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro14_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(499, 20.0, -280)
+size = Vector3(26, 42, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro14_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(499, 20.0, 280)
+size = Vector3(26, 42, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro15_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(545, 7.5, -192)
+size = Vector3(18, 17, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro15_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(545, 7.5, 192)
+size = Vector3(18, 17, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro16_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(591, 14.0, -236)
+size = Vector3(22, 30, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro16_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(591, 14.0, 236)
+size = Vector3(22, 30, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro17_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(637, 20.5, -280)
+size = Vector3(26, 43, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro17_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(637, 20.5, 280)
+size = Vector3(26, 43, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro18_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(683, 8.0, -192)
+size = Vector3(18, 18, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro18_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(683, 8.0, 192)
+size = Vector3(18, 18, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro19_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(729, 14.5, -236)
+size = Vector3(22, 31, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro19_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(729, 14.5, 236)
+size = Vector3(22, 31, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro20_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(775, 21.0, -280)
+size = Vector3(26, 44, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro20_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(775, 21.0, 280)
+size = Vector3(26, 44, 20)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro21_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(821, 8.5, -192)
+size = Vector3(18, 19, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro21_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(821, 8.5, 192)
+size = Vector3(18, 19, 23)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro22_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(867, 15.0, -236)
+size = Vector3(22, 32, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro22_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(867, 15.0, 236)
+size = Vector3(22, 32, 26)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro23_-1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(913, 21.5, -280)
+size = Vector3(26, 45, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="Bairro23_1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(913, 21.5, 280)
+size = Vector3(26, 45, 29)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste0" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1000, 9.0, -120)
+size = Vector3(24, 20, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste1" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1068, 13.5, -88)
+size = Vector3(24, 29, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste2" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1136, 18.0, -56)
+size = Vector3(24, 38, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste3" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1000, 22.5, -24)
+size = Vector3(24, 47, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste4" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1068, 9.5, 8)
+size = Vector3(24, 21, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste5" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1136, 14.0, 40)
+size = Vector3(24, 30, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste6" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1000, 18.5, 72)
+size = Vector3(24, 39, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste7" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1068, 23.0, 104)
+size = Vector3(24, 48, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
+
+[node name="BairroLeste8" type="CSGBox3D" parent="HorizonteContinuo"]
+position = Vector3(1136, 10.0, 136)
+size = Vector3(24, 22, 24)
+material = SubResource("Material_horizonte_predio")
+cast_shadow = 0
