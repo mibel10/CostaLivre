@@ -423,7 +423,7 @@ func accept_state(id: int, state: Dictionary) -> void:
 	if not state.get("position") is Vector3 or not state.get("car_position") is Vector3:
 		return
 	var at: Vector3 = state.position
-	if not at.is_finite() or absf(at.x)>195 or absf(at.z)>153 or at.y < -10 or at.y>75:
+	if not at.is_finite() or at.x < -195 or at.x > 945 or absf(at.z)>153 or at.y < -10 or at.y>75:
 		return
 	if Time.get_ticks_msec()<int(members[id].get("elevator_target_until",0)):
 		var arrival: Vector3=members[id].get("elevator_target",at)
