@@ -9940,3 +9940,17 @@ mesh = SubResource("BoxMesh_rj0sb")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 67.25, 5)
 material_override = SubResource("StandardMaterial3D_5rrs7")
 mesh = SubResource("BoxMesh_p6ykm")
+
+[node name="EstruturaMorroFavela" type="CSGPolygon3D" parent="."]
+position = Vector3(0, 0, 35)
+polygon = PackedVector2Array(294, -0.6, 462, -0.6, 462, -0.12, 406, 9.88, 350, 9.88, 294, -0.12)
+depth = 70.0
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="EstruturaMorroResidencial" type="CSGPolygon3D" parent="."]
+position = Vector3(336, 0, 35)
+polygon = PackedVector2Array(294, -0.6, 462, -0.6, 462, -0.12, 406, 9.88, 350, 9.88, 294, -0.12)
+depth = 70.0
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
