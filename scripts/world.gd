@@ -310,7 +310,36 @@ func build_environment() -> void:
 	for i in 18:
 		box(self, Vector3(rng.randf_range(-100, 230), 6, -190 - rng.randf() * 90), Vector3(rng.randf_range(18, 45), rng.randf_range(20, 70), 25), Color("78908d"))
 
+func build_hills() -> void:
+	for center in [378.0, 714.0]:
+		for width in [70.0, 12.0]:
+			var surface := SurfaceTool.new()
+			surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+			var heights := [0.0, 10.0, 10.0, 0.0]
+			for segment in 3:
+				var left: float = center - 84.0 + segment * 56.0
+				var right := left + 56.0
+				var offset := 0.02 if width < 20 else 0.0
+				var a := Vector3(left, heights[segment] - 0.1 + offset, -width / 2)
+				var b := Vector3(left, heights[segment] - 0.1 + offset, width / 2)
+				var c := Vector3(right, heights[segment + 1] - 0.1 + offset, -width / 2)
+				var d := Vector3(right, heights[segment + 1] - 0.1 + offset, width / 2)
+				for vertex in [a, c, b, c, d, b]: surface.add_vertex(vertex)
+			surface.generate_normals()
+			var mesh := surface.commit()
+			var visual := MeshInstance3D.new()
+			visual.mesh = mesh
+			visual.material_override = material(Color("4a5359") if width < 20 else Color("7e986c"))
+			add_child(visual)
+			if width > 20:
+				var body := StaticBody3D.new()
+				var shape := CollisionShape3D.new()
+				shape.shape = mesh.create_trimesh_shape()
+				body.add_child(shape)
+				visual.add_child(body)
+
 func build_city() -> void:
+	build_hills()
 	# Continuous high collision rails close the four corners, even during jumps.
 	for x in [-186,938]:
 		var rail := box(self,Vector3(x,6,0),Vector3(2,16,294),Color("b0aa99"),true)
@@ -325,6 +354,7 @@ func build_city() -> void:
 		for iz in 6:
 			var x := -147.0 + ix * 42
 			var z := -105.0 + iz * 42
+			if absf(z) < 35 and (absf(x - 378) < 84 or absf(x - 714) < 84): continue
 			if Vector2(x, z) in [Vector2(21,-105),Vector2(-63,21),Vector2(63,21),Vector2(-63,63),Vector2(-105,-21),Vector2(105,-63),Vector2(147,63),Vector2(105,21)]:
 				continue # The bank has its own accessible building and interior.
 			if Vector2(x,z) in [Vector2(-63,21),Vector2(63,21),Vector2(-63,63)]:

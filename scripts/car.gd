@@ -155,9 +155,9 @@ func _physics_process(delta: float) -> void:
 	velocity.z = forward.z * speed
 	velocity.y = -5 if is_on_floor() else velocity.y - 22 * delta
 	move_and_slide()
-	if is_on_floor() and position.y<1.5:
+	if is_on_floor():
 		last_grounded=position
-	if position.y>5 or position.y < -6:
+	if position.y>20 or position.y < -6:
 		position=last_grounded if last_grounded!=Vector3.ZERO else (police_home if police else Vector3(0,0.3,0))
 		velocity=Vector3.ZERO
 		speed=0
