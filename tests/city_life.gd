@@ -33,10 +33,10 @@ func run() -> void:
 	before = world.player.position
 	assert(world.player.start_roll())
 	assert(world.player.roll_time > 0)
-	for i in 50:
+	for i in 65:
 		await physics_frame
 	assert(world.player.roll_time == 0 and world.player.model.rotation.x == 0)
-	assert(world.player.position.distance_to(before) > 2, "Roll moves player and resets visual pose")
+	assert(world.player.position.distance_to(before) > 10, "Roll moves player and resets visual pose")
 	for room in world.life.rooms:
 		if room.position.y > 0:
 			continue

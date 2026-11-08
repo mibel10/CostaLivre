@@ -409,7 +409,7 @@ func car_available(car: Node) -> bool:
 	return not active() or int(owners.get(car.net_id,0)) in [0,multiplayer.get_unique_id()]
 
 func local_state() -> Dictionary:
-	return {"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.outfit,"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
+	return {"roll":world.player.roll_time/world.player.ROLL_DURATION,"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.outfit,"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
 
 @rpc("any_peer","call_remote","unreliable_ordered",1)
 func report(state: Dictionary) -> void:
@@ -464,6 +464,9 @@ func accept_state(id: int, state: Dictionary) -> void:
 			state.car_position=state.position
 			state.car=-1
 			state.held=false
+	var reported_roll = state.get("roll",0)
+	var roll: float = float(reported_roll) if reported_roll is float or reported_roll is int else 0.0
+	state["roll"] = clampf(roll,0,1) if is_finite(roll) and int(state.car)<0 and not rules.is_dead(id) else 0.0
 	members[id]=state
 
 func _process(delta: float) -> void:
@@ -644,6 +647,10 @@ func update_avatars(states: Dictionary) -> void:
 		avatar.node.visible=int(state.car)<0 and close
 		avatar.node.set_weapon(int(state.get("weapon",1)))
 		avatar.node.set_crouched(bool(state.get("crouch",false)))
+		var remaining: float = float(state.get("roll",0))
+		avatar.node.model.rotation.x = (1.0-remaining)*TAU if remaining > 0 else 0.0
+		var pivot := Vector3(0,0.92,0)
+		avatar.node.model.position = pivot-Basis.from_euler(avatar.node.model.rotation)*pivot if remaining > 0 else Vector3(0,-0.28,0) if avatar.node.is_crouching else Vector3.ZERO
 		avatar.node.collision_layer=2 if int(state.car)<0 and float(state.get("hp",100))>0 else 0
 		avatar.node.model.rotation.z=PI/2 if float(state.get("hp",100))<=0 else 0
 		avatar.tag.visible=close

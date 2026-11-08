@@ -1,5 +1,8 @@
 extends CharacterBody3D
 
+const ROLL_DURATION := 0.85
+const ROLL_SPEED := 16.0
+
 var world: Node3D
 var model: Node3D
 var gun: MeshInstance3D
@@ -55,9 +58,9 @@ func _physics_process(delta: float) -> void:
 	set_crouched(crouch_latched if world.settings.toggle_crouch else Input.is_action_pressed("crouch"))
 	if roll_time > 0:
 		roll_time = maxf(0,roll_time-delta)
-		velocity = roll_direction.normalized()*10 + Vector3(0,-4,0)
+		velocity = roll_direction.normalized()*ROLL_SPEED + Vector3(0,-4,0)
 		move_and_slide()
-		model.rotation.x = (1-roll_time/0.65)*TAU
+		model.rotation.x = (1-roll_time/ROLL_DURATION)*TAU
 		var pivot := Vector3(0,0.92,0)
 		model.position = pivot - Basis.from_euler(model.rotation) * pivot
 		if roll_time <= 0:
@@ -88,7 +91,7 @@ func _physics_process(delta: float) -> void:
 func start_roll() -> bool:
 	if roll_cooldown > 0 or not is_on_floor() or world.active_car != null or world.car_transition or world.finished:
 		return false
-	roll_time = 0.65
+	roll_time = ROLL_DURATION
 	roll_cooldown = 1.1
 	var direction := Input.get_vector("left","right","forward","back")
 	roll_direction = Vector3(direction.x,0,direction.y).rotated(Vector3.UP,world.camera_yaw)
