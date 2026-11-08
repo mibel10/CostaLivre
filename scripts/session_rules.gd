@@ -1,6 +1,6 @@
 extends Node
 
-const INVENTORY := ["weapon","rifle_owned","shotgun_owned","smg_owned","heavy_owned","clips","reserves","fire_cooldown","reload_time","reload_weapon"]
+const INVENTORY := ["weapon","rifle_owned","shotgun_owned","smg_owned","heavy_owned","purchased_cars","clips","reserves","fire_cooldown","reload_time","reload_weapon"]
 var world: Node3D
 var network: Node
 var sheets := {}
@@ -39,7 +39,7 @@ func inventory() -> Dictionary:
 	return result
 
 func add_peer(id: int) -> Vector3:
-	var inv := {"weapon":1,"rifle_owned":false,"shotgun_owned":false,"smg_owned":false,"heavy_owned":[false,false,false],"clips":[0,12,0,0,0,0,0,0],"reserves":[0,36,0,0,0,0,0,0],"fire_cooldown":0.0,"reload_time":0.0,"reload_weapon":0}
+	var inv := {"weapon":1,"rifle_owned":false,"shotgun_owned":false,"smg_owned":false,"heavy_owned":[false,false,false],"purchased_cars":[],"clips":[0,12,0,0,0,0,0,0],"reserves":[0,36,0,0,0,0,0,0],"fire_cooldown":0.0,"reload_time":0.0,"reload_weapon":0}
 	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0,"home":-1,"homes":[]}
 	if id==1:
 		sheets[id].cash=world.cash
@@ -349,7 +349,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if world.activities.nearby_place() != ("garage" if menu == "garage_cars" else menu):
 					return
 				world.activities.menu=menu
-				world.activities.car_page=clampi(int(data.get("page",0)),0,2)
+				world.activities.car_page=clampi(int(data.get("page",0)),0,maxi(0,ceili(world.activities.purchased_cars.size()/3.0)-1) if menu == "owned_cars" else 2)
 				world.activities.buy(int(data.get("choice",-1)))
 			)
 			if str(data.get("menu","")) in ["guns","heavy_guns"]:

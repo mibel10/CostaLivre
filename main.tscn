@@ -13005,3 +13005,51 @@ position = Vector3(0, 4.8, 12.3)
 text = "OFICINA COSTA\nPINTURA / SUSPENSAO / VEICULOS"
 font_size = 36
 pixel_size = 0.016
+
+[node name="RetiradaVeiculos0" type="CSGBox3D" parent="."]
+position = Vector3(-8.5, 0.8, 19)
+size = Vector3(0.6, 1.6, 0.5)
+material = SubResource("Material_contato_arma")
+use_collision = true
+
+[node name="Placa" type="Label3D" parent="RetiradaVeiculos0"]
+position = Vector3(0, 1.6, 0)
+text = "MEUS VEICULOS / F\nRETIRADA"
+font_size = 28
+pixel_size = 0.014
+
+[node name="RetiradaVeiculos1" type="CSGBox3D" parent="."]
+position = Vector3(844.5, 0.8, -94)
+size = Vector3(0.6, 1.6, 0.5)
+material = SubResource("Material_contato_arma")
+use_collision = true
+
+[node name="Placa" type="Label3D" parent="RetiradaVeiculos1"]
+position = Vector3(0, 1.6, 0)
+text = "MEUS VEICULOS / F\nRETIRADA"
+font_size = 28
+pixel_size = 0.014
+
+[node name="RetiradaVeiculos2" type="CSGBox3D" parent="."]
+position = Vector3(292.5, 0.8, -78.5)
+size = Vector3(0.6, 1.6, 0.5)
+material = SubResource("Material_contato_arma")
+use_collision = true
+
+[node name="Placa" type="Label3D" parent="RetiradaVeiculos2"]
+position = Vector3(0, 1.6, 0)
+text = "MEUS VEICULOS / F\nRETIRADA"
+font_size = 28
+pixel_size = 0.014
+
+[node name="RetiradaVeiculos3" type="CSGBox3D" parent="."]
+position = Vector3(796.5, 0.8, -78.5)
+size = Vector3(0.6, 1.6, 0.5)
+material = SubResource("Material_contato_arma")
+use_collision = true
+
+[node name="Placa" type="Label3D" parent="RetiradaVeiculos3"]
+position = Vector3(0, 1.6, 0)
+text = "MEUS VEICULOS / F\nRETIRADA"
+font_size = 28
+pixel_size = 0.014

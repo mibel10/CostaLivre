@@ -63,12 +63,14 @@ func run() -> void:
 	world.activities.weapon = 7
 	world.activities.clips[7] = 11
 	world.activities.reserves[7] = 42
+	world.activities.purchased_cars = [{"tier":2,"paint":Color.RED,"engine":2.5,"suspension":0.3,"net_id":1234}]
 	world.cash = 1234
 	assert(world.activities.save_campaign())
 	world.activities.heavy_owned = [false,false,false]
 	world.activities.load_campaign()
 	assert(world.activities.heavy_owned == [true,true,true])
 	assert(world.activities.weapon == 7 and world.activities.clips[7] == 11 and world.activities.reserves[7] == 42)
+	assert(world.activities.purchased_cars.size() == 1 and world.activities.purchased_cars[0].tier == 2 and world.activities.purchased_cars[0].net_id == -1, "Purchased cars survive campaign reload without stale scene IDs")
 	assert(world.cash == 1234, "Campaign retains heavy weapons, ammo and cash")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_test.cfg"))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_full_test.cfg"))

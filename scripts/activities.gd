@@ -19,6 +19,8 @@ const FIRE_INTERVAL := [0.0,0.32,0.11,0.65,0.075,1.8,1.2,0.12]
 const WEAPON_NAMES := ["Punhos","Pistola","Fuzil","Escopeta","SMG","Bazuca","Sniper","Canhão de pulso"]
 const GUN_SHOP := Vector3(-21, 0, 34)
 const DEALER := Vector3(21, 0, 34)
+const CAR_SPAWNERS := [[Vector3(-7,0,19),Vector3(-7,0.3,24),0.0],[Vector3(846,0,-94),Vector3(846,0.3,-99),0.0],[Vector3(294,0,-78.5),Vector3(304,0.3,-78.5),PI/2],[Vector3(798,0,-78.5),Vector3(808,0.3,-78.5),PI/2]]
+var purchased_cars: Array = []
 const GARAGE := Vector3(-21, 0, 63)
 const ROBBERIES := [Vector3(-63, 0, -8), Vector3(63, 0, -50), Vector3(21, 0, -89), Vector3(264.8, 0, -111.0), Vector3(264.8, 0, -105.5), Vector3(264.8, 0, -100.0), Vector3(264.8, 0, -94.5), Vector3(264.8, 0, -89.0), Vector3(768.8, 0, -111.0), Vector3(768.8, 0, -105.5), Vector3(768.8, 0, -100.0), Vector3(768.8, 0, -94.5), Vector3(768.8, 0, -89.0)]
 const RACE := [Vector3(-126, 0, 84), Vector3(-126, 0, -84), Vector3(84, 0, -84), Vector3(84, 0, 84), Vector3(0, 0, 84)]
@@ -118,8 +120,8 @@ func handle_input(event: InputEvent) -> bool:
 		set_menu("" if menu == "credits" else "credits")
 		return true
 	if menu != "":
-		if menu in ["cars","garage_cars"] and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT,KEY_LEFT]:
-			car_page = posmod(car_page+(1 if event.physical_keycode == KEY_RIGHT else -1),ceili(CAR_PRICES.size()/3.0))
+		if menu in ["cars","garage_cars","owned_cars"] and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT,KEY_LEFT]:
+			car_page = posmod(car_page+(1 if event.physical_keycode == KEY_RIGHT else -1),maxi(1,ceili(purchased_cars.size()/3.0)) if menu == "owned_cars" else ceili(CAR_PRICES.size()/3.0))
 			world.hud.queue_redraw()
 			return true
 		if menu == "jobs" and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT, KEY_LEFT]:
@@ -151,7 +153,7 @@ func handle_input(event: InputEvent) -> bool:
 	if event.is_action_pressed("activity"):
 		if world.network!=null and world.network.active():
 			var place := nearby_place()
-			if place in ["guns","heavy_guns","cars","garage"]:
+			if place in ["guns","heavy_guns","cars","garage","owned_cars"]:
 				set_menu(place)
 			elif world.life.prompt().to_lower().contains("elevador"):
 				world.life.interact()
@@ -165,7 +167,7 @@ func handle_input(event: InputEvent) -> bool:
 		if bank.interact():
 			return true
 		var nearby := nearby_place()
-		if nearby in ["guns", "heavy_guns", "cars"]:
+		if nearby in ["guns", "heavy_guns", "cars", "owned_cars"]:
 			set_menu(nearby)
 		elif nearby == "garage":
 			set_menu("garage")
@@ -200,6 +202,9 @@ func buy(choice: int) -> void:
 		return
 	if choice < 0 or choice > (4 if menu in ["guns","garage"] else (3 if menu == "heavy_guns" else 2)):
 		return
+	if menu == "owned_cars":
+		recall_car(choice+car_page*3)
+		return
 	if menu == "garage":
 		if choice == 4:
 			set_menu("garage_cars")
@@ -230,6 +235,7 @@ func buy(choice: int) -> void:
 			world.active_car.set_suspension(world.active_car.suspension_height+0.15)
 		else:
 			world.active_car.engine_upgrade = minf(10.0,world.active_car.engine_upgrade+2.5)
+		remember_car(world.active_car)
 		world.notify("Serviço da oficina concluído.")
 	elif menu == "heavy_guns":
 		if world.active_car != null:
@@ -294,6 +300,8 @@ func buy(choice: int) -> void:
 			return
 		var car: CharacterBody3D = world.spawn_car(at, CAR_COLORS[choice], false, choice + 1)
 		car.owned = true
+		purchased_cars.append({"tier":car.tier,"paint":car.paint,"engine":car.engine_upgrade,"suspension":car.suspension_height,"net_id":car.net_id})
+		if game_mode == "campaign": save_campaign()
 		world.notify("%s comprado! Seu carro está na saída da APEX." % car.model_name)
 	else:
 		return
@@ -301,6 +309,7 @@ func buy(choice: int) -> void:
 
 func nearby_place() -> String:
 	var pos: Vector3 = world.subject_position()
+	if car_spawner_at(pos) >= 0: return "owned_cars"
 	if pos.distance_to(HEAVY_SHOP) < 3:
 		return "heavy_guns"
 	if pos.distance_to(GUN_SHOP) < 5:
@@ -330,6 +339,7 @@ func prompt() -> String:
 	if bank_prompt != "":
 		return bank_prompt
 	match nearby_place():
+		"owned_cars": return "F / Retirar veiculo comprado"
 		"heavy_guns": return "F · Arsenal da favela"
 		"guns": return "F  ·  Loja de armas"
 		"cars": return "F  ·  Concessionária APEX"
@@ -402,6 +412,7 @@ func save_campaign() -> bool:
 	save.set_value("story", "smg_owned", smg_owned)
 	save.set_value("story", "heavy_owned", heavy_owned)
 	save.set_value("story", "supply_stage", supply_stage)
+	save.set_value("story", "purchased_cars", purchased_cars)
 	var error := save.save(campaign_save_path)
 	if error != OK:
 		world.notify("Falha ao salvar a campanha (%s)." % error_string(error))
@@ -432,6 +443,8 @@ func load_campaign() -> void:
 	rifle_owned = save.get_value("story", "rifle_owned", false)
 	shotgun_owned = save.get_value("story", "shotgun_owned", false)
 	smg_owned = save.get_value("story", "smg_owned", false)
+	purchased_cars = save.get_value("story", "purchased_cars", []).duplicate(true)
+	for car in purchased_cars: car["net_id"] = -1
 	supply_stage = int(save.get_value("story", "supply_stage", 0))
 	if supply_stage in [2,3]: supply_stage = 1
 	heavy_owned = save.get_value("story", "heavy_owned", [false,false,false]).duplicate()
@@ -456,6 +469,7 @@ func new_campaign() -> void:
 	world.life.owned_homes.clear()
 	campaign_index = 0
 	supply_stage = 0
+	purchased_cars.clear()
 	completed = 0
 	world.cash = 900
 	world.health = 100
@@ -928,3 +942,60 @@ func _process(_delta: float) -> void:
 	var gun: Node3D = world.get_node_or_null("ContatoBeco/Arma") if world != null else null
 	if gun != null:
 		gun.rotation.x = PI/2 if supply_stage >= 3 else 0.0
+
+func car_spawner_at(at: Vector3) -> int:
+	for i in CAR_SPAWNERS.size():
+		if at.distance_to(CAR_SPAWNERS[i][0]) < 3: return i
+	return -1
+
+func remember_car(car: Node) -> void:
+	for entry in purchased_cars:
+		if int(entry.get("net_id",-1)) == car.net_id:
+			entry.paint = car.paint
+			entry.engine = car.engine_upgrade
+			entry.suspension = car.suspension_height
+	if game_mode == "campaign": save_campaign()
+
+func recall_car(index: int) -> void:
+	var pad := car_spawner_at(world.subject_position())
+	if pad < 0 or index < 0 or index >= purchased_cars.size(): return
+	if world.active_car != null:
+		world.notify("Saia do carro para retirar outro veiculo.")
+		return
+	var entry: Dictionary = purchased_cars[index]
+	var car: Node = world.car_by_id(int(entry.get("net_id",-1)))
+	if car != null and world.network != null and world.network.active():
+		for member in world.network.members.values():
+			if int(member.get("car",-1)) == car.net_id:
+				world.notify("Este veiculo esta em uso.")
+				return
+	var at: Vector3 = CAR_SPAWNERS[pad][1]
+	var yaw: float = CAR_SPAWNERS[pad][2]
+	var query := PhysicsShapeQueryParameters3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Catalog.SIZES[int(entry.tier)] + Vector3(0.4,0.2,0.4)
+	query.shape = shape
+	query.transform = Transform3D(Basis(Vector3.UP,yaw),at+Vector3.UP*shape.size.y/2)
+	query.collision_mask = 7
+	if car != null: query.exclude = [car.get_rid()]
+	if not world.get_world_3d().direct_space_state.intersect_shape(query,1).is_empty():
+		world.notify("Libere a vaga de retirada primeiro.")
+		return
+	if car == null:
+		car = world.spawn_car(at,entry.paint,false,int(entry.tier))
+		car.engine_upgrade = float(entry.engine)
+		car.set_suspension(float(entry.get("suspension",0)))
+		entry.net_id = car.net_id
+	else:
+		remember_car(car)
+		if car.hp <= 0: car.repair()
+	car.position = at
+	car.heading = yaw
+	car.rotation.y = yaw
+	car.speed = 0
+	car.velocity = Vector3.ZERO
+	car.traffic = false
+	car.owned = true
+	if game_mode == "campaign": save_campaign()
+	world.notify("Veiculo comprado retirado sem nova cobranca.")
+	set_menu("")

@@ -176,7 +176,7 @@ func draw_menu(a: Node) -> void:
 			text(lines[i], Vector2(270, 201 + i * 32), 16, gold if i == 9 else ink)
 		return
 	panel(Rect2(330, 115, 620, 490))
-	var title: String = {"jobs": "CONTRATOS", "guns": "ARSENAL", "heavy_guns": "ARSENAL DA FAVELA", "cars": "APEX MOTORS", "garage": "OFICINA", "garage_cars": "VEICULOS / OFICINA"}.get(a.menu, "")
+	var title: String = {"jobs": "CONTRATOS", "guns": "ARSENAL", "heavy_guns": "ARSENAL DA FAVELA", "cars": "APEX MOTORS", "garage": "OFICINA", "garage_cars": "VEICULOS / OFICINA", "owned_cars": "MEUS VEICULOS"}.get(a.menu, "")
 	text(title, Vector2(365, 166), 30, gold)
 	text("$ %d" % world.cash, Vector2(805, 165), 21, gold)
 	text("Escolha pelo número   ·   ESC para fechar", Vector2(366, 199), 14, muted)
@@ -186,6 +186,10 @@ func draw_menu(a: Node) -> void:
 			rows.append("%s   ·   $%d" % [a.JOBS[i], a.REWARDS[i]])
 	elif a.menu == "garage":
 		rows = ["Reparo e cura   ·   $250", "Trocar pintura   ·   $300", "Melhorar motor   ·   $500", "Aumentar suspensao   /   $800", "Comprar veiculo"]
+	elif a.menu == "owned_cars":
+		for index in range(a.car_page*3,mini(a.purchased_cars.size(),a.car_page*3+3)):
+			rows.append("%s / RETIRAR" % a.Catalog.NAMES[int(a.purchased_cars[index].tier)])
+		if rows.is_empty(): rows.append("Compre um veiculo na APEX ou na oficina")
 	elif a.menu == "heavy_guns":
 		rows = ["Bazuca + 4 foguetes · $6500", "Sniper + 15 munições · $5000", "Canhão de pulso + 60 cargas · $25000", "Munição pesada · $1200"]
 	elif a.menu == "guns":
@@ -199,6 +203,8 @@ func draw_menu(a: Node) -> void:
 		text(rows[i], Vector2(410, 242 + i * 43), 16)
 	if a.menu == "jobs":
 		text("Página %d/%d · setas esquerda/direita para trocar · números para escolher" % [a.job_page + 1,ceili(a.job_count()/7.0)], Vector2(366, 555), 12, muted)
+	elif a.menu == "owned_cars":
+		text("Setas: paginas / 1-3: retirar / mantenha a vaga livre",Vector2(366,555),14,muted)
 	elif a.menu in ["cars","garage_cars"]:
 		text("Pagina %d/3  /  setas: trocar  /  1-3: comprar" % (a.car_page+1),Vector2(366,555),14,muted)
 	elif world.toast_time > 0 and (world.toast.begins_with("Dinheiro") or world.toast.begins_with("Libere")):

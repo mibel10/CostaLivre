@@ -65,6 +65,20 @@ func run() -> void:
 	assert(absf(car.wheels[0].global_position.y-wheel_y)<0.001, "Suspension raises body while wheels stay grounded")
 	car.repaint(car.paint)
 	assert(is_equal_approx(car.suspension_height,0.15))
+	world.active_car = null
+	car.driving = false
+	world.cash = 10000
+	world.activities.menu = "cars"
+	world.activities.buy(0)
+	assert(world.activities.purchased_cars.size() == 1)
+	var bought: Node = world.car_by_id(world.activities.purchased_cars[0].net_id)
+	world.player.position = world.activities.CAR_SPAWNERS[0][0]
+	var car_count: int = world.cars.size()
+	var saved_cash: int = world.cash
+	world.activities.recall_car(0)
+	assert(bought.position.distance_to(world.activities.CAR_SPAWNERS[0][1]) < 0.1)
+	world.activities.recall_car(0)
+	assert(world.cars.size() == car_count and world.cash == saved_cash, "Recalling purchased car does not duplicate or charge again")
 	world.extra.play("cash")
 	var stream: AudioStream = world.extra.audio.stream
 	world.extra.play("step")

@@ -52,12 +52,12 @@ func base_buttons() -> Array:
 		return []
 	if state == "death":
 		return [[Rect2(510,570,260,70),"RECOMEÇAR","restart"]]
-	if state in ["jobs","guns","heavy_guns","cars","garage_cars","garage","hack","mission_hack","credits"]:
+	if state in ["jobs","guns","heavy_guns","cars","garage_cars","owned_cars","garage","hack","mission_hack","credits"]:
 		var rows: Array = [[Rect2(1090,630,160,65),"VOLTAR","pause"]]
 		var count := 4 if state in ["hack","mission_hack","heavy_guns"] else (7 if state == "jobs" else (5 if state in ["guns","garage"] else (0 if state == "credits" else 3)))
 		for i in count:
 			rows.append([Rect2(40+i*140,635,125,60),str(i+1),str(i+1)])
-		if state in ["jobs","cars","garage_cars"]:
+		if state in ["jobs","cars","garage_cars","owned_cars"]:
 			rows.append([Rect2(40,550,125,60),"<","previous"])
 			rows.append([Rect2(1100,550,125,60),">","next"])
 		return rows
