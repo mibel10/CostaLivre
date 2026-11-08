@@ -35,6 +35,24 @@ func run() -> void:
 	world.cutscene.finish()
 	assert(world.activities.job == 1 and world.cutscene.active, "Failed campaign chapters retry in order")
 	world.cutscene.finish()
+	world.cutscene.finish()
+	var chapter: int = world.activities.campaign_index
+	var mission: int = world.activities.job
+	world.player.position = world.activities.SUPPLY_PICKUP
+	assert(world.activities.interact_supply())
+	world.player.position = world.activities.SUPPLY_ALLEY
+	world.activities.tick_supply()
+	assert(world.activities.supply_stage == 2 and world.cutscene.active)
+	world.cutscene.finish()
+	world.activities.supply_scene_until = 0
+	world.activities.tick_supply()
+	assert(world.activities.supply_stage == 3 and world.cutscene.active)
+	world.cutscene.finish()
+	var cash_before: int = world.cash
+	assert(world.activities.interact_supply())
+	assert(world.activities.supply_stage == 4 and world.cash == cash_before+4500)
+	assert(not world.activities.interact_supply(), "No repeated delivery payout")
+	assert(world.activities.campaign_index == chapter and world.activities.job == mission, "Side quest preserves campaign")
 	world.activities.heavy_owned = [true,true,true]
 	world.activities.weapon = 7
 	world.activities.clips[7] = 11

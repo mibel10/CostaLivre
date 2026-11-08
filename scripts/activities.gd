@@ -7,6 +7,11 @@ const CAMPAIGN_LENGTH := 24
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Correio a pe", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
+const SUPPLY_PICKUP := Vector3(368.5,9.9,31)
+const SUPPLY_ALLEY := Vector3(382.75,9.9,14)
+var supply_stage := 0
+var supply_owner := 0
+var supply_scene_until := 0
 const HEAVY_SHOP := Vector3(378, 9.9, 31)
 const CAPACITIES := [0,12,30,8,32,1,5,20]
 const DAMAGE := [0,34,24,58,18,220,180,450]
@@ -152,6 +157,8 @@ func handle_input(event: InputEvent) -> bool:
 				world.life.interact()
 			else:
 				world.network.rules.send_action("interact",{})
+			return true
+		if interact_supply():
 			return true
 		if world.life != null and world.life.interact():
 			return true
@@ -302,6 +309,8 @@ func nearby_place() -> String:
 	return ""
 
 func prompt() -> String:
+	var supply := supply_prompt()
+	if supply != "": return supply
 	if world.life != null:
 		var indoor: String = world.life.prompt()
 		if indoor != "":
@@ -386,6 +395,7 @@ func save_campaign() -> bool:
 	save.set_value("story", "shotgun_owned", shotgun_owned)
 	save.set_value("story", "smg_owned", smg_owned)
 	save.set_value("story", "heavy_owned", heavy_owned)
+	save.set_value("story", "supply_stage", supply_stage)
 	var error := save.save(campaign_save_path)
 	if error != OK:
 		world.notify("Falha ao salvar a campanha (%s)." % error_string(error))
@@ -415,6 +425,8 @@ func load_campaign() -> void:
 	rifle_owned = save.get_value("story", "rifle_owned", false)
 	shotgun_owned = save.get_value("story", "shotgun_owned", false)
 	smg_owned = save.get_value("story", "smg_owned", false)
+	supply_stage = int(save.get_value("story", "supply_stage", 0))
+	if supply_stage in [2,3]: supply_stage = 1
 	heavy_owned = save.get_value("story", "heavy_owned", [false,false,false]).duplicate()
 	clips.resize(8)
 	reserves.resize(8)
@@ -436,6 +448,7 @@ func new_campaign() -> void:
 	world.life.owned_home = -1
 	world.life.owned_homes.clear()
 	campaign_index = 0
+	supply_stage = 0
 	completed = 0
 	world.cash = 900
 	world.health = 100
@@ -553,6 +566,7 @@ func tick(delta: float) -> void:
 	tick_robbery(delta)
 	tick_pedestrian_robbery(delta)
 	bank.tick(delta)
+	tick_supply()
 	if world.life != null:
 		world.life.tick_leisure(delta)
 		world.life.tick_tasks(delta)
@@ -854,3 +868,56 @@ func setup_shot_audio() -> void:
 	shot_audio.stream = wav
 	shot_audio.volume_db = -16
 	add_child(shot_audio)
+
+func supply_prompt() -> String:
+	var pos: Vector3 = world.subject_position()
+	if supply_stage == 0 and pos.distance_to(SUPPLY_PICKUP) < 3:
+		return "F: aceitar entrega de carga ilegal ao contato no beco da favela (+$4500)"
+	if supply_stage in [1,3] and (world.network == null or not world.network.active() or supply_owner == multiplayer.get_unique_id()):
+		if supply_stage == 3 and pos.distance_to(SUPPLY_ALLEY) < 3:
+			return "F: entregar a carga ao contato"
+		if pos.distance_to(HEAVY_SHOP) < 10 or pos.distance_to(SUPPLY_ALLEY) < 12:
+			return "Carga ilegal: entre no beco entre as casas, atras do arsenal"
+	return ""
+
+func interact_supply() -> bool:
+	if world.active_car != null: return false
+	var actor: int = world.network.rules.context_peer if world.network != null and world.network.active() else 0
+	if world.network != null and world.network.active() and actor == 0: actor = multiplayer.get_unique_id()
+	var pos: Vector3 = world.subject_position()
+	if supply_stage == 0 and pos.distance_to(SUPPLY_PICKUP) < 3:
+		supply_owner = actor
+		supply_stage = 1
+		world.notify("Carga de drogas recolhida. Leve-a ao contato no beco entre as casas da favela.")
+		if game_mode == "campaign": save_campaign()
+		return true
+	if supply_stage == 3 and actor == supply_owner and pos.distance_to(SUPPLY_ALLEY) < 3:
+		supply_stage = 4
+		if world.network != null and world.network.active():
+			world.network.rules.award(actor,4500)
+		else:
+			world.cash += 4500
+		world.notify("Entrega concluida. +$4500. Contato: Valeu, a carga esta completa.")
+		if game_mode == "campaign": save_campaign()
+		return true
+	return false
+
+func tick_supply() -> void:
+	if supply_stage in [1,2,3] and world.network != null and world.network.active():
+		if not world.network.members.has(supply_owner) or world.network.rules.is_dead(supply_owner):
+			supply_stage = 0
+			supply_owner = 0
+			return
+	var pos: Vector3 = world.network.rules.position_of(supply_owner) if supply_owner > 0 else world.subject_position()
+	if supply_stage == 1 and pos.distance_to(SUPPLY_ALLEY) < 3.5:
+		supply_stage = 2
+		supply_scene_until = Time.get_ticks_msec()+3500
+		world.play_cutscene("EMBOSCADA NO BECO", "Contato, apontando a arma: Parado! Quem e voce? / Jogador: Sou o entregador da carga.")
+	elif supply_stage == 2 and Time.get_ticks_msec() >= supply_scene_until:
+		supply_stage = 3
+		world.play_cutscene("CONTATO CONFIRMADO", "Contato, abaixando a arma: Foi mal. Estava esperando voce. Pode deixar a carga aqui.")
+
+func _process(_delta: float) -> void:
+	var gun: Node3D = world.get_node_or_null("ContatoBeco/Arma") if world != null else null
+	if gun != null:
+		gun.rotation.x = PI/2 if supply_stage >= 3 else 0.0
