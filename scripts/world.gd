@@ -291,7 +291,7 @@ func build_environment() -> void:
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 100
 	add_child(sun)
-	var road := box(self, Vector3(0, -0.6, 0), Vector3(376, 1, 294), Color("4a5359"), true)
+	var road := box(self, Vector3(376, -0.6, 0), Vector3(1128, 1, 294), Color("4a5359"), true)
 	road.material_override = visuals.surface("asphalt_02", Color("b4b7ba"), 0.24)
 	road.material_override.uv1_triplanar = false
 	road.material_override.uv1_world_triplanar = false
@@ -303,23 +303,25 @@ func build_environment() -> void:
 	water.material_override = water_mat
 	for i in 28:
 		box(self, Vector3(-245 - rng.randf() * 240, -0.95, rng.randf_range(-320, 320)), Vector3(rng.randf_range(15, 55), 0.03, 0.4), Color("88bbc1"))
-	for x in [-186, 186]:
+	for x in [-186, 938]:
 		box(self, Vector3(x, 0.4, 0), Vector3(1, 1.2, 290), Color("b0aa99"), true)
 	for z in [-144, 144]:
-		box(self, Vector3(0, 0.4, z), Vector3(374, 1.2, 1), Color("b0aa99"), true)
+		box(self, Vector3(376, 0.4, z), Vector3(1126, 1.2, 1), Color("b0aa99"), true)
 	for i in 18:
 		box(self, Vector3(rng.randf_range(-100, 230), 6, -190 - rng.randf() * 90), Vector3(rng.randf_range(18, 45), rng.randf_range(20, 70), 25), Color("78908d"))
 
 func build_city() -> void:
 	# Continuous high collision rails close the four corners, even during jumps.
-	for x in [-186,186]:
+	for x in [-186,938]:
 		var rail := box(self,Vector3(x,6,0),Vector3(2,16,294),Color("b0aa99"),true)
 		rail.visible = false
 	for z in [-144,144]:
-		var rail := box(self,Vector3(0,6,z),Vector3(376,16,2),Color("b0aa99"),true)
+		var rail := box(self,Vector3(376,6,z),Vector3(1128,16,2),Color("b0aa99"),true)
 		rail.visible = false
 	var colors := [Color("b9ada0"), Color("aeb8b5"), Color("b09b8b"), Color("82959f"), Color("c0bdb2"), Color("9ca49c")]
-	for ix in 8:
+	var original_rng_state := 0
+	for ix in 26:
+		if ix == 8: original_rng_state = rng.state
 		for iz in 6:
 			var x := -147.0 + ix * 42
 			var z := -105.0 + iz * 42
@@ -328,7 +330,7 @@ func build_city() -> void:
 			if Vector2(x,z) in [Vector2(-63,21),Vector2(63,21),Vector2(-63,63)]:
 				continue
 			box(self, Vector3(x, 0.015, z), Vector3(29, 0.22, 29), Color("b8b4a2"))
-			if ix == 0 and iz in [1, 3, 4]:
+			if (ix == 0 or (ix >= 8 and ix % 6 == 0)) and iz in [1, 3, 4]:
 				box(self, Vector3(x, 0.15, z), Vector3(26, 0.12, 26), Color("7e986c"))
 				for j in 5:
 					palm(Vector3(x + rng.randf_range(-10, 10), 0.2, z + rng.randf_range(-10, 10)))
@@ -358,19 +360,24 @@ func build_city() -> void:
 			if (ix + iz) % 3 == 0:
 				var names := ["COSTA CAFÉ", "HOTEL SOL", "MERCADO", "STUDIO 84", "MARÉ ALTA", "GARAGEM"]
 				sign_text(names[(ix + iz) % 6], Vector3(x, 4.5, z + 11.1))
-	for road in range(-126, 127, 42):
+	rng.state = original_rng_state
+	for road in range(-126, 883, 42):
 		for dash in range(-135, 136, 9):
 			if absi(dash - roundi(dash / 42.0) * 42) > 8:
 				box(self, Vector3(road, 0.012, dash), Vector3(0.15, 0.025, 3.2), Color("e7d4a2"))
-				box(self, Vector3(dash, 0.014, road), Vector3(3.2, 0.025, 0.15), Color("e7d4a2"))
+
 		for cross in range(-126, 127, 42):
 			for stripe in 5:
 				box(self, Vector3(road - 4 + stripe * 2, 0.02, cross + 7), Vector3(0.9, 0.03, 2.3), Color("d6d6c6"))
+	for road in range(-126, 127, 42):
+		for dash in range(-135, 928, 9):
+			if absi(dash - roundi(dash / 42.0) * 42) > 8:
+				box(self, Vector3(dash, 0.014, road), Vector3(3.2, 0.025, 0.15), Color("e7d4a2"))
 	for z in range(-124, 130, 21):
 		palm(Vector3(-137, 0, z))
 		box(self, Vector3(-132, 2.8, z), Vector3(0.16, 5.6, 0.16), Color("40515b"))
 		box(self, Vector3(-131, 5.6, z), Vector3(2, 0.16, 0.35), Color("fbe3ad"), false, true)
-	for x in [-168, 168]:
+	for x in [-168, 924]:
 		for z in range(-135,136,9):
 			box(self, Vector3(x,0.01,z),Vector3(0.15,0.025,3),Color("e7d4a2"))
 	# Distinct plaza at the starting intersection.
@@ -476,7 +483,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			notify("Saia do banco pela porta da frente.")
 			return
 		if active_car != null:
-			active_car.position = Vector3(clampf(roundf(active_car.position.x / 42) * 42, -126, 126), 1, clampf(active_car.position.z, -130, 130))
+			active_car.position = Vector3(clampf(roundf(active_car.position.x / 42) * 42, -126, 882), 1, clampf(active_car.position.z, -130, 130))
 			active_car.speed = 0
 			active_car.heading = 0
 			active_car.rotation = Vector3.ZERO

@@ -2,7 +2,7 @@ extends Control
 
 var world: Node3D
 var zoom := 1.0
-var center := Vector2.ZERO
+var center := Vector2(376, 0)
 var dragging := false
 var font: Font
 var label_rects: Array[Rect2] = []
@@ -14,7 +14,7 @@ func _ready() -> void:
 	font = ThemeDB.fallback_font
 
 func factor() -> float:
-	return minf(size.x, size.y) / 380.0 * zoom
+	return minf(size.x, size.y) / 1130.0 * zoom
 
 func project(pos: Vector3) -> Vector2:
 	return size / 2 + (Vector2(pos.x, pos.z) - center) * factor()
@@ -27,10 +27,10 @@ func zoom_at(multiplier: float, anchor: Vector2) -> void:
 	queue_redraw()
 
 func clamp_center() -> void:
-	center.x = clampf(center.x, -186, 186)
+	center.x = clampf(center.x, -186, 938)
 	center.y = clampf(center.y, -144, 144)
 	if zoom == 1:
-		center = Vector2.ZERO
+		center = Vector2(376, 0)
 
 func recenter() -> void:
 	var pos: Vector3 = world.subject_position()
@@ -100,14 +100,16 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("1f343f"))
 	label_rects.clear()
 	var start := project(Vector3(-186, 0, -145))
-	var end := project(Vector3(186, 0, 145))
+	var end := project(Vector3(938, 0, 145))
 	draw_rect(Rect2(start, end - start), Color("405453"))
-	for x in [-168, 168]:
+	for x in [-168, 924]:
 		draw_line(project(Vector3(x,0,-144)), project(Vector3(x,0,144)), Color("929f9d"), 4 * sqrt(zoom))
 	draw_rect(Rect2(project(Vector3(-190, 0, -190)), Vector2(45, 380) * factor()), Color("367184"))
-	for road in range(-126, 127, 42):
+	for road in range(-126, 883, 42):
 		draw_line(project(Vector3(road, 0, -144)), project(Vector3(road, 0, 144)), Color("929f9d"), 4 * sqrt(zoom))
-		draw_line(project(Vector3(-186, 0, road)), project(Vector3(186, 0, road)), Color("929f9d"), 4 * sqrt(zoom))
+
+	for road in range(-126, 127, 42):
+		draw_line(project(Vector3(-186, 0, road)), project(Vector3(938, 0, road)), Color("929f9d"), 4 * sqrt(zoom))
 	var a: Node = world.activities
 	if world.life != null:
 		for i in world.life.PLACES.size():
