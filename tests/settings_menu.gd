@@ -15,6 +15,14 @@ func run() -> void:
 	root.add_child(world)
 	world.start_mode("sandbox")
 	await physics_frame
+	var original_position: Vector3 = world.player.position
+	world.player.position = Vector3(500, 0.3, 0)
+	var midpoint_on_minimap: Vector2 = world.hud.map_point(world.player.position, Vector2.ZERO, Vector2(164,164))
+	assert(is_equal_approx(midpoint_on_minimap.x, 82.0), "Minimap follows the player in the expanded city")
+	assert(world.hud.map_point(Vector3(900,0,0), Vector2.ZERO, Vector2(164,164)).x > midpoint_on_minimap.x)
+	world.player.position = Vector3(920, 0.3, 0)
+	assert(world.hud.map_point(world.player.position, Vector2.ZERO, Vector2(164,164)).x > midpoint_on_minimap.x)
+	world.player.position = original_position
 	var settings = world.settings
 	settings.config_path = "user://settings_test.cfg"
 	var ui = world.pause_menu
@@ -29,7 +37,7 @@ func run() -> void:
 	map.zoom_at(100, midpoint)
 	assert(map.zoom == 6)
 	map.zoom_at(0.001, midpoint)
-	assert(map.zoom == 1 and map.center == Vector2.ZERO)
+	assert(map.zoom == 1 and map.center == Vector2(376, 0))
 	map.zoom_at(2, midpoint)
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
@@ -38,7 +46,7 @@ func run() -> void:
 	var drag := InputEventMouseMotion.new()
 	drag.relative = Vector2(100, 50)
 	map._gui_input(drag)
-	assert(map.center != Vector2.ZERO and map.clip_contents)
+	assert(map.center != Vector2(376, 0) and map.clip_contents)
 	press.pressed = false
 	map._gui_input(press)
 	assert(not map.dragging)

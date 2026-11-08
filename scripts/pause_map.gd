@@ -102,18 +102,37 @@ func _draw() -> void:
 	var start := project(Vector3(-186, 0, -145))
 	var end := project(Vector3(938, 0, 145))
 	draw_rect(Rect2(start, end - start), Color("405453"))
+	for center_x in [378.0, 714.0]:
+		var hill_start := project(Vector3(center_x - 84, 0, -35))
+		var hill_end := project(Vector3(center_x + 84, 0, 35))
+		draw_rect(Rect2(hill_start, hill_end - hill_start), Color("607d5f"))
 	for x in [-168, 924]:
 		draw_line(project(Vector3(x,0,-144)), project(Vector3(x,0,144)), Color("929f9d"), 4 * sqrt(zoom))
 	draw_rect(Rect2(project(Vector3(-190, 0, -190)), Vector2(45, 380) * factor()), Color("367184"))
 	for road in range(-126, 883, 42):
-		draw_line(project(Vector3(road, 0, -144)), project(Vector3(road, 0, 144)), Color("929f9d"), 4 * sqrt(zoom))
+		if (road > 294 and road < 462) or (road > 630 and road < 798):
+			draw_line(project(Vector3(road,0,-144)), project(Vector3(road,0,-35)), Color("929f9d"), 4 * sqrt(zoom))
+			draw_line(project(Vector3(road,0,35)), project(Vector3(road,0,144)), Color("929f9d"), 4 * sqrt(zoom))
+		else:
+			draw_line(project(Vector3(road, 0, -144)), project(Vector3(road, 0, 144)), Color("929f9d"), 4 * sqrt(zoom))
 
 	for road in range(-126, 127, 42):
 		draw_line(project(Vector3(-186, 0, road)), project(Vector3(938, 0, road)), Color("929f9d"), 4 * sqrt(zoom))
+	for center_x in [294.0, 798.0]:
+		var store_start := project(Vector3(center_x - 36, 0, -117))
+		var store_end := project(Vector3(center_x + 36, 0, -83))
+		draw_rect(Rect2(store_start, store_end - store_start), Color("aa997a"))
+		dot(Vector3(center_x, 0, -100), Color("ffdd99"), "Supermercado")
+	dot(Vector3(378, 0, 15), Color("b7d8a7"), "Favela")
+	dot(Vector3(714, 0, 0), Color("b7d8a7"), "Morro")
 	var a: Node = world.activities
 	if world.life != null:
 		for i in world.life.PLACES.size():
 			dot(world.life.PLACES[i]+Vector3(0,0,14),Color("9fd4b5"),world.life.TITLES[i])
+	for ix in range(8, 18):
+		var x := -147.0 + ix * 42
+		var z := -105.0 if ix == 12 else 105.0
+		dot(Vector3(x,0,z + 14), Color("9fd4b5"))
 	dot(a.GUN_SHOP, Color("9ed8ff"), "Arsenal")
 	dot(a.DEALER, Color("c7afff"), "APEX")
 	dot(a.GARAGE, Color("8ddbb5"), "Oficina")

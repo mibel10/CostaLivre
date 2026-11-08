@@ -214,25 +214,57 @@ func star(center: Vector2, color: Color) -> void:
 func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	panel(Rect2(origin - Vector2(4, 4), map_size + Vector2(8, 8)))
 	draw_rect(Rect2(origin, map_size), Color("33474e"))
-	draw_rect(Rect2(origin, Vector2(map_size.x * 0.06, map_size.y)), Color("488592"))
-	for x in range(-147, 148, 42):
+	var left := clampf(world.subject_position().x - 186.0, -186.0, 566.0)
+	if left <= -168.0:
+		var coast := map_point(Vector3(-168,0,0), origin, map_size).x
+		draw_rect(Rect2(origin, Vector2(coast - origin.x, map_size.y)), Color("488592"))
+	for center in [378.0, 714.0]:
+		if center + 84 < left or center - 84 > left + 372: continue
+		var corner := map_point(Vector3(center - 84,0,-35), origin, map_size)
+		var other := map_point(Vector3(center + 84,0,35), origin, map_size)
+		draw_rect(Rect2(corner, other - corner), Color("607d5f"))
+	for x in range(-147, 904, 42):
+		if x < left - 12 or x > left + 384: continue
 		for z in range(-105, 106, 42):
+			if absi(z) < 35 and (absf(x - 378) < 84 or absf(x - 714) < 84): continue
+			if z in [-105, -63] and x in [273, 315, 777, 819]: continue
 			var corner := map_point(Vector3(x - 12, 0, z - 11), origin, map_size)
 			var other := map_point(Vector3(x + 12, 0, z + 11), origin, map_size)
 			draw_rect(Rect2(corner, other - corner), Color("66766f"))
-	for x in [-168, 168]:
-		var px: float = origin.x + (x + 186) / 372.0 * map_size.x
+	for road in range(-126, 883, 42):
+		if road < left or road > left + 372: continue
+		var px := map_point(Vector3(road, 0, 0), origin, map_size).x
+		if (road > 294 and road < 462) or (road > 630 and road < 798):
+			var upper := map_point(Vector3(road,0,-35), origin, map_size).y
+			var lower := map_point(Vector3(road,0,35), origin, map_size).y
+			draw_line(Vector2(px, origin.y), Vector2(px, upper), Color("728081"), 3)
+			draw_line(Vector2(px, lower), Vector2(px, origin.y + map_size.y), Color("728081"), 3)
+		else:
+			draw_line(Vector2(px, origin.y), Vector2(px, origin.y + map_size.y), Color("728081"), 3)
+	for x in [-168, 924]:
+		if x < left or x > left + 372: continue
+		var px := map_point(Vector3(x, 0, 0), origin, map_size).x
 		draw_line(Vector2(px, origin.y), Vector2(px, origin.y + map_size.y), Color("728081"), 3)
 	for road in range(-126, 127, 42):
-		var p := (road + 144) / 288.0
-		var px := (road + 186) / 372.0
-		draw_line(origin + Vector2(px * map_size.x, 0), origin + Vector2(px * map_size.x, map_size.y), Color("728081"), 3)
-		draw_line(origin + Vector2(0, p * map_size.y), origin + Vector2(map_size.x, p * map_size.y), Color("728081"), 3)
+		var py := map_point(Vector3(0, 0, road), origin, map_size).y
+		draw_line(Vector2(origin.x, py), Vector2(origin.x + map_size.x, py), Color("728081"), 3)
+	for center in [294.0, 798.0]:
+		if center + 36 < left or center - 36 > left + 372: continue
+		var corner := map_point(Vector3(center - 36,0,-117), origin, map_size)
+		var other := map_point(Vector3(center + 36,0,-83), origin, map_size)
+		draw_rect(Rect2(corner, other - corner), Color("aa997a"))
+	if left < 407 and left + 372 > 354:
+		for x in [359.0, 368.5, 378.0, 387.5, 397.0]:
+			for z in [-23.0, -13.0, 13.0, 23.0]:
+				var corner := map_point(Vector3(x - 4,0,z - 4), origin, map_size)
+				var other := map_point(Vector3(x + 4,0,z + 4), origin, map_size)
+				draw_rect(Rect2(corner, other - corner), Color("c78f72"))
 	var a: Node = world.activities
 	if world.marker.visible:
 		draw_line(map_point(world.subject_position(), origin, map_size), map_point(a.destination(), origin, map_size), Color(1, 0.8, 0.4, 0.6), 1)
 		draw_circle(map_point(a.destination(), origin, map_size), 5, gold)
 	for entry in [[a.GUN_SHOP, "A"], [a.DEALER, "C"], [a.GARAGE, "+"]]:
+		if entry[0].x < left or entry[0].x > left + 372: continue
 		var p := map_point(entry[0], origin, map_size)
 		if full:
 			text(entry[1], p + Vector2(-4, 4), 16, Color("9ed8ff"))
@@ -240,11 +272,18 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 			draw_circle(p, 2.5, Color("9ed8ff"))
 	if world.life != null:
 		for point in world.life.PLACES:
-			draw_circle(map_point(point+Vector3(0,0,14),origin,map_size),3,Color("9fd4b5"))
+			if point.x >= left and point.x <= left + 372:
+				draw_circle(map_point(point+Vector3(0,0,14),origin,map_size),3,Color("9fd4b5"))
+	for ix in range(8, 18):
+		var x := -147.0 + ix * 42
+		if x < left or x > left + 372: continue
+		var z := -105.0 if ix == 12 else 105.0
+		draw_circle(map_point(Vector3(x,0,z + 14), origin, map_size), 2, Color("9fd4b5"))
 	for point in a.ROBBERIES:
-		text("$", map_point(point, origin, map_size) + Vector2(-3, 3), 12, Color("fda487"))
+		if point.x >= left and point.x <= left + 372:
+			text("$", map_point(point, origin, map_size) + Vector2(-3, 3), 12, Color("fda487"))
 	for cop in world.cops:
-		if cop.hp > 0 and world.heat > 0:
+		if cop.hp > 0 and world.heat > 0 and cop.position.x >= left and cop.position.x <= left + 372:
 			draw_circle(map_point(cop.position, origin, map_size), 3, Color("ed8277"))
 	var pos := map_point(world.subject_position(), origin, map_size)
 	var angle: float = world.active_car.heading if world.active_car != null else world.camera_yaw
@@ -254,4 +293,4 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	draw_colored_polygon(points, ink)
 
 func map_point(pos: Vector3, origin: Vector2, map_size: Vector2) -> Vector2:
-	return origin + Vector2(clampf((pos.x + 186) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size
+	return origin + Vector2(clampf((pos.x - clampf(world.subject_position().x - 186.0, -186.0, 566.0)) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size
