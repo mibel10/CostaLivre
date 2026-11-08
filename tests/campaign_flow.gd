@@ -53,6 +53,12 @@ func run() -> void:
 	assert(world.activities.supply_stage == 4 and world.cash == cash_before+4500)
 	assert(not world.activities.interact_supply(), "No repeated delivery payout")
 	assert(world.activities.campaign_index == chapter and world.activities.job == mission, "Side quest preserves campaign")
+	world.cash = 5000
+	world.life.buy_home(0)
+	world.life.buy_home(1)
+	assert(world.life.owned_homes == [0] and world.cash == 4000, "Only one apartment per player")
+	world.respawn_local()
+	assert(world.player.position.y > 6 and world.player.position.y < 7, "Respawn above reception")
 	world.activities.heavy_owned = [true,true,true]
 	world.activities.weapon = 7
 	world.activities.clips[7] = 11

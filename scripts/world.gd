@@ -630,7 +630,7 @@ func respawn_local() -> void:
 	active_car = null
 	car_transition = false
 	var home: int = life.owned_home
-	player.position = life.HOME_BUILDING + Vector3(0,home * 6 + 0.3,5) if home >= 0 else Vector3(-5,0.3,12)
+	player.position = life.HOME_BUILDING + Vector3(0,(home + 1) * 6 + 0.3,5) if home >= 0 else Vector3(-5,0.3,12)
 	player.velocity = Vector3.ZERO
 	player.visible = true
 	player.collision_layer = 2

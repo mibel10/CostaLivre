@@ -247,6 +247,9 @@ func buy_home(id: int, floor_number: int) -> void:
 	if floor_number in sheets[id].get("homes", []):
 		private_notice(id,"Este apartamento já é seu.")
 		return
+	if int(sheets[id].get("home", -1)) >= 0:
+		private_notice(id,"Cada jogador pode ter apenas um apartamento.")
+		return
 	for peer_id in sheets:
 		if floor_number in sheets[peer_id].get("homes", []):
 			private_notice(id,"Este apartamento já tem dono.")
@@ -376,9 +379,9 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 			if int(network.members[id].get("car",-1))>=0 or building=="":
 				return
 			var start: Vector3=position_of(id)
-			var from:=clampi(roundi(start.y/6.0),0,11 if building=="housing" else 9)
+			var from:=clampi(roundi(start.y/6.0),0,12 if building=="housing" else 9)
 			var to:=int(data.get("to",-1))
-			if to<0 or to>(11 if building=="housing" else (9 if building=="apartment" else 7)):
+			if to<0 or to>(12 if building=="housing" else (9 if building=="apartment" else 7)):
 				return
 			var arrival: Vector3=world.life.elevator_position(building,to)
 			network.members[id]["position"]=arrival
@@ -589,7 +592,7 @@ func physics(delta: float) -> void:
 				sheets[id].life+=1
 				sheets[id].protected_until=Time.get_ticks_msec()+5000
 				var home_floor: int = int(sheets[id].get("home", -1))
-				var at: Vector3 = world.life.HOME_BUILDING + Vector3(0,home_floor*6+0.3,5) if home_floor >= 0 else next_spawn()
+				var at: Vector3 = world.life.HOME_BUILDING + Vector3(0,(home_floor+1)*6+0.3,5) if home_floor >= 0 else next_spawn()
 				network.members[id].position=at
 				network.members[id].car_position=at
 				network.members[id].car=-1

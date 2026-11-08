@@ -100,7 +100,7 @@ func on_apartment_tenth_floor(at: Vector3) -> bool:
 
 func elevator_building_at(at: Vector3) -> String:
 	var housing := at - HOME_BUILDING
-	if Vector2(housing.x - 8, housing.z + 6.5).length_squared() < 9.0 and housing.y >= -0.5 and housing.y < 72.0: return "housing"
+	if Vector2(housing.x - 8, housing.z + 6.5).length_squared() < 9.0 and housing.y >= -0.5 and housing.y < 78.0: return "housing"
 	var apartment:=at-PLACES[2]
 	if Vector2(apartment.x-8,apartment.z+6.7).length_squared()<9.0 and apartment.y>=-0.5 and apartment.y<60.0:
 		return "apartment"
@@ -139,7 +139,7 @@ func task_label() -> String:
 
 func inside_room(at: Vector3) -> bool:
 	var housing := at - HOME_BUILDING
-	if absf(housing.x) < 12 and absf(housing.z) < 12 and housing.y >= -0.5 and housing.y < 72: return true
+	if absf(housing.x) < 12 and absf(housing.z) < 12 and housing.y >= -0.5 and housing.y < 78: return true
 	for room in rooms:
 		var local: Vector3 = at-room.position
 		if absf(local.x)<12.2 and absf(local.z)<11.7 and local.y>=-0.5 and local.y<5.8:
@@ -164,10 +164,10 @@ func build_elevator_menu() -> void:
 	var title := Label.new()
 	title.text = "ESCOLHA O ANDAR / ELEVADOR"
 	column.add_child(title)
-	for floor_number in 12:
+	for floor_number in 13:
 		var button := Button.new()
-		button.text = "Andar %02d" % (floor_number+1)
-		button.custom_minimum_size.y = 36
+		button.text = "Terreo / Recepcao" if floor_number == 0 else "Andar %02d" % floor_number
+		button.custom_minimum_size.y = 32
 		button.pressed.connect(use_elevator.bind(floor_number))
 		column.add_child(button)
 	var close := Button.new()
@@ -180,7 +180,7 @@ func use_elevator(floor_number: int) -> void:
 	if elevator_traveling:
 		return
 	var building:=elevator_building_at(world.player.position)
-	if building=="" or floor_number<0 or floor_number>11:
+	if building=="" or floor_number<0 or floor_number>(12 if building=="housing" else 11):
 		world.notify("Aproxime-se do elevador para escolher um andar.")
 		return
 	var apartment:=building=="apartment"
@@ -188,7 +188,7 @@ func use_elevator(floor_number: int) -> void:
 	if (building=="tower" and floor_number>7) or (apartment and floor_number>9):
 		world.notify("Este elevador atende os andares 1 a %d." % (10 if apartment else 8))
 		return
-	var current_floor:=clampi(roundi((world.player.position.y-base.y)/6.0),0,11 if building=="housing" else (9 if apartment else 7))
+	var current_floor:=clampi(roundi((world.player.position.y-base.y)/6.0),0,12 if building=="housing" else (9 if apartment else 7))
 	elevator_traveling=true
 	elevator_ui.hide()
 	if apartment:
@@ -260,17 +260,20 @@ func animate_remote_elevator(source: int, destination: int) -> void:
 
 func home_floor_at(at: Vector3) -> int:
 	var local := at - HOME_BUILDING
-	var floor_number := roundi(local.y / 6.0)
-	if floor_number < 0 or floor_number >= 12 or absf(local.y - floor_number * 6.0) > 2.0: return -1
+	var floor_number := roundi(local.y / 6.0)-1
+	if floor_number < 0 or floor_number >= 12 or absf(local.y - (floor_number+1) * 6.0) > 2.0: return -1
 	return floor_number if Vector2(local.x, local.z - 11.0).length() < 2.5 else -1
 
 func buy_home(floor_number: int) -> void:
+	if floor_number < 0 or floor_number >= 12: return
 	if world.network != null and world.network.active():
 		var id: int = world.network.rules.context_peer if world.network.rules.context_peer > 0 else multiplayer.get_unique_id()
 		world.network.rules.buy_home(id, floor_number)
 		return
 	if owned_homes.has(floor_number):
 		world.notify("Este apartamento já é seu.")
+	elif owned_home >= 0:
+		world.notify("Cada jogador pode ter apenas um apartamento.")
 	elif world.cash < 1000:
 		world.notify("Dinheiro insuficiente: apartamento custa $1000.")
 	else:
@@ -303,7 +306,7 @@ func prompt() -> String:
 	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:
 		return task_label()
 	if inside_room(at):
-		if absf(at.x - HOME_BUILDING.x) < 12 and absf(at.z - HOME_BUILDING.z) < 12 and at.y >= 0 and at.y < 72: return ""
+		if absf(at.x - HOME_BUILDING.x) < 12 and absf(at.z - HOME_BUILDING.z) < 12 and at.y >= 0 and at.y < 78: return ""
 		return "F / Atendimento, descanso ou servico local"
 	return ""
 
@@ -317,6 +320,12 @@ func interact() -> bool:
 		return true
 	if elevator_building_at(at)!="":
 		world.activities.set_menu("elevator")
+		var building := elevator_building_at(at)
+		var column: VBoxContainer = elevator_ui.get_child(0).get_child(0)
+		for i in 13:
+			var button: Button = column.get_child(i+1)
+			button.visible = i <= (12 if building == "housing" else (9 if building == "apartment" else 7))
+			button.text = ("Terreo / Recepcao" if i == 0 else "Andar %02d" % i) if building == "housing" else "Andar %02d" % (i+1)
 		elevator_ui.show()
 		return true
 	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:

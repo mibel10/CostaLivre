@@ -8457,17 +8457,7 @@ material_override = SubResource("StandardMaterial3D_kek77")
 mesh = SubResource("BoxMesh_ycdy4")
 
 [node name="ResidencialNovo" type="Node3D" parent="." unique_id=606720716]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 861, 0, -105)
-
-[node name="@MeshInstance3D@2" type="MeshInstance3D" parent="ResidencialNovo" unique_id=70738378]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
-material_override = SubResource("StandardMaterial3D_b8uv0")
-mesh = SubResource("BoxMesh_hfb1o")
-
-[node name="@StaticBody3D@4" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@2" unique_id=353397396]
-
-[node name="@CollisionShape3D@3" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@2/@StaticBody3D@4" unique_id=673117457]
-shape = SubResource("BoxShape3D_n4igq")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 861, 6, -105)
 
 [node name="@MeshInstance3D@5" type="MeshInstance3D" parent="ResidencialNovo" unique_id=99095070]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 3, 0)
@@ -8524,40 +8514,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 12)
 material_override = SubResource("StandardMaterial3D_wdb7h")
 mesh = SubResource("BoxMesh_pbq5c")
 
-[node name="@StaticBody3D@22" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@20" unique_id=484084648]
-
-[node name="@CollisionShape3D@21" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@20/@StaticBody3D@22" unique_id=2068565245]
-shape = SubResource("BoxShape3D_j7mo0")
-
 [node name="@MeshInstance3D@23" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2019182591]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -5)
 material_override = SubResource("StandardMaterial3D_u0s2d")
 mesh = SubResource("BoxMesh_lc6vc")
-
-[node name="@StaticBody3D@25" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@23" unique_id=14670524]
-
-[node name="@CollisionShape3D@24" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@23/@StaticBody3D@25" unique_id=395891193]
-shape = SubResource("BoxShape3D_wukvi")
 
 [node name="@MeshInstance3D@26" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1650564881]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.6, -5)
 material_override = SubResource("StandardMaterial3D_30aaw")
 mesh = SubResource("BoxMesh_mt6ud")
 
-[node name="@StaticBody3D@28" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@26" unique_id=1085502161]
-
-[node name="@CollisionShape3D@27" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@26/@StaticBody3D@28" unique_id=1152937284]
-shape = SubResource("BoxShape3D_nxq86")
-
 [node name="@MeshInstance3D@29" type="MeshInstance3D" parent="ResidencialNovo" unique_id=703611842]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.8, 5)
 material_override = SubResource("StandardMaterial3D_r6hfr")
 mesh = SubResource("BoxMesh_57dpx")
-
-[node name="@StaticBody3D@31" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@29" unique_id=508900414]
-
-[node name="@CollisionShape3D@30" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@29/@StaticBody3D@31" unique_id=924305482]
-shape = SubResource("BoxShape3D_dcd6b")
 
 [node name="@MeshInstance3D@32" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1759368730]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 11.8)
@@ -8568,16 +8538,6 @@ mesh = SubResource("BoxMesh_l65qa")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1.5, -11.8)
 material_override = SubResource("StandardMaterial3D_08hix")
 mesh = SubResource("BoxMesh_tse6c")
-
-[node name="@MeshInstance3D@34" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2092101942]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.8, 0)
-material_override = SubResource("StandardMaterial3D_na3vq")
-mesh = SubResource("BoxMesh_q3a27")
-
-[node name="@StaticBody3D@36" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@34" unique_id=843731205]
-
-[node name="@CollisionShape3D@35" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@34/@StaticBody3D@36" unique_id=751122283]
-shape = SubResource("BoxShape3D_af3sg")
 
 [node name="@MeshInstance3D@37" type="MeshInstance3D" parent="ResidencialNovo" unique_id=448680979]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, 0)
@@ -8609,18 +8569,8 @@ mesh = SubResource("BoxMesh_3olhn")
 [node name="@CollisionShape3D@44" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@43/@StaticBody3D@45" unique_id=1330430517]
 shape = SubResource("BoxShape3D_5xajn")
 
-[node name="@MeshInstance3D@46" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1069633521]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 12)
-material_override = SubResource("StandardMaterial3D_ss8ck")
-mesh = SubResource("BoxMesh_y2hyg")
-
-[node name="@StaticBody3D@48" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@46" unique_id=392442033]
-
-[node name="@CollisionShape3D@47" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@46/@StaticBody3D@48" unique_id=708472583]
-shape = SubResource("BoxShape3D_c6iqb")
-
 [node name="@MeshInstance3D@49" type="MeshInstance3D" parent="ResidencialNovo" unique_id=120002377]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 6.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.55, -5)
 material_override = SubResource("StandardMaterial3D_5hkgy")
 mesh = SubResource("BoxMesh_02co4")
 
@@ -8659,16 +8609,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 7.5, -11.8)
 material_override = SubResource("StandardMaterial3D_sm6if")
 mesh = SubResource("BoxMesh_5h83x")
 
-[node name="@MeshInstance3D@60" type="MeshInstance3D" parent="ResidencialNovo" unique_id=267270264]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.8, 0)
-material_override = SubResource("StandardMaterial3D_mghs8")
-mesh = SubResource("BoxMesh_jx5ti")
-
-[node name="@StaticBody3D@62" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@60" unique_id=898119169]
-
-[node name="@CollisionShape3D@61" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@60/@StaticBody3D@62" unique_id=371487228]
-shape = SubResource("BoxShape3D_r8bti")
-
 [node name="@MeshInstance3D@63" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2093918281]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 15, 0)
 material_override = SubResource("StandardMaterial3D_5gcy1")
@@ -8699,18 +8639,8 @@ mesh = SubResource("BoxMesh_6wyb3")
 [node name="@CollisionShape3D@70" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@69/@StaticBody3D@71" unique_id=1716788473]
 shape = SubResource("BoxShape3D_k8kl8")
 
-[node name="@MeshInstance3D@72" type="MeshInstance3D" parent="ResidencialNovo" unique_id=31712796]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 12)
-material_override = SubResource("StandardMaterial3D_4imx7")
-mesh = SubResource("BoxMesh_skqls")
-
-[node name="@StaticBody3D@74" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@72" unique_id=823383440]
-
-[node name="@CollisionShape3D@73" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@72/@StaticBody3D@74" unique_id=403898421]
-shape = SubResource("BoxShape3D_qlpoe")
-
 [node name="@MeshInstance3D@75" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2104859466]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 12.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.55, -5)
 material_override = SubResource("StandardMaterial3D_mxn06")
 mesh = SubResource("BoxMesh_m6iaw")
 
@@ -8749,16 +8679,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 13.5, -11.8)
 material_override = SubResource("StandardMaterial3D_atb6a")
 mesh = SubResource("BoxMesh_c6y5c")
 
-[node name="@MeshInstance3D@86" type="MeshInstance3D" parent="ResidencialNovo" unique_id=930238263]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.8, 0)
-material_override = SubResource("StandardMaterial3D_sqr8f")
-mesh = SubResource("BoxMesh_ko65s")
-
-[node name="@StaticBody3D@88" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@86" unique_id=763595018]
-
-[node name="@CollisionShape3D@87" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@86/@StaticBody3D@88" unique_id=917807460]
-shape = SubResource("BoxShape3D_pld2l")
-
 [node name="@MeshInstance3D@89" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1929476481]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 21, 0)
 material_override = SubResource("StandardMaterial3D_qouv4")
@@ -8789,18 +8709,8 @@ mesh = SubResource("BoxMesh_vf16i")
 [node name="@CollisionShape3D@96" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@95/@StaticBody3D@97" unique_id=502708085]
 shape = SubResource("BoxShape3D_4jfk7")
 
-[node name="@MeshInstance3D@98" type="MeshInstance3D" parent="ResidencialNovo" unique_id=312877710]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21, 12)
-material_override = SubResource("StandardMaterial3D_nxw5p")
-mesh = SubResource("BoxMesh_iexm2")
-
-[node name="@StaticBody3D@100" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@98" unique_id=219728242]
-
-[node name="@CollisionShape3D@99" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@98/@StaticBody3D@100" unique_id=179850957]
-shape = SubResource("BoxShape3D_h8lh7")
-
 [node name="@MeshInstance3D@101" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1465063072]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 18.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.55, -5)
 material_override = SubResource("StandardMaterial3D_uv2km")
 mesh = SubResource("BoxMesh_30uy8")
 
@@ -8839,16 +8749,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 19.5, -11.8)
 material_override = SubResource("StandardMaterial3D_h37to")
 mesh = SubResource("BoxMesh_ys07a")
 
-[node name="@MeshInstance3D@112" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1263798949]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.8, 0)
-material_override = SubResource("StandardMaterial3D_0nj32")
-mesh = SubResource("BoxMesh_bny8i")
-
-[node name="@StaticBody3D@114" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@112" unique_id=154600147]
-
-[node name="@CollisionShape3D@113" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@112/@StaticBody3D@114" unique_id=1751276493]
-shape = SubResource("BoxShape3D_a6jae")
-
 [node name="@MeshInstance3D@115" type="MeshInstance3D" parent="ResidencialNovo" unique_id=954448720]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 27, 0)
 material_override = SubResource("StandardMaterial3D_02wwa")
@@ -8879,18 +8779,8 @@ mesh = SubResource("BoxMesh_yd60m")
 [node name="@CollisionShape3D@122" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@121/@StaticBody3D@123" unique_id=1554999612]
 shape = SubResource("BoxShape3D_qfbks")
 
-[node name="@MeshInstance3D@124" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1026962249]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, 12)
-material_override = SubResource("StandardMaterial3D_47ifl")
-mesh = SubResource("BoxMesh_01lng")
-
-[node name="@StaticBody3D@126" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@124" unique_id=1891635921]
-
-[node name="@CollisionShape3D@125" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@124/@StaticBody3D@126" unique_id=1961566542]
-shape = SubResource("BoxShape3D_icyij")
-
 [node name="@MeshInstance3D@127" type="MeshInstance3D" parent="ResidencialNovo" unique_id=96084345]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 24.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 24.55, -5)
 material_override = SubResource("StandardMaterial3D_1xbav")
 mesh = SubResource("BoxMesh_suxaf")
 
@@ -8929,16 +8819,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 25.5, -11.8)
 material_override = SubResource("StandardMaterial3D_4m0eq")
 mesh = SubResource("BoxMesh_umgkw")
 
-[node name="@MeshInstance3D@138" type="MeshInstance3D" parent="ResidencialNovo" unique_id=634411135]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29.8, 0)
-material_override = SubResource("StandardMaterial3D_5lcjt")
-mesh = SubResource("BoxMesh_pskbm")
-
-[node name="@StaticBody3D@140" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@138" unique_id=2052299906]
-
-[node name="@CollisionShape3D@139" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@138/@StaticBody3D@140" unique_id=135535279]
-shape = SubResource("BoxShape3D_x7ki1")
-
 [node name="@MeshInstance3D@141" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1809021247]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 33, 0)
 material_override = SubResource("StandardMaterial3D_ao5gk")
@@ -8969,18 +8849,8 @@ mesh = SubResource("BoxMesh_c1l4n")
 [node name="@CollisionShape3D@148" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@147/@StaticBody3D@149" unique_id=1468320230]
 shape = SubResource("BoxShape3D_36yr6")
 
-[node name="@MeshInstance3D@150" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1966455506]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 33, 12)
-material_override = SubResource("StandardMaterial3D_56loo")
-mesh = SubResource("BoxMesh_5ud3c")
-
-[node name="@StaticBody3D@152" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@150" unique_id=2025875228]
-
-[node name="@CollisionShape3D@151" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@150/@StaticBody3D@152" unique_id=1682535632]
-shape = SubResource("BoxShape3D_jjwpk")
-
 [node name="@MeshInstance3D@153" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1698164478]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 30.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30.55, -5)
 material_override = SubResource("StandardMaterial3D_w27sh")
 mesh = SubResource("BoxMesh_tbgaa")
 
@@ -9019,16 +8889,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 31.5, -11.8)
 material_override = SubResource("StandardMaterial3D_amo2a")
 mesh = SubResource("BoxMesh_8fp1k")
 
-[node name="@MeshInstance3D@164" type="MeshInstance3D" parent="ResidencialNovo" unique_id=522659622]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 35.8, 0)
-material_override = SubResource("StandardMaterial3D_31ox8")
-mesh = SubResource("BoxMesh_6q77k")
-
-[node name="@StaticBody3D@166" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@164" unique_id=479451253]
-
-[node name="@CollisionShape3D@165" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@164/@StaticBody3D@166" unique_id=1203438938]
-shape = SubResource("BoxShape3D_fnb8c")
-
 [node name="@MeshInstance3D@167" type="MeshInstance3D" parent="ResidencialNovo" unique_id=975066592]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 39, 0)
 material_override = SubResource("StandardMaterial3D_y4t1c")
@@ -9059,18 +8919,8 @@ mesh = SubResource("BoxMesh_0cnfu")
 [node name="@CollisionShape3D@174" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@173/@StaticBody3D@175" unique_id=1392039179]
 shape = SubResource("BoxShape3D_vmrjr")
 
-[node name="@MeshInstance3D@176" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2126278860]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 39, 12)
-material_override = SubResource("StandardMaterial3D_45ans")
-mesh = SubResource("BoxMesh_egbpk")
-
-[node name="@StaticBody3D@178" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@176" unique_id=2062078518]
-
-[node name="@CollisionShape3D@177" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@176/@StaticBody3D@178" unique_id=1224495633]
-shape = SubResource("BoxShape3D_akvgc")
-
 [node name="@MeshInstance3D@179" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1405659812]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 36.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 36.55, -5)
 material_override = SubResource("StandardMaterial3D_0kyf5")
 mesh = SubResource("BoxMesh_aod6f")
 
@@ -9109,16 +8959,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 37.5, -11.8)
 material_override = SubResource("StandardMaterial3D_af8t2")
 mesh = SubResource("BoxMesh_8vmcx")
 
-[node name="@MeshInstance3D@190" type="MeshInstance3D" parent="ResidencialNovo" unique_id=526353110]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 41.8, 0)
-material_override = SubResource("StandardMaterial3D_mqxjt")
-mesh = SubResource("BoxMesh_emkkl")
-
-[node name="@StaticBody3D@192" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@190" unique_id=1455098302]
-
-[node name="@CollisionShape3D@191" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@190/@StaticBody3D@192" unique_id=1031093857]
-shape = SubResource("BoxShape3D_pi7v1")
-
 [node name="@MeshInstance3D@193" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1000363168]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 45, 0)
 material_override = SubResource("StandardMaterial3D_ypba8")
@@ -9149,45 +8989,20 @@ mesh = SubResource("BoxMesh_os2x5")
 [node name="@CollisionShape3D@200" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@199/@StaticBody3D@201" unique_id=1666884082]
 shape = SubResource("BoxShape3D_55koc")
 
-[node name="@MeshInstance3D@202" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1666976409]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 45, 12)
-material_override = SubResource("StandardMaterial3D_y5h8l")
-mesh = SubResource("BoxMesh_uvxng")
-
-[node name="@StaticBody3D@204" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@202" unique_id=1445391854]
-
-[node name="@CollisionShape3D@203" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@202/@StaticBody3D@204" unique_id=195272246]
-shape = SubResource("BoxShape3D_8m240")
-
 [node name="@MeshInstance3D@205" type="MeshInstance3D" parent="ResidencialNovo" unique_id=795323037]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 42.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 42.55, -5)
 material_override = SubResource("StandardMaterial3D_xlns5")
 mesh = SubResource("BoxMesh_2tt16")
-
-[node name="@StaticBody3D@207" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@205" unique_id=1338591454]
-
-[node name="@CollisionShape3D@206" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@205/@StaticBody3D@207" unique_id=1060650260]
-shape = SubResource("BoxShape3D_j3kpn")
 
 [node name="@MeshInstance3D@208" type="MeshInstance3D" parent="ResidencialNovo" unique_id=997540825]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 42.6, -5)
 material_override = SubResource("StandardMaterial3D_dv6q6")
 mesh = SubResource("BoxMesh_vrh7x")
 
-[node name="@StaticBody3D@210" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@208" unique_id=1377530339]
-
-[node name="@CollisionShape3D@209" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@208/@StaticBody3D@210" unique_id=2047996555]
-shape = SubResource("BoxShape3D_1wim0")
-
 [node name="@MeshInstance3D@211" type="MeshInstance3D" parent="ResidencialNovo" unique_id=421974791]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 42.8, 5)
 material_override = SubResource("StandardMaterial3D_y788d")
 mesh = SubResource("BoxMesh_68wf4")
-
-[node name="@StaticBody3D@213" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@211" unique_id=1465517658]
-
-[node name="@CollisionShape3D@212" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@211/@StaticBody3D@213" unique_id=715389902]
-shape = SubResource("BoxShape3D_oxft1")
 
 [node name="@MeshInstance3D@214" type="MeshInstance3D" parent="ResidencialNovo" unique_id=162852269]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 43.6, 11.8)
@@ -9199,85 +9014,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 43.5, -11.8)
 material_override = SubResource("StandardMaterial3D_ail23")
 mesh = SubResource("BoxMesh_r7fin")
 
-[node name="@MeshInstance3D@216" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1921932019]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 47.8, 0)
-material_override = SubResource("StandardMaterial3D_dv3cq")
-mesh = SubResource("BoxMesh_m142l")
-
-[node name="@StaticBody3D@218" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@216" unique_id=1464548963]
-
-[node name="@CollisionShape3D@217" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@216/@StaticBody3D@218" unique_id=63258364]
-shape = SubResource("BoxShape3D_qja6x")
-
 [node name="@MeshInstance3D@219" type="MeshInstance3D" parent="ResidencialNovo" unique_id=38161129]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 51, 0)
 material_override = SubResource("StandardMaterial3D_ok8tu")
 mesh = SubResource("BoxMesh_s1pyp")
-
-[node name="@StaticBody3D@221" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@219" unique_id=1248164195]
-
-[node name="@CollisionShape3D@220" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@219/@StaticBody3D@221" unique_id=1574475422]
-shape = SubResource("BoxShape3D_epocl")
 
 [node name="@MeshInstance3D@222" type="MeshInstance3D" parent="ResidencialNovo" unique_id=636017272]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 51, 0)
 material_override = SubResource("StandardMaterial3D_pcv3i")
 mesh = SubResource("BoxMesh_p0csj")
 
-[node name="@StaticBody3D@224" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@222" unique_id=1486129064]
-
-[node name="@CollisionShape3D@223" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@222/@StaticBody3D@224" unique_id=768634462]
-shape = SubResource("BoxShape3D_lkouv")
-
 [node name="@MeshInstance3D@225" type="MeshInstance3D" parent="ResidencialNovo" unique_id=866089380]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 51, -12)
 material_override = SubResource("StandardMaterial3D_4y1r1")
 mesh = SubResource("BoxMesh_vahuo")
 
-[node name="@StaticBody3D@227" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@225" unique_id=1624068581]
-
-[node name="@CollisionShape3D@226" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@225/@StaticBody3D@227" unique_id=1626702965]
-shape = SubResource("BoxShape3D_d8mae")
-
-[node name="@MeshInstance3D@228" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1175042162]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 51, 12)
-material_override = SubResource("StandardMaterial3D_nww6n")
-mesh = SubResource("BoxMesh_5kboc")
-
-[node name="@StaticBody3D@230" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@228" unique_id=59252024]
-
-[node name="@CollisionShape3D@229" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@228/@StaticBody3D@230" unique_id=1697324371]
-shape = SubResource("BoxShape3D_5gcv3")
-
 [node name="@MeshInstance3D@231" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1989530423]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 48.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 48.55, -5)
 material_override = SubResource("StandardMaterial3D_pwx0s")
 mesh = SubResource("BoxMesh_8ojfs")
-
-[node name="@StaticBody3D@233" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@231" unique_id=707645109]
-
-[node name="@CollisionShape3D@232" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@231/@StaticBody3D@233" unique_id=440031739]
-shape = SubResource("BoxShape3D_d3mgw")
 
 [node name="@MeshInstance3D@234" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1584873628]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 48.6, -5)
 material_override = SubResource("StandardMaterial3D_0f4ds")
 mesh = SubResource("BoxMesh_oljdu")
 
-[node name="@StaticBody3D@236" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@234" unique_id=1259514181]
-
-[node name="@CollisionShape3D@235" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@234/@StaticBody3D@236" unique_id=525841903]
-shape = SubResource("BoxShape3D_7uk8d")
-
 [node name="@MeshInstance3D@237" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1201899340]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 48.8, 5)
 material_override = SubResource("StandardMaterial3D_h8xxo")
 mesh = SubResource("BoxMesh_1nta0")
-
-[node name="@StaticBody3D@239" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@237" unique_id=1675592611]
-
-[node name="@CollisionShape3D@238" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@237/@StaticBody3D@239" unique_id=614765818]
-shape = SubResource("BoxShape3D_y3qnv")
 
 [node name="@MeshInstance3D@240" type="MeshInstance3D" parent="ResidencialNovo" unique_id=11482027]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 49.6, 11.8)
@@ -9289,85 +9054,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 49.5, -11.8)
 material_override = SubResource("StandardMaterial3D_qp7g8")
 mesh = SubResource("BoxMesh_bfae6")
 
-[node name="@MeshInstance3D@242" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1292999340]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 53.8, 0)
-material_override = SubResource("StandardMaterial3D_udnh2")
-mesh = SubResource("BoxMesh_4urj1")
-
-[node name="@StaticBody3D@244" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@242" unique_id=161529496]
-
-[node name="@CollisionShape3D@243" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@242/@StaticBody3D@244" unique_id=536630296]
-shape = SubResource("BoxShape3D_liexe")
-
 [node name="@MeshInstance3D@245" type="MeshInstance3D" parent="ResidencialNovo" unique_id=527424198]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 57, 0)
 material_override = SubResource("StandardMaterial3D_ixogb")
 mesh = SubResource("BoxMesh_bwkkh")
-
-[node name="@StaticBody3D@247" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@245" unique_id=1148937973]
-
-[node name="@CollisionShape3D@246" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@245/@StaticBody3D@247" unique_id=1050209891]
-shape = SubResource("BoxShape3D_lidcm")
 
 [node name="@MeshInstance3D@248" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1781234574]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 57, 0)
 material_override = SubResource("StandardMaterial3D_xdtma")
 mesh = SubResource("BoxMesh_gifqu")
 
-[node name="@StaticBody3D@250" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@248" unique_id=1095669805]
-
-[node name="@CollisionShape3D@249" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@248/@StaticBody3D@250" unique_id=76278502]
-shape = SubResource("BoxShape3D_g4oip")
-
 [node name="@MeshInstance3D@251" type="MeshInstance3D" parent="ResidencialNovo" unique_id=524187693]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 57, -12)
 material_override = SubResource("StandardMaterial3D_4v3sn")
 mesh = SubResource("BoxMesh_52u4t")
 
-[node name="@StaticBody3D@253" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@251" unique_id=1408622948]
-
-[node name="@CollisionShape3D@252" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@251/@StaticBody3D@253" unique_id=1646697547]
-shape = SubResource("BoxShape3D_f7swa")
-
-[node name="@MeshInstance3D@254" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1753950192]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 57, 12)
-material_override = SubResource("StandardMaterial3D_3vr1b")
-mesh = SubResource("BoxMesh_gkp5q")
-
-[node name="@StaticBody3D@256" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@254" unique_id=39578952]
-
-[node name="@CollisionShape3D@255" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@254/@StaticBody3D@256" unique_id=591995930]
-shape = SubResource("BoxShape3D_8dsnj")
-
 [node name="@MeshInstance3D@257" type="MeshInstance3D" parent="ResidencialNovo" unique_id=345986192]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 54.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 54.55, -5)
 material_override = SubResource("StandardMaterial3D_p3pag")
 mesh = SubResource("BoxMesh_ndnrk")
-
-[node name="@StaticBody3D@259" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@257" unique_id=1245416306]
-
-[node name="@CollisionShape3D@258" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@257/@StaticBody3D@259" unique_id=122147431]
-shape = SubResource("BoxShape3D_14lsn")
 
 [node name="@MeshInstance3D@260" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1932553814]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 54.6, -5)
 material_override = SubResource("StandardMaterial3D_y5ktl")
 mesh = SubResource("BoxMesh_cq3lu")
 
-[node name="@StaticBody3D@262" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@260" unique_id=821561773]
-
-[node name="@CollisionShape3D@261" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@260/@StaticBody3D@262" unique_id=1623055893]
-shape = SubResource("BoxShape3D_4f8o0")
-
 [node name="@MeshInstance3D@263" type="MeshInstance3D" parent="ResidencialNovo" unique_id=623458819]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 54.8, 5)
 material_override = SubResource("StandardMaterial3D_wimdd")
 mesh = SubResource("BoxMesh_cg4op")
-
-[node name="@StaticBody3D@265" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@263" unique_id=448956546]
-
-[node name="@CollisionShape3D@264" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@263/@StaticBody3D@265" unique_id=1493050375]
-shape = SubResource("BoxShape3D_oyfw5")
 
 [node name="@MeshInstance3D@266" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1389824008]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 55.6, 11.8)
@@ -9379,85 +9094,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 55.5, -11.8)
 material_override = SubResource("StandardMaterial3D_clbbh")
 mesh = SubResource("BoxMesh_6pjh1")
 
-[node name="@MeshInstance3D@268" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1024841431]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 59.8, 0)
-material_override = SubResource("StandardMaterial3D_poyji")
-mesh = SubResource("BoxMesh_x3iv1")
-
-[node name="@StaticBody3D@270" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@268" unique_id=673977392]
-
-[node name="@CollisionShape3D@269" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@268/@StaticBody3D@270" unique_id=199821753]
-shape = SubResource("BoxShape3D_e5k8q")
-
 [node name="@MeshInstance3D@271" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2123040387]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 63, 0)
 material_override = SubResource("StandardMaterial3D_g2e7c")
 mesh = SubResource("BoxMesh_0k0e4")
-
-[node name="@StaticBody3D@273" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@271" unique_id=1477964732]
-
-[node name="@CollisionShape3D@272" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@271/@StaticBody3D@273" unique_id=978401294]
-shape = SubResource("BoxShape3D_bc1bj")
 
 [node name="@MeshInstance3D@274" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2094852158]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 63, 0)
 material_override = SubResource("StandardMaterial3D_xvpf7")
 mesh = SubResource("BoxMesh_ua4hj")
 
-[node name="@StaticBody3D@276" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@274" unique_id=1066992811]
-
-[node name="@CollisionShape3D@275" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@274/@StaticBody3D@276" unique_id=1437383167]
-shape = SubResource("BoxShape3D_gmlpq")
-
 [node name="@MeshInstance3D@277" type="MeshInstance3D" parent="ResidencialNovo" unique_id=97389154]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 63, -12)
 material_override = SubResource("StandardMaterial3D_5j35i")
 mesh = SubResource("BoxMesh_pav62")
 
-[node name="@StaticBody3D@279" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@277" unique_id=1370901610]
-
-[node name="@CollisionShape3D@278" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@277/@StaticBody3D@279" unique_id=427058390]
-shape = SubResource("BoxShape3D_7cj1e")
-
-[node name="@MeshInstance3D@280" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1550134956]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 63, 12)
-material_override = SubResource("StandardMaterial3D_nsl1r")
-mesh = SubResource("BoxMesh_7bdy1")
-
-[node name="@StaticBody3D@282" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@280" unique_id=1767656531]
-
-[node name="@CollisionShape3D@281" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@280/@StaticBody3D@282" unique_id=1613083507]
-shape = SubResource("BoxShape3D_ybphu")
-
 [node name="@MeshInstance3D@283" type="MeshInstance3D" parent="ResidencialNovo" unique_id=185129755]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 60.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 60.55, -5)
 material_override = SubResource("StandardMaterial3D_64b35")
 mesh = SubResource("BoxMesh_u35bp")
-
-[node name="@StaticBody3D@285" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@283" unique_id=832497903]
-
-[node name="@CollisionShape3D@284" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@283/@StaticBody3D@285" unique_id=436514737]
-shape = SubResource("BoxShape3D_88bd8")
 
 [node name="@MeshInstance3D@286" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1880565470]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 60.6, -5)
 material_override = SubResource("StandardMaterial3D_cfmr3")
 mesh = SubResource("BoxMesh_fyogg")
 
-[node name="@StaticBody3D@288" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@286" unique_id=1808412865]
-
-[node name="@CollisionShape3D@287" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@286/@StaticBody3D@288" unique_id=290011437]
-shape = SubResource("BoxShape3D_bfjc4")
-
 [node name="@MeshInstance3D@289" type="MeshInstance3D" parent="ResidencialNovo" unique_id=28394827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 60.8, 5)
 material_override = SubResource("StandardMaterial3D_1r7mc")
 mesh = SubResource("BoxMesh_srk0v")
-
-[node name="@StaticBody3D@291" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@289" unique_id=1465629489]
-
-[node name="@CollisionShape3D@290" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@289/@StaticBody3D@291" unique_id=1123348504]
-shape = SubResource("BoxShape3D_ddhr3")
 
 [node name="@MeshInstance3D@292" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2086268897]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 61.6, 11.8)
@@ -9469,25 +9134,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 61.5, -11.8)
 material_override = SubResource("StandardMaterial3D_p8a14")
 mesh = SubResource("BoxMesh_kyapg")
 
-[node name="@MeshInstance3D@294" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1828650765]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 65.8, 0)
-material_override = SubResource("StandardMaterial3D_6b1f1")
-mesh = SubResource("BoxMesh_nrrc3")
-
-[node name="@StaticBody3D@296" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@294" unique_id=401688778]
-
-[node name="@CollisionShape3D@295" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@294/@StaticBody3D@296" unique_id=217742635]
-shape = SubResource("BoxShape3D_amn0e")
-
 [node name="@MeshInstance3D@297" type="MeshInstance3D" parent="ResidencialNovo" unique_id=2104408686]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 69, 0)
 material_override = SubResource("StandardMaterial3D_8s7qe")
 mesh = SubResource("BoxMesh_emtmc")
-
-[node name="@StaticBody3D@299" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@297" unique_id=2062608900]
-
-[node name="@CollisionShape3D@298" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@297/@StaticBody3D@299" unique_id=1677015284]
-shape = SubResource("BoxShape3D_uqo8r")
 
 [node name="@MeshInstance3D@300" type="MeshInstance3D" parent="ResidencialNovo" unique_id=700236001]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 69, 0)
@@ -9509,18 +9159,8 @@ mesh = SubResource("BoxMesh_10heh")
 [node name="@CollisionShape3D@304" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@303/@StaticBody3D@305" unique_id=352121667]
 shape = SubResource("BoxShape3D_auahr")
 
-[node name="@MeshInstance3D@306" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1716316647]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 69, 12)
-material_override = SubResource("StandardMaterial3D_y7rxt")
-mesh = SubResource("BoxMesh_i7ut7")
-
-[node name="@StaticBody3D@308" type="StaticBody3D" parent="ResidencialNovo/@MeshInstance3D@306" unique_id=1313721738]
-
-[node name="@CollisionShape3D@307" type="CollisionShape3D" parent="ResidencialNovo/@MeshInstance3D@306/@StaticBody3D@308" unique_id=267413997]
-shape = SubResource("BoxShape3D_ode0c")
-
 [node name="@MeshInstance3D@309" type="MeshInstance3D" parent="ResidencialNovo" unique_id=1239758418]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 66.55, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 66.55, -5)
 material_override = SubResource("StandardMaterial3D_d2dsl")
 mesh = SubResource("BoxMesh_q6trn")
 
@@ -9650,7 +9290,7 @@ font_size = 40
 [node name="MobiliaDetalhes" type="Node3D" parent="ResidencialNovo" unique_id=1809927891]
 
 [node name="@MeshInstance3D@2" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=1388437924]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.17, -6.1)
 material_override = SubResource("StandardMaterial3D_l7j8t")
 mesh = SubResource("BoxMesh_4kgaq")
 
@@ -9675,7 +9315,7 @@ material_override = SubResource("StandardMaterial3D_pc1yx")
 mesh = SubResource("BoxMesh_3ui7n")
 
 [node name="@MeshInstance3D@7" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=919130281]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 7.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.17, -6.1)
 material_override = SubResource("StandardMaterial3D_0tr0d")
 mesh = SubResource("BoxMesh_0rawu")
 
@@ -9700,7 +9340,7 @@ material_override = SubResource("StandardMaterial3D_yy21a")
 mesh = SubResource("BoxMesh_bbaxe")
 
 [node name="@MeshInstance3D@12" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=1310773874]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 13.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.17, -6.1)
 material_override = SubResource("StandardMaterial3D_d66k7")
 mesh = SubResource("BoxMesh_y7pis")
 
@@ -9725,7 +9365,7 @@ material_override = SubResource("StandardMaterial3D_8sowc")
 mesh = SubResource("BoxMesh_taldl")
 
 [node name="@MeshInstance3D@17" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=591450641]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 19.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.17, -6.1)
 material_override = SubResource("StandardMaterial3D_4epxi")
 mesh = SubResource("BoxMesh_tjmiw")
 
@@ -9750,7 +9390,7 @@ material_override = SubResource("StandardMaterial3D_uccbh")
 mesh = SubResource("BoxMesh_xub2j")
 
 [node name="@MeshInstance3D@22" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=726467466]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 25.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25.17, -6.1)
 material_override = SubResource("StandardMaterial3D_nr6ei")
 mesh = SubResource("BoxMesh_0dpvu")
 
@@ -9775,7 +9415,7 @@ material_override = SubResource("StandardMaterial3D_sg8ca")
 mesh = SubResource("BoxMesh_4y1rg")
 
 [node name="@MeshInstance3D@27" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=970052876]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 31.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 31.17, -6.1)
 material_override = SubResource("StandardMaterial3D_13im5")
 mesh = SubResource("BoxMesh_t2mbj")
 
@@ -9800,7 +9440,7 @@ material_override = SubResource("StandardMaterial3D_xwbvx")
 mesh = SubResource("BoxMesh_bge8k")
 
 [node name="@MeshInstance3D@32" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=12088116]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 37.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 37.17, -6.1)
 material_override = SubResource("StandardMaterial3D_dtsd0")
 mesh = SubResource("BoxMesh_4qmqm")
 
@@ -9825,7 +9465,7 @@ material_override = SubResource("StandardMaterial3D_2frbp")
 mesh = SubResource("BoxMesh_mr33p")
 
 [node name="@MeshInstance3D@37" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=820682355]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 43.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 43.17, -6.1)
 material_override = SubResource("StandardMaterial3D_v1nx3")
 mesh = SubResource("BoxMesh_ph2dw")
 
@@ -9850,7 +9490,7 @@ material_override = SubResource("StandardMaterial3D_3k7t8")
 mesh = SubResource("BoxMesh_tcum7")
 
 [node name="@MeshInstance3D@42" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=759234821]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 49.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 49.17, -6.1)
 material_override = SubResource("StandardMaterial3D_8ri7u")
 mesh = SubResource("BoxMesh_ww7pv")
 
@@ -9875,7 +9515,7 @@ material_override = SubResource("StandardMaterial3D_ed1n8")
 mesh = SubResource("BoxMesh_f8c51")
 
 [node name="@MeshInstance3D@47" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=1473792328]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 55.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 55.17, -6.1)
 material_override = SubResource("StandardMaterial3D_5pqpv")
 mesh = SubResource("BoxMesh_s07bp")
 
@@ -9900,7 +9540,7 @@ material_override = SubResource("StandardMaterial3D_v7ctw")
 mesh = SubResource("BoxMesh_cubvp")
 
 [node name="@MeshInstance3D@52" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=911427904]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 61.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 61.17, -6.1)
 material_override = SubResource("StandardMaterial3D_bioca")
 mesh = SubResource("BoxMesh_xlj30")
 
@@ -9925,7 +9565,7 @@ material_override = SubResource("StandardMaterial3D_euifr")
 mesh = SubResource("BoxMesh_nvf8f")
 
 [node name="@MeshInstance3D@57" type="MeshInstance3D" parent="ResidencialNovo/MobiliaDetalhes" unique_id=1794166298]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 67.17, -6.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 67.17, -6.1)
 material_override = SubResource("StandardMaterial3D_rqb6u")
 mesh = SubResource("BoxMesh_y0thn")
 
@@ -10003,3 +9643,3150 @@ position = Vector3(382.75, 13.4, 14)
 size = Vector3(1.5, 0.2, 8)
 material = SubResource("Material_contato_arma")
 use_collision = true
+
+[node name="RecepcaoResidencial" type="Node3D" parent="."]
+position = Vector3(861, 0, -105)
+
+[node name="Piso" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, -0.12, 0)
+size = Vector3(24, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ParedeEsquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-12, 3, 0)
+size = Vector3(0.4, 6, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ParedeDireita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(12, 3, 0)
+size = Vector3(0.4, 6, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Fundo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 3, -12)
+size = Vector3(24, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="EntradaEsquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 3, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="EntradaDireita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 3, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="EntradaTopo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 5, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Balcao" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 0.7, 2)
+size = Vector3(5, 1.4, 1)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Banco" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(5, 0.4, 6)
+size = Vector3(4, 0.8, 1)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PlacaRecepcao" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 3, 1)
+text = "RECEPCAO\nELEVADOR AO FUNDO / ESCADAS A ESQUERDA"
+font_size = 32
+pixel_size = 0.012
+
+[node name="ElevadorFundo0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 1.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador0" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 2.3, -6.7)
+text = "ELEVADOR / F\nTERREO"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 2.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau0_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.30000000000000004, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.6000000000000001, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.7000000000000001, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 0.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 1.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 1.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 1.2000000000000002, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 1.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 1.4000000000000001, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 1.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada0_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 0.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau0_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 3.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 4.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 4.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 4.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 4.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 4.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau0_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 4.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada0_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 0.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 5.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 5.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 5.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 5.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar1Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 9, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar1Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 9, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar1Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 11, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 7.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador1" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 8.3, -6.7)
+text = "ELEVADOR / F\nANDAR 01"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 8.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau1_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 6.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 7.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 7.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 7.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 7.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 7.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 7.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada1_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 6.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau1_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 9.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 10.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 10.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 10.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 10.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 10.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau1_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 10.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada1_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 6.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje2_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 11.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje2_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 11.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje2_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 11.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje2_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 11.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar2Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 15, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar2Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 15, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar2Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 17, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 13.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador2" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 14.3, -6.7)
+text = "ELEVADOR / F\nANDAR 02"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 14.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau2_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 12.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 13.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 13.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 13.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 13.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 13.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 13.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada2_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 12.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau2_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 15.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 16.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 16.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 16.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 16.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 16.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau2_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 16.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada2_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 12.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje3_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 17.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje3_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 17.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje3_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 17.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje3_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 17.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar3Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 21, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar3Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 21, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar3Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 23, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 19.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador3" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 20.3, -6.7)
+text = "ELEVADOR / F\nANDAR 03"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 20.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau3_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 18.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 19.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 19.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 19.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 19.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 19.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 19.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada3_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 18.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau3_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 21.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 22.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 22.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 22.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 22.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 22.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau3_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 22.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada3_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 18.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje4_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 23.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje4_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 23.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje4_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 23.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje4_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 23.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar4Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 27, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar4Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 27, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar4Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 29, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 25.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador4" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 26.3, -6.7)
+text = "ELEVADOR / F\nANDAR 04"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 26.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau4_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 24.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 25.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 25.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 25.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 25.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 25.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 25.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada4_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 24.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau4_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 27.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 28.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 28.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 28.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 28.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 28.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau4_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 28.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada4_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 24.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje5_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 29.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje5_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 29.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje5_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 29.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje5_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 29.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar5Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 33, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar5Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 33, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar5Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 35, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 31.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador5" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 32.3, -6.7)
+text = "ELEVADOR / F\nANDAR 05"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 32.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau5_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 30.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 31.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 31.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 31.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 31.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 31.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 31.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada5_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 30.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau5_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 33.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 34.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 34.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 34.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 34.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 34.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau5_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 34.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada5_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 30.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje6_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 35.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje6_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 35.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje6_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 35.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje6_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 35.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar6Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 39, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar6Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 39, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar6Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 41, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 37.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador6" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 38.3, -6.7)
+text = "ELEVADOR / F\nANDAR 06"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 38.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau6_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 36.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 37.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 37.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 37.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 37.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 37.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 37.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada6_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 36.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau6_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 39.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 40.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 40.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 40.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 40.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 40.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau6_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 40.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada6_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 36.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje7_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 41.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje7_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 41.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje7_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 41.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje7_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 41.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar7Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 45, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar7Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 45, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar7Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 47, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 43.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador7" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 44.3, -6.7)
+text = "ELEVADOR / F\nANDAR 07"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 44.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau7_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 42.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 43.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 43.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 43.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 43.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 43.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 43.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada7_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 42.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau7_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 45.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 46.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 46.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 46.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 46.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 46.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau7_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 46.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada7_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 42.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje8_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 47.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje8_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 47.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje8_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 47.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje8_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 47.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar8Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 51, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar8Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 51, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar8Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 53, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 49.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador8" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 50.3, -6.7)
+text = "ELEVADOR / F\nANDAR 08"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 50.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau8_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 48.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 49.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 49.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 49.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 49.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 49.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 49.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada8_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 48.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau8_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 51.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 52.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 52.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 52.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 52.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 52.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau8_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 52.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada8_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 48.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje9_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 53.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje9_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 53.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje9_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 53.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje9_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 53.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar9Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 57, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar9Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 57, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar9Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 59, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 55.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador9" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 56.3, -6.7)
+text = "ELEVADOR / F\nANDAR 09"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 56.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau9_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 54.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 55.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 55.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 55.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 55.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 55.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 55.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada9_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 54.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau9_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 57.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 58.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 58.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 58.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 58.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 58.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau9_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 58.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada9_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 54.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje10_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 59.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje10_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 59.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje10_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 59.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje10_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 59.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar10Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 63, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar10Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 63, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar10Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 65, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 61.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador10" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 62.3, -6.7)
+text = "ELEVADOR / F\nANDAR 10"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 62.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau10_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 60.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 61.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 61.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 61.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 61.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 61.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 61.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada10_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 60.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau10_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 63.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 64.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 64.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 64.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 64.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 64.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau10_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 64.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada10_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 60.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje11_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 65.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje11_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 65.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje11_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 65.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje11_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 65.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar11Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 69, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar11Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 69, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar11Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 71, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 67.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador11" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 68.3, -6.7)
+text = "ELEVADOR / F\nANDAR 11"
+font_size = 28
+pixel_size = 0.012
+
+[node name="Patamar11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 68.9, 1)
+size = Vector3(5, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Degrau11_0_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.1, -8.7)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.2, -8.1)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.3, -7.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.4, -6.9)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.5, -6.300000000000001)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.6, -5.7)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.7, -5.1)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 66.9, -3.9000000000000004)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 67.0, -3.3)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 67.1, -2.7)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 67.2, -2.1000000000000005)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 67.3, -1.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 67.4, -0.9000000000000004)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_0_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-9, 67.5, -0.3000000000000007)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada11_0" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-8, 66.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 0, 9, 0, 0, 3)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Degrau11_1_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.1, -0.3)
+size = Vector3(2, 0.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.2, -0.8999999999999999)
+size = Vector3(2, 0.4, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.3, -1.5)
+size = Vector3(2, 0.6000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.4, -2.1)
+size = Vector3(2, 0.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_4" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.5, -2.6999999999999997)
+size = Vector3(2, 1.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_5" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.6, -3.3)
+size = Vector3(2, 1.2000000000000002, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_6" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.7, -3.9)
+size = Vector3(2, 1.4000000000000001, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_7" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.8, -4.5)
+size = Vector3(2, 1.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_8" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 69.9, -5.1)
+size = Vector3(2, 1.8, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_9" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 70.0, -5.7)
+size = Vector3(2, 2.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_10" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 70.1, -6.3)
+size = Vector3(2, 2.2, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_11" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 70.2, -6.8999999999999995)
+size = Vector3(2, 2.4000000000000004, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 70.3, -7.5)
+size = Vector3(2, 2.6, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_13" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 70.4, -8.1)
+size = Vector3(2, 2.8000000000000003, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="Degrau11_1_14" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-6, 70.5, -8.7)
+size = Vector3(2, 3.0, 0.6)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = false
+
+[node name="ColisaoEscada11_1" type="CSGPolygon3D" parent="RecepcaoResidencial"]
+position = Vector3(-5, 66.02, 0)
+rotation = Vector3(0, 1.5707963, 0)
+polygon = PackedVector2Array(0, 3, 9, 3, 9, 6)
+depth = 2.0
+use_collision = true
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Laje12_0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-11.5, 71.9, 0)
+size = Vector3(1, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje12_1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(4, 71.9, 0)
+size = Vector3(16, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje12_2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 71.9, -11)
+size = Vector3(7, 0.2, 2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Laje12_3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 71.9, 7)
+size = Vector3(7, 0.2, 10)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar12Esquerda" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-7.5, 75, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar12Direita" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(7.5, 75, 12)
+size = Vector3(9, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="PortaAndar12Topo" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(0, 77, 12)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ElevadorFundo12" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 73.6, -8)
+size = Vector3(3.4, 3.2, 0.15)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BotaoElevador12" type="Label3D" parent="RecepcaoResidencial"]
+position = Vector3(8, 74.3, -6.7)
+text = "ELEVADOR / F\nANDAR 12"
+font_size = 28
+pixel_size = 0.012
