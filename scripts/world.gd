@@ -380,6 +380,12 @@ func build_city() -> void:
 				for j in 5:
 					palm(Vector3(x + rng.randf_range(-10, 10), 0.2, z + rng.randf_range(-10, 10)))
 				continue
+			if ix in [9, 12, 15, 18, 21] and iz == (0 if ix % 2 == 1 else 5):
+				for side in [-1, 1]:
+					box(self, Vector3(x + side * 5.75, 7, z), Vector3(10, 14, 22), colors[(ix + side) % colors.size()], true)
+					box(self, Vector3(x + side * 5.75, 14.25, z), Vector3(10.2, 0.5, 22.2), Color("62696a"))
+				box(self, Vector3(x, 0.14, z), Vector3(1.5, 0.03, 22), Color("555d5d"))
+				continue
 			var height := rng.randf_range(8, 25) if ix < 3 else rng.randf_range(14, 46)
 			var width := rng.randf_range(17, 24)
 			var color: Color = colors[rng.randi_range(0, colors.size() - 1)]
