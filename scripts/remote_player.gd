@@ -41,7 +41,7 @@ func take_hit(amount: float) -> void:
 
 func set_weapon(selected: int) -> void:
 	gun.visible=selected>0
-	gun.scale=Vector3(1,1,[1.0,1.0,1.8,1.35,1.6][clampi(selected,0,4)])
+	gun.scale=Vector3(1,1,[1.0,1.0,1.8,1.35,1.6,3.5,3.0,4.0][clampi(selected,0,7)])
 
 func set_crouched(value: bool) -> void:
 	if is_crouching==value:

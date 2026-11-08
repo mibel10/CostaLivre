@@ -76,7 +76,7 @@ func _draw() -> void:
 		text(world.active_car.model_name, Vector2(1120, 684), 14, muted)
 	elif a.weapon > 0:
 		text("%d / %d" % [a.clips[a.weapon], a.reserves[a.weapon]], Vector2(1130, 662), 25)
-		text(["", "Pistola", "Fuzil", "Escopeta", "SMG"][a.weapon], Vector2(1132, 684), 13, muted)
+		text(a.WEAPON_NAMES[a.weapon], Vector2(1132, 684), 13, muted)
 		if a.reload_time > 0:
 			text("Recarregando…", Vector2(1094, 626), 14, gold)
 		if a.menu == "" and not get_tree().paused and not world.finished and (Input.is_action_pressed("aim") or Input.is_action_pressed("shoot")):
@@ -121,16 +121,18 @@ func center_note(value: String, y: float, color: Color) -> void:
 func draw_wheel() -> void:
 	var a: Node = world.activities
 	var labels := ["Punhos", "Pistola", "Fuzil" if a.rifle_owned else "Fuzil · loja", "Escopeta" if a.shotgun_owned else "Escopeta · loja", "SMG" if a.smg_owned else "SMG · loja"]
+	for i in 3:
+		labels.append(a.WEAPON_NAMES[i+5] + ("" if a.heavy_owned[i] else " · favela"))
 	var centers: Array[Vector2] = []
-	for i in 5:
-		var angle := deg_to_rad(-90.0 + i * 72.0)
+	for i in 8:
+		var angle := deg_to_rad(-90.0 + i * 45.0)
 		centers.append(Vector2(640,360) + Vector2(cos(angle),sin(angle)) * 133)
 		var sector := PackedVector2Array()
 		for step in 17:
-			var edge := deg_to_rad(-126.0 + i * 72.0 + step * 4.5)
+			var edge := deg_to_rad(-112.5 + i * 45.0 + step * 2.8125)
 			sector.append(Vector2(640,360) + Vector2(cos(edge),sin(edge)) * 205)
 		for step in range(16,-1,-1):
-			var edge := deg_to_rad(-126.0 + i * 72.0 + step * 4.5)
+			var edge := deg_to_rad(-112.5 + i * 45.0 + step * 2.8125)
 			sector.append(Vector2(640,360) + Vector2(cos(edge),sin(edge)) * 66)
 		draw_colored_polygon(sector, Color("bb9458") if world.extra.selection == i else Color(0.03, 0.07, 0.1, 0.92))
 		text(labels[i], centers[i] + Vector2(-55, 5), 16)
@@ -174,7 +176,7 @@ func draw_menu(a: Node) -> void:
 			text(lines[i], Vector2(270, 201 + i * 32), 16, gold if i == 9 else ink)
 		return
 	panel(Rect2(330, 115, 620, 490))
-	var title: String = {"jobs": "CONTRATOS", "guns": "ARSENAL", "cars": "APEX MOTORS", "garage": "OFICINA"}.get(a.menu, "")
+	var title: String = {"jobs": "CONTRATOS", "guns": "ARSENAL", "heavy_guns": "ARSENAL DA FAVELA", "cars": "APEX MOTORS", "garage": "OFICINA"}.get(a.menu, "")
 	text(title, Vector2(365, 166), 30, gold)
 	text("$ %d" % world.cash, Vector2(805, 165), 21, gold)
 	text("Escolha pelo número   ·   ESC para fechar", Vector2(366, 199), 14, muted)
@@ -184,6 +186,8 @@ func draw_menu(a: Node) -> void:
 			rows.append("%s   ·   $%d" % [a.JOBS[i], a.REWARDS[i]])
 	elif a.menu == "garage":
 		rows = ["Reparo e cura   ·   $250", "Trocar pintura   ·   $300", "Melhorar motor   ·   $500"]
+	elif a.menu == "heavy_guns":
+		rows = ["Bazuca + 4 foguetes · $6500", "Sniper + 15 munições · $5000", "Canhão de pulso + 60 cargas · $25000", "Munição pesada · $1200"]
 	elif a.menu == "guns":
 		rows = ["Pistola + 48 munições   ·   $400", "Fuzil + 90 munições   ·   $1800", "Escopeta + 32 cartuchos   ·   $2400", "SMG + 96 munições   ·   $2100", "Munição para suas armas   ·   $150"]
 	else:
@@ -199,7 +203,7 @@ func draw_menu(a: Node) -> void:
 		text("Pagina %d/3  /  setas: trocar  /  1-3: comprar" % (a.car_page+1),Vector2(366,555),14,muted)
 	elif world.toast_time > 0 and (world.toast.begins_with("Dinheiro") or world.toast.begins_with("Libere")):
 		text(world.toast, Vector2(366, 550), 12, gold)
-	elif a.menu == "guns":
+	elif a.menu in ["guns","heavy_guns"]:
 		text("1–5 · comprar/equipar     R · recarregar     Q · roda de armas", Vector2(366, 555), 13, muted)
 	else:
 		text("Carros comprados não aumentam seu nível de busca.", Vector2(366, 555), 13, muted)

@@ -82,12 +82,12 @@ func handle_input(event: InputEvent) -> bool:
 				return true
 			var angle := rad_to_deg(cursor.angle())
 			var best := 1000.0
-			for i in 5:
-				var difference := absf(wrapf(angle - (-90.0 + i * 72.0), -180.0, 180.0))
+			for i in 8:
+				var difference := absf(wrapf(angle - (-90.0 + i * 45.0), -180.0, 180.0))
 				if difference < best:
 					best = difference
 					selection = i
-			if selection == 2 and not world.activities.rifle_owned or selection == 3 and not world.activities.shotgun_owned or selection == 4 and not world.activities.smg_owned:
+			if not world.activities.owns_weapon(selection):
 				selection = 0
 		return true
 	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_V and not world.get_tree().paused:

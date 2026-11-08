@@ -155,6 +155,32 @@ func run() -> void:
 	await wait_for(func(): return host.activities.bank.phase==4)
 	client.player.position=client.activities.bank.to_global(client.activities.bank.ENTRY)+Vector3(0,0.2,1)
 	await wait_for(func(): return client.activities.bank.phase==5)
+	host.cutscene.finish()
+	client.cutscene.finish()
+	host.heat = 0
+	host.update_dispatch(0)
+	host.network.rules.sheets[id].protected_until = Time.get_ticks_msec()+15000
+	host.network.rules.sheets[id].cash = 50000
+	client.player.position = client.activities.HEAVY_SHOP + Vector3.UP*0.3
+	await wait_for(func(): return host.network.avatars[id].node.position.distance_to(host.activities.HEAVY_SHOP)<1)
+	var before_weapon: int = host.network.rules.sheets[id].inventory.weapon
+	host.network.rules.fire_peer(id,{"origin":client.player.position+Vector3.UP,"direction":Vector3.FORWARD,"weapon":7})
+	assert(host.network.rules.sheets[id].inventory.weapon == before_weapon, "Reject firing a heavy weapon not owned")
+	for choice in 3:
+		client.activities.set_menu("heavy_guns")
+		client.activities.buy(choice)
+		await create_timer(0.4).timeout
+		await wait_for(func(): return client.activities.heavy_owned[choice])
+		assert(host.network.rules.sheets[id].inventory.heavy_owned[choice])
+	assert(host.network.rules.sheets[id].cash == 13500, "Heavy purchases charge the buyer")
+	client.player.position = Vector3(0,0.3,0)
+	await create_timer(0.3).timeout
+	var remaining: int = host.network.rules.sheets[id].cash
+	client.activities.set_menu("heavy_guns")
+	client.activities.buy(0)
+	await create_timer(0.3).timeout
+	assert(host.network.rules.sheets[id].cash == remaining, "Reject remote purchase away from shop")
+	client.activities.set_menu("")
 	client.network.disconnect_room()
 	await wait_for(func(): return host.network.members.size()==1)
 	client.network.announced_version="old-build"

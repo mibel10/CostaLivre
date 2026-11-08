@@ -9954,3 +9954,16 @@ polygon = PackedVector2Array(294, -0.6, 462, -0.6, 462, -0.12, 406, 9.88, 350, 9
 depth = 70.0
 material = SubResource("StandardMaterial3D_wjjbu")
 use_collision = true
+
+[node name="BalcaoArsenalFavela" type="CSGBox3D" parent="."]
+position = Vector3(378, 10.5, 33)
+size = Vector3(4, 1.2, 1)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="PlacaArsenalFavela" type="Label3D" parent="."]
+position = Vector3(378, 12.5, 33)
+text = "ARSENAL DA FAVELA\nBAZUCA / SNIPER / CANHAO DE PULSO\nF: COMPRAR"
+font_size = 40
+pixel_size = 0.012
+no_depth_test = false

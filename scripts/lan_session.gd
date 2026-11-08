@@ -454,8 +454,8 @@ func accept_state(id: int, state: Dictionary) -> void:
 	state["outfit"]=clampi(int(state.get("outfit",0)),0,5)
 	if rules.sheets.has(id):
 		var inv: Dictionary=rules.sheets[id].inventory
-		var wanted := clampi(int(state.get("weapon",1)),0,4)
-		if wanted in [0,1] or (wanted==2 and inv.rifle_owned) or (wanted==3 and inv.shotgun_owned) or (wanted==4 and inv.smg_owned):
+		var wanted := clampi(int(state.get("weapon",1)),0,7)
+		if wanted in [0,1] or (wanted==2 and inv.rifle_owned) or (wanted==3 and inv.shotgun_owned) or (wanted==4 and inv.smg_owned) or (wanted>=5 and inv.heavy_owned[wanted-5]):
 			inv.weapon=wanted
 		state["weapon"]=inv.weapon
 		state["hp"]=rules.sheets[id].health
@@ -679,9 +679,8 @@ func personal(kind: String, data: Dictionary) -> void:
 	rules.receive_event(kind,data)
 
 @rpc("authority","call_local","unreliable",3)
-func shot_effect(from: Vector3,to: Vector3) -> void:
-	world.activities.trace(from,to,Color("ffe5a0"))
-	world.activities.shot_audio.play()
+func shot_effect(from: Vector3,to: Vector3,weapon: int) -> void:
+	world.activities.shot_effect(from,to,weapon)
 
 func authenticating(id: int) -> void:
 	multiplayer.send_auth(id,var_to_bytes({"version":announced_version,"code":code,"platform":OS.get_name()}))

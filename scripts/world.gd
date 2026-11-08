@@ -586,7 +586,7 @@ func _process(delta: float) -> void:
 		focus += Vector3(0.65, 0, 0).rotated(Vector3.UP, camera_yaw)
 	if aiming:
 		distance = 3.2
-	camera.fov = lerpf(camera.fov, 52.0 if aiming else 68.0, 1 - exp(-delta * 10))
+	camera.fov = lerpf(camera.fov, (18.0 if activities.weapon == 6 else 52.0) if aiming else 68.0, 1 - exp(-delta * 10))
 	var offset := Vector3(0, sin(camera_pitch) * distance + (0.6 if indoors else 1.2), cos(camera_pitch) * distance).rotated(Vector3.UP, camera_yaw)
 	var desired := focus + offset
 	camera_check_timer -= delta

@@ -7,6 +7,11 @@ const CAMPAIGN_LENGTH := 24
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Correio a pe", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
+const HEAVY_SHOP := Vector3(378, 9.9, 31)
+const CAPACITIES := [0,12,30,8,32,1,5,20]
+const DAMAGE := [0,34,24,58,18,220,180,450]
+const FIRE_INTERVAL := [0.0,0.32,0.11,0.65,0.075,1.8,1.2,0.12]
+const WEAPON_NAMES := ["Punhos","Pistola","Fuzil","Escopeta","SMG","Bazuca","Sniper","Canhão de pulso"]
 const GUN_SHOP := Vector3(-21, 0, 34)
 const DEALER := Vector3(21, 0, 34)
 const GARAGE := Vector3(-21, 0, 76)
@@ -33,8 +38,9 @@ var weapon := 1
 var rifle_owned := false
 var shotgun_owned := false
 var smg_owned := false
-var clips := [0, 12, 30, 8, 32]
-var reserves := [0, 36, 0, 24, 96]
+var heavy_owned := [false,false,false]
+var clips := [0, 12, 30, 8, 32, 0, 0, 0]
+var reserves := [0, 36, 0, 24, 96, 0, 0, 0]
 var fire_cooldown := 0.0
 var reload_time := 0.0
 var reload_weapon := 0
@@ -123,7 +129,7 @@ func handle_input(event: InputEvent) -> bool:
 			if menu == "jobs" and choice >= 0 and choice < 7 and choice + job_page * 7 < job_count():
 				set_menu("")
 				start_job(choice + job_page * 7)
-			elif choice >= 0 and choice < (5 if menu == "guns" else 3):
+			elif choice >= 0 and choice < (5 if menu == "guns" else (4 if menu == "heavy_guns" else 3)):
 				buy(choice)
 		return true
 	if world.get_tree().paused or world.finished:
@@ -140,7 +146,7 @@ func handle_input(event: InputEvent) -> bool:
 	if event.is_action_pressed("activity"):
 		if world.network!=null and world.network.active():
 			var place := nearby_place()
-			if place in ["guns","cars","garage"]:
+			if place in ["guns","heavy_guns","cars","garage"]:
 				set_menu(place)
 			elif world.life.prompt().to_lower().contains("elevador"):
 				world.life.interact()
@@ -152,7 +158,7 @@ func handle_input(event: InputEvent) -> bool:
 		if bank.interact():
 			return true
 		var nearby := nearby_place()
-		if nearby in ["guns", "cars"]:
+		if nearby in ["guns", "heavy_guns", "cars"]:
 			set_menu(nearby)
 		elif nearby == "garage":
 			if world.active_car != null:
@@ -188,7 +194,7 @@ func buy(choice: int) -> void:
 	if world.network!=null and world.network.is_client():
 		world.network.rules.send_action("buy",{"menu":menu,"choice":choice,"page":car_page})
 		return
-	if choice < 0 or choice > (4 if menu == "guns" else 2):
+	if choice < 0 or choice > (4 if menu == "guns" else (3 if menu == "heavy_guns" else 2)):
 		return
 	if menu == "garage":
 		if world.active_car == null:
@@ -212,6 +218,24 @@ func buy(choice: int) -> void:
 		else:
 			world.active_car.engine_upgrade = minf(10.0,world.active_car.engine_upgrade+2.5)
 		world.notify("Serviço da oficina concluído.")
+	elif menu == "heavy_guns":
+		if world.active_car != null:
+			world.notify("Saia do carro para comprar armas.")
+			return
+		if not spend([6500,5000,25000,1200][choice]):
+			return
+		if choice < 3:
+			heavy_owned[choice] = true
+			weapon = choice + 5
+			clips[weapon] = CAPACITIES[weapon]
+			reserves[weapon] += [4,15,60][choice]
+		else:
+			for i in 3:
+				if heavy_owned[i]:
+					reserves[i+5] += [4,15,60][i]
+		world.notify("Compra concluída na favela.")
+		if game_mode == "campaign":
+			save_campaign()
 	elif menu == "guns":
 		var prices := [400, 1800, 2400, 2100, 150]
 		if not spend(prices[choice]):
@@ -264,6 +288,8 @@ func buy(choice: int) -> void:
 
 func nearby_place() -> String:
 	var pos: Vector3 = world.subject_position()
+	if pos.distance_to(HEAVY_SHOP) < 3:
+		return "heavy_guns"
 	if pos.distance_to(GUN_SHOP) < 5:
 		return "guns"
 	if pos.distance_to(DEALER) < 5:
@@ -289,6 +315,7 @@ func prompt() -> String:
 	if bank_prompt != "":
 		return bank_prompt
 	match nearby_place():
+		"heavy_guns": return "F · Arsenal da favela"
 		"guns": return "F  ·  Loja de armas"
 		"cars": return "F  ·  Concessionária APEX"
 		"garage": return "F  ·  Oficina: reparo e personalização"
@@ -358,6 +385,7 @@ func save_campaign() -> bool:
 	save.set_value("story", "rifle_owned", rifle_owned)
 	save.set_value("story", "shotgun_owned", shotgun_owned)
 	save.set_value("story", "smg_owned", smg_owned)
+	save.set_value("story", "heavy_owned", heavy_owned)
 	var error := save.save(campaign_save_path)
 	if error != OK:
 		world.notify("Falha ao salvar a campanha (%s)." % error_string(error))
@@ -381,12 +409,18 @@ func load_campaign() -> void:
 	world.life.owned_homes.assign(save.get_value("story", "homes", []))
 	world.health = float(save.get_value("story", "health", world.health))
 	completed = int(save.get_value("story", "completed", campaign_index))
-	weapon = clampi(save.get_value("story", "weapon", 1), 0, 4)
+	weapon = clampi(save.get_value("story", "weapon", 1), 0, 7)
 	clips = save.get_value("story", "clips", clips).duplicate()
 	reserves = save.get_value("story", "reserves", reserves).duplicate()
 	rifle_owned = save.get_value("story", "rifle_owned", false)
 	shotgun_owned = save.get_value("story", "shotgun_owned", false)
 	smg_owned = save.get_value("story", "smg_owned", false)
+	heavy_owned = save.get_value("story", "heavy_owned", [false,false,false]).duplicate()
+	clips.resize(8)
+	reserves.resize(8)
+	for i in 8:
+		if clips[i] == null: clips[i] = 0
+		if reserves[i] == null: reserves[i] = 0
 
 func save_campaign_now() -> void:
 	if game_mode != "campaign":
@@ -406,11 +440,12 @@ func new_campaign() -> void:
 	world.cash = 900
 	world.health = 100
 	weapon = 1
-	clips = [0, 12, 30, 8, 32]
-	reserves = [0, 36, 0, 0, 0]
+	clips = [0, 12, 30, 8, 32, 0, 0, 0]
+	reserves = [0, 36, 0, 0, 0, 0, 0, 0]
 	rifle_owned = false
 	shotgun_owned = false
 	smg_owned = false
+	heavy_owned = [false,false,false]
 	start_job(0)
 	save_campaign()
 
@@ -507,7 +542,7 @@ func tick(delta: float) -> void:
 	if reload_time > 0:
 		reload_time -= delta
 		if reload_time <= 0:
-			var capacity: int = [0, 12, 30, 8, 32][reload_weapon]
+			var capacity: int = CAPACITIES[reload_weapon]
 			var count := mini(capacity - clips[reload_weapon], reserves[reload_weapon])
 			clips[reload_weapon] += count
 			reserves[reload_weapon] -= count
@@ -668,7 +703,7 @@ func tick_pedestrian_robbery(delta: float) -> void:
 func reload() -> void:
 	if weapon <= 0 or reload_time > 0 or reserves[weapon] <= 0:
 		return
-	var capacity: int = [0, 12, 30, 8, 32][weapon]
+	var capacity: int = CAPACITIES[weapon]
 	if clips[weapon] >= capacity:
 		return
 	reload_weapon = weapon
@@ -689,11 +724,11 @@ func shoot() -> void:
 		reload()
 		return
 	clips[weapon] -= 1
-	fire_cooldown = [0.32, 0.11, 0.65, 0.075][weapon - 1]
+	fire_cooldown = FIRE_INTERVAL[weapon]
 	world.raise_heat(3)
 	var camera: Camera3D = world.camera
 	var origin := camera.global_position
-	var end := origin - camera.global_basis.z * 180
+	var end := origin - camera.global_basis.z * (600 if weapon == 6 else 180)
 	var query := PhysicsRayQueryParameters3D.create(origin, end, 7)
 	query.exclude = [world.player.get_rid()]
 	var hit := world.get_world_3d().direct_space_state.intersect_ray(query)
@@ -706,12 +741,54 @@ func shoot() -> void:
 	if not obstruction.is_empty():
 		hit = obstruction
 		end = obstruction.position
-	if not hit.is_empty():
-		if hit.collider.has_method("take_hit"):
-			hit.collider.take_hit([34, 24, 58, 18][weapon - 1])
+	weapon_impact(hit, end, weapon)
+	shot_effect(muzzle, end, weapon)
+
+func owns_weapon(index: int) -> bool:
+	if index < 0 or index > 7: return false
+	if index >= 5: return heavy_owned[index-5]
+	return index < 2 or (rifle_owned if index == 2 else (shotgun_owned if index == 3 else smg_owned))
+
+func weapon_impact(hit: Dictionary, at: Vector3, selected: int) -> void:
+	if selected not in [5,7]:
+		if not hit.is_empty() and hit.collider.has_method("take_hit"):
+			hit.collider.take_hit(DAMAGE[selected])
 			hit_flash = 0.16
-	trace(muzzle, end, Color("ffe5a0"))
-	shot_audio.pitch_scale = [0.85, 1.2, 0.65, 1.45][weapon - 1]
+		return
+	var radius := 6.0 if selected == 5 else 9.0
+	var query := PhysicsShapeQueryParameters3D.new()
+	var sphere := SphereShape3D.new()
+	sphere.radius = radius
+	query.shape = sphere
+	query.transform.origin = at
+	query.collision_mask = 7
+	var struck := {}
+	for result in world.get_world_3d().direct_space_state.intersect_shape(query,128):
+		var victim: Node3D = result.collider
+		if struck.has(victim.get_instance_id()) or not victim.has_method("take_hit"): continue
+		struck[victim.get_instance_id()] = true
+		var ray := PhysicsRayQueryParameters3D.create(at + Vector3.UP*0.12, victim.global_position + Vector3.UP, 1)
+		var cover := world.get_world_3d().direct_space_state.intersect_ray(ray)
+		if not cover.is_empty() and cover.collider != victim: continue
+		victim.take_hit(DAMAGE[selected])
+
+func shot_effect(from: Vector3, to: Vector3, selected: int) -> void:
+	trace(from, to, Color("65ffff") if selected == 7 else Color("ffe5a0"))
+	if selected in [5,7]:
+		var blast := MeshInstance3D.new()
+		var sphere := SphereMesh.new()
+		sphere.radius = 1.0
+		sphere.height = 2.0
+		blast.mesh = sphere
+		blast.material_override = world.material(Color("65ffff") if selected == 7 else Color("ff9c3b"), true)
+		world.add_child(blast)
+		blast.global_position = to
+		var tween := blast.create_tween()
+		tween.tween_property(blast,"scale",Vector3.ONE * (6.0 if selected == 5 else 9.0),0.2)
+		tween.tween_property(blast,"scale",Vector3.ZERO,0.15)
+		tween.tween_callback(blast.queue_free)
+		world.extra.play("explosion", -12)
+	shot_audio.pitch_scale = [1.0,0.85,1.2,0.65,1.45,0.5,0.7,1.8][selected]
 	shot_audio.play()
 
 func trace(from: Vector3, to: Vector3, color: Color) -> void:

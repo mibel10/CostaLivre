@@ -35,6 +35,17 @@ func run() -> void:
 	world.cutscene.finish()
 	assert(world.activities.job == 1 and world.cutscene.active, "Failed campaign chapters retry in order")
 	world.cutscene.finish()
+	world.activities.heavy_owned = [true,true,true]
+	world.activities.weapon = 7
+	world.activities.clips[7] = 11
+	world.activities.reserves[7] = 42
+	world.cash = 1234
+	assert(world.activities.save_campaign())
+	world.activities.heavy_owned = [false,false,false]
+	world.activities.load_campaign()
+	assert(world.activities.heavy_owned == [true,true,true])
+	assert(world.activities.weapon == 7 and world.activities.clips[7] == 11 and world.activities.reserves[7] == 42)
+	assert(world.cash == 1234, "Campaign retains heavy weapons, ammo and cash")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_test.cfg"))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_full_test.cfg"))
 	world.queue_free()

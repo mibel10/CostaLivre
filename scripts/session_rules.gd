@@ -1,6 +1,6 @@
 extends Node
 
-const INVENTORY := ["weapon","rifle_owned","shotgun_owned","smg_owned","clips","reserves","fire_cooldown","reload_time","reload_weapon"]
+const INVENTORY := ["weapon","rifle_owned","shotgun_owned","smg_owned","heavy_owned","clips","reserves","fire_cooldown","reload_time","reload_weapon"]
 var world: Node3D
 var network: Node
 var sheets := {}
@@ -39,7 +39,7 @@ func inventory() -> Dictionary:
 	return result
 
 func add_peer(id: int) -> Vector3:
-	var inv := {"weapon":1,"rifle_owned":false,"shotgun_owned":false,"smg_owned":false,"clips":[0,12,0,0,0],"reserves":[0,36,0,0,0],"fire_cooldown":0.0,"reload_time":0.0,"reload_weapon":0}
+	var inv := {"weapon":1,"rifle_owned":false,"shotgun_owned":false,"smg_owned":false,"heavy_owned":[false,false,false],"clips":[0,12,0,0,0,0,0,0],"reserves":[0,36,0,0,0,0,0,0],"fire_cooldown":0.0,"reload_time":0.0,"reload_weapon":0}
 	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0,"home":-1,"homes":[]}
 	if id==1:
 		sheets[id].cash=world.cash
@@ -349,7 +349,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				world.activities.car_page=clampi(int(data.get("page",0)),0,2)
 				world.activities.buy(int(data.get("choice",-1)))
 			)
-			if str(data.get("menu",""))=="guns":
+			if str(data.get("menu","")) in ["guns","heavy_guns"]:
 				network.personal.rpc_id(id,"equip",{"weapon":sheets[id].inventory.weapon})
 		"ram_officer":
 			var car: Node=world.car_by_id(int(network.members[id].get("car",-1)))
@@ -436,7 +436,7 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
-		"equip": world.activities.weapon=clampi(int(data.get("weapon",1)),0,4)
+		"equip": world.activities.weapon=clampi(int(data.get("weapon",1)),0,7)
 		"notice": world.notify(str(data.get("text","")))
 		"menu": world.activities.set_menu(str(data.get("value","")))
 		"mission_offer": network.show_mission_offer(int(data.get("index",24)),str(data.get("host","Host")))
@@ -484,12 +484,12 @@ func fire_peer(id: int,data: Dictionary) -> void:
 		return
 	with_actor(id,func():
 		var a: Node=world.activities
-		var selected := clampi(int(data.get("weapon",1)),0,4)
+		var selected := clampi(int(data.get("weapon",1)),0,7)
 		if selected==0:
 			a.weapon=0
 			punch_peer(id,atan2(-direction.x,-direction.z))
 			return
-		if selected==2 and not a.rifle_owned or selected==3 and not a.shotgun_owned or selected==4 and not a.smg_owned:
+		if not a.owns_weapon(selected):
 			return
 		a.weapon=selected
 		if world.active_car!=null or a.fire_cooldown>0 or a.reload_time>0 or (a.bank.hacking and bank_owner==id):
@@ -498,9 +498,9 @@ func fire_peer(id: int,data: Dictionary) -> void:
 			a.reload()
 			return
 		a.clips[selected]-=1
-		a.fire_cooldown=[0.32,0.11,0.65,0.075][selected-1]
+		a.fire_cooldown=a.FIRE_INTERVAL[selected]
 		world.raise_heat(3)
-		var end := origin+direction.normalized()*180
+		var end := origin+direction.normalized()*(600 if selected==6 else 180)
 		var query := PhysicsRayQueryParameters3D.create(origin,end,7)
 		query.exclude=[world.player.get_rid()]
 		var hit := world.get_world_3d().direct_space_state.intersect_ray(query)
@@ -514,10 +514,9 @@ func fire_peer(id: int,data: Dictionary) -> void:
 			hit=cover
 			end=cover.position
 		attacker=id
-		if not hit.is_empty() and hit.collider.has_method("take_hit"):
-			hit.collider.take_hit([34,24,58,18][selected-1])
+		a.weapon_impact(hit,end,selected)
 		attacker=0
-		network.shot_effect.rpc(muzzle,end)
+		network.shot_effect.rpc(muzzle,end,selected)
 	)
 
 func punch_peer(id: int, yaw: float) -> void:
@@ -552,7 +551,7 @@ func tick_inventory(delta: float) -> void:
 	if a.reload_time>0:
 		a.reload_time=maxf(0,a.reload_time-delta)
 		if a.reload_time<=0:
-			var count: int=mini([0,12,30,8,32][a.reload_weapon]-a.clips[a.reload_weapon],a.reserves[a.reload_weapon])
+			var count: int=mini(a.CAPACITIES[a.reload_weapon]-a.clips[a.reload_weapon],a.reserves[a.reload_weapon])
 			a.clips[a.reload_weapon]+=count
 			a.reserves[a.reload_weapon]-=count
 

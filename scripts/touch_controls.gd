@@ -52,9 +52,9 @@ func base_buttons() -> Array:
 		return []
 	if state == "death":
 		return [[Rect2(510,570,260,70),"RECOMEÇAR","restart"]]
-	if state in ["jobs","guns","cars","garage","hack","mission_hack","credits"]:
+	if state in ["jobs","guns","heavy_guns","cars","garage","hack","mission_hack","credits"]:
 		var rows: Array = [[Rect2(1090,630,160,65),"VOLTAR","pause"]]
-		var count := 4 if state in ["hack","mission_hack"] else (7 if state == "jobs" else (5 if state == "guns" else (0 if state == "credits" else 3)))
+		var count := 4 if state in ["hack","mission_hack","heavy_guns"] else (7 if state == "jobs" else (5 if state == "guns" else (0 if state == "credits" else 3)))
 		for i in count:
 			rows.append([Rect2(40+i*140,635,125,60),str(i+1),str(i+1)])
 		if state in ["jobs","cars"]:
@@ -76,6 +76,8 @@ func action(name: String, pressed: bool) -> void:
 				available.append(3)
 			if a.smg_owned:
 				available.append(4)
+			for i in 3:
+				if a.heavy_owned[i]: available.append(i+5)
 			a.weapon = available[(available.find(a.weapon) + 1) % available.size()]
 		return
 	if name == "roll":

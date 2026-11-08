@@ -118,7 +118,7 @@ func animate_weapon(weapon: int) -> void:
 	weapon_tween.parallel().tween_property(gun, "scale", Vector3(1,1,0.2), 0.1)
 	if weapon > 0:
 		weapon_tween.tween_property(gun, "position", target, 0.14)
-		var size: float = [1.0, 1.8, 1.35, 1.6][clampi(weapon - 1, 0, 3)]
+		var size: float = [1.0, 1.8, 1.35, 1.6, 3.5, 3.0, 4.0][clampi(weapon - 1, 0, 6)]
 		weapon_tween.parallel().tween_property(gun, "scale", Vector3(1,1,size), 0.14)
 	else:
 		weapon_tween.tween_callback(func(): gun.visible = false)
