@@ -338,6 +338,21 @@ func build_hills() -> void:
 				body.add_child(shape)
 				visual.add_child(body)
 
+func build_hillside_homes() -> void:
+	var colors := [Color("dba06d"), Color("d8c18f"), Color("8fafa7"), Color("c78673")]
+	for side in [-1, 1]:
+		for row in 2:
+			for column in 5:
+				var x := 359.0 + column * 9.5
+				var z: float = side * (13.0 + row * 10.0)
+				var color: Color = colors[(column + row + (1 if side > 0 else 0)) % colors.size()]
+				box(self, Vector3(x, 11.5, z), Vector3(8, 3.2, 8), color, true)
+				box(self, Vector3(x, 13.15, z), Vector3(8.4, 0.2, 8.4), color.darkened(0.3))
+				box(self, Vector3(x, 11.0, z - side * 4.02), Vector3(1.5, 2.2, 0.06), Color("42545a"))
+		for step in 5:
+			var x := 344.0 + step * 1.2
+			var ground := (x - 294.0) * 10.0 / 56.0 - 0.1
+			box(self, Vector3(x, ground + 0.1, side * 31.0), Vector3(1.3, 0.2, 2), Color("b8b4a2"), true)
 func build_city() -> void:
 	build_hills()
 	# Continuous high collision rails close the four corners, even during jumps.
