@@ -82,6 +82,14 @@ func _ready() -> void:
 		var car := spawn_car(base + Vector3(3, 0, 15), Color.from_hsv(i * 0.19, 0.5, 0.8))
 		car.traffic = true
 		car.route.assign([base + Vector3(3, 0, 3), base + Vector3(39, 0, 3), base + Vector3(39, 0, 39), base + Vector3(3, 0, 39)])
+	for x in range(210,883,84):
+		for z in [-126,84]:
+			if z == -126 and x in [294,798]: continue
+			var base := Vector3(x,0.2,z)
+			var car := spawn_car(base+Vector3(3,0,15),Color.from_hsv(float(x)/1000.0,0.45,0.8),false,4+(x/84)%5)
+			car.traffic = true
+			car.route.assign([base+Vector3(3,0,3),base+Vector3(39,0,3),base+Vector3(39,0,39),base+Vector3(3,0,39)])
+			spawn_car(base+Vector3(7,0,15),Color.from_hsv(float(x+z)/1200.0,0.4,0.85),false,1+(x/84)%8)
 	camera = Camera3D.new()
 	add_child(camera)
 	camera.fov = 68

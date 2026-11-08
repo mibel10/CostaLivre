@@ -59,6 +59,16 @@ func _ready() -> void:
 		ped.position = ped.route[i%4]
 		ped.point = (i+1)%4
 		people.append(ped)
+	for i in 36:
+		var center := Vector3(231+(i%9)*84,0,-63+((i/9)%2)*126)
+		var ped := Pedestrian.new()
+		ped.world = world
+		ped.appearance_index = i
+		ped.route.assign([center+Vector3(-13,0,-13),center+Vector3(13,0,-13),center+Vector3(13,0,13),center+Vector3(-13,0,13)])
+		add_child(ped)
+		ped.position = ped.route[i%4]
+		ped.point = (i+1)%4
+		people.append(ped)
 	for i in 3:
 		var staff := Pedestrian.new()
 		staff.world = world

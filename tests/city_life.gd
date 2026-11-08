@@ -9,7 +9,9 @@ func run() -> void:
 	root.add_child(world)
 	world.start_mode("sandbox")
 	world.set_process(false)
-	assert(world.life.rooms.size() == 22 and world.life.people.size() == 67)
+	assert(world.life.rooms.size() == 22 and world.life.people.size() == 103)
+	assert(world.cars.filter(func(car): return car.traffic and car.position.x > 200).size() == 16)
+	assert(world.life.people.filter(func(person): return person.position.x > 200 and not person.stationary and not person.shopper).size() == 36)
 	await physics_frame
 	for side in [-1, 1]:
 		for step in 5:
