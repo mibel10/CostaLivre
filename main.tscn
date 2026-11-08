@@ -3215,6 +3215,22 @@ transform_format = 1
 instance_count = 13
 mesh = SubResource("BoxMesh_f13qp")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kek77"]
+albedo_color = Color(0.40392157, 0.5921569, 0.6156863, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_4c57u"]
+size = Vector3(1.8, 3.4, 0.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_efxa6"]
+size = Vector3(1.8, 3.4, 0.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dg77c"]
+size = Vector3(1.8, 3.4, 0.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ycdy4"]
+size = Vector3(1.8, 3.4, 0.12)
+
 [node name="CostaLivre" type="Node3D" unique_id=1810900986]
 script = ExtResource("1_xgwpn")
 
@@ -6819,3 +6835,23 @@ multimesh = SubResource("MultiMesh_0j72v")
 [node name="@MultiMeshInstance3D@13152" type="MultiMeshInstance3D" parent="." unique_id=1781663792]
 material_override = SubResource("StandardMaterial3D_owy7e")
 multimesh = SubResource("MultiMesh_qmonn")
+
+[node name="SupermarketDoor" type="MeshInstance3D" parent="." unique_id=1556776091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 289.1, 1.7, -82.75)
+material_override = SubResource("StandardMaterial3D_kek77")
+mesh = SubResource("BoxMesh_4c57u")
+
+[node name="SupermarketDoor2" type="MeshInstance3D" parent="." unique_id=1761002238]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 298.9, 1.7, -82.75)
+material_override = SubResource("StandardMaterial3D_kek77")
+mesh = SubResource("BoxMesh_efxa6")
+
+[node name="SupermarketDoor3" type="MeshInstance3D" parent="." unique_id=147606737]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 793.1, 1.7, -82.75)
+material_override = SubResource("StandardMaterial3D_kek77")
+mesh = SubResource("BoxMesh_dg77c")
+
+[node name="SupermarketDoor4" type="MeshInstance3D" parent="." unique_id=1561742266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 802.9, 1.7, -82.75)
+material_override = SubResource("StandardMaterial3D_kek77")
+mesh = SubResource("BoxMesh_ycdy4")
