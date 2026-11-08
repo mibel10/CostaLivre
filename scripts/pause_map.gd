@@ -5,16 +5,30 @@ var zoom := 1.0
 var center := Vector2(376, 0)
 var dragging := false
 var font: Font
-var label_rects: Array[Rect2] = []
+var points: Array = []
+var inspect_at := Vector2.INF
+var press_at := Vector2.ZERO
+var inspected_label := ""
+var touch_inspection := false
+var tooltip := StyleBoxFlat.new()
 
 func _ready() -> void:
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
 	font = ThemeDB.fallback_font
+	tooltip.bg_color = Color(0.02,0.04,0.06,0.98)
+	tooltip.border_color = Color("d9e6e5")
+	tooltip.set_border_width_all(1)
+	tooltip.set_corner_radius_all(4)
+	mouse_exited.connect(func():
+		if not touch_inspection:
+			inspect_at = Vector2.INF
+			queue_redraw()
+	)
 
 func factor() -> float:
-	return minf(size.x, size.y) / 1130.0 * zoom
+	return minf(size.x/1160.0, size.y/340.0) * zoom
 
 func project(pos: Vector3) -> Vector2:
 	return size / 2 + (Vector2(pos.x, pos.z) - center) * factor()
@@ -41,6 +55,11 @@ func recenter() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventKey and handle_key(event):
 		accept_event()
+	elif event is InputEventScreenTouch and event.pressed:
+		touch_inspection = true
+		inspect_at = event.position
+		queue_redraw()
+		accept_event()
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			zoom_at(1.25, event.position)
@@ -48,11 +67,19 @@ func _gui_input(event: InputEvent) -> void:
 			zoom_at(0.8, event.position)
 		elif event.button_index == MOUSE_BUTTON_LEFT:
 			dragging = event.pressed
+			if event.pressed: press_at = event.position
+			elif press_at.distance_to(event.position) < 10: inspect_at = event.position
+			queue_redraw()
 			grab_focus()
 		accept_event()
-	elif event is InputEventMouseMotion and dragging:
-		center -= event.relative / factor()
-		clamp_center()
+	elif event is InputEventMouseMotion:
+		if dragging:
+			center -= event.relative / factor()
+			clamp_center()
+			inspect_at = Vector2.INF
+		else:
+			inspect_at = event.position
+			touch_inspection = OS.has_feature("android")
 		queue_redraw()
 		accept_event()
 
@@ -75,30 +102,33 @@ func handle_key(event: InputEventKey) -> bool:
 func dot(pos: Vector3, color: Color, label := "") -> void:
 	var at := project(pos)
 	draw_circle(at, 5, color)
-	if label == "":
-		return
-	var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 12
-	for offset in [Vector2(9,-20), Vector2(9,7), Vector2(-width-9,-20), Vector2(-width-9,7)]:
-		var rect := Rect2(at + offset, Vector2(width,20))
-		if rect.position.x < 2 or rect.end.x > size.x-2 or rect.position.y < 2 or rect.end.y > size.y-2:
-			continue
-		var overlap := false
-		for used in label_rects:
-			if rect.grow(2).intersects(used):
-				overlap = true
-				break
-		if not overlap:
-			label_rects.append(rect)
-			draw_rect(rect, Color(0.035,0.08,0.10,0.96))
-			draw_rect(rect, color, false, 1)
-			draw_string(font, rect.position + Vector2(6,15), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color.WHITE)
-			return
+	if label != "": points.append({"at":at,"color":color,"label":label})
+
+func draw_inspection() -> void:
+	inspected_label = ""
+	var nearest: Dictionary = {}
+	var distance := 22.0 if touch_inspection else 12.0
+	for point in points:
+		var current: float = point.at.distance_to(inspect_at)
+		if current < distance:
+			distance = current
+			nearest = point
+	if nearest.is_empty(): return
+	inspected_label = str(nearest.label)
+	var width := minf(size.x-16,font.get_string_size(inspected_label,HORIZONTAL_ALIGNMENT_LEFT,-1,16).x+20)
+	var at: Vector2 = nearest.at+Vector2(12,-32)
+	at.x = clampf(at.x,8,size.x-width-8)
+	at.y = clampf(at.y,8,size.y-36)
+	var rect := Rect2(at,Vector2(width,28))
+	draw_circle(nearest.at,8,nearest.color,false,2)
+	draw_style_box(tooltip,rect)
+	draw_string(font,at+Vector2(10,20),inspected_label,HORIZONTAL_ALIGNMENT_LEFT,width-20,16,Color.WHITE)
 
 func _draw() -> void:
 	if world == null or font == null:
 		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color("1f343f"))
-	label_rects.clear()
+	points.clear()
 	var start := project(Vector3(-186, 0, -145))
 	var end := project(Vector3(938, 0, 145))
 	draw_rect(Rect2(start, end - start), Color("405453"))
@@ -132,19 +162,33 @@ func _draw() -> void:
 	for ix in range(8, 18):
 		var x := -147.0 + ix * 42
 		var z := -105.0 if ix == 12 else 105.0
-		dot(Vector3(x,0,z + 14), Color("9fd4b5"))
+		dot(Vector3(x,0,z + 14), Color("9fd4b5"), "Predio entravel")
 	dot(Vector3(861,0,-93), Color("b6d9d4"), "Apartamentos")
 	dot(a.GUN_SHOP, Color("9ed8ff"), "Arsenal")
 	dot(a.DEALER, Color("c7afff"), "APEX")
 	dot(a.GARAGE, Color("8ddbb5"), "Oficina")
 	if world.station!=null:
 		dot(world.station.CENTER,Color("8db8ef"),"Delegacia")
-	for i in a.ROBBERIES.size():
+	dot(a.HEAVY_SHOP,Color("9ed8ff"),"Arsenal da favela")
+	dot(a.SUPPLY_PICKUP,Color("ffd18a"),"Entrega no beco")
+	dot(a.HILL_RESIDENT,Color("ffd18a"),"Morador / entrega de remedios")
+	for pad in a.CAR_SPAWNERS:
+		dot(pad[0],Color("c7afff"),"Retirada de veiculos comprados")
+	for i in mini(3,a.ROBBERIES.size()):
 		dot(a.ROBBERIES[i], Color("fda487"), "Banco" if i == 2 else "Mercado")
 	for cop in world.cops:
 		if cop.hp > 0 and world.heat > 0:
 			dot(cop.position, Color("ed8277"))
 	if world.marker.visible:
 		dot(a.destination(), Color("ffd18a"), "Objetivo")
-	dot(world.subject_position(), Color.WHITE, "Você")
+	var player_at := project(world.subject_position())
+	var angle: float = world.active_car.heading if world.active_car != null else world.player.model.rotation.y
+	var arrow := PackedVector2Array()
+	for offset in [Vector2(0,-11),Vector2(8,8),Vector2(0,4),Vector2(-8,8)]:
+		arrow.append(player_at+offset.rotated(-angle))
+	draw_colored_polygon(arrow,Color.WHITE)
+	arrow.append(arrow[0])
+	draw_polyline(arrow,Color("0c202b"),2,true)
+	points.append({"at":player_at,"color":Color.WHITE,"label":"Voce"})
+	draw_inspection()
 	draw_string(font, Vector2(16, 28), "N ↑     %.1fx" % zoom, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color.WHITE)

@@ -33,6 +33,23 @@ func run() -> void:
 	assert(world.elapsed == time_before)
 	ui.show_page("map")
 	var map = ui.map_view
+	await process_frame
+	await process_frame
+	assert(map.inspected_label == "", "Map starts without point labels")
+	var hover := InputEventMouseMotion.new()
+	hover.position = map.project(world.activities.GUN_SHOP)
+	map._gui_input(hover)
+	await process_frame
+	await process_frame
+	assert(map.inspected_label == "Arsenal", "Desktop hover shows one point name")
+	var tap := InputEventScreenTouch.new()
+	tap.pressed = true
+	tap.position = map.project(world.activities.DEALER)
+	map._gui_input(tap)
+	await process_frame
+	await process_frame
+	assert(map.inspected_label == "APEX", "Touch selects the point name")
+	assert(map.factor() > map.size.y/1130.0, "Initial map uses more screen space")
 	var midpoint: Vector2 = map.size / 2
 	map.zoom_at(100, midpoint)
 	assert(map.zoom == 6)

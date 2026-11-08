@@ -298,11 +298,13 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 		if cop.hp > 0 and world.heat > 0 and cop.position.x >= left and cop.position.x <= left + 372:
 			draw_circle(map_point(cop.position, origin, map_size), 3, Color("ed8277"))
 	var pos := map_point(world.subject_position(), origin, map_size)
-	var angle: float = world.active_car.heading if world.active_car != null else world.camera_yaw
+	var angle: float = world.active_car.heading if world.active_car != null else world.player.model.rotation.y
 	var points := PackedVector2Array()
 	for offset in [Vector2(0, -6), Vector2(4, 5), Vector2(0, 3), Vector2(-4, 5)]:
 		points.append(pos + offset.rotated(-angle))
 	draw_colored_polygon(points, ink)
+	points.append(points[0])
+	draw_polyline(points,Color("10252e"),1.5,true)
 
 func map_point(pos: Vector3, origin: Vector2, map_size: Vector2) -> Vector2:
 	return origin + Vector2(clampf((pos.x - clampf(world.subject_position().x - 186.0, -186.0, 566.0)) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size

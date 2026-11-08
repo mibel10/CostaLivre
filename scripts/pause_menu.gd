@@ -134,7 +134,7 @@ func _ready() -> void:
 	button(pages.map, "−", Rect2(0, 539, 55, 42), func(): map_view.zoom_at(0.8, map_view.size / 2))
 	button(pages.map, "+", Rect2(67, 539, 55, 42), func(): map_view.zoom_at(1.25, map_view.size / 2))
 	button(pages.map, "Centralizar", Rect2(138, 539, 170, 42), map_view.recenter)
-	label(pages.map, "Roda: zoom · arraste: mover · setas: navegar", Vector2(326, 551), 16, Color("a7b9bf"))
+	label(pages.map, "Zoom: roda / +/- | Arraste: mover | Passe o mouse ou toque nos pontos", Vector2(326, 551), 12, Color("a7b9bf"))
 	label(pages.graphics, "GRÁFICOS E DESEMPENHO", Vector2.ZERO, 27, Color("ffd18a"))
 	label(pages.graphics, "Qualidade gráfica", Vector2(0, 90), 21)
 	quality_select = OptionButton.new()
@@ -308,6 +308,7 @@ func show_page(value: String) -> void:
 		pages[name].visible = name == value
 	refresh()
 	if value == "map":
+		map_view.inspect_at = Vector2.INF
 		map_view.dragging = false
 		map_view.grab_focus()
 		map_view.queue_redraw()
