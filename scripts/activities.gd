@@ -136,7 +136,7 @@ func set_menu(value: String) -> void:
 		return
 	world.get_tree().paused = value != "" and not (world.network!=null and world.network.active())
 	world.engine_audio.stream_paused = value != ""
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if value != "" else Input.MOUSE_MODE_CAPTURED
+	world.restore_pointer()
 	world.hud.queue_redraw()
 	if world.pause_menu != null:
 		world.pause_menu.open_for(value)
@@ -1077,7 +1077,7 @@ func _process(_delta: float) -> void:
 	var show_hack_pointer: bool = bank.local_hacking() or (world.network != null and world.network.active() and world.network.rules.local_mission_hacking())
 	if hack_pointer != show_hack_pointer:
 		hack_pointer = show_hack_pointer
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if hack_pointer or menu != "" else Input.MOUSE_MODE_CAPTURED
+		world.restore_pointer()
 	var objects: Node = world.get_node_or_null("ObjetivosCampanha") if world != null else null
 	if objects != null:
 		for target in objects.get_children():

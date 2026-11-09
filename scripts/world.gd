@@ -356,6 +356,15 @@ func spawn_car(at: Vector3, color: Color, police := false, tier := -1) -> Charac
 		settings.register_visuals(car)
 	return car
 
+func restore_pointer() -> void:
+	if activities == null or activities.bank == null:
+		return
+	var pointer_needed: bool = finished or activities.menu != "" or activities.bank.local_hacking()
+	pointer_needed = pointer_needed or (extra != null and extra.wheel)
+	if network != null and network.active():
+		pointer_needed = pointer_needed or network.offer_panel.visible or network.rules.local_mission_hacking()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if pointer_needed else Input.MOUSE_MODE_CAPTURED
+
 func _unhandled_input(event: InputEvent) -> void:
 	if network != null and network.offer_panel.visible:
 		return

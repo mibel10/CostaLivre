@@ -218,6 +218,9 @@ func _ready() -> void:
 		upscaling_select.add_item(mode)
 	pages.graphics.add_child(upscaling_select)
 	upscaling_select.item_selected.connect(func(index): world.settings.set_upscaling(index); refresh())
+	for option in pages.graphics.get_children():
+		if option is OptionButton:
+			option.get_popup().popup_hide.connect(world.restore_pointer, CONNECT_DEFERRED)
 	status = label(pages.graphics, "", Vector2(0, 552 if not OS.has_feature("android") else 530), 18, Color("ffd18a"))
 	label(pages.controls, "CONTROLES", Vector2.ZERO, 27, Color("ffd18a"))
 	for i in REBIND_ACTIONS.size():
@@ -347,6 +350,8 @@ func show_page(value: String) -> void:
 		map_view.dragging = false
 		map_view.grab_focus()
 		map_view.queue_redraw()
+	elif value == "graphics":
+		world.restore_pointer()
 
 func refresh() -> void:
 	for key in advanced_options:

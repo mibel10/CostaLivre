@@ -72,6 +72,16 @@ func run() -> void:
 	world._unhandled_input(action("pause"))
 	assert(paused and ui.page == "home", "Escape from a subpage returns to pause home")
 	ui.show_page("graphics")
+	var graphics_popup: PopupMenu = ui.quality_select.get_popup()
+	if DisplayServer.get_name() != "headless":
+		graphics_popup.popup()
+		await process_frame
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		graphics_popup.hide()
+	else:
+		graphics_popup.popup_hide.emit()
+	await process_frame
+	assert(Input.mouse_mode == Input.MOUSE_MODE_VISIBLE or DisplayServer.get_name() == "headless", "Closing a graphics list restores the menu cursor")
 	for quality in 5:
 		ui.quality_select.item_selected.emit(quality)
 		assert(settings.quality == quality)
@@ -113,6 +123,7 @@ func run() -> void:
 	ui.show_page("home")
 	world._unhandled_input(action("pause"))
 	assert(not paused and not ui.visible)
+	assert(Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or DisplayServer.get_name() == "headless", "Resuming captures the gameplay cursor")
 	world._unhandled_input(action("map"))
 	assert(paused and ui.page == "map")
 	world._unhandled_input(action("map"))

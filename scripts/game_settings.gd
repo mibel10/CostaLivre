@@ -32,6 +32,7 @@ var shading := {}
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	load_settings()
+	apply_display_settings()
 	register_visuals(world)
 	apply()
 
@@ -158,7 +159,6 @@ func apply_range(node: GeometryInstance3D) -> void:
 
 func apply() -> void:
 	set_fps_limit(fps_limit, false)
-	apply_display_settings()
 	apply_upscaling()
 	world.camera.far = FAR[draw_distance]
 	world.get_viewport().msaa_3d = Viewport.MSAA_4X if antialiasing == 3 else (Viewport.MSAA_2X if antialiasing == 2 else Viewport.MSAA_DISABLED)

@@ -75,7 +75,7 @@ func handle_input(event: InputEvent) -> bool:
 			world.activities.weapon = selection
 			world.activities.reload_time = 0
 			Engine.time_scale = 1
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			world.restore_pointer()
 		world.hud.queue_redraw()
 		return true
 	if wheel:
@@ -161,8 +161,8 @@ func _exit_tree() -> void:
 	siren_audio.stop()
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN and is_inside_tree() and world != null and not world.finished and not get_tree().paused:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN and is_inside_tree() and world != null:
+		world.restore_pointer.call_deferred()
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT and wheel:
 		wheel = false
 		Engine.time_scale = 1

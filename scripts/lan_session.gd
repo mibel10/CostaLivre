@@ -189,13 +189,12 @@ func show_mission_offer(index: int, host_name: String) -> void:
 	var titles: Array=world.activities.JOBS
 	offer_text.text="%s convida você para %s.\n\nAo aceitar, você vai para a entrada da missão." % [host_name,titles[clampi(index,24,28)]]
 	offer_panel.show()
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	world.restore_pointer()
 
 func hide_mission_offer() -> void:
 	if is_instance_valid(offer_panel) and offer_panel.visible:
 		offer_panel.hide()
-		if world.activities.menu == "" and not world.finished:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		world.restore_pointer()
 
 func answer_mission_offer(accept: bool) -> void:
 	if offer_panel.visible:
