@@ -69,20 +69,30 @@ func _physics_process(delta: float) -> void:
 	var to: Vector3 = player_target + Vector3(0, 1, 0)
 	var query := PhysicsRayQueryParameters3D.create(from, to, 7)
 	query.exclude = [get_rid()]
+	query.hit_from_inside = true
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	if not hit.is_empty():
-		if world.network != null and world.network.active(): world.network.shot_effect.rpc(from,to,1)
-		else: world.activities.trace(from,to,Color("ff8264"))
-		if contract and int(get_meta("mission_vehicle",-1)) >= 0 and hit.collider == world.car_by_id(int(get_meta("mission_vehicle"))):
-			hit.collider.take_hit(12)
-		elif world.network!=null and world.network.active():
-			var target_peer := int(hit.collider.get_meta("peer_id",0))
-			if target_peer==0 and hit.collider is CharacterBody3D and hit.collider.get_script()==preload("res://scripts/car.gd"):
-				target_peer=int(world.network.owners.get(hit.collider.net_id,0))
-			if target_peer>0:
-				world.network.rules.damage_peer(target_peer,12 if bool(get_meta("mission_heavy",false)) else 6,0)
-		elif hit.collider==world.player or hit.collider==world.active_car:
-			world.damage(6 if bool(get_meta("mission_heavy",false)) else (3 if world.active_car!=null else 6))
+	if hit.is_empty():
+		return
+	var victim: Node3D = hit.collider
+	var online: bool = world.network != null and world.network.active()
+	var damage := 12 if bool(get_meta("mission_heavy", false)) else 6
+	if contract and int(get_meta("mission_vehicle", -1)) >= 0 and victim == world.car_by_id(int(get_meta("mission_vehicle"))):
+		victim.take_hit(12)
+	elif online:
+		var target_peer := int(victim.get_meta("peer_id", 0))
+		if target_peer == 0 and victim.get_script() == preload("res://scripts/car.gd"):
+			target_peer = int(world.network.owners.get(victim.net_id, 0))
+		if target_peer <= 0:
+			return
+		world.network.rules.damage_peer(target_peer, damage, 0)
+	elif victim == world.player or victim == world.active_car:
+		world.damage(3 if damage == 6 and world.active_car != null else damage)
+	else:
+		return
+	if online:
+		world.network.shot_effect.rpc(from, hit.position, 1)
+	else:
+		world.activities.trace(from, hit.position, Color("ff8264"))
 
 func take_hit(amount: float) -> void:
 	if world.network!=null and world.network.is_client():

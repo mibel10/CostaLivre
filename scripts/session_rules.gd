@@ -818,6 +818,10 @@ func physics(delta: float) -> void:
 		if target_crouched(target[1]) and distance>8:
 			continue
 		if distance<8:
+			var cover := PhysicsRayQueryParameters3D.create(observer.position + Vector3.UP * 1.5, target[1] + Vector3.UP, 1)
+			cover.hit_from_inside = true
+			if not world.get_world_3d().direct_space_state.intersect_ray(cover).is_empty():
+				continue
 			if not pressured.has(target[0]):
 				pressured[target[0]]=true
 				damage_peer(target[0],delta*(1.5 if distance>4 else 5.0),0)
