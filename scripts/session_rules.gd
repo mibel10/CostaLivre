@@ -5,6 +5,7 @@ var world: Node3D
 var network: Node
 var sheets := {}
 var context_peer := 0
+var bus_riders := {}
 var attacker := 0
 var bank_owner := 1
 var last_actions := {}
@@ -321,12 +322,16 @@ func tick_mission_offer() -> void:
 func action(id: int, kind: String, data: Dictionary) -> void:
 	if not multiplayer.is_server() or not sheets.has(id) or is_dead(id):
 		return
+	if bus_riders.has(id) and kind != "bus_exit":
+		return
 	var key := str(id)+kind
 	var now := Time.get_ticks_msec()
 	if now-int(last_actions.get(key,0))<(50 if kind in ["fire","digit"] else 150):
 		return
 	last_actions[key]=now
 	match kind:
+		"bus_board": board_bus(id, int(data.get("car", -1)))
+		"bus_exit": leave_bus(id)
 		"fire": fire_peer(id,data)
 		"punch": punch_peer(id,float(data.get("yaw",0)))
 		"reload": with_actor(id,world.activities.reload)
@@ -419,6 +424,46 @@ func hurt_local(amount: float) -> void:
 	else:
 		damage_peer(context_peer if context_peer>0 else local_id(),amount,attacker)
 
+func board_bus(id: int, car_id: int) -> void:
+	var member: Dictionary = network.members.get(id, {})
+	var car: Node3D = world.car_by_id(car_id)
+	if member.is_empty() or int(member.get("car", -1)) >= 0 or car == null or car.tier != car.Catalog.BUS or car.hp <= 0:
+		return
+	var driver: int = network.owners.get(car_id, 0)
+	if driver == 0 or driver == id or position_of(id).distance_to(car.position) >= 4.5:
+		return
+	if absf(car.speed) > 3.0:
+		private_notice(id, "Espere o ônibus parar para embarcar.")
+		return
+	if bus_riders.values().count(car_id) >= car.Catalog.BUS_CAPACITY - 1:
+		private_notice(id, "O ônibus está lotado.")
+		return
+	bus_riders[id] = car_id
+	member["bus"] = car_id
+	member["held"] = false
+	if id == local_id():
+		receive_event("bus_board", {"car": car_id})
+	else:
+		network.personal.rpc_id(id, "bus_board", {"car": car_id})
+
+func leave_bus(id: int, forced := false) -> void:
+	if not bus_riders.has(id):
+		return
+	var car: Node3D = world.car_by_id(bus_riders[id])
+	var offset: Vector3 = world.vehicle_exit_offset(car) if is_instance_valid(car) else Vector3.ZERO
+	if not forced and (offset == Vector3.ZERO or absf(car.speed) > 3.0):
+		private_notice(id, "Espere o ônibus parar em um local livre para desembarcar.")
+		return
+	var at := car.to_global(offset) if offset != Vector3.ZERO else next_spawn()
+	bus_riders.erase(id)
+	network.members[id].erase("bus")
+	network.members[id]["position"] = at
+	network.members[id]["car_position"] = at
+	if id == local_id():
+		receive_event("bus_exit", {"position": at})
+	else:
+		network.personal.rpc_id(id, "bus_exit", {"position": at})
+
 func damage_peer(id: int, amount: float, killer := 0) -> void:
 	if not multiplayer.is_server() or not sheets.has(id) or is_dead(id) or not is_finite(amount):
 		return
@@ -430,6 +475,7 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 		world.health=sheets[id].health
 	if sheets[id].health<=0:
 		sheets[id].dead_until=Time.get_ticks_msec()+3000
+		leave_bus(id, true)
 		for car_id in network.owners.keys():
 			if network.owners[car_id]==id:
 				network.owners.erase(car_id)
@@ -441,6 +487,29 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
+		"bus_board":
+			var bus: Node3D = world.car_by_id(int(data.car))
+			if bus == null:
+				return
+			if world.active_car != null and world.active_car != bus:
+				world.active_car.driving = false
+			world.active_car = bus
+			world.bus_passenger = true
+			world.car_transition = false
+			world.player.visible = false
+			world.player.model.process_mode = Node.PROCESS_MODE_DISABLED
+			world.player.collision_layer = 0
+			world.player.velocity = Vector3.ZERO
+			world.camera_yaw = bus.heading
+		"bus_exit":
+			world.bus_passenger = false
+			world.active_car = null
+			world.player.position = data.position
+			world.player.velocity = Vector3.ZERO
+			world.player.visible = true
+			world.player.model.process_mode = Node.PROCESS_MODE_INHERIT
+			world.player.model.position = Vector3.ZERO
+			world.player.collision_layer = 2
 		"equip": world.activities.weapon=clampi(int(data.get("weapon",1)),0,7)
 		"notice": world.notify(str(data.get("text","")))
 		"menu": world.activities.set_menu(str(data.get("value","")))
@@ -454,8 +523,9 @@ func receive_event(kind: String, data: Dictionary) -> void:
 		"cutscene": world.play_cutscene(str(data.get("title","Contrato")),str(data.get("subtitle","")))
 		"sound": world.extra.play(str(data.get("name","cash")))
 		"spawn":
-			if world.active_car!=null:
+			if world.active_car!=null and not world.bus_passenger:
 				world.active_car.driving=false
+			world.bus_passenger=false
 			world.active_car=null
 			world.car_transition=false
 			world.player.position=data.position
@@ -565,6 +635,8 @@ func choose_actor(destination: Vector3, holding := false, require_car := false, 
 	var best := 0
 	var distance := INF
 	for id in participants():
+		if bus_riders.has(id):
+			continue
 		if holding and not held(id):
 			continue
 		if require_foot and int(network.members[id].get("car",-1))>=0:
@@ -583,6 +655,10 @@ func physics(delta: float) -> void:
 		if Input.is_action_pressed("shoot") and world.activities.menu=="" and not is_dead(local_id()):
 			fire_local()
 		return
+	for id in bus_riders.keys():
+		var bus: Node = world.car_by_id(bus_riders[id])
+		if bus == null or bus.hp <= 0:
+			leave_bus(id, true)
 	for id in sheets.keys():
 		if not network.members.has(id):
 			sheets.erase(id)
@@ -630,7 +706,7 @@ func physics(delta: float) -> void:
 		a.pedestrian_robbery_progress=0
 	if a.job>=0:
 		var actor := choose_actor(a.destination(),false,a.job in [0,2,3,8] or a.action_requires_car(),a.job>=24 or a.action_requires_foot())
-		if actor==0 and not is_dead(1) and a.job<24:
+		if actor==0 and not is_dead(1) and not bus_riders.has(1) and a.job<24:
 			actor=1
 		if a.passenger_car >= 0:
 			for id in participants():

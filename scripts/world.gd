@@ -42,6 +42,7 @@ var interiors: Node3D
 var life: Node3D
 var fps_counter: CanvasLayer
 var car_transition := false
+var bus_passenger := false
 var sight_timer := 0.0
 var last_seen := false
 var camera_check_timer := 0.0
@@ -372,6 +373,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and not finished:
 		interact()
 	if event.is_action_pressed("reset") and not finished:
+		if bus_passenger:
+			return
 		if activities.bank.inside() or activities.bank.phase == 4:
 			notify("Saia do banco pela porta da frente.")
 			return
@@ -386,48 +389,61 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("restart") and finished:
 		respawn_local()
 
+func vehicle_exit_offset(car: Node3D) -> Vector3:
+	var rear: float = car.Catalog.SIZES[car.tier].z / 2.0 + 1.0 if car.tier == car.Catalog.BUS else 3.5
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = 0.4
+	capsule.height = 1.8
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = capsule
+	query.collision_mask = 5
+	for offset: Vector3 in [Vector3(-2.5, 1, 0), Vector3(2.5, 1, 0), Vector3(0, 1, rear), Vector3(0, 1, -rear)]:
+		query.transform = Transform3D(Basis.IDENTITY, car.to_global(offset) + Vector3(0, 0.9, 0))
+		if get_world_3d().direct_space_state.intersect_shape(query).is_empty():
+			return offset
+	return Vector3.ZERO
+
 func interact() -> void:
 	if car_transition:
 		return
+	if bus_passenger:
+		network.rules.send_action("bus_exit")
+		return
 	if active_car != null:
 		# Test both doors, then front/rear: never place the character inside a wall.
-		for offset in [Vector3(-2.5, 1, 0), Vector3(2.5, 1, 0), Vector3(0, 1, 3.5), Vector3(0, 1, -3.5)]:
-			var exit_point: Vector3 = active_car.global_transform * offset
-			var query := PhysicsShapeQueryParameters3D.new()
-			var capsule := CapsuleShape3D.new()
-			capsule.radius = 0.4
-			capsule.height = 1.8
-			query.shape = capsule
-			query.transform = Transform3D(Basis.IDENTITY, exit_point + Vector3(0, 0.9, 0))
-			query.collision_mask = 5
-			if get_world_3d().direct_space_state.intersect_shape(query).is_empty():
-				car_transition = true
-				var exiting_car := active_car
-				player.position = exit_point
-				player.velocity = exiting_car.velocity * 0.4 + Vector3(0, 3, 0)
-				player.visible = true
-				player.model.process_mode = Node.PROCESS_MODE_INHERIT
-				player.collision_layer = 2
-				exiting_car.driving = false
-				active_car = null
-				var door_offset: Vector3 = offset.normalized()*1.05
-				door_offset.y = 0
-				player.model.position = player.to_local(exiting_car.to_global(door_offset))
-				player.model.rotation.y = exiting_car.heading+atan2(-offset.x,-offset.z)
-				var exit_tween := create_tween()
-				exit_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-				exit_tween.tween_property(player.model,"position",Vector3.ZERO,0.32)
-				exit_tween.tween_callback(func():
-					player.model.position = Vector3.ZERO
-					car_transition = false
-				)
-				return
+		var offset := vehicle_exit_offset(active_car)
+		if offset != Vector3.ZERO:
+			var exit_point := active_car.to_global(offset)
+			car_transition = true
+			var exiting_car := active_car
+			player.position = exit_point
+			player.velocity = exiting_car.velocity * 0.4 + Vector3(0, 3, 0)
+			player.visible = true
+			player.model.process_mode = Node.PROCESS_MODE_INHERIT
+			player.collision_layer = 2
+			exiting_car.driving = false
+			active_car = null
+			var door_offset: Vector3 = offset.normalized()*1.05
+			door_offset.y = 0
+			player.model.position = player.to_local(exiting_car.to_global(door_offset))
+			player.model.rotation.y = exiting_car.heading+atan2(-offset.x,-offset.z)
+			var exit_tween := create_tween()
+			exit_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			exit_tween.tween_property(player.model,"position",Vector3.ZERO,0.32)
+			exit_tween.tween_callback(func():
+				player.model.position = Vector3.ZERO
+				car_transition = false
+			)
+			return
 		notify("Sem espaço para sair. Afaste o carro da parede.")
 	else:
 		var closest := nearest_car()
 		if closest != null:
 			if network != null and not network.car_available(closest):
-				notify("Este carro esta sendo usado por outro jogador.")
+				if closest.tier == closest.Catalog.BUS:
+					network.rules.send_action("bus_board", {"car": closest.net_id})
+				else:
+					notify("Este carro esta sendo usado por outro jogador.")
 				return
 			car_transition = true
 			active_car = closest
@@ -448,6 +464,8 @@ func interact() -> void:
 			enter_tween.tween_property(player.model,"position",door_target,0.32)
 			enter_tween.parallel().tween_property(player.model,"rotation:y",entering_car.heading,0.32)
 			enter_tween.tween_callback(func():
+				if active_car != entering_car or bus_passenger:
+					return
 				player.visible = false
 				player.model.position = Vector3.ZERO
 				player.model.process_mode = Node.PROCESS_MODE_DISABLED

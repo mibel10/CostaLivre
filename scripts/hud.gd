@@ -86,6 +86,13 @@ func _draw() -> void:
 		text("%03d" % int(absf(world.active_car.speed) * 3.6), Vector2(1120, 659), 36)
 		text("km/h", Vector2(1200, 657), 13, muted)
 		text(world.active_car.model_name, Vector2(1120, 684), 14, muted)
+		if world.active_car.tier == a.Catalog.BUS and world.network.active():
+			var bus_id: int = world.active_car.net_id
+			var occupants := int(world.network.owners.has(bus_id))
+			for member in world.network.members.values():
+				if int(member.get("bus", -1)) == bus_id:
+					occupants += 1
+			text("%d / %d ocupantes" % [occupants, a.Catalog.BUS_CAPACITY], Vector2(1105, 623), 14, gold)
 	elif a.weapon > 0:
 		text("%d / %d" % [a.clips[a.weapon], a.reserves[a.weapon]], Vector2(1130, 662), 25)
 		text(a.WEAPON_NAMES[a.weapon], Vector2(1132, 684), 13, muted)

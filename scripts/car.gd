@@ -60,7 +60,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if world.network != null and world.network.active():
 		var owner_id: int = world.network.owners.get(net_id,0)
-		if (world.network.is_client() and (self != world.active_car or hp <= 0)) or (not world.network.is_client() and hp > 0 and owner_id > 0 and owner_id != multiplayer.get_unique_id()):
+		if (world.network.is_client() and (self != world.active_car or world.bus_passenger or hp <= 0)) or (not world.network.is_client() and hp > 0 and owner_id > 0 and owner_id != multiplayer.get_unique_id()):
 			if rider != null:
 				rider.visible = owner_id > 0
 			return

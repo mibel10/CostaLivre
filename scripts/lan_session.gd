@@ -373,6 +373,7 @@ func server_left() -> void:
 func peer_left(id: int) -> void:
 	members.erase(id)
 	rules.sheets.erase(id)
+	rules.bus_riders.erase(id)
 	if avatars.has(id):
 		avatars[id].node.queue_free()
 		avatars[id].tag.queue_free()
@@ -383,6 +384,10 @@ func peer_left(id: int) -> void:
 
 func disconnect_room() -> void:
 	hide_mission_offer()
+	if world.bus_passenger:
+		var offset: Vector3 = world.vehicle_exit_offset(world.active_car)
+		var at: Vector3 = world.active_car.to_global(offset) if offset != Vector3.ZERO else world.SPAWNS[0]
+		rules.receive_event("bus_exit", {"position": at})
 	if internet!=null:
 		internet.stop()
 	joined=false
@@ -403,13 +408,14 @@ func disconnect_room() -> void:
 	owners.clear()
 	last_hit.clear()
 	rules.sheets.clear()
+	rules.bus_riders.clear()
 	code = ""
 
 func car_available(car: Node) -> bool:
 	return not active() or int(owners.get(car.net_id,0)) in [0,multiplayer.get_unique_id()]
 
 func local_state() -> Dictionary:
-	return {"roll":world.player.roll_time/world.player.ROLL_DURATION,"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.outfit,"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
+	return {"roll":world.player.roll_time/world.player.ROLL_DURATION,"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.outfit,"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null and not world.bus_passenger else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
 
 @rpc("any_peer","call_remote","unreliable_ordered",1)
 func report(state: Dictionary) -> void:
@@ -438,6 +444,15 @@ func accept_state(id: int, state: Dictionary) -> void:
 		members[id].erase("elevator_target_until")
 	# This timer is owned by the host; clients do not report arrest progress.
 	state["arrest_progress"]=float(members[id].get("arrest_progress",0.0))
+	state.erase("bus")
+	if rules.bus_riders.has(id):
+		var bus: Node3D = world.car_by_id(rules.bus_riders[id])
+		if bus != null:
+			state["bus"] = bus.net_id
+			state["position"] = bus.position
+			state["car_position"] = bus.position
+			state["car"] = -1
+			state["held"] = false
 	var car_id := int(state.get("car",-1))
 	for index in owners.keys():
 		if owners[index]==id and index!=car_id:
@@ -511,6 +526,11 @@ func _process(delta: float) -> void:
 		for id in members:
 			if id!=1 and not members[id].is_empty():
 				apply_car(id,members[id])
+		for id in rules.bus_riders:
+			var bus: Node3D = world.car_by_id(rules.bus_riders[id])
+			if bus != null:
+				members[id]["position"] = bus.position
+				members[id]["car_position"] = bus.position
 		var cars: Array = []
 		for car in world.cars:
 			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer})
@@ -539,7 +559,8 @@ func apply_car(id: int,state: Dictionary) -> void:
 			car.position=at
 			car.heading=float(state.car_heading)
 			car.rotation.y=car.heading
-			car.speed=clampf(float(state.speed),-20,110)
+			var limit: float = car.Catalog.SPEEDS[car.tier] if car.tier == car.Catalog.BUS else 110.0
+			car.speed=clampf(float(state.speed),-20,limit)
 
 @rpc("authority","call_remote","reliable",2)
 func packed_snapshot(packet: PackedByteArray) -> void:
@@ -561,7 +582,7 @@ func snapshot(data: Dictionary) -> void:
 			car=world.spawn_car(state.position,state.paint,state.police,int(state.tier))
 			car.net_id=id
 			world.vehicle_sequence=maxi(world.vehicle_sequence,id+1)
-		if car!=world.active_car:
+		if car!=world.active_car or world.bus_passenger:
 			car.position=state.position
 			car.heading=state.heading
 			car.rotation.y=car.heading
@@ -581,6 +602,8 @@ func snapshot(data: Dictionary) -> void:
 		car.set_suspension(float(state.get("suspension",0)))
 	for car in world.cars.duplicate():
 		if not present.has(car.net_id):
+			if car == world.active_car and world.bus_passenger:
+				rules.receive_event("bus_exit", {"position": car.position + Vector3(3, 1, 0)})
 			world.cars.erase(car)
 			world.cops.erase(car)
 			car.queue_free()
@@ -638,6 +661,7 @@ func update_avatars(states: Dictionary) -> void:
 			tag.position=actor.position+Vector3(0,2.5,0)
 			avatars[id]={"node":actor,"at":actor.position,"heading":0.0,"outfit":actor.model.outfit_index,"tag":tag,"tag_at":tag.position}
 		var state: Dictionary=states[id]
+		var on_foot := int(state.car) < 0 and not state.has("bus")
 		var avatar: Dictionary=avatars[id]
 		var outfit: int=clampi(int(state.get("outfit",0)),0,5)
 		if avatar.outfit!=outfit:
@@ -648,18 +672,18 @@ func update_avatars(states: Dictionary) -> void:
 			avatar.tag.text=player_name
 		avatar.tag_at=(state.car_position if int(state.car)>=0 else state.position)+Vector3(0,3.0 if int(state.car)>=0 else 2.5,0)
 		var close: bool = avatar.tag_at.distance_to(world.subject_position())<80
-		avatar.node.visible=int(state.car)<0 and close
+		avatar.node.visible=on_foot and close
 		avatar.node.set_weapon(int(state.get("weapon",1)))
 		avatar.node.set_crouched(bool(state.get("crouch",false)))
 		var remaining: float = float(state.get("roll",0))
 		avatar.node.model.rotation.x = (1.0-remaining)*TAU if remaining > 0 else 0.0
 		var pivot := Vector3(0,0.92,0)
 		avatar.node.model.position = pivot-Basis.from_euler(avatar.node.model.rotation)*pivot if remaining > 0 else Vector3(0,-0.28,0) if avatar.node.is_crouching else Vector3.ZERO
-		avatar.node.collision_layer=2 if int(state.car)<0 and float(state.get("hp",100))>0 else 0
+		avatar.node.collision_layer=2 if on_foot and float(state.get("hp",100))>0 else 0
 		avatar.node.model.rotation.z=PI/2 if float(state.get("hp",100))<=0 else 0
-		avatar.tag.visible=close
+		avatar.tag.visible=close and not state.has("bus")
 		avatar.node.model.process_mode=Node.PROCESS_MODE_INHERIT if close else Node.PROCESS_MODE_DISABLED
-		if close and int(state.car)<0:
+		if close and on_foot:
 			avatar.node.animate(3.0 if avatar.at.distance_squared_to(state.position)>0.0064 else 0.0)
 		avatar.at=state.position
 		if multiplayer.is_server():
