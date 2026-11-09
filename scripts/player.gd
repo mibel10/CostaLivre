@@ -39,6 +39,11 @@ func _ready() -> void:
 	world.box(gun, Vector3(0,-0.1,0.06), Vector3(0.06,0.16,0.08), Color("25313a"))
 
 func _physics_process(delta: float) -> void:
+	if world.life != null:
+		var id := multiplayer.get_unique_id() if world.network != null and world.network.active() else 1
+		if world.life.elevator_rider_position(id) != null:
+			velocity = Vector3.ZERO
+			return
 	if world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id()):
 		velocity=Vector3.ZERO
 		return

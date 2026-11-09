@@ -1047,9 +1047,9 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_ckioy"]
 transform_format = 1
-instance_count = 2
+instance_count = 5
 mesh = SubResource("BoxMesh_255ns")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4poql"]
 
@@ -1245,17 +1245,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_m0npo"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_4g38u")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_i54av"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_lu4a8"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_i54av")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_l2bef"]
 
@@ -1487,17 +1487,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_av8dx"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_l7r5k")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_xn5yb"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_8huiv"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_xn5yb")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_knlp4"]
 
@@ -1725,17 +1725,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_7drk1"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_crk0s")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_te2qo"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_63dkt"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_te2qo")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_g24ub"]
 
@@ -1963,17 +1963,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_rm7ac"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_xngch")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_i74av"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_b4se3"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_i74av")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hlmrd"]
 
@@ -2201,17 +2201,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_almnk"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_fklkm")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_pf6ya"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_gj7b8"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_pf6ya")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ki00h"]
 
@@ -2439,17 +2439,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_il3nk"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_wmtwn")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_xe4g0"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_ehgm8"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_xe4g0")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_fy03l"]
 
@@ -2677,17 +2677,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_delrp"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_okgea")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_761d2"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_vhu1o"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_761d2")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_uib17"]
 
@@ -2915,17 +2915,17 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_iqlt4"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_m28fn")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vqn5k"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_xbxc8"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_vqn5k")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_yd1ri"]
 
@@ -3147,25 +3147,25 @@ size = Vector3(0.2, 2.9, 3.6)
 
 [sub_resource type="MultiMesh" id="MultiMesh_wmrfe"]
 transform_format = 1
-instance_count = 10
+instance_count = 13
 mesh = SubResource("BoxMesh_mcw3g")
-buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 17.5, 0, 0, 3.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
+buffer = PackedFloat32Array(1.5, 0, 0, -11.75, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 11.6, 0, 0, 0.8, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 2, -11, 6, 0, 0, -8, 0, 0.2, 0, -0.2, 0, 0, 18, 3, 0.3, 0, 0, -12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, -7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 0.3, 0, 0, 12.4, 0, 5.8, 0, 2.9, 0, 0, 24, 0, 9, 0, 0, 7.5, 0, 5.8, 0, 2.9, 0, 0, 0.3, 11.8, 25, 0, 0, 0, 0, 5.8, 0, 2.9, 0, 0, 0.3, -11.8, 6, 0, 0, 0, 0, 2, 0, 4.8, 0, 0, 0.3, 11.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_yxn06"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_ruxhi"]
 transform_format = 1
-instance_count = 4
+instance_count = 7
 mesh = SubResource("BoxMesh_yxn06")
-buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 17.25, 0, 0, 3.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
+buffer = PackedFloat32Array(1.25, 0, 0, -11.625, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 11.6, 0, 0, 0.8, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 1.75, -10.875, 6, 0, 0, -8, 0, 0.02, 0, -0.075, 0, 0, 17.75, 2.875)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6dmjg"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_4teih"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_6dmjg")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.86, 2.07)
 
 [sub_resource type="BoxMesh" id="BoxMesh_pepn1"]
 
@@ -3345,17 +3345,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_7xu2t"]
 transform_format = 1
-instance_count = 2
+instance_count = 8
 mesh = SubResource("BoxMesh_5tkyu")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_iba8m"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_hrso4"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_iba8m")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0ppm8"]
 
@@ -3503,17 +3503,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_4tfph"]
 transform_format = 1
-instance_count = 2
+instance_count = 8
 mesh = SubResource("BoxMesh_7n4vb")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cval7"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_83qk4"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_cval7")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_nshik"]
 
@@ -3661,17 +3661,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_bhnhg"]
 transform_format = 1
-instance_count = 2
+instance_count = 8
 mesh = SubResource("BoxMesh_j41nu")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_oi0f4"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_43ae8"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_oi0f4")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_l7vit"]
 
@@ -3819,17 +3819,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_ow2kt"]
 transform_format = 1
-instance_count = 2
+instance_count = 8
 mesh = SubResource("BoxMesh_67k42")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_g52cj"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_mbm8u"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_g52cj")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_76i0a"]
 
@@ -3977,17 +3977,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_yqi81"]
 transform_format = 1
-instance_count = 2
+instance_count = 8
 mesh = SubResource("BoxMesh_re1oa")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_sisjc"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_p4ws0"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_sisjc")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_d0h4y"]
 
@@ -4135,17 +4135,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_sc51v"]
 transform_format = 1
-instance_count = 2
+instance_count = 8
 mesh = SubResource("BoxMesh_s1lpf")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_aedjb"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_0sfu2"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_aedjb")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_5vru5"]
 
@@ -4293,17 +4293,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_5djkq"]
 transform_format = 1
-instance_count = 2
+instance_count = 8
 mesh = SubResource("BoxMesh_adois")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 25, 0, 0, 0, 0, 0.2, 0, 5.8, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_yagxp"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_28mjl"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_yagxp")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hs0fr"]
 
@@ -6503,6 +6503,306 @@ albedo_color = Color(0.6627451, 0.7607843, 0.8156863, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_6a7um"]
 size = Vector3(2.3, 0.1, 0.42)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_ko4x6_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ko4x6_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ko4x6_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ko4x6_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_beyhp_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_beyhp_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_beyhp_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_beyhp_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cqpqw_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cqpqw_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cqpqw_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cqpqw_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uh78t_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uh78t_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uh78t_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uh78t_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5kubm_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5kubm_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5kubm_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5kubm_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ml2s5_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ml2s5_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ml2s5_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ml2s5_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xw8ng_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xw8ng_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xw8ng_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xw8ng_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4q7qx_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4q7qx_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4q7qx_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4q7qx_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uxypr_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uxypr_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uxypr_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uxypr_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hqp8r_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hqp8r_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hqp8r_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hqp8r_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l4hpf_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l4hpf_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l4hpf_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l4hpf_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ykiju_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ykiju_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ykiju_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ykiju_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wwgcq_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wwgcq_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wwgcq_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wwgcq_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s1sdx_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s1sdx_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s1sdx_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s1sdx_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xnjtl_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xnjtl_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xnjtl_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xnjtl_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jfrve_Poco0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jfrve_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jfrve_Poco2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jfrve_Poco3"]
+size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xx85j_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xx85j_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xx85j_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xx85j_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kret4_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kret4_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kret4_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kret4_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_il7gi_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_il7gi_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_il7gi_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_il7gi_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i4ytx_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i4ytx_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i4ytx_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i4ytx_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c1g8b_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c1g8b_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c1g8b_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c1g8b_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iwhht_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iwhht_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iwhht_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iwhht_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pk7o3_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pk7o3_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pk7o3_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pk7o3_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lnbb1_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lnbb1_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lnbb1_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lnbb1_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bul6p_Poco0"]
+size = Vector3(11.6, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bul6p_Poco1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bul6p_Poco2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bul6p_Poco3"]
+size = Vector3(2.8, 0.2, 19.86)
+
 [node name="FixedInteriors" type="Node3D" unique_id=1077341304]
 
 [node name="Rooms" type="Node3D" parent="." unique_id=1431939275]
@@ -7322,8 +7622,21 @@ shape = SubResource("BoxShape3D_8eveo")
 [node name="_StaticBody3D_1408" type="StaticBody3D" parent="Rooms/Room5" unique_id=266796789]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.8, 0)
 
-[node name="_CollisionShape3D_1407" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1408" unique_id=1266469861]
-shape = SubResource("BoxShape3D_ko4x6")
+[node name="_CollisionShape3D_1407_Poco0" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1408"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_ko4x6_Poco0")
+
+[node name="_CollisionShape3D_1407_Poco1" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1408"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_ko4x6_Poco1")
+
+[node name="_CollisionShape3D_1407_Poco2" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1408"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_ko4x6_Poco2")
+
+[node name="_CollisionShape3D_1407_Poco3" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1408"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_ko4x6_Poco3")
 
 [node name="_StaticBody3D_1411" type="StaticBody3D" parent="Rooms/Room5" unique_id=48533596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.9, 0)
@@ -7501,8 +7814,21 @@ shape = SubResource("BoxShape3D_fy2a5")
 [node name="_StaticBody3D_1531" type="StaticBody3D" parent="Rooms/Room6" unique_id=1543394013]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.19999981, 0)
 
-[node name="_CollisionShape3D_1530" type="CollisionShape3D" parent="Rooms/Room6/_StaticBody3D_1531" unique_id=1075593646]
-shape = SubResource("BoxShape3D_xx85j")
+[node name="_CollisionShape3D_1530_Poco0" type="CollisionShape3D" parent="Rooms/Room6/_StaticBody3D_1531"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_xx85j_Poco0")
+
+[node name="_CollisionShape3D_1530_Poco1" type="CollisionShape3D" parent="Rooms/Room6/_StaticBody3D_1531"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_xx85j_Poco1")
+
+[node name="_CollisionShape3D_1530_Poco2" type="CollisionShape3D" parent="Rooms/Room6/_StaticBody3D_1531"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_xx85j_Poco2")
+
+[node name="_CollisionShape3D_1530_Poco3" type="CollisionShape3D" parent="Rooms/Room6/_StaticBody3D_1531"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_xx85j_Poco3")
 
 [node name="_StaticBody3D_1534" type="StaticBody3D" parent="Rooms/Room6" unique_id=1723178884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.19999981, -11)
@@ -7742,8 +8068,21 @@ shape = SubResource("BoxShape3D_wschi")
 [node name="_StaticBody3D_1690" type="StaticBody3D" parent="Rooms/Room7" unique_id=652960189]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.19999981, 0)
 
-[node name="_CollisionShape3D_1689" type="CollisionShape3D" parent="Rooms/Room7/_StaticBody3D_1690" unique_id=2090591489]
-shape = SubResource("BoxShape3D_kret4")
+[node name="_CollisionShape3D_1689_Poco0" type="CollisionShape3D" parent="Rooms/Room7/_StaticBody3D_1690"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_kret4_Poco0")
+
+[node name="_CollisionShape3D_1689_Poco1" type="CollisionShape3D" parent="Rooms/Room7/_StaticBody3D_1690"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_kret4_Poco1")
+
+[node name="_CollisionShape3D_1689_Poco2" type="CollisionShape3D" parent="Rooms/Room7/_StaticBody3D_1690"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_kret4_Poco2")
+
+[node name="_CollisionShape3D_1689_Poco3" type="CollisionShape3D" parent="Rooms/Room7/_StaticBody3D_1690"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_kret4_Poco3")
 
 [node name="_StaticBody3D_1693" type="StaticBody3D" parent="Rooms/Room7" unique_id=462404360]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.19999981, -11)
@@ -7983,8 +8322,21 @@ shape = SubResource("BoxShape3D_wh7vo")
 [node name="_StaticBody3D_1849" type="StaticBody3D" parent="Rooms/Room8" unique_id=249577000]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.20000076, 0)
 
-[node name="_CollisionShape3D_1848" type="CollisionShape3D" parent="Rooms/Room8/_StaticBody3D_1849" unique_id=896360743]
-shape = SubResource("BoxShape3D_il7gi")
+[node name="_CollisionShape3D_1848_Poco0" type="CollisionShape3D" parent="Rooms/Room8/_StaticBody3D_1849"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_il7gi_Poco0")
+
+[node name="_CollisionShape3D_1848_Poco1" type="CollisionShape3D" parent="Rooms/Room8/_StaticBody3D_1849"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_il7gi_Poco1")
+
+[node name="_CollisionShape3D_1848_Poco2" type="CollisionShape3D" parent="Rooms/Room8/_StaticBody3D_1849"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_il7gi_Poco2")
+
+[node name="_CollisionShape3D_1848_Poco3" type="CollisionShape3D" parent="Rooms/Room8/_StaticBody3D_1849"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_il7gi_Poco3")
 
 [node name="_StaticBody3D_1852" type="StaticBody3D" parent="Rooms/Room8" unique_id=1249695692]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.20000076, -11)
@@ -8224,8 +8576,21 @@ shape = SubResource("BoxShape3D_glm7x")
 [node name="_StaticBody3D_2008" type="StaticBody3D" parent="Rooms/Room9" unique_id=1968748408]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.20000076, 0)
 
-[node name="_CollisionShape3D_2007" type="CollisionShape3D" parent="Rooms/Room9/_StaticBody3D_2008" unique_id=2096815302]
-shape = SubResource("BoxShape3D_i4ytx")
+[node name="_CollisionShape3D_2007_Poco0" type="CollisionShape3D" parent="Rooms/Room9/_StaticBody3D_2008"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_i4ytx_Poco0")
+
+[node name="_CollisionShape3D_2007_Poco1" type="CollisionShape3D" parent="Rooms/Room9/_StaticBody3D_2008"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_i4ytx_Poco1")
+
+[node name="_CollisionShape3D_2007_Poco2" type="CollisionShape3D" parent="Rooms/Room9/_StaticBody3D_2008"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_i4ytx_Poco2")
+
+[node name="_CollisionShape3D_2007_Poco3" type="CollisionShape3D" parent="Rooms/Room9/_StaticBody3D_2008"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_i4ytx_Poco3")
 
 [node name="_StaticBody3D_2011" type="StaticBody3D" parent="Rooms/Room9" unique_id=1662157350]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.20000076, -11)
@@ -8465,8 +8830,21 @@ shape = SubResource("BoxShape3D_skrnw")
 [node name="_StaticBody3D_2167" type="StaticBody3D" parent="Rooms/Room10" unique_id=1166138460]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.20000076, 0)
 
-[node name="_CollisionShape3D_2166" type="CollisionShape3D" parent="Rooms/Room10/_StaticBody3D_2167" unique_id=971738002]
-shape = SubResource("BoxShape3D_c1g8b")
+[node name="_CollisionShape3D_2166_Poco0" type="CollisionShape3D" parent="Rooms/Room10/_StaticBody3D_2167"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_c1g8b_Poco0")
+
+[node name="_CollisionShape3D_2166_Poco1" type="CollisionShape3D" parent="Rooms/Room10/_StaticBody3D_2167"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_c1g8b_Poco1")
+
+[node name="_CollisionShape3D_2166_Poco2" type="CollisionShape3D" parent="Rooms/Room10/_StaticBody3D_2167"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_c1g8b_Poco2")
+
+[node name="_CollisionShape3D_2166_Poco3" type="CollisionShape3D" parent="Rooms/Room10/_StaticBody3D_2167"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_c1g8b_Poco3")
 
 [node name="_StaticBody3D_2170" type="StaticBody3D" parent="Rooms/Room10" unique_id=1090747601]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.20000076, -11)
@@ -8706,8 +9084,21 @@ shape = SubResource("BoxShape3D_etajd")
 [node name="_StaticBody3D_2326" type="StaticBody3D" parent="Rooms/Room11" unique_id=185323472]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.20000076, 0)
 
-[node name="_CollisionShape3D_2325" type="CollisionShape3D" parent="Rooms/Room11/_StaticBody3D_2326" unique_id=1320980221]
-shape = SubResource("BoxShape3D_iwhht")
+[node name="_CollisionShape3D_2325_Poco0" type="CollisionShape3D" parent="Rooms/Room11/_StaticBody3D_2326"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_iwhht_Poco0")
+
+[node name="_CollisionShape3D_2325_Poco1" type="CollisionShape3D" parent="Rooms/Room11/_StaticBody3D_2326"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_iwhht_Poco1")
+
+[node name="_CollisionShape3D_2325_Poco2" type="CollisionShape3D" parent="Rooms/Room11/_StaticBody3D_2326"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_iwhht_Poco2")
+
+[node name="_CollisionShape3D_2325_Poco3" type="CollisionShape3D" parent="Rooms/Room11/_StaticBody3D_2326"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_iwhht_Poco3")
 
 [node name="_StaticBody3D_2329" type="StaticBody3D" parent="Rooms/Room11" unique_id=1595098027]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.20000076, -11)
@@ -8947,8 +9338,21 @@ shape = SubResource("BoxShape3D_5ifsv")
 [node name="_StaticBody3D_2485" type="StaticBody3D" parent="Rooms/Room12" unique_id=2034225545]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.20000076, 0)
 
-[node name="_CollisionShape3D_2484" type="CollisionShape3D" parent="Rooms/Room12/_StaticBody3D_2485" unique_id=1322281307]
-shape = SubResource("BoxShape3D_pk7o3")
+[node name="_CollisionShape3D_2484_Poco0" type="CollisionShape3D" parent="Rooms/Room12/_StaticBody3D_2485"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_pk7o3_Poco0")
+
+[node name="_CollisionShape3D_2484_Poco1" type="CollisionShape3D" parent="Rooms/Room12/_StaticBody3D_2485"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_pk7o3_Poco1")
+
+[node name="_CollisionShape3D_2484_Poco2" type="CollisionShape3D" parent="Rooms/Room12/_StaticBody3D_2485"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_pk7o3_Poco2")
+
+[node name="_CollisionShape3D_2484_Poco3" type="CollisionShape3D" parent="Rooms/Room12/_StaticBody3D_2485"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_pk7o3_Poco3")
 
 [node name="_StaticBody3D_2488" type="StaticBody3D" parent="Rooms/Room12" unique_id=2026893235]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.20000076, -11)
@@ -9188,8 +9592,21 @@ shape = SubResource("BoxShape3D_2g2ox")
 [node name="_StaticBody3D_2644" type="StaticBody3D" parent="Rooms/Room13" unique_id=1566533187]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.20000076, 0)
 
-[node name="_CollisionShape3D_2643" type="CollisionShape3D" parent="Rooms/Room13/_StaticBody3D_2644" unique_id=1710057084]
-shape = SubResource("BoxShape3D_lnbb1")
+[node name="_CollisionShape3D_2643_Poco0" type="CollisionShape3D" parent="Rooms/Room13/_StaticBody3D_2644"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_lnbb1_Poco0")
+
+[node name="_CollisionShape3D_2643_Poco1" type="CollisionShape3D" parent="Rooms/Room13/_StaticBody3D_2644"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_lnbb1_Poco1")
+
+[node name="_CollisionShape3D_2643_Poco2" type="CollisionShape3D" parent="Rooms/Room13/_StaticBody3D_2644"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_lnbb1_Poco2")
+
+[node name="_CollisionShape3D_2643_Poco3" type="CollisionShape3D" parent="Rooms/Room13/_StaticBody3D_2644"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_lnbb1_Poco3")
 
 [node name="_StaticBody3D_2647" type="StaticBody3D" parent="Rooms/Room13" unique_id=1928144559]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.20000076, -11)
@@ -9429,8 +9846,21 @@ shape = SubResource("BoxShape3D_c3ky7")
 [node name="_StaticBody3D_2803" type="StaticBody3D" parent="Rooms/Room14" unique_id=283307806]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, -0.20000076, 0)
 
-[node name="_CollisionShape3D_2802" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2803" unique_id=2094018614]
-shape = SubResource("BoxShape3D_bul6p")
+[node name="_CollisionShape3D_2802_Poco0" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2803"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_bul6p_Poco0")
+
+[node name="_CollisionShape3D_2802_Poco1" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2803"]
+position = Vector3(7.2, 0, 0)
+shape = SubResource("BoxShape3D_bul6p_Poco1")
+
+[node name="_CollisionShape3D_2802_Poco2" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2803"]
+position = Vector3(4.25, 0, -11.33)
+shape = SubResource("BoxShape3D_bul6p_Poco2")
+
+[node name="_CollisionShape3D_2802_Poco3" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2803"]
+position = Vector3(4.25, 0, 2.07)
+shape = SubResource("BoxShape3D_bul6p_Poco3")
 
 [node name="_StaticBody3D_2806" type="StaticBody3D" parent="Rooms/Room14" unique_id=1654871812]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -0.20000076, -11)
@@ -9447,8 +9877,21 @@ shape = SubResource("BoxShape3D_yeqg7")
 [node name="_StaticBody3D_2816" type="StaticBody3D" parent="Rooms/Room14" unique_id=565033135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799999, 0)
 
-[node name="_CollisionShape3D_2815" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2816" unique_id=710829877]
-shape = SubResource("BoxShape3D_beyhp")
+[node name="_CollisionShape3D_2815_Poco0" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2816"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_beyhp_Poco0")
+
+[node name="_CollisionShape3D_2815_Poco1" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2816"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_beyhp_Poco1")
+
+[node name="_CollisionShape3D_2815_Poco2" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2816"]
+position = Vector3(8, 0, -11.33)
+shape = SubResource("BoxShape3D_beyhp_Poco2")
+
+[node name="_CollisionShape3D_2815_Poco3" type="CollisionShape3D" parent="Rooms/Room14/_StaticBody3D_2816"]
+position = Vector3(8, 0, 2.07)
+shape = SubResource("BoxShape3D_beyhp_Poco3")
 
 [node name="_StaticBody3D_2819" type="StaticBody3D" parent="Rooms/Room14" unique_id=518493328]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.400002, 2.9000015, 0)
@@ -9618,14 +10061,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 6, 63)
 [node name="_StaticBody3D_2925" type="StaticBody3D" parent="Rooms/Room15" unique_id=273509449]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.19999981, 0)
 
-[node name="_CollisionShape3D_2924" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2925" unique_id=1945676980]
-shape = SubResource("BoxShape3D_cqpqw")
+[node name="_CollisionShape3D_2924_Poco0" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2925"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_cqpqw_Poco0")
+
+[node name="_CollisionShape3D_2924_Poco1" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2925"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_cqpqw_Poco1")
+
+[node name="_CollisionShape3D_2924_Poco2" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2925"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_cqpqw_Poco2")
+
+[node name="_CollisionShape3D_2924_Poco3" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2925"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_cqpqw_Poco3")
 
 [node name="_StaticBody3D_2929" type="StaticBody3D" parent="Rooms/Room15" unique_id=1936799305]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.8, 0)
 
-[node name="_CollisionShape3D_2928" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2929" unique_id=1968268190]
-shape = SubResource("BoxShape3D_uh78t")
+[node name="_CollisionShape3D_2928_Poco0" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2929"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_uh78t_Poco0")
+
+[node name="_CollisionShape3D_2928_Poco1" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2929"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_uh78t_Poco1")
+
+[node name="_CollisionShape3D_2928_Poco2" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2929"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_uh78t_Poco2")
+
+[node name="_CollisionShape3D_2928_Poco3" type="CollisionShape3D" parent="Rooms/Room15/_StaticBody3D_2929"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_uh78t_Poco3")
 
 [node name="_StaticBody3D_2932" type="StaticBody3D" parent="Rooms/Room15" unique_id=1500439550]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.8999996, 0)
@@ -9781,14 +10250,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 12, 63)
 [node name="_StaticBody3D_3053" type="StaticBody3D" parent="Rooms/Room16" unique_id=411591719]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.19999981, 0)
 
-[node name="_CollisionShape3D_3052" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3053" unique_id=1598215067]
-shape = SubResource("BoxShape3D_5kubm")
+[node name="_CollisionShape3D_3052_Poco0" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3053"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_5kubm_Poco0")
+
+[node name="_CollisionShape3D_3052_Poco1" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3053"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_5kubm_Poco1")
+
+[node name="_CollisionShape3D_3052_Poco2" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3053"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_5kubm_Poco2")
+
+[node name="_CollisionShape3D_3052_Poco3" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3053"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_5kubm_Poco3")
 
 [node name="_StaticBody3D_3057" type="StaticBody3D" parent="Rooms/Room16" unique_id=281301981]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799999, 0)
 
-[node name="_CollisionShape3D_3056" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3057" unique_id=464465838]
-shape = SubResource("BoxShape3D_ml2s5")
+[node name="_CollisionShape3D_3056_Poco0" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3057"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_ml2s5_Poco0")
+
+[node name="_CollisionShape3D_3056_Poco1" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3057"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_ml2s5_Poco1")
+
+[node name="_CollisionShape3D_3056_Poco2" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3057"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_ml2s5_Poco2")
+
+[node name="_CollisionShape3D_3056_Poco3" type="CollisionShape3D" parent="Rooms/Room16/_StaticBody3D_3057"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_ml2s5_Poco3")
 
 [node name="_StaticBody3D_3060" type="StaticBody3D" parent="Rooms/Room16" unique_id=1149080424]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.8999996, 0)
@@ -9944,14 +10439,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 18, 63)
 [node name="_StaticBody3D_3181" type="StaticBody3D" parent="Rooms/Room17" unique_id=1267216787]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.20000076, 0)
 
-[node name="_CollisionShape3D_3180" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3181" unique_id=970735564]
-shape = SubResource("BoxShape3D_xw8ng")
+[node name="_CollisionShape3D_3180_Poco0" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3181"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_xw8ng_Poco0")
+
+[node name="_CollisionShape3D_3180_Poco1" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3181"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_xw8ng_Poco1")
+
+[node name="_CollisionShape3D_3180_Poco2" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3181"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_xw8ng_Poco2")
+
+[node name="_CollisionShape3D_3180_Poco3" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3181"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_xw8ng_Poco3")
 
 [node name="_StaticBody3D_3185" type="StaticBody3D" parent="Rooms/Room17" unique_id=72793651]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799999, 0)
 
-[node name="_CollisionShape3D_3184" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3185" unique_id=527885716]
-shape = SubResource("BoxShape3D_4q7qx")
+[node name="_CollisionShape3D_3184_Poco0" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3185"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_4q7qx_Poco0")
+
+[node name="_CollisionShape3D_3184_Poco1" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3185"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_4q7qx_Poco1")
+
+[node name="_CollisionShape3D_3184_Poco2" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3185"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_4q7qx_Poco2")
+
+[node name="_CollisionShape3D_3184_Poco3" type="CollisionShape3D" parent="Rooms/Room17/_StaticBody3D_3185"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_4q7qx_Poco3")
 
 [node name="_StaticBody3D_3188" type="StaticBody3D" parent="Rooms/Room17" unique_id=830620536]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.8999996, 0)
@@ -10107,14 +10628,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 24, 63)
 [node name="_StaticBody3D_3309" type="StaticBody3D" parent="Rooms/Room18" unique_id=476646405]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.20000076, 0)
 
-[node name="_CollisionShape3D_3308" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3309" unique_id=655319338]
-shape = SubResource("BoxShape3D_uxypr")
+[node name="_CollisionShape3D_3308_Poco0" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3309"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_uxypr_Poco0")
+
+[node name="_CollisionShape3D_3308_Poco1" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3309"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_uxypr_Poco1")
+
+[node name="_CollisionShape3D_3308_Poco2" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3309"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_uxypr_Poco2")
+
+[node name="_CollisionShape3D_3308_Poco3" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3309"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_uxypr_Poco3")
 
 [node name="_StaticBody3D_3313" type="StaticBody3D" parent="Rooms/Room18" unique_id=1860557203]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799999, 0)
 
-[node name="_CollisionShape3D_3312" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3313" unique_id=1148881283]
-shape = SubResource("BoxShape3D_hqp8r")
+[node name="_CollisionShape3D_3312_Poco0" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3313"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_hqp8r_Poco0")
+
+[node name="_CollisionShape3D_3312_Poco1" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3313"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_hqp8r_Poco1")
+
+[node name="_CollisionShape3D_3312_Poco2" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3313"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_hqp8r_Poco2")
+
+[node name="_CollisionShape3D_3312_Poco3" type="CollisionShape3D" parent="Rooms/Room18/_StaticBody3D_3313"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_hqp8r_Poco3")
 
 [node name="_StaticBody3D_3316" type="StaticBody3D" parent="Rooms/Room18" unique_id=1001861167]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.8999996, 0)
@@ -10270,14 +10817,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 30, 63)
 [node name="_StaticBody3D_3437" type="StaticBody3D" parent="Rooms/Room19" unique_id=2048073811]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.20000076, 0)
 
-[node name="_CollisionShape3D_3436" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3437" unique_id=1096386778]
-shape = SubResource("BoxShape3D_l4hpf")
+[node name="_CollisionShape3D_3436_Poco0" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3437"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_l4hpf_Poco0")
+
+[node name="_CollisionShape3D_3436_Poco1" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3437"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_l4hpf_Poco1")
+
+[node name="_CollisionShape3D_3436_Poco2" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3437"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_l4hpf_Poco2")
+
+[node name="_CollisionShape3D_3436_Poco3" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3437"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_l4hpf_Poco3")
 
 [node name="_StaticBody3D_3441" type="StaticBody3D" parent="Rooms/Room19" unique_id=2044353739]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799999, 0)
 
-[node name="_CollisionShape3D_3440" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3441" unique_id=1148518649]
-shape = SubResource("BoxShape3D_ykiju")
+[node name="_CollisionShape3D_3440_Poco0" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3441"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_ykiju_Poco0")
+
+[node name="_CollisionShape3D_3440_Poco1" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3441"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_ykiju_Poco1")
+
+[node name="_CollisionShape3D_3440_Poco2" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3441"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_ykiju_Poco2")
+
+[node name="_CollisionShape3D_3440_Poco3" type="CollisionShape3D" parent="Rooms/Room19/_StaticBody3D_3441"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_ykiju_Poco3")
 
 [node name="_StaticBody3D_3444" type="StaticBody3D" parent="Rooms/Room19" unique_id=844690765]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.9000015, 0)
@@ -10433,14 +11006,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 36, 63)
 [node name="_StaticBody3D_3565" type="StaticBody3D" parent="Rooms/Room20" unique_id=2118502103]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.20000076, 0)
 
-[node name="_CollisionShape3D_3564" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3565" unique_id=442791965]
-shape = SubResource("BoxShape3D_wwgcq")
+[node name="_CollisionShape3D_3564_Poco0" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3565"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_wwgcq_Poco0")
+
+[node name="_CollisionShape3D_3564_Poco1" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3565"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_wwgcq_Poco1")
+
+[node name="_CollisionShape3D_3564_Poco2" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3565"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_wwgcq_Poco2")
+
+[node name="_CollisionShape3D_3564_Poco3" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3565"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_wwgcq_Poco3")
 
 [node name="_StaticBody3D_3569" type="StaticBody3D" parent="Rooms/Room20" unique_id=2020858813]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799999, 0)
 
-[node name="_CollisionShape3D_3568" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3569" unique_id=391993359]
-shape = SubResource("BoxShape3D_s1sdx")
+[node name="_CollisionShape3D_3568_Poco0" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3569"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_s1sdx_Poco0")
+
+[node name="_CollisionShape3D_3568_Poco1" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3569"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_s1sdx_Poco1")
+
+[node name="_CollisionShape3D_3568_Poco2" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3569"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_s1sdx_Poco2")
+
+[node name="_CollisionShape3D_3568_Poco3" type="CollisionShape3D" parent="Rooms/Room20/_StaticBody3D_3569"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_s1sdx_Poco3")
 
 [node name="_StaticBody3D_3572" type="StaticBody3D" parent="Rooms/Room20" unique_id=1156946658]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.9000015, 0)
@@ -10596,14 +11195,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 42, 63)
 [node name="_StaticBody3D_3693" type="StaticBody3D" parent="Rooms/Room21" unique_id=2113189718]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.20000076, 0)
 
-[node name="_CollisionShape3D_3692" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3693" unique_id=860695708]
-shape = SubResource("BoxShape3D_xnjtl")
+[node name="_CollisionShape3D_3692_Poco0" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3693"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_xnjtl_Poco0")
+
+[node name="_CollisionShape3D_3692_Poco1" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3693"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_xnjtl_Poco1")
+
+[node name="_CollisionShape3D_3692_Poco2" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3693"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_xnjtl_Poco2")
+
+[node name="_CollisionShape3D_3692_Poco3" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3693"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_xnjtl_Poco3")
 
 [node name="_StaticBody3D_3697" type="StaticBody3D" parent="Rooms/Room21" unique_id=1904491339]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799999, 0)
 
-[node name="_CollisionShape3D_3696" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3697" unique_id=26028413]
-shape = SubResource("BoxShape3D_jfrve")
+[node name="_CollisionShape3D_3696_Poco0" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3697"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("BoxShape3D_jfrve_Poco0")
+
+[node name="_CollisionShape3D_3696_Poco1" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3697"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("BoxShape3D_jfrve_Poco1")
+
+[node name="_CollisionShape3D_3696_Poco2" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3697"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("BoxShape3D_jfrve_Poco2")
+
+[node name="_CollisionShape3D_3696_Poco3" type="CollisionShape3D" parent="Rooms/Room21/_StaticBody3D_3697"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("BoxShape3D_jfrve_Poco3")
 
 [node name="_StaticBody3D_3700" type="StaticBody3D" parent="Rooms/Room21" unique_id=1477292428]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.399994, 2.9000015, 0)

@@ -460,6 +460,13 @@ func accept_state(id: int, state: Dictionary) -> void:
 	var at: Vector3 = state.position
 	if not at.is_finite() or at.x < -195 or at.x > 945 or absf(at.z)>153 or at.y < -10 or at.y>75:
 		return
+	var riding = world.life.elevator_rider_position(id)
+	if riding is Vector3:
+		state.position = riding
+		state.car_position = riding
+		state.car = -1
+		state.speed = 0.0
+		state.held = false
 	if Time.get_ticks_msec()<int(members[id].get("elevator_target_until",0)):
 		var arrival: Vector3=members[id].get("elevator_target",at)
 		state.position=arrival

@@ -58,7 +58,7 @@ func run() -> void:
 	host.network.members[id]["car_position"]=Vector3(10,0.3,0)
 	host.network.members[id]["crouch"]=true
 	assert(host.network.rules.police_target_actor(Vector3.ZERO)[0]==1,"Police can target a visible player instead of a hidden crouching player")
-	for building in ["apartment","tower"]:
+	for building in ["housing","apartment","tower"]:
 		var start: Vector3=client.life.elevator_position(building,0)
 		client.player.position=start
 		client.player.velocity=Vector3.ZERO
@@ -74,7 +74,7 @@ func run() -> void:
 			quit(1)
 			return
 		assert(host.network.members[id].position.y>29.5,"Host owns elevator arrival")
-		await create_timer(2.0).timeout
+		assert(await wait_until(func(): return client.life.elevators[building].phase == "open"))
 	var before: Vector3=host.network.members[id].position
 	client.network.rules.send_action("elevator",{"to":9})
 	await create_timer(0.4).timeout

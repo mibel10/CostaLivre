@@ -13,9 +13,15 @@ var refresh := 0.0
 var task_progress := 0.0
 var leisure_cooldown := 0.0
 var elevator_ui: Control
-var apartment_elevator_doors: Array = []
-var elevator_traveling := false
-var elevator_arrival_received := false
+const ELEVATOR_FLOORS := {"housing": 13, "apartment": 10, "tower": 8}
+const ELEVATOR_CENTERS := {"housing": Vector3(869,0,-111.5), "apartment": Vector3(-55,0,53.74), "tower": Vector3(155,0,72)}
+const ELEVATOR_SPEED := 8.0
+const DOOR_TIME := 0.3
+var elevators := {}
+var elevator_cabins := {}
+var elevator_gates := {}
+var elevator_ride := ""
+var elevator_offset := Vector3.ZERO
 var stair_chase_started := false
 const BUILDING_TASK_DURATION := 5.0
 const OPERATION_TASK_DURATION := 10.0
@@ -43,10 +49,7 @@ const WORK_POINTS := [Vector3(-4,0,4),Vector3(4,0,1),Vector3(0,0,-6)]
 func _ready() -> void:
 	for i in 22:
 		rooms.append(world.interiors.get_node("Rooms/Room%d" % i))
-	apartment_elevator_doors.resize(10)
-	for floor_number in 10:
-		var room: Node = rooms[2 if floor_number == 0 else floor_number + 5]
-		apartment_elevator_doors[floor_number] = [room.get_node("ElevatorLeft"), room.get_node("ElevatorRight")]
+	build_elevators()
 	build_elevator_menu()
 	for i in 32:
 		var center := Vector3(-105+(i%4)*42,0,-63+((i/4)%4)*42)
@@ -151,19 +154,249 @@ func on_apartment_tenth_floor(at: Vector3) -> bool:
 	return local.y>=54.0 and local.y<59.8 and absf(local.x)<12.0 and absf(local.z)<12.0
 
 func elevator_building_at(at: Vector3) -> String:
-	var housing := at - HOME_BUILDING
-	if Vector2(housing.x - 8, housing.z + 6.5).length_squared() < 9.0 and housing.y >= -0.5 and housing.y < 78.0: return "housing"
-	var apartment:=at-PLACES[2]
-	if Vector2(apartment.x-8,apartment.z+6.7).length_squared()<9.0 and apartment.y>=-0.5 and apartment.y<60.0:
-		return "apartment"
-	var tower:=at-PLACES[5]
-	if Vector2(tower.x-8,tower.z-9.0).length_squared()<9.0 and tower.y>=-0.5 and tower.y<48.0:
-		return "tower"
+	for building: String in ELEVATOR_FLOORS:
+		var offset: Vector3 = at - ELEVATOR_CENTERS[building]
+		var front := elevator_front(building) * offset.z
+		if absf(offset.x) < 1.65 and front > -1.4 and front < 3.0 and offset.y >= -0.25 and offset.y < (ELEVATOR_FLOORS[building]-1)*6+2.8:
+			return building
 	return ""
 
+func elevator_front(building: String) -> float:
+	return -1.0 if building == "tower" else 1.0
+
 func elevator_position(building: String, floor_number: int) -> Vector3:
-	if building == "housing": return HOME_BUILDING + Vector3(8,floor_number*6+0.2,-6.5)
-	return (PLACES[2] if building=="apartment" else PLACES[5])+Vector3(8,floor_number*6+0.2,-6.7 if building=="apartment" else 9.0)
+	var floor_height := 0.0 if building == "housing" else -0.09
+	return ELEVATOR_CENTERS[building] + Vector3(0, floor_number*6+floor_height, 0)
+
+func inside_cabin(at: Vector3, origin: Vector3) -> bool:
+	var offset := at - origin
+	return absf(offset.x) < 1.3 and absf(offset.z) < 1.3 and offset.y >= -0.12 and offset.y < 2.55
+
+func elevator_box(parent: Node3D, at: Vector3, size: Vector3, material: Material) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = size
+	mesh.mesh = box
+	mesh.material_override = material
+	mesh.position = at
+	parent.add_child(mesh)
+	return mesh
+
+func elevator_collision(parent: CollisionObject3D, at: Vector3, size: Vector3) -> CollisionShape3D:
+	var collision := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = size
+	collision.shape = box
+	collision.position = at
+	parent.add_child(collision)
+	return collision
+
+func build_elevators() -> void:
+	var wall := StandardMaterial3D.new()
+	wall.albedo_color = Color("#637887")
+	var door := StandardMaterial3D.new()
+	door.albedo_color = Color("#adbcc8")
+	for building: String in ELEVATOR_FLOORS:
+		var front := elevator_front(building)
+		var cabin := AnimatableBody3D.new()
+		cabin.sync_to_physics = false
+		add_child(cabin)
+		for part in [[Vector3(0,-0.06,0),Vector3(2.72,0.12,2.72)],
+			[Vector3(0,2.68,0),Vector3(2.72,0.12,2.72)],
+			[Vector3(0,1.32,-front*1.32),Vector3(2.72,2.64,0.08)],
+			[Vector3(-1.32,1.32,0),Vector3(0.08,2.64,2.72)],
+			[Vector3(1.32,1.32,0),Vector3(0.08,2.64,2.72)]]:
+			elevator_box(cabin, part[0], part[1], wall)
+			elevator_collision(cabin, part[0], part[1])
+		var leaves := []
+		for side in [-1,1]:
+			leaves.append(elevator_box(cabin, Vector3(side*0.64,1.32,front*1.32), Vector3(1.28,2.64,0.07), door))
+		elevator_cabins[building] = [cabin,leaves]
+		var gates := {}
+		for floor_number in ELEVATOR_FLOORS[building]:
+			var origin := elevator_position(building,floor_number)
+			var gate := StaticBody3D.new()
+			add_child(gate)
+			gate.position = origin + Vector3(0,0,front*1.42)
+			var panels := []
+			if building == "apartment":
+				var room: Node3D = rooms[2 if floor_number == 0 else floor_number+5]
+				panels = [room.get_node("ElevatorLeft"),room.get_node("ElevatorRight")]
+			else:
+				for side in [-1,1]:
+					panels.append(elevator_box(gate, Vector3(side*0.69,1.34,0), Vector3(1.38,2.68,0.08), door))
+			for panel: MeshInstance3D in panels:
+				panel.set_meta("closed_position",panel.position)
+			gates[floor_number] = [elevator_collision(gate, Vector3(0,1.34,0), Vector3(2.76,2.68,0.10)),panels]
+		elevator_gates[building] = gates
+		elevators[building] = {"floor":0,"target":0,"phase":"closed","time":0.0,"riders":{}}
+		update_elevator_geometry(building)
+
+func elevator_origin(building: String) -> Vector3:
+	var state: Dictionary = elevators[building]
+	var start := elevator_position(building,state.floor)
+	if state.phase != "travel":
+		return start
+	return start.move_toward(elevator_position(building,state.target),state.time*ELEVATOR_SPEED)
+
+func update_elevator_geometry(building: String) -> void:
+	var state: Dictionary = elevators[building]
+	var cabin: AnimatableBody3D = elevator_cabins[building][0]
+	cabin.position = elevator_origin(building)
+	var opening := 0.0
+	match state.phase:
+		"opening": opening = clampf(state.time / DOOR_TIME,0,1)
+		"open": opening = 1.0
+		"closing": opening = 1.0-clampf(state.time / DOOR_TIME,0,1)
+	var leaves: Array = elevator_cabins[building][1]
+	for i in 2:
+		leaves[i].position.x = (-1 if i == 0 else 1)*(0.64+opening*1.27)
+		leaves[i].visible = opening < 0.99
+	for floor_number in elevator_gates[building]:
+		var gate: Array = elevator_gates[building][floor_number]
+		var amount := opening if floor_number == state.floor else 0.0
+		gate[0].disabled = amount >= 0.99
+		for i in 2:
+			var panel: MeshInstance3D = gate[1][i]
+			var closed: Vector3 = panel.get_meta("closed_position")
+			panel.position.x = closed.x + (-1 if i == 0 else 1)*amount*1.36
+
+func request_elevator(at: Vector3, destination: int) -> void:
+	var building := elevator_building_at(at)
+	if building.is_empty():
+		return
+	var state: Dictionary = elevators[building]
+	var floor_number := roundi(at.y/6.0)
+	if not elevator_gates[building].has(floor_number) or absf(at.y-floor_number*6) > 1.35 or state.phase in ["closing","travel","opening"]:
+		return
+	var origin := elevator_position(building,floor_number)
+	var aboard: bool = state.floor == floor_number and inside_cabin(at,origin)
+	if destination >= 0:
+		if not aboard or not elevator_gates[building].has(destination):
+			return
+	elif destination == -1:
+		if aboard or state.floor == floor_number:
+			if state.phase != "open":
+				state.phase = "opening"
+			state.time = 0.0
+			return
+		destination = floor_number
+	else:
+		return
+	if state.floor == destination:
+		if state.phase != "open":
+			state.phase = "opening"
+		state.time = 0.0
+		return
+	state.target = destination
+	state.phase = "closing" if state.phase == "open" else "travel"
+	state.time = 0.0
+	if state.phase == "travel":
+		collect_elevator_riders(building)
+
+func collect_elevator_riders(building: String) -> void:
+	var state: Dictionary = elevators[building]
+	var origin := elevator_position(building,state.floor)
+	var online: bool = world.network != null and world.network.active()
+	var ids: Array = world.network.rules.participants() if online else [1]
+	state.riders.clear()
+	for id in ids:
+		if id == 1:
+			if world.active_car != null:
+				continue
+		elif world.network.rules.bus_riders.has(id) or int(world.network.members[id].get("car",-1)) >= 0:
+			continue
+		var at: Vector3 = world.network.rules.position_of(id) if online else world.player.position
+		if inside_cabin(at,origin):
+			state.riders[id] = at - origin
+
+func elevator_rider_position(id: int) -> Variant:
+	for building: String in elevators:
+		var state: Dictionary = elevators[building]
+		if state.riders.has(id):
+			return elevator_origin(building) + state.riders[id]
+	return null
+
+func update_elevator_riders(building: String, online: bool, arriving: bool) -> void:
+	var state: Dictionary = elevators[building]
+	var origin := elevator_origin(building)
+	for id in state.riders.keys():
+		var at: Vector3 = origin + state.riders[id]
+		if online and (not world.network.members.has(id) or world.network.rules.is_dead(id)):
+			state.riders.erase(id)
+			continue
+		if id == 1:
+			move_elevator_rider(at)
+			if arriving:
+				refresh = 0.5
+				world.camera_check_timer = 0
+		elif online:
+			var member: Dictionary = world.network.members[id]
+			member.position = at
+			member.car_position = at
+			member.held = false
+			if arriving:
+				member.elevator_target = at
+				member.elevator_target_until = Time.get_ticks_msec()+600
+				world.network.rules.send_personal(id,"elevator",{"position":at})
+
+func apply_elevator_snapshot(data: Dictionary) -> void:
+	var previous := elevators
+	elevators = data
+	for building: String in elevators:
+		if elevators[building].phase == "closed" and (previous[building].phase != "closed" or previous[building].floor != elevators[building].floor):
+			update_elevator_geometry(building)
+	var id := multiplayer.get_unique_id()
+	for building: String in elevators:
+		var state: Dictionary = elevators[building]
+		if state.riders.has(id):
+			elevator_ride = building
+			elevator_offset = state.riders[id]
+			if world.activities.menu == "elevator":
+				world.activities.set_menu("")
+			return
+	if not elevator_ride.is_empty() and not world.network.rules.is_dead(id):
+		apply_elevator_arrival(elevator_origin(elevator_ride)+elevator_offset)
+		elevator_ride = ""
+
+func _physics_process(delta: float) -> void:
+	var online: bool = world.network != null and world.network.active()
+	var client: bool = online and world.network.is_client()
+	for building: String in elevators:
+		var state: Dictionary = elevators[building]
+		if state.phase == "closed":
+			continue
+		state.time += delta
+		if not client:
+			match state.phase:
+				"closing":
+					if state.time >= DOOR_TIME:
+						state.time = 0.0
+						state.phase = "closed" if state.floor == state.target else "travel"
+						if state.phase == "travel":
+							collect_elevator_riders(building)
+				"travel":
+					var arrived := elevator_origin(building).is_equal_approx(elevator_position(building,state.target))
+					update_elevator_riders(building,online,arrived)
+					if arrived:
+						state.floor = state.target
+						state.phase = "opening"
+						state.time = 0.0
+						state.riders.clear()
+				"opening":
+					if state.time >= DOOR_TIME:
+						state.phase = "open"
+						state.time = 0.0
+				"open":
+					if state.time >= 15.0:
+						state.target = state.floor
+						state.phase = "closing"
+						state.time = 0.0
+		update_elevator_geometry(building)
+	if client and not elevator_ride.is_empty() and not world.network.rules.is_dead(multiplayer.get_unique_id()):
+		move_elevator_rider(elevator_origin(elevator_ride)+elevator_offset)
+	elif not client:
+		elevator_ride = ""
 
 func mission_position() -> Vector3:
 	var a: Node = world.activities
@@ -226,7 +459,7 @@ func build_elevator_menu() -> void:
 	column.add_child(title)
 	for floor_number in 13:
 		var button := Button.new()
-		button.text = "Terreo / Recepcao" if floor_number == 0 else "Andar %02d" % floor_number
+		button.text = "Térreo" if floor_number == 0 else "Andar %02d" % floor_number
 		button.custom_minimum_size.y = 32
 		button.pressed.connect(use_elevator.bind(floor_number))
 		column.add_child(button)
@@ -237,86 +470,34 @@ func build_elevator_menu() -> void:
 	elevator_ui.hide()
 
 func use_elevator(floor_number: int) -> void:
-	if elevator_traveling:
+	if world.active_car != null:
 		return
-	var building:=elevator_building_at(world.player.position)
-	if building=="" or floor_number<0 or floor_number>(12 if building=="housing" else 11):
-		world.notify("Aproxime-se do elevador para escolher um andar.")
-		return
-	var apartment:=building=="apartment"
-	var base:Vector3=HOME_BUILDING if building=="housing" else (PLACES[2] if apartment else PLACES[5])
-	if (building=="tower" and floor_number>7) or (apartment and floor_number>9):
-		world.notify("Este elevador atende os andares 1 a %d." % (10 if apartment else 8))
-		return
-	var current_floor:=clampi(roundi((world.player.position.y-base.y)/6.0),0,12 if building=="housing" else (9 if apartment else 7))
-	elevator_traveling=true
-	elevator_ui.hide()
-	if apartment:
-		set_elevator_doors(current_floor,true)
-		set_elevator_doors(floor_number,true)
-	if world.network!=null and world.network.is_client():
-		elevator_arrival_received=false
-	announce_elevator_trip(current_floor,floor_number,building)
-	if world.network!=null and world.network.is_client():
-		await get_tree().create_timer(1.5,true).timeout
-		if apartment:
-			set_elevator_doors(current_floor,false)
-			set_elevator_doors(floor_number,false)
-		if not elevator_arrival_received:
-			world.notify("O elevador nao respondeu. Tente novamente.")
+	if world.activities.menu == "elevator":
 		world.activities.set_menu("")
-		elevator_traveling=false
-		return
-	if apartment:
-		await get_tree().create_timer(0.35,true).timeout
-	world.player.position=elevator_position(building,floor_number)
-	world.player.velocity = Vector3.ZERO
-	refresh=0.5
-	world.camera_check_timer = 0
-	world.notify("Elevador / andar %02d" % (floor_number+1))
-	if apartment:
-		await get_tree().create_timer(0.55,true).timeout
-		set_elevator_doors(current_floor,false)
-		set_elevator_doors(floor_number,false)
-	world.activities.set_menu("")
-	elevator_traveling=false
-
-func set_elevator_doors(floor_number: int, open: bool) -> void:
-	if floor_number<0 or floor_number>=apartment_elevator_doors.size() or apartment_elevator_doors[floor_number]==null:
-		return
-	for index in 2:
-		var door: MeshInstance3D=apartment_elevator_doors[floor_number][index]
-		var closed: Vector3=door.get_meta("closed_position")
-		var offset:float=(-0.68 if index==0 else 0.68) if open else 0.0
-		var tween:=door.create_tween()
-		tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-		tween.tween_property(door,"position",closed+Vector3(offset,0,0),0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-
-func announce_elevator_trip(source: int, destination: int, building: String) -> void:
-	if world.network==null or not world.network.active():
-		return
-	if multiplayer.is_server():
-		for id in world.network.members:
-			if id!=1:
-				world.network.personal.rpc_id(id,"elevator",{"actor":1,"from":source,"to":destination,"building":building,"position":elevator_position(building,destination)})
+	if world.network != null and world.network.active():
+		world.network.rules.send_action("elevator",{"to":floor_number})
 	else:
-		world.network.rules.send_action("elevator",{"from":source,"to":destination})
+		request_elevator(world.player.position,floor_number)
 
 func apply_elevator_arrival(at: Vector3) -> void:
 	if not at.is_finite():
 		return
-	world.player.position=at
-	world.player.velocity=Vector3.ZERO
-	refresh=0.5
-	world.camera_check_timer=0
-	elevator_arrival_received=true
+	move_elevator_rider(at)
+	refresh = 0.5
+	world.camera_check_timer = 0
 
-func animate_remote_elevator(source: int, destination: int) -> void:
-	set_elevator_doors(source,true)
-	set_elevator_doors(destination,true)
-	await get_tree().create_timer(0.85,true).timeout
-	set_elevator_doors(source,false)
-	set_elevator_doors(destination,false)
+func move_elevator_rider(at: Vector3) -> void:
+	world.player.position = at
+	world.player.velocity = Vector3.ZERO
+
+func elevator_interaction(at: Vector3) -> int:
+	var building := elevator_building_at(at)
+	if building.is_empty():
+		return 0
+	var state: Dictionary = elevators[building]
+	if state.phase in ["travel","closing","opening"]:
+		return 1
+	return 3 if inside_cabin(at,elevator_origin(building)) else 2
 
 func home_floor_at(at: Vector3) -> int:
 	var local := at - HOME_BUILDING
@@ -361,8 +542,10 @@ func prompt() -> String:
 		elif owned_homes.has(home_floor):
 			return "Seu apartamento"
 		return "F / Comprar apartamento - $1000"
-	if elevator_building_at(at)!="":
-		return "F / Escolher andar do elevador"
+	match elevator_interaction(at):
+		1: return "Elevador em movimento"
+		2: return "F / Chamar elevador"
+		3: return "F / Escolher andar do elevador"
 	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:
 		return task_label()
 	if inside_room(at):
@@ -378,14 +561,20 @@ func interact() -> bool:
 	if home_floor >= 0:
 		buy_home(home_floor)
 		return true
-	if elevator_building_at(at)!="":
+	var elevator_action := elevator_interaction(at)
+	if elevator_action == 1:
+		return true
+	if elevator_action == 2:
+		use_elevator(-1)
+		return true
+	if elevator_action == 3:
 		world.activities.set_menu("elevator")
 		var building := elevator_building_at(at)
 		var column: VBoxContainer = elevator_ui.get_child(0).get_child(0)
 		for i in 13:
 			var button: Button = column.get_child(i+1)
-			button.visible = i <= (12 if building == "housing" else (9 if building == "apartment" else 7))
-			button.text = ("Terreo / Recepcao" if i == 0 else "Andar %02d" % i) if building == "housing" else "Andar %02d" % (i+1)
+			button.visible = i < ELEVATOR_FLOORS[building]
+			button.text = "Térreo" if i == 0 else "Andar %02d" % (i if building == "housing" else i+1)
 		elevator_ui.show()
 		return true
 	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:

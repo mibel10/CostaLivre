@@ -423,27 +423,9 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 					bank_owner=id
 			)
 		"elevator":
-			var building: String=world.life.elevator_building_at(position_of(id))
-			if int(network.members[id].get("car",-1))>=0 or building=="":
-				return
-			var start: Vector3=position_of(id)
-			var from:=clampi(roundi(start.y/6.0),0,12 if building=="housing" else 9)
-			var to:=int(data.get("to",-1))
-			if to<0 or to>(12 if building=="housing" else (9 if building=="apartment" else 7)):
-				return
-			var arrival: Vector3=world.life.elevator_position(building,to)
-			network.members[id]["position"]=arrival
-			network.members[id]["car_position"]=arrival
-			network.members[id]["car"]=-1
-			network.members[id]["speed"]=0.0
-			network.members[id]["held"]=false
-			network.members[id]["elevator_target"]=arrival
-			network.members[id]["elevator_target_until"]=Time.get_ticks_msec()+1800
-			if building=="apartment":
-				world.life.animate_remote_elevator(from,to)
-			for peer_id in network.members:
-				if peer_id!=1 and not network.members[peer_id].is_empty():
-					network.personal.rpc_id(peer_id,"elevator",{"actor":id,"from":from,"to":to,"building":building,"position":arrival})
+			var destination = data.get("to")
+			if destination is int and destination >= -1 and int(network.members[id].get("car",-1)) < 0:
+				world.life.request_elevator(position_of(id),destination)
 		"digit":
 			if id == bank_owner and world.activities.bank.hacking and world.activities.bank.reveal_time <= 0.0:
 				with_actor(id,func(): world.activities.bank.enter_digit(clampi(int(data.get("digit",0)),1,4)))
@@ -564,10 +546,7 @@ func receive_event(kind: String, data: Dictionary) -> void:
 		"mission_offer": network.show_mission_offer(int(data.get("index",24)),str(data.get("host","Host")))
 		"mission_offer_close": network.hide_mission_offer()
 		"elevator":
-			if int(data.get("actor",0))==local_id():
-				world.life.apply_elevator_arrival(data.get("position",Vector3.ZERO))
-			elif str(data.get("building","apartment"))=="apartment":
-				world.life.animate_remote_elevator(clampi(int(data.get("from",0)),0,9),clampi(int(data.get("to",0)),0,9))
+			world.life.apply_elevator_arrival(data.get("position",Vector3.ZERO))
 		"cutscene": world.play_cutscene(str(data.get("title","Contrato")),str(data.get("subtitle","")))
 		"sound": world.extra.play(str(data.get("name","cash")))
 		"spawn":
@@ -830,9 +809,10 @@ func export_state() -> Dictionary:
 		sheets[1].inventory=inventory()
 	var a: Node=world.activities
 	var bank: Node=a.bank
-	return {"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
+	return {"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
 
 func apply_state(data: Dictionary) -> void:
+	world.life.apply_elevator_snapshot(data.elevators)
 	sheets=data.get("sheets",{})
 	world.heat=float(data.get("heat",0))
 	var a: Node=world.activities
