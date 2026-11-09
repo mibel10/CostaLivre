@@ -42,6 +42,8 @@ func dispatch(delta: float) -> void:
 		else:
 			assigned[actor] = int(assigned.get(actor,0))+1
 	for actor in actors:
+		if int(assigned.get(actor, 0)) >= quota:
+			continue
 		var target: Vector3 = world.network.rules.position_of(actor) if actor > 0 else world.subject_position()
 		var available := fleet.filter(func(car): return is_instance_valid(car) and car.hp > 0 and car.police_phase in ["parked","return","dock"])
 		available.sort_custom(func(a,b):

@@ -43,6 +43,7 @@ var life: Node3D
 var fps_counter: CanvasLayer
 var car_transition := false
 var bus_passenger := false
+var traffic_refresh := 0.0
 var sight_timer := 0.0
 var last_seen := false
 var camera_check_timer := 0.0
@@ -585,6 +586,24 @@ func _physics_process(delta: float) -> void:
 	if engine_audio != null:
 		engine_audio.volume_db = -28 if active_car != null else -55
 		engine_audio.pitch_scale = 0.7 + absf(active_car.speed) / 24 if active_car != null else 0.7
+	if network == null or not network.is_client():
+		traffic_refresh -= delta
+		if traffic_refresh <= 0.0:
+			traffic_refresh = 0.25
+			var observers: Array[Vector3] = [subject_position()]
+			if network != null and network.active():
+				for peer_id in network.rules.participants():
+					if peer_id != multiplayer.get_unique_id():
+						observers.append(network.rules.position_of(peer_id))
+			for car in cars:
+				if not car.traffic:
+					continue
+				car.traffic_nearby = car == activities.target_car or car in activities.targets
+				if not car.traffic_nearby:
+					for at in observers:
+						if car.position.distance_squared_to(at) <= 180.0 * 180.0:
+							car.traffic_nearby = true
+							break
 	if network!=null and network.active():
 		network.rules.physics(delta)
 		toast_time=maxf(0,toast_time-delta)

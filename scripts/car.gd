@@ -11,6 +11,7 @@ var last_grounded := Vector3.ZERO
 var paint := Color("dd7542")
 var police := false
 var traffic := false
+var traffic_nearby := true
 var speed := 0.0
 var heading := 0.0
 var driving := false
@@ -77,6 +78,8 @@ func _physics_process(delta: float) -> void:
 			get_node("CustomVehicle").rotation.z = 0
 	if tier == Catalog.SUPERCAR and (not driving or hp <= 0 or world.finished):
 		hovering = false
+	if traffic and not driving and not traffic_nearby and hp > 0:
+		return
 	# Parked colliders stay active without repeating floor queries every physics tick.
 	if hp > 0 and not driving and not traffic and (not police or police_phase=="parked") and absf(speed)<0.01 and is_on_floor() and Vector2(velocity.x,velocity.z).length_squared()<0.01:
 		return
