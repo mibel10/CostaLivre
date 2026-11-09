@@ -1,14 +1,14 @@
 extends Node
 
-const QUALITIES := ["Ultra", "Alto", "Médio", "Baixo", "Batata"]
+const QUALITIES := ["Ultra", "Alto", "Médio", "Baixo", "Batata", "EXTREMO"]
 const FPS_LIMITS := [30, 60, 120, 144, 180, 240, 360, 0]
 const UPSCALING_MODES := ["Desativado", "Qualidade", "Balanceado", "Performance", "Ultra performance"]
 const UPSCALING_SCALES := [1.0, 0.9, 0.8, 0.7, 0.5]
 const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_WINDOWED]
 const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
-const NEAR := [60.0, 46.0, 34.0, 22.0, 14.0]
-const FAR := [420.0, 350.0, 280.0, 220.0, 165.0]
-const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65]
+const NEAR := [60.0, 46.0, 34.0, 22.0, 14.0, 80.0]
+const FAR := [420.0, 350.0, 280.0, 220.0, 165.0, 1250.0]
+const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65, 1.2]
 var world: Node3D
 var quality := 3
 var customized := false
@@ -42,19 +42,19 @@ func load_settings() -> void:
 	toggle_crouch=bool(config.get_value("controls","toggle_crouch",false))
 	toggle_sprint=bool(config.get_value("controls","toggle_sprint",false))
 	var value = config.get_value("video", "quality", 3)
-	quality = clampi(value, 0, 4) if typeof(value) == TYPE_INT else 3
+	quality = clampi(value, 0, 5) if typeof(value) == TYPE_INT else 3
 	customized=config.get_value("video","custom",false) == true
 	value = config.get_value("video", "fps_limit", 30)
 	fps_limit = value if typeof(value) == TYPE_INT and value in FPS_LIMITS else 30
 	value = config.get_value("video","fps_corner",1)
 	fps_corner = value if typeof(value) == TYPE_INT and value >= -1 and value <= 3 else 1
 	texture_quality = video_int(config, "textures", mini(quality, 3), 0, 3)
-	shadow_quality = video_int(config, "shadows", [3,2,1,0,0][quality], 0, 3)
+	shadow_quality = video_int(config, "shadows", [3,2,1,0,0,3][quality], 0, 3)
 	antialiasing = video_int(config, "aa", 0, 0, 3) if customized else 0
 	if antialiasing == 1:
 		antialiasing = 0 # Legacy FXAA setting; Compatibility cannot apply it.
-	draw_distance = video_int(config, "distance", quality, 0, 4)
-	detail_maps = config.get_value("video", "details", quality < 3) == true
+	draw_distance = video_int(config, "distance", quality, 0, 5)
+	detail_maps = config.get_value("video", "details", quality < 3 or quality == 5) == true
 	upscaling = video_int(config, "upscaling", 2, 0, 4)
 	window_mode = video_int(config, "window_mode", 2, 0, 2)
 	window_resolution = Vector2i(video_int(config, "window_width", 1280, 1, 7680), video_int(config, "window_height", 720, 1, 4320))
@@ -101,10 +101,10 @@ func set_quality(index: int, persist := true) -> void:
 	quality = index
 	customized=false
 	texture_quality=mini(index,3)
-	shadow_quality=[3,2,1,0,0][index]
-	antialiasing=0
+	shadow_quality=[3,2,1,0,0,3][index]
+	antialiasing=3 if index == 5 else 0
 	draw_distance=index
-	detail_maps=index<3
+	detail_maps=index<3 or index==5
 	apply()
 	if persist:
 		save_settings()
@@ -164,7 +164,7 @@ func apply_range(node: GeometryInstance3D) -> void:
 		node.visibility_range_begin = minf(NEAR[draw_distance], 14.0) if node.has_meta("police_lod") else NEAR[draw_distance]
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_shadow"):
-		node.visibility_range_end = [0.1, 22.0, 34.0, 50.0][shadow_quality]
+		node.visibility_range_end = 70.0 if quality == 5 else [0.1, 22.0, 34.0, 50.0][shadow_quality]
 	elif node is Label3D:
 		node.visibility_range_end = 110.0 if quality < 3 else 65.0
 
@@ -185,13 +185,13 @@ func apply() -> void:
 	for child in world.get_children():
 		if child is DirectionalLight3D:
 			child.shadow_enabled = shadow_quality > 0
-			child.directional_shadow_max_distance = [0.0, 22.0, 29.0, 35.0][shadow_quality]
+			child.directional_shadow_max_distance = 60.0 if quality == 5 else [0.0, 22.0, 29.0, 35.0][shadow_quality]
 			child.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
 		if child is WorldEnvironment:
 			child.environment.fog_enabled = quality < 3
 			child.environment.fog_density = 0.0015 if quality < 2 else 0.003
 	for light in world.find_children("*", "OmniLight3D", true, false):
-		light.visible = quality < 4
+		light.visible = quality != 4
 
 func set_upscaling(value: int) -> void:
 	if value < 0 or value >= UPSCALING_SCALES.size():
@@ -248,7 +248,7 @@ func set_custom(key: String, value: int) -> void:
 		"textures": texture_quality=clampi(value,0,3)
 		"shadows": shadow_quality=clampi(value,0,3)
 		"aa": antialiasing = 0 if value == 1 else clampi(value, 0, 3)
-		"distance": draw_distance=clampi(value,0,4)
+		"distance": draw_distance=clampi(value,0,5)
 		"details": detail_maps=value==1
 	apply()
 	save_settings()

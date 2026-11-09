@@ -195,7 +195,7 @@ func _ready() -> void:
 		world.settings.set_fps_limit(world.settings.FPS_LIMITS[index])
 		refresh()
 	)
-	var specs := [["textures","Texturas",["Original","1024 px","512 px","256 px"]],["shadows","Sombras",["Desligadas","Proximas","Medias","Distantes"]],["aa","Antialiasing",["Desligado","FXAA","MSAA 2x","MSAA 4x"]],["distance","Distancia",["Ultra","Alta","Media","Baixa","Minima"]],["details","Relevo de texturas",["Desligado","Ligado"]]]
+	var specs := [["textures","Texturas",["Original","1024 px","512 px","256 px"]],["shadows","Sombras",["Desligadas","Proximas","Medias","Distantes"]],["aa","Antialiasing",["Desligado","FXAA","MSAA 2x","MSAA 4x"]],["distance","Distancia",["Ultra","Alta","Media","Baixa","Minima","Mapa inteiro"]],["details","Relevo de texturas",["Desligado","Ligado"]]]
 	for i in specs.size():
 		var spec: Array = specs[i]
 		var x: float = 0 if i%2==0 else 440
