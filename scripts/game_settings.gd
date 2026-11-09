@@ -19,7 +19,7 @@ var shadow_quality := 0
 var antialiasing := 0
 var draw_distance := 3
 var detail_maps := false
-var upscaling := 0
+var upscaling := 2
 var window_mode := 2
 var window_resolution := Vector2i(1280, 720)
 var toggle_crouch := false
@@ -53,8 +53,8 @@ func load_settings() -> void:
 	antialiasing=clampi(config.get_value("video","aa",[3,2,0,0,0][quality]),0,3)
 	draw_distance=clampi(config.get_value("video","distance",quality),0,4)
 	detail_maps=config.get_value("video","details",quality<3)
-	var upscaling_value = config.get_value("video","upscaling",0)
-	upscaling=clampi(upscaling_value,0,4) if typeof(upscaling_value)==TYPE_INT else 0
+	var upscaling_value = config.get_value("video","upscaling",2)
+	upscaling=clampi(upscaling_value,0,4) if typeof(upscaling_value)==TYPE_INT else 2
 	window_mode=clampi(config.get_value("video","window_mode",2),0,2)
 	window_resolution=Vector2i(config.get_value("video","window_width",1280),config.get_value("video","window_height",720))
 	if not OS.has_feature("android") and (window_resolution.x > DisplayServer.screen_get_size().x or window_resolution.y > DisplayServer.screen_get_size().y):
