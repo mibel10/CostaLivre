@@ -8,6 +8,9 @@ var map_view: Control
 var quality_select: OptionButton
 var fps_select: OptionButton
 var counter_select: OptionButton
+var window_mode_select: OptionButton
+var resolution_select: OptionButton
+var window_resolutions: Array[Vector2i] = []
 var status: Label
 var campaign_save_button: Button
 var advanced_options := {}
@@ -136,17 +139,38 @@ func _ready() -> void:
 	button(pages.map, "Centralizar", Rect2(138, 539, 170, 42), map_view.recenter)
 	label(pages.map, "Zoom: roda / +/- | Arraste: mover | Passe o mouse ou toque nos pontos", Vector2(326, 551), 12, Color("a7b9bf"))
 	label(pages.graphics, "GRÁFICOS E DESEMPENHO", Vector2.ZERO, 27, Color("ffd18a"))
-	label(pages.graphics, "Qualidade gráfica", Vector2(0, 90), 21)
+	if not OS.has_feature("android"):
+		label(pages.graphics, "Modo de tela", Vector2(0, 40), 17)
+		window_mode_select=OptionButton.new()
+		window_mode_select.position=Vector2(0,68)
+		window_mode_select.size=Vector2(395,42)
+		for mode in ["Tela cheia exclusiva","Tela cheia sem bordas","Modo janela"]:
+			window_mode_select.add_item(mode)
+		pages.graphics.add_child(window_mode_select)
+		window_mode_select.item_selected.connect(func(index): world.settings.set_window_mode(index); refresh())
+		label(pages.graphics, "Resolução (modo janela)", Vector2(440, 40), 17)
+		resolution_select=OptionButton.new()
+		resolution_select.position=Vector2(440,68)
+		resolution_select.size=Vector2(395,42)
+		window_resolutions=world.settings.get_window_resolutions()
+		for resolution in window_resolutions:
+			resolution_select.add_item("%d × %d" % [resolution.x,resolution.y])
+		pages.graphics.add_child(resolution_select)
+		resolution_select.item_selected.connect(func(index): world.settings.set_window_resolution(window_resolutions[index]); refresh())
+		label(pages.graphics, "Tela cheia usa a resolução do monitor.", Vector2(0, 115), 14, Color("a7b9bf"))
+		label(pages.graphics, "Qualidade gráfica", Vector2(0, 150), 21)
+	else:
+		label(pages.graphics, "Qualidade gráfica", Vector2(0, 90), 21)
 	quality_select = OptionButton.new()
-	quality_select.position = Vector2(0, 125)
+	quality_select.position = Vector2(0, 185 if not OS.has_feature("android") else 125)
 	quality_select.size = Vector2(420, 50)
 	for name in world.settings.QUALITIES:
 		quality_select.add_item(name)
 	quality_select.add_item("Personalizado")
 	pages.graphics.add_child(quality_select)
-	label(pages.graphics,"Contador de FPS",Vector2(470,90),21)
+	label(pages.graphics,"Contador de FPS",Vector2(470,150 if not OS.has_feature("android") else 90),21)
 	counter_select = OptionButton.new()
-	counter_select.position = Vector2(470,125)
+	counter_select.position = Vector2(470,185 if not OS.has_feature("android") else 125)
 	counter_select.size = Vector2(370,50)
 	for option in ["Desligado","Superior esquerdo","Superior direito","Inferior esquerdo","Inferior direito"]:
 		counter_select.add_item(option)
@@ -159,9 +183,9 @@ func _ready() -> void:
 		world.settings.set_quality(index)
 		refresh()
 	)
-	label(pages.graphics, "Limite de FPS", Vector2(0, 215), 21)
+	label(pages.graphics, "Limite de FPS", Vector2(0, 245 if not OS.has_feature("android") else 215), 21)
 	fps_select = OptionButton.new()
-	fps_select.position = Vector2(0, 250)
+	fps_select.position = Vector2(0, 280 if not OS.has_feature("android") else 250)
 	fps_select.size = Vector2(420, 50)
 	for limit in world.settings.FPS_LIMITS:
 		fps_select.add_item("Sem limite" if limit == 0 else "%d FPS" % limit)
@@ -174,7 +198,7 @@ func _ready() -> void:
 	for i in specs.size():
 		var spec: Array = specs[i]
 		var x: float = 0 if i%2==0 else 440
-		var y: float = 322+(i/2)*68
+		var y: float = (340 if not OS.has_feature("android") else 322)+(i/2)*66
 		label(pages.graphics,spec[1],Vector2(x,y),16)
 		var option := OptionButton.new()
 		option.position=Vector2(x,y+25)
@@ -184,7 +208,7 @@ func _ready() -> void:
 		pages.graphics.add_child(option)
 		advanced_options[spec[0]]=option
 		option.item_selected.connect(func(value): world.settings.set_custom(spec[0],value); refresh())
-	status = label(pages.graphics, "", Vector2(0, 530), 18, Color("ffd18a"))
+	status = label(pages.graphics, "", Vector2(0, 552 if not OS.has_feature("android") else 530), 18, Color("ffd18a"))
 	label(pages.controls, "CONTROLES", Vector2.ZERO, 27, Color("ffd18a"))
 	for i in REBIND_ACTIONS.size():
 		var action_name: String = REBIND_ACTIONS[i]
@@ -319,6 +343,10 @@ func refresh() -> void:
 		var value: int = {"textures":world.settings.texture_quality,"shadows":world.settings.shadow_quality,"aa":world.settings.antialiasing,"distance":world.settings.draw_distance,"details":int(world.settings.detail_maps)}[key]
 		advanced_options[key].select(value)
 	quality_select.select(5 if world.settings.customized else world.settings.quality)
+	if window_mode_select != null:
+		window_mode_select.select(world.settings.window_mode)
+		resolution_select.select(window_resolutions.find(world.settings.window_resolution))
+		resolution_select.disabled=world.settings.window_mode!=2
 	fps_select.select(world.settings.FPS_LIMITS.find(world.settings.fps_limit))
 	counter_select.select(world.settings.fps_corner+1)
 	status.text = "%s  ·  %s  ·  atual: %d FPS" % [world.settings.QUALITIES[world.settings.quality], "Sem limite" if world.settings.fps_limit == 0 else "%d FPS" % world.settings.fps_limit, Engine.get_frames_per_second()]

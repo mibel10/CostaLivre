@@ -2,6 +2,8 @@ extends Node
 
 const QUALITIES := ["Ultra", "Alto", "Médio", "Baixo", "Batata"]
 const FPS_LIMITS := [30, 60, 120, 144, 180, 240, 360, 0]
+const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_WINDOWED]
+const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const NEAR := [85.0, 65.0, 45.0, 18.0, 12.0]
 const FAR := [350.0, 280.0, 220.0, 170.0, 125.0]
 var world: Node3D
@@ -15,6 +17,8 @@ var shadow_quality := 0
 var antialiasing := 0
 var draw_distance := 3
 var detail_maps := false
+var window_mode := 2
+var window_resolution := Vector2i(1280, 720)
 var toggle_crouch := false
 var toggle_sprint := false
 var texture_sources := {}
@@ -46,6 +50,10 @@ func load_settings() -> void:
 	antialiasing=clampi(config.get_value("video","aa",[3,2,0,0,0][quality]),0,3)
 	draw_distance=clampi(config.get_value("video","distance",quality),0,4)
 	detail_maps=config.get_value("video","details",quality<3)
+	window_mode=clampi(config.get_value("video","window_mode",2),0,2)
+	window_resolution=Vector2i(config.get_value("video","window_width",1280),config.get_value("video","window_height",720))
+	if not OS.has_feature("android") and (window_resolution.x > DisplayServer.screen_get_size().x or window_resolution.y > DisplayServer.screen_get_size().y):
+		window_resolution=DisplayServer.screen_get_size()
 
 func save_settings() -> void:
 	var config := ConfigFile.new()
@@ -61,6 +69,9 @@ func save_settings() -> void:
 	config.set_value("controls","toggle_sprint",toggle_sprint)
 	config.set_value("video", "fps_limit", fps_limit)
 	config.set_value("video","fps_corner",fps_corner)
+	config.set_value("video","window_mode",window_mode)
+	config.set_value("video","window_width",window_resolution.x)
+	config.set_value("video","window_height",window_resolution.y)
 	if config.save(config_path) != OK:
 		world.notify("Não foi possível salvar as configurações.")
 
@@ -141,6 +152,7 @@ func apply_range(node: GeometryInstance3D) -> void:
 
 func apply() -> void:
 	set_fps_limit(fps_limit, false)
+	apply_display_settings()
 	world.camera.far = FAR[draw_distance]
 	world.get_viewport().msaa_3d = Viewport.MSAA_4X if antialiasing == 3 else (Viewport.MSAA_2X if antialiasing == 2 else Viewport.MSAA_DISABLED)
 	world.get_viewport().screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if antialiasing == 1 else Viewport.SCREEN_SPACE_AA_DISABLED
@@ -165,6 +177,44 @@ func apply() -> void:
 		light.visible = quality < 4
 	for label in world.find_children("*", "Label3D", true, false):
 		apply_range(label)
+
+func get_window_resolutions() -> Array[Vector2i]:
+	var native_size := DisplayServer.screen_get_size()
+	var result: Array[Vector2i] = []
+	for resolution in WINDOW_RESOLUTIONS:
+		if resolution.x <= native_size.x and resolution.y <= native_size.y:
+			result.append(resolution)
+	if window_resolution.x <= native_size.x and window_resolution.y <= native_size.y and not result.has(window_resolution):
+		result.append(window_resolution)
+	if not result.has(native_size):
+		result.append(native_size)
+	return result
+
+func set_window_mode(value: int) -> void:
+	if value < 0 or value >= WINDOW_MODES.size() or OS.has_feature("android"):
+		return
+	window_mode=value
+	apply_display_settings()
+	save_settings()
+
+func set_window_resolution(value: Vector2i) -> void:
+	if value.x <= 0 or value.y <= 0 or OS.has_feature("android"):
+		return
+	window_resolution=value
+	apply_display_settings()
+	save_settings()
+
+func apply_display_settings() -> void:
+	if OS.has_feature("android"):
+		return
+	if window_mode == 2:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+		DisplayServer.window_set_size(window_resolution)
+		var screen := maxi(DisplayServer.window_get_current_screen(), 0)
+		DisplayServer.window_set_position(DisplayServer.screen_get_position(screen) + (DisplayServer.screen_get_size(screen) - window_resolution) / 2)
+	else:
+		DisplayServer.window_set_mode(WINDOW_MODES[window_mode])
 
 func set_custom(key: String, value: int) -> void:
 	customized=true
