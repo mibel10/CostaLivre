@@ -131,6 +131,7 @@ func _ready() -> void:
 		for cashier in 5:
 			var staff := Pedestrian.new()
 			staff.name = "Mercado%dCaixa%d" % [store,cashier]
+			staff.set_meta("supermarket_cashier", true)
 			staff.world = world
 			staff.appearance_index = cashier+store
 			staff.stationary = true
@@ -869,9 +870,10 @@ func _process(delta: float) -> void:
 	sorted.sort_custom(func(a,b): return distances[a]<distances[b])
 	var active_count := 0
 	for ped in sorted:
-		var simulate: bool=ped.hp>0 and distances[ped]<3600 and active_count<[24,20,16,12,10][world.settings.quality]
-		if simulate:
-			active_count+=1
+		var cashier: bool = ped.has_meta("supermarket_cashier")
+		var simulate: bool = ped.hp > 0 and distances[ped] < 3600 and (cashier or active_count < [24,20,16,12,10,24][world.settings.quality])
+		if simulate and not cashier:
+			active_count += 1
 		var near: bool = ped.position.distance_squared_to(subject) < 3600 and ped.hp > 0
 		ped.visible = near and simulate
 		ped.model.process_mode=Node.PROCESS_MODE_INHERIT if ped.visible else Node.PROCESS_MODE_DISABLED
