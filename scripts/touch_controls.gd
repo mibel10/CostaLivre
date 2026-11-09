@@ -18,6 +18,8 @@ var selected_button := "shoot"
 var saved_button_scale := 1.0
 const CONTROLS := ["pause","map","shoot","aim","interact","activity","jump","sprint","jobs","weapon","reload","roll","crouch","reset","stick"]
 var edit_message := ""
+var visible_actions: Array[String] = []
+var visibility_clock := 0.0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -38,6 +40,8 @@ func context() -> String:
 		return ""
 	if world.finished:
 		return "death"
+	if world.network != null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id()):
+		return "multiplayer_death"
 	if world.network != null and world.network.offer_panel.visible:
 		return "mission_offer"
 	if world.cutscene.active:
@@ -58,7 +62,52 @@ func base_buttons() -> Array:
 		return [[Rect2(510,570,260,70),"RECOMEÇAR","restart"]]
 	if state != "":
 		return [] # Native pause/menu controls use Android touch-to-mouse input.
-	return [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
+	var rows := [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
+	return rows if editing else rows.filter(func(entry): return entry[2] in visible_actions)
+
+func gameplay_actions() -> Array[String]:
+	var a: Node = world.activities
+	var result: Array[String] = ["pause", "map", "look"]
+	var car: Node = world.active_car
+	if not world.car_transition:
+		if car != null:
+			result.append("interact")
+		else:
+			var nearby: Node = world.nearest_car()
+			if nearby != null and (world.network.car_available(nearby) or (nearby.tier == a.Catalog.BUS and absf(nearby.speed) <= 3.0)):
+				result.append("interact")
+	if world.bus_passenger or world.car_transition:
+		return result
+	result.append("stick")
+	if a.game_mode != "campaign":
+		result.append("jobs")
+	if not a.bank.inside() and a.bank.phase != 4:
+		result.append("reset")
+	var prompt: String = a.prompt()
+	var use_here := prompt.begins_with("F ") or prompt.begins_with("F:") or prompt.to_lower().contains("segure f")
+	if a.nearby_place() == "robbery" and (car != null or a.weapon == 0):
+		use_here = false
+	if car == null and a.job in [27, 28] and world.subject_position().distance_to(a.destination()) <= 4.0:
+		use_here = true
+	if use_here or (car != null and car.tier == a.Catalog.SUPERCAR):
+		result.append("activity")
+	if car != null:
+		result.append("jump")
+		if car.tier not in [a.Catalog.BUS, a.Catalog.SUPERCAR]:
+			result.append("sprint")
+		return result
+	result.append_array(["weapon", "sprint", "crouch"])
+	if world.player.is_on_floor():
+		result.append("jump")
+		if world.player.roll_cooldown <= 0:
+			result.append("roll")
+	if a.weapon > 0:
+		result.append("aim")
+		if a.reserves[a.weapon] > 0 and a.clips[a.weapon] < a.CAPACITIES[a.weapon] and a.reload_time <= 0:
+			result.append("reload")
+	if a.weapon == 0 or a.clips[a.weapon] > 0 or a.reserves[a.weapon] > 0:
+		result.append("shoot")
+	return result
 
 func action(name: String, pressed: bool) -> void:
 	if name == "weapon":
@@ -122,7 +171,7 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 		if context() == "":
-			var name := "stick" if point.distance_to(stick_center()) < 120 else "look"
+			var name := "stick" if "stick" in visible_actions and point.distance_to(stick_center()) < 120 else "look"
 			if fingers.values().has(name):
 				get_viewport().set_input_as_handled()
 				return
@@ -170,7 +219,7 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		release_all()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var state := context()
 	if state != "weapon_wheel" and world.extra.wheel:
 		world.extra.wheel = false
@@ -178,6 +227,20 @@ func _process(_delta: float) -> void:
 	if state != last_context:
 		release_all()
 		last_context = state
+		visibility_clock = 0.0
+		queue_redraw()
+	if state != "" or editing:
+		return
+	visibility_clock -= delta
+	if visibility_clock > 0:
+		return
+	visibility_clock = 0.10
+	var actions := gameplay_actions()
+	if actions != visible_actions:
+		visible_actions = actions
+		for index in fingers.keys():
+			if fingers[index] not in visible_actions:
+				release_finger(index)
 		queue_redraw()
 
 func ui_scale() -> float:
@@ -312,7 +375,7 @@ func _draw() -> void:
 	draw_set_transform(ui_offset(),0,Vector2.ONE*ui_scale())
 	if editing:
 		draw_rect(Rect2(0,0,1280,720),Color(0.02,0.04,0.07,0.75))
-	if context() == "":
+	if context() == "" and (editing or "stick" in visible_actions):
 		draw_circle(stick_center(),105,Color(0.03,0.08,0.12,0.45))
 		draw_arc(stick_center(),104,0,TAU,48,Color(0.8,0.9,0.95,0.5),2,true)
 		draw_circle(stick_center()+stick*75,35,Color(0.85,0.9,0.9,0.6))

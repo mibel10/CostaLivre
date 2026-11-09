@@ -38,6 +38,19 @@ func run() -> void:
 	tap.position = Vector2(734, 266) * root.get_visible_rect().size / Vector2(1280, 720)
 	touch._input(tap)
 	assert(world.activities.weapon == 1 and not world.extra.wheel, "Tapping the pistol equips it and closes the wheel")
+	world.activities.clips[1] = 1
+	world.activities.reserves[1] = 12
+	assert("reload" in touch.gameplay_actions(), "Reload appears with a pistol and spare ammo")
+	world.activities.weapon = 0
+	assert("reload" not in touch.gameplay_actions(), "Fists cannot reload")
+	world.player.position = Vector3(900, 0.3, 0)
+	assert("interact" not in touch.gameplay_actions(), "No entry button away from vehicles")
+	var car: Node3D = world.cars.filter(func(vehicle): return not vehicle.police)[0]
+	world.player.position = car.position + Vector3.RIGHT * 2.0
+	assert("interact" in touch.gameplay_actions(), "Entry button appears near a vehicle")
+	world.active_car = car
+	assert("interact" in touch.gameplay_actions() and "weapon" not in touch.gameplay_actions(), "Driving shows exit and hides the weapon wheel")
+	world.active_car = null
 	world.queue_free()
 	await process_frame
 	await create_timer(0.25).timeout
