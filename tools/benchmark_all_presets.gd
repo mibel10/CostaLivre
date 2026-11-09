@@ -75,9 +75,12 @@ func run() -> void:
 		file.store_string(JSON.stringify(metadata,"\t"))
 		file.close()
 		# Restore shared source materials so each fresh scene starts identically.
-		for mat in world.settings.tracked:
-			mat.normal_enabled = world.settings.tracked[mat]
-			mat.shading_mode = world.settings.shading[mat]
+		for original in world.settings.tracked.values():
+			var mat: StandardMaterial3D = original.material.get_ref()
+			if mat != null:
+				mat.normal_enabled = original.normal
+				mat.shading_mode = original.shading
+				mat.albedo_texture = original.texture
 		world.queue_free()
 		await process_frame
 		await create_timer(0.25).timeout

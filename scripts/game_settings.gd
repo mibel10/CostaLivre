@@ -24,10 +24,8 @@ var window_mode := 2
 var window_resolution := Vector2i(1280, 720)
 var toggle_crouch := false
 var toggle_sprint := false
-var texture_sources := {}
 var texture_cache := {}
 var tracked := {}
-var shading := {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -129,13 +127,17 @@ func set_fps_corner(value: int, persist := true) -> void:
 		save_settings()
 
 func register_material(mat: Material) -> void:
-	if mat is StandardMaterial3D and not tracked.has(mat):
-		tracked[mat] = mat.normal_enabled
-		shading[mat] = mat.shading_mode
-		texture_sources[mat] = mat.albedo_texture
-		apply_texture(mat)
-		mat.normal_enabled = tracked[mat] and detail_maps
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if quality == 4 else shading[mat]
+	if mat is StandardMaterial3D:
+		var id := mat.get_instance_id()
+		if not tracked.has(id):
+			var original := {"material": weakref(mat), "normal": mat.normal_enabled, "shading": mat.shading_mode, "texture": mat.albedo_texture}
+			tracked[id] = original
+			apply_material(mat, original)
+
+func apply_material(mat: StandardMaterial3D, original: Dictionary) -> void:
+	apply_texture(mat, original.texture)
+	mat.normal_enabled = original.normal and detail_maps
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if quality == 4 else original.shading
 
 func register_visuals(node: Node) -> void:
 	if node is GeometryInstance3D:
@@ -169,10 +171,13 @@ func apply() -> void:
 	apply_upscaling()
 	world.camera.far = FAR[draw_distance]
 	world.get_viewport().msaa_3d = Viewport.MSAA_4X if antialiasing == 3 else (Viewport.MSAA_2X if antialiasing == 2 else Viewport.MSAA_DISABLED)
-	for mat in tracked:
-		apply_texture(mat)
-		mat.normal_enabled = tracked[mat] and detail_maps
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if quality == 4 else shading[mat]
+	for id in tracked.keys():
+		var original: Dictionary = tracked[id]
+		var mat: StandardMaterial3D = original.material.get_ref()
+		if mat == null:
+			tracked.erase(id)
+		else:
+			apply_material(mat, original)
 	for group in ["car_detail", "car_far", "car_shadow", "car_simple"]:
 		for node in get_tree().get_nodes_in_group(group):
 			apply_range(node)
@@ -249,8 +254,7 @@ func set_custom(key: String, value: int) -> void:
 	apply()
 	save_settings()
 
-func apply_texture(mat: StandardMaterial3D) -> void:
-	var source: Texture2D = texture_sources.get(mat)
+func apply_texture(mat: StandardMaterial3D, source: Texture2D) -> void:
 	if source == null:
 		return
 	if texture_quality == 0:

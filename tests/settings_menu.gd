@@ -110,16 +110,22 @@ func run() -> void:
 	for child in detail.get_children():
 		if child.is_in_group("car_detail"):
 			assert(child.visibility_range_end == settings.NEAR[3])
-	var normal_states: Array[bool] = []
+	var normal_states := {}
 	settings.set_quality(0, false)
-	for mat in settings.tracked:
-		normal_states.append(mat.normal_enabled)
+	for id in settings.tracked:
+		var mat: StandardMaterial3D = settings.tracked[id].material.get_ref()
+		if mat != null:
+			normal_states[id] = mat.normal_enabled
+	var temporary_material := StandardMaterial3D.new()
+	var temporary_id := temporary_material.get_instance_id()
+	settings.register_material(temporary_material)
+	temporary_material = null
 	settings.set_quality(4, false)
 	settings.set_quality(0, false)
-	var state_index := 0
-	for mat in settings.tracked:
-		assert(mat.normal_enabled == normal_states[state_index], "Changing quality restores materials")
-		state_index += 1
+	assert(not settings.tracked.has(temporary_id), "A discarded material must not be kept alive by graphics settings")
+	for id in normal_states:
+		if settings.tracked.has(id):
+			assert(settings.tracked[id].material.get_ref().normal_enabled == normal_states[id], "Changing quality restores materials")
 	settings.set_quality(3, false)
 	settings.set_fps_limit(123, false)
 	assert(Engine.max_fps == 30, "Invalid limits are rejected")
