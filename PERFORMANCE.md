@@ -1,5 +1,44 @@
 # Performance measurements
 
+## Audit after item 32
+
+The inventory covered all 244 tracked files. Godot loaded 124 game assets, scenes, shaders and scripts, including the test and tool scripts. Generated previews, import identifiers and binary metadata were inventoried separately. The runtime checks exercised 21 test scripts, including the full 25-chapter campaign, the expanded city, touch controls, vehicle handling and multiplayer sessions with an actual host and client. The GPU measurements below used the Windows build of the Godot editor executable. Android controls were simulated in tests.
+
+### Rendering and simulation
+
+- Split six oversized MultiMeshes into 84 m sectors. All 10,671 original transforms were verified against the previous scene. Collision data and other scene content were unchanged.
+- Culled furnished rooms by local distance and floor. The separate exterior shells and fixed collisions remain in place. Road stripes and thin facade details no longer cast directional shadows.
+- Rebuilt the two-surface distant vehicle mesh from 11,793 to 7,537 triangles. Police switch to the distant model after 14 m. Nearby civilian cars, players and NPCs retain detailed models, with engine LOD available on clothed characters.
+- Kept Ultra textures, normal maps and view distance. Ultra now uses a single 512-pixel directional shadow map out to 35 m and has MSAA off by default. MSAA 2× and 4× are still available under custom settings. FXAA is disabled in the menu because the Compatibility renderer does not support it. [Godot shadow settings](https://docs.godotengine.org/en/4.6/classes/class_projectsettings.html)
+- Avoided sorting the police fleet when dispatch has already filled its quota. The host suspends ordinary traffic physics beyond 180 m of every player and keeps mission vehicles active. Repeated campaign prop updates now run only when the visible state changes.
+
+### Reproduced bugs
+
+- Shortcuts 4 and 5 were equipping the wrong weapon slots.
+- The old register marker at the bank entrance still paid out through the generic robbery code. The bank now uses the vault flow.
+- A client driving a normal car lost vehicle synchronization above 4 m. The host now uses the same vertical bounds as vehicle recovery, which covers the favela road. It also rejects nonfinite speed and heading and ignores ram reports from a stopped car.
+- The clinic and interception prompts could refer to a vehicle after it had been removed. Video settings now fall back safely when a saved value has the wrong type or the display reports no valid size.
+
+### Measured on the user's PC
+
+Godot 4.7.2, Compatibility through ANGLE, Intel HD Graphics Family (0x00000A16), output 1028×720, native 3D resolution, VSync and FPS cap off. Each row used a 4-second warmup and a 6-second live sample. The initial Ultra street profile was 11.1–14.6 FPS, roughly 730 draw calls and 600,000 triangles. The final street sample was 33.6 FPS, 378 calls and about 99,000 triangles.
+
+| Scene | Average FPS | 1% low FPS |
+| --- | ---: | ---: |
+| Street | 33.6 | 25.2 |
+| Driving | 29.9 | 16.9 |
+| Bank | 49.6 | 28.4 |
+| Pursuit | 33.1 | 18.6 |
+
+These are short samples and varied between runs. They do not establish a 30 FPS minimum. In an intermediate driving profile, native runs at 60 m of shadow distance ranged from 28.4 to 29.6 FPS, Balanced at the same distance reached 18.3 FPS, and native at 35 m reached 30.2 FPS. The final preset uses the shorter shadow distance and leaves upscaling selectable.
+
+```powershell
+godot_console.exe --path . --script res://tools/profile_render.gd
+godot_console.exe --path . --script res://tools/profile_render.gd -- --balanced
+```
+
+## Historical measurements
+
 These measurements predate the latest map expansion and audio/combat additions; they remain a historical baseline, not a new performance guarantee for the expanded map.
 
 Measured locally on Godot 4.7.2, Compatibility renderer, ANGLE / Intel HD Graphics Family (0x00000A16), at the actual window viewport **1028×720**. Debug runs, not exported release builds. Benchmarks run separately from the headless tests.

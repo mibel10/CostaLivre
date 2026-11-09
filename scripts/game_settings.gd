@@ -52,6 +52,8 @@ func load_settings() -> void:
 	texture_quality = video_int(config, "textures", mini(quality, 3), 0, 3)
 	shadow_quality = video_int(config, "shadows", [3,2,1,0,0][quality], 0, 3)
 	antialiasing = video_int(config, "aa", 0, 0, 3) if customized else 0
+	if antialiasing == 1:
+		antialiasing = 0 # Legacy FXAA setting; Compatibility cannot apply it.
 	draw_distance = video_int(config, "distance", quality, 0, 4)
 	detail_maps = config.get_value("video", "details", quality < 3) == true
 	upscaling = video_int(config, "upscaling", 2, 0, 4)
@@ -167,7 +169,6 @@ func apply() -> void:
 	apply_upscaling()
 	world.camera.far = FAR[draw_distance]
 	world.get_viewport().msaa_3d = Viewport.MSAA_4X if antialiasing == 3 else (Viewport.MSAA_2X if antialiasing == 2 else Viewport.MSAA_DISABLED)
-	# FXAA is unavailable in Compatibility. Old value 1 safely behaves as Off.
 	for mat in tracked:
 		apply_texture(mat)
 		mat.normal_enabled = tracked[mat] and detail_maps
@@ -178,7 +179,7 @@ func apply() -> void:
 	for child in world.get_children():
 		if child is DirectionalLight3D:
 			child.shadow_enabled = shadow_quality > 0
-			child.directional_shadow_max_distance = [0.0, 26.0, 45.0, 60.0][shadow_quality]
+			child.directional_shadow_max_distance = [0.0, 22.0, 29.0, 35.0][shadow_quality]
 			child.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
 		if child is WorldEnvironment:
 			child.environment.fog_enabled = quality < 3
@@ -242,7 +243,7 @@ func set_custom(key: String, value: int) -> void:
 	match key:
 		"textures": texture_quality=clampi(value,0,3)
 		"shadows": shadow_quality=clampi(value,0,3)
-		"aa": antialiasing=clampi(value,0,3)
+		"aa": antialiasing = 0 if value == 1 else clampi(value, 0, 3)
 		"distance": draw_distance=clampi(value,0,4)
 		"details": detail_maps=value==1
 	apply()
