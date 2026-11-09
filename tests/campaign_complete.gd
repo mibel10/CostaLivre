@@ -220,8 +220,15 @@ func finish_action(world: Node, car: Node) -> void:
 			world.active_car = null
 			world.player.position = spec.point
 			assert(a.interact_campaign())
-			a.tick_mission(float(spec.duration)+0.1)
-			assert(a.job == 15, "Waiting alone cannot win the defense")
+			for wave in range(int(spec.get("waves", 1)) - 1):
+				assert(a.contract_guards_alive() == 3, "Each wave brings three guards")
+				for guard in a.officers:
+					if guard.hp > 0 and int(guard.get_meta("mission_contract", -1)) == a.job:
+						guard.take_hit(1000)
+				a.tick_mission(float(spec.duration) / int(spec.get("waves", 1)))
+			assert(a.contract_guards_alive() == 3, "The final wave must arrive")
+			a.tick_mission(float(spec.duration) / int(spec.get("waves", 1)))
+			assert(a.job == 15, "Final wave must be defeated")
 			for guard in a.officers:
 				if int(guard.get_meta("mission_contract",-1)) == a.job: guard.take_hit(1000)
 			a.tick_mission(0.1)

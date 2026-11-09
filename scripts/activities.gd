@@ -16,7 +16,7 @@ const ACTION_JOBS := {
 	12: {"name":"Cerco no décimo","kind":"escape_file","story":"Pegue o arquivo no decimo andar, sobreviva a invasao e desca para despistar a policia.","reward":4800,"pickup":Vector3(-67,54,67),"exit":Vector3(-63,0,80),"time":240.0},
 	13: {"name":"Corrida pela vida","kind":"rescue","story":"Pegue o carro de atendimento da clinica, resgate o morador no morro e volte com o veiculo inteiro.","reward":4000,"model":8,"spawn":Vector3(63,0.3,38),"pickup":Vector3(714,9.9,4.5),"drop":Vector3(63,0,38),"min_hp":80,"time":210.0},
 	14: {"name":"Invasão ao estúdio","kind":"assault","story":"Entre no Estúdio Solar a pé, elimine os guardas, recupere os arquivos e saia do prédio.","reward":4000,"point":Vector3(147,0,58),"exit":Vector3(147,0,80),"guards":[Vector3(140,0.2,59),Vector3(154,0.2,59),Vector3(147,0.2,55)],"time":210.0},
-	15: {"name":"Último refúgio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 30 segundos e elimine os tres invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":30.0,"time":160.0},
+	15: {"name":"Último refúgio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 60 segundos e elimine quatro ondas de invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":60.0,"waves":4,"time":160.0},
 	16: {"name":"Caçada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0},
 	17: {"name":"Roubo de suprimentos","kind":"cargo","story":"Recolha tres caixas no supermercado, consiga um carro e leve a carga a oficina depois de despistar a policia.","reward":4200,"points":[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)],"drop":Vector3(-21,0,63),"time":220.0},
 	18: {"name":"Carga instável","kind":"drive","story":"Transporte a carga fragil entre os mercados. Colisoes e trancos destroem a mercadoria.","reward":4600,"model":8,"spawn":Vector3(798,0.3,-78.5),"points":[Vector3(882,0,-84),Vector3(882,0,84),Vector3(294,0,-78.5)],"fragile":true,"time":210.0},
@@ -1301,7 +1301,7 @@ func interact_campaign() -> bool:
 			stage = 1
 			spawn_action_guards()
 			world.raise_heat(40)
-			world.notify("Invasores chegando! Fique no refugio, resista e elimine os tres.")
+			world.notify("Invasores chegando! Fique no local e elimine os atacantes.")
 			return true
 		if spec.kind == "cargo" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
 			stage += 1
@@ -1512,7 +1512,15 @@ func tick_action_job(delta: float) -> void:
 				if distance > 30:
 					fail_job("Voce abandonou o refugio.")
 					return
-				if distance < 18: progress += delta
+				if distance < 18:
+					var previous_progress := progress
+					progress += delta
+					var waves := int(spec.get("waves", 1))
+					for wave in range(1, waves):
+						var wave_time: float = float(spec.duration) * wave / waves
+						if previous_progress < wave_time and progress >= wave_time:
+							spawn_action_guards()
+							world.notify("Onda %d/%d: invasores chegando!" % [wave + 1, waves])
 				if progress >= float(spec.duration) and contract_guards_alive() == 0: complete_job()
 		"precision":
 			if stage >= spec.points.size() and world.heat <= 0 and world.subject_position().distance_to(spec.exit) < 7: complete_job()
