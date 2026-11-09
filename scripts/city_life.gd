@@ -463,19 +463,10 @@ func begin_apartment_stair_chase() -> void:
 	world.notify("A policia invadiu o residencial. Suba, se esconda ou prepare-se para o confronto!")
 
 func refresh_room_visibility(subject: Vector3) -> void:
-	var inside_tower := -1
-	if world.active_car==null:
-		for index in [2,5]:
-			var local: Vector3=subject-PLACES[index]
-			if absf(local.x)<12.2 and absf(local.z)<11.7 and local.y>=-0.5 and local.y<(60.0 if index==2 else 48.0):
-				inside_tower=index
-				break
+	# The exterior shells are separate from these furnished rooms.
 	for room in rooms:
-		var offset: Vector3=room.position-subject
-		var near: bool=offset.x*offset.x+offset.z*offset.z<10000.0
-		if near and inside_tower>=0 and room.position.x==PLACES[inside_tower].x and room.position.z==PLACES[inside_tower].z:
-			near=absf(offset.y)<9.0
-		room.visible=near
+		var offset: Vector3 = room.position - subject
+		room.visible = absf(offset.y) < 9.0 and Vector2(offset.x, offset.z).length_squared() < 44.0 * 44.0
 
 func _process(delta: float) -> void:
 	if elevator_ui != null and world.activities.menu != "elevator":
