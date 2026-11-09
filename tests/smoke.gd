@@ -151,6 +151,7 @@ func run() -> void:
 	world.player.position = a.target_car.position + Vector3(2, 0, 0)
 	world.interact()
 	assert(world.active_car == a.target_car, "Marked supercar can be stolen")
+	await create_timer(0.4).timeout
 	a.target_car.position = a.GARAGE + Vector3.UP * 0.2
 	a.target_car.speed = 0
 	a.tick(0.1)
@@ -198,7 +199,7 @@ func run() -> void:
 	world.active_car = null
 	world.player.collision_layer = 2
 	world.player.visible = true
-	world.player.position = Vector3(130, 0, 16)
+	world.player.position = Vector3(126, 0, 16)
 	var target = world.spawn_car(Vector3(126, 0.2, 0), Color.RED)
 	await create_timer(0.4).timeout
 	await physics_frame

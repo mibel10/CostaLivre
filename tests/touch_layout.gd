@@ -15,13 +15,13 @@ func run() -> void:
 	assert(not touch.visible,"Desktop must not acquire mobile controls")
 	for name in touch.icons:
 		assert(touch.icons[name] != null,"Every action has a real icon texture")
+	touch.start_edit()
+	assert(paused)
 	var shoot: Rect2
 	for entry in touch.buttons():
 		assert(entry[0].size.x == entry[0].size.y)
 		if entry[2] == "shoot":
 			shoot = entry[0]
-	touch.start_edit()
-	assert(paused)
 	var down := InputEventScreenTouch.new()
 	down.index = 0
 	down.pressed = true
