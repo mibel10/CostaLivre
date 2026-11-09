@@ -17699,3 +17699,123 @@ pixel_size = 0.009
 cast_shadow = 0
 material_override = SubResource("SubsoloFaixas")
 multimesh = SubResource("SubsoloVagas")
+
+[node name="PortaoEsquerdoGrade0" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-3.95, 1.6, 1.0)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoGrade1" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-3.95, 1.6, 1.9)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoGrade2" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-3.95, 1.6, 2.8)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoGrade3" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-3.95, 1.6, 3.7)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoTravessa0" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-3.95, 0.2, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoTravessa1" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(-3.95, 3.0, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade0" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(3.95, 1.6, 1.0)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade1" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(3.95, 1.6, 1.9)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade2" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(3.95, 1.6, 2.8)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade3" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(3.95, 1.6, 3.7)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoTravessa0" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(3.95, 0.2, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoTravessa1" type="CSGBox3D" parent="PortariaMercado0"]
+position = Vector3(3.95, 3.0, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoGrade0" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-3.95, 1.6, 1.0)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoGrade1" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-3.95, 1.6, 1.9)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoGrade2" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-3.95, 1.6, 2.8)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoGrade3" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-3.95, 1.6, 3.7)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoTravessa0" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-3.95, 0.2, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoEsquerdoTravessa1" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(-3.95, 3.0, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade0" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(3.95, 1.6, 1.0)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade1" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(3.95, 1.6, 1.9)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade2" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(3.95, 1.6, 2.8)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoGrade3" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(3.95, 1.6, 3.7)
+size = Vector3(0.1, 3.2, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoTravessa0" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(3.95, 0.2, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
+
+[node name="PortaoDireitoTravessa1" type="CSGBox3D" parent="PortariaMercado1"]
+position = Vector3(3.95, 3.0, 2.35)
+size = Vector3(0.1, 0.12, 2.8)
+material = SubResource("Material_contato_arma")
