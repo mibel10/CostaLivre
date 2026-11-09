@@ -76,7 +76,25 @@ func run() -> void:
 	await create_timer(0.5).timeout
 	var client_id: int=client_api.get_unique_id()
 	assert(host.network.members[client_id].position.distance_to(client.player.position)<2)
+	var wrong_model: Node = client.car_by_id(1)
+	wrong_model.tier = 6
+	await create_timer(0.3).timeout
+	assert(not is_instance_valid(wrong_model) and client.car_by_id(1).tier == host.car_by_id(1).tier)
+	var loan: Node = host.spawn_car(Vector3(42, 0.3, 10), Color.BLUE, false, 4)
+	var loan_id: int = loan.net_id
+	await create_timer(0.3).timeout
+	var remote_loan: Node = client.car_by_id(loan_id)
+	client.player.position = remote_loan.position + Vector3.RIGHT * 2.5
+	client.interact()
+	await create_timer(0.4).timeout
+	assert(client.active_car == remote_loan)
+	host.activities.remove_car(loan)
+	await create_timer(0.3).timeout
+	assert(not is_instance_valid(remote_loan) and client.active_car == null and client.player.visible)
+	client.activities.bank.hacking = true
+	client.network.rules.mission_hacking_peer = client_id
 	client.network.disconnect_room()
+	assert(not client.activities.bank.hacking and client.network.rules.mission_hacking_peer == 0)
 	await create_timer(0.3).timeout
 	assert(host.network.members.size()==1)
 	assert(not is_instance_valid(previous_tag))

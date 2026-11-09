@@ -425,6 +425,19 @@ func disconnect_room() -> void:
 	last_hit.clear()
 	rules.sheets.clear()
 	rules.bus_riders.clear()
+	rules.mission_invites.clear()
+	rules.pending_mission = -1
+	rules.mission_offer_deadline = 0
+	rules.mission_offer_started = false
+	rules.mission_hacking_peer = 0
+	rules.bank_owner = 1
+	rules.last_actions.clear()
+	rules.visible_police.clear()
+	rules.robbery_worker = 0
+	world.activities.bank.hacking = false
+	world.activities.robbery_index = -1
+	world.activities.robbery_progress = 0.0
+	world.activities.clear_pedestrian_robbery()
 	code = ""
 
 func car_available(car: Node) -> bool:
@@ -599,10 +612,16 @@ func snapshot(data: Dictionary) -> void:
 	owners=data.owners
 	members=data.members
 	var present := {}
+	var local_cars := {}
+	for car in world.cars:
+		local_cars[car.net_id] = car
 	for state in data.cars:
 		var id := int(state.id)
 		present[id]=true
-		var car: Node3D=world.car_by_id(id)
+		var car: Node3D = local_cars.get(id)
+		if car != null and (car.tier != int(state.tier) or car.police != bool(state.police)):
+			discard_snapshot_car(car)
+			car = null
 		if car==null:
 			car=world.spawn_car(state.position,state.paint,state.police,int(state.tier))
 			car.net_id=id
@@ -628,11 +647,7 @@ func snapshot(data: Dictionary) -> void:
 		car.set_suspension(float(state.get("suspension",0)))
 	for car in world.cars.duplicate():
 		if not present.has(car.net_id):
-			if car == world.active_car and world.bus_passenger:
-				rules.receive_event("bus_exit", {"position": car.position + Vector3(3, 1, 0)})
-			world.cars.erase(car)
-			world.cops.erase(car)
-			car.queue_free()
+			discard_snapshot_car(car)
 	world.cops.clear()
 	for car in world.cars:
 		if car.police and car.police_phase in ["exit","pursuit"]:
@@ -668,6 +683,15 @@ func snapshot(data: Dictionary) -> void:
 		officer.collision_layer=0 if officer.hp<=0 else 4
 	rules.apply_state(data.game)
 	update_avatars(members)
+
+func discard_snapshot_car(car: Node3D) -> void:
+	if car == world.active_car:
+		var offset: Vector3 = world.vehicle_exit_offset(car)
+		var at: Vector3 = car.to_global(offset) if offset != Vector3.ZERO else car.position + Vector3.UP * 0.3
+		rules.receive_event("bus_exit" if world.bus_passenger else "spawn", {"position": at, "health": world.health})
+	world.cars.erase(car)
+	world.cops.erase(car)
+	car.queue_free()
 
 func update_avatars(states: Dictionary) -> void:
 	for id in avatars.keys():
