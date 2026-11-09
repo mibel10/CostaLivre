@@ -155,7 +155,7 @@ func pointer_select(point: Vector2) -> bool:
 	var at := point / hud.get_viewport_rect().size * Vector2(1280, 720)
 	var online: bool = world.network != null and world.network.active()
 	var mission_hack: bool = online and world.network.rules.local_mission_hacking()
-	if mission_hack or bank.local_hacking():
+	if mission_hack or (bank.local_hacking() and OS.has_feature("android")):
 		if hud.HACK_CLOSE.has_point(at):
 			if online:
 				world.network.rules.send_action("mission_cancel" if mission_hack else "cancel_hack")

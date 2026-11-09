@@ -198,14 +198,15 @@ func draw_hack(bank: Node3D) -> void:
 	panel(Rect2(350, 185, 580, 335), Color(0.025, 0.075, 0.10, 0.97))
 	text("BANCO COSTA / CONEXÃO SEGURA", Vector2(380, 227), 21, gold)
 	text("Circuito %d / 3     ·     Falhas %d / 3" % [bank.round_index + 1, bank.mistakes], Vector2(380, 259), 15, muted)
-	text("Memorize a sequência…" if bank.reveal_time > 0 else "Repita usando o teclado na tela", Vector2(380, 300), 19)
+	text("Memorize a sequência…" if bank.reveal_time > 0 else ("Repita usando o teclado na tela" if OS.has_feature("android") else "Repita usando as teclas 1 a 4 · ESC cancela"), Vector2(380, 300), 19)
 	for i in bank.pattern.size():
 		panel(Rect2(385 + i * 99, 327, 82, 70), Color("203e4b"))
 		var value := str(bank.pattern[i]) if bank.reveal_time > 0 else ("✓" if i < bank.entered else "?")
 		text(value, Vector2(414 + i * 99, 374), 32, gold if i < bank.entered else ink)
 	bar(Vector2(380, 426), 520, bank.round_time / 14, Color("8ddbb5"))
 	text("%ds   ·   3 circuitos liberam o painel do cofre" % ceili(bank.round_time), Vector2(380, 457), 14, muted)
-	draw_hack_keys(bank.reveal_time <= 0)
+	if OS.has_feature("android"):
+		draw_hack_keys(bank.reveal_time <= 0)
 
 func draw_mission_hack(rules: Node) -> void:
 	panel(Rect2(350,185,580,335),Color(0.025,0.075,0.10,0.97))
