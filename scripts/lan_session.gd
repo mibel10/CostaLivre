@@ -633,7 +633,7 @@ func apply_car(id: int,state: Dictionary) -> void:
 			car.position=at
 			car.heading=wrapf(float(heading_value), -PI, PI)
 			car.rotation.y=car.heading
-			var limit: float = car.Catalog.SPEEDS[car.tier] if car.tier == car.Catalog.BUS else 110.0
+			var limit: float = car.Catalog.SPEEDS[car.tier] if car.tier == car.Catalog.BUS else car.Catalog.SPEEDS[car.tier] + car.engine_upgrade
 			if car.tier == car.Catalog.SUPERCAR:
 				limit = car.Catalog.HOVER_SPEED if car.hovering else car.Catalog.SPEEDS[car.tier]
 			car.speed=0.0 if car.fuel <= 0.0 else clampf(float(speed_value),-20,limit)

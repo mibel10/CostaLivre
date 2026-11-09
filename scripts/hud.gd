@@ -102,7 +102,7 @@ func _draw() -> void:
 	minimap(Vector2(24, 210 if OS.has_feature("android") else 520), Vector2(164, 164))
 	bar(Vector2(24, 385 if OS.has_feature("android") else 692), 164, world.health / 100, Color("8ddbb5"))
 	if world.active_car != null:
-		text("%03d" % int(absf(world.active_car.speed) * 3.6), Vector2(1120, 659), 36)
+		text("%03d" % roundi(absf(world.active_car.speed) * 3.6), Vector2(1120, 659), 36)
 		text("km/h", Vector2(1200, 657), 13, muted)
 		text(world.active_car.model_name, Vector2(1120, 684), 14, muted)
 		text("Combustível %d%%" % roundi(world.active_car.fuel * 100.0), Vector2(1105, 706), 14, Color("ef9b70") if world.active_car.fuel <= 0.1 else muted)

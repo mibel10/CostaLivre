@@ -93,8 +93,6 @@ func gameplay_actions() -> Array[String]:
 		result.append("activity")
 	if car != null:
 		result.append("jump")
-		if car.tier not in [a.Catalog.BUS, a.Catalog.SUPERCAR]:
-			result.append("sprint")
 		return result
 	result.append_array(["weapon", "sprint", "crouch"])
 	if world.player.is_on_floor():
