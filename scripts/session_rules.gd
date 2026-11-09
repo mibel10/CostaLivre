@@ -628,7 +628,7 @@ func physics(delta: float) -> void:
 		a.robbery_progress=0
 		a.pedestrian_robbery_progress=0
 	if a.job>=0:
-		var actor := choose_actor(a.destination(),false,a.job in [0,2,3,8] or a.action_requires_car(),a.job>=24)
+		var actor := choose_actor(a.destination(),false,a.job in [0,2,3,8] or a.action_requires_car(),a.job>=24 or a.action_requires_foot())
 		if actor==0 and not is_dead(1) and a.job<24:
 			actor=1
 		if a.passenger_car >= 0:

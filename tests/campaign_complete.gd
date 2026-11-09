@@ -82,7 +82,7 @@ func run() -> void:
 				assert(a.job == 8, "Rescue needs an escape before delivery")
 				world.heat = 0
 				a.tick_mission(0.1)
-			20,21,22,23:
+			23:
 				world.active_car = null
 				for step in 3:
 					world.player.position = world.life.mission_position()
@@ -125,6 +125,10 @@ func finish_action(world: Node, car: Node) -> void:
 			a.target_car.speed = 0
 			for point in spec.points:
 				a.target_car.position = point
+				if bool(spec.get("escape",false)) and point == spec.points[-1]:
+					a.tick_mission(0.1)
+					assert(a.job >= 0, "Hot cargo cannot be delivered during pursuit")
+					world.heat = 0
 				a.tick_mission(0.1)
 		"rescue":
 			world.active_car = a.target_car if a.target_car != null else car
@@ -187,4 +191,21 @@ func finish_action(world: Node, car: Node) -> void:
 			assert(a.target_car.traffic and a.contract_guards_alive() == 3)
 			a.target_car.position = spec.drop
 			car.position = spec.drop+Vector3(4,0,0)
+			a.tick_mission(0.1)
+		"foot_race":
+			world.active_car = null
+			world.player.position = spec.points[0]
+			assert(a.interact_campaign())
+			for point in spec.points.slice(1):
+				world.player.position = point
+				a.tick_mission(0.1)
+		"breach":
+			world.active_car = null
+			for i in spec.points.size():
+				world.player.position = spec.points[i]
+				assert(not a.interact_campaign(), "Locked safe cannot be looted")
+				a.weapon_impact({"collider":world.get_node("ObjetivosCampanha/Alvo%d_%d" % [a.job,i])},spec.points[i],1)
+				assert(a.interact_campaign())
+			world.player.position = spec.drop
+			world.heat = 0
 			a.tick_mission(0.1)

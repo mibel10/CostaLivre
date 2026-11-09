@@ -13953,3 +13953,39 @@ visible = false
 material = SubResource("StandardMaterial3D_6b1f1")
 metadata/contract_job = 17
 metadata/contract_stage = 2
+
+[node name="Alvo22_0" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(441, 1.1, 112)
+size = Vector3(1.2, 2.2, 0.6)
+visible = false
+material = SubResource("Material_contato_arma")
+metadata/contract_job = 22
+metadata/contract_stage = 0
+
+[node name="Alvo22_1" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(483, 1.1, 112)
+size = Vector3(1.2, 2.2, 0.6)
+visible = false
+material = SubResource("Material_contato_arma")
+metadata/contract_job = 22
+metadata/contract_stage = 1
+
+[node name="Alvo22_2" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(525, 1.1, 112)
+size = Vector3(1.2, 2.2, 0.6)
+visible = false
+material = SubResource("Material_contato_arma")
+metadata/contract_job = 22
+metadata/contract_stage = 2
+
+[node name="PassagemBaixaFavela" type="CSGBox3D" parent="."]
+position = Vector3(382.75, 11.5, 18.5)
+size = Vector3(1.5, 0.18, 0.4)
+material = SubResource("Material_contato_arma")
+use_collision = true
+
+[node name="Aviso" type="Label3D" parent="PassagemBaixaFavela"]
+position = Vector3(0, 0.7, 0.25)
+text = "AGACHE / Z"
+font_size = 20
+pixel_size = 0.008

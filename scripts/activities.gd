@@ -17,7 +17,10 @@ const ACTION_JOBS := {
 	16: {"name":"Cacada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0},
 	17: {"name":"Roubo de suprimentos","kind":"cargo","story":"Recolha tres caixas no supermercado, consiga um carro e leve a carga a oficina depois de despistar a policia.","reward":4200,"points":[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)],"drop":Vector3(-21,0,63),"time":220.0},
 	18: {"name":"Carga instavel","kind":"drive","story":"Transporte a carga fragil entre os mercados. Colisoes e trancos destroem a mercadoria.","reward":4600,"model":8,"spawn":Vector3(798,0.3,-78.5),"points":[Vector3(882,0,-84),Vector3(882,0,84),Vector3(294,0,-78.5)],"fragile":true,"time":210.0},
-	19: {"name":"Comboio sob fogo","kind":"escort","story":"Aproxime-se do comboio e use F para partir. Siga o veiculo e proteja-o dos atiradores ate o destino.","reward":5200,"model":8,"spawn":Vector3(210,0.3,84),"track":[Vector3(210,0.3,84),Vector3(462,0.3,84),Vector3(462,0.3,126),Vector3(630,0.3,126)],"drop":Vector3(630,0,126),"guards":[Vector3(462,0.2,70),Vector3(462,0.2,110),Vector3(588,0.2,116)],"time":190.0}}
+	19: {"name":"Comboio sob fogo","kind":"escort","story":"Aproxime-se do comboio e use F para partir. Siga o veiculo e proteja-o dos atiradores ate o destino.","reward":5200,"model":8,"spawn":Vector3(210,0.3,84),"track":[Vector3(210,0.3,84),Vector3(462,0.3,84),Vector3(462,0.3,126),Vector3(630,0.3,126)],"drop":Vector3(630,0,126),"guards":[Vector3(462,0.2,70),Vector3(462,0.2,110),Vector3(588,0.2,116)],"time":190.0},
+	20: {"name":"Passagem dos becos","kind":"foot_race","story":"Va ao inicio do percurso e use F. Corra, role e agache na passagem baixa para cruzar a favela a pe.","reward":3600,"points":[Vector3(344,8.83,31),Vector3(359,9.9,31),Vector3(382.75,9.9,20),Vector3(382.75,9.9,16),Vector3(397,9.9,31),Vector3(420,7.4,31)],"race_time":45.0,"time":240.0},
+	21: {"name":"Carga quente","kind":"drive","story":"Leve a carga entre os mercados sob perseguicao. Passe pelos pontos e despiste antes da entrega final.","reward":5200,"model":8,"spawn":Vector3(294,0.3,-78.5),"points":[Vector3(294,0,126),Vector3(798,0,126),Vector3(798,0,-78.5)],"escape":true,"start_heat":80,"time":240.0},
+	22: {"name":"Cofres do leste","kind":"breach","story":"Atire nas fechaduras dos tres cofres, recolha os documentos e entregue-os na APEX depois de despistar.","reward":5400,"points":[Vector3(441,1.1,112),Vector3(483,1.1,112),Vector3(525,1.1,112)],"drop":Vector3(21,0,42),"time":200.0}}
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
@@ -838,7 +841,7 @@ func owns_weapon(index: int) -> bool:
 	return index < 2 or (rifle_owned if index == 2 else (shotgun_owned if index == 3 else smg_owned))
 
 func weapon_impact(hit: Dictionary, at: Vector3, selected: int) -> void:
-	if not hit.is_empty() and campaign_target_hit(hit.collider): return
+	if not hit.is_empty(): campaign_target_hit(hit.collider)
 	if selected not in [5,7]:
 		if not hit.is_empty() and hit.collider.has_method("take_hit"):
 			hit.collider.take_hit(DAMAGE[selected])
@@ -1009,6 +1012,10 @@ func _process(_delta: float) -> void:
 			var active: bool = job == int(target.get_meta("contract_job",-1)) and stage == int(target.get_meta("contract_stage",-1))
 			target.visible = active
 			if target.use_collision != active: target.use_collision = active
+			var opened: bool = active and progress >= 1 and ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "breach"
+			if not target.has_meta("opened") or bool(target.get_meta("opened")) != opened:
+				target.material = world.material(Color("80efac") if opened else Color("ffc45c"),true)
+				target.set_meta("opened",opened)
 	var informant: Node3D = world.get_node_or_null("InformanteCampanha") if world != null else null
 	if informant != null:
 		informant.visible = stage == 0 and (job == 8 or (ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "rescue"))
@@ -1144,6 +1151,17 @@ func interact_campaign() -> bool:
 			world.raise_heat(45)
 			world.notify("Comboio em movimento. Fique perto e proteja o veiculo dos atiradores!")
 			return true
+		if spec.kind == "foot_race" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.points[0]) < 3:
+			stage = 1
+			clock = float(spec.race_time)
+			world.notify("Percurso iniciado! Corra pelos pontos e agache sob o cano na viela.")
+			return true
+		if spec.kind == "breach" and stage < spec.points.size() and progress >= 1 and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
+			stage += 1
+			progress = 0
+			world.raise_heat(12)
+			world.notify("Documentos recolhidos. Abra o proximo cofre." if stage < spec.points.size() else "Documentos reunidos! Despiste e leve-os a APEX.")
+			return true
 		return false
 	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
 		passenger_car = world.active_car.net_id
@@ -1158,6 +1176,7 @@ func setup_action_job() -> void:
 	clock = float(spec.time)
 	shipment_integrity = 100.0
 	previous_mission_speed = 0.0
+	if float(spec.get("start_heat",0)) > 0: world.raise_heat(float(spec.start_heat))
 	if spec.has("model"):
 		target_car = world.spawn_car(spec.spawn,Color("fafafa") if spec.kind == "rescue" else Color("e5c86a"),false,int(spec.model))
 		target_car.owned = spec.kind != "intercept"
@@ -1169,6 +1188,9 @@ func setup_action_job() -> void:
 func action_requires_car() -> bool:
 	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()))
 
+func action_requires_foot() -> bool:
+	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "foot_race"
+
 func action_destination() -> Vector3:
 	var spec: Dictionary = ACTION_JOBS[job]
 	match str(spec.kind):
@@ -1179,6 +1201,8 @@ func action_destination() -> Vector3:
 				return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.pickup
 			var car: Node = world.car_by_id(passenger_car)
 			return car.position if car != null and world.active_car != car else spec.drop
+		"foot_race": return spec.points[mini(stage,spec.points.size()-1)]
+		"breach": return spec.points[stage] if stage < spec.points.size() else spec.drop
 		"cargo": return spec.points[stage] if stage < spec.points.size() else spec.drop
 		"escort": return target_car.position if is_instance_valid(target_car) else spec.drop
 		"defend": return spec.point
@@ -1195,12 +1219,15 @@ func action_objective() -> String:
 		"rescue":
 			text = "Busque o passageiro de carro / F para embarcar" if stage == 0 else "Leve o passageiro ao destino"
 			if stage == 0 and spec.has("model") and world.active_car != target_car: text = "Pegue o carro de atendimento marcado"
+		"foot_race": text = "F / Iniciar percurso a pe" if stage == 0 else "Percurso %d/%d / agache sob o cano" % [stage,spec.points.size()-1]
+		"breach": text = ("Cofre %d/%d / " % [stage+1,spec.points.size()] + ("F: recolher documentos" if progress >= 1 else "atire na fechadura")) if stage < spec.points.size() else "Despiste e entregue os documentos na APEX"
 		"cargo": text = "F / Recolha a caixa %d/%d" % [stage+1,spec.points.size()] if stage < spec.points.size() else "Despiste e entregue a carga de carro na oficina"
 		"escort": text = "F / Autorizar saida do comboio" if stage == 0 else "Proteja o comboio / veiculo %d%%" % roundi(target_car.hp/target_car.MAX_HP*100)
 		"defend": text = "F / Iniciar defesa no oitavo andar" if stage == 0 else "Resista %ds / invasores restantes: %d" % [maxi(0,ceili(float(spec.duration)-progress)),contract_guards_alive()]
 		"precision": text = "Atire no transmissor %d/%d / andar %d" % [stage+1,spec.points.size(),floori(spec.points[stage].y/6)+1] if stage < spec.points.size() else "Saia do estudio e despiste o alarme"
 		"escape_file": text = ["Pegue o arquivo no decimo andar / F","Desca e saia do predio cercado","Despiste a policia com o arquivo"][mini(stage,2)]
 		"intercept": text = ["Danifique o carro do mensageiro sem destrui-lo","Saia do carro e use F para recolher a maleta","Despiste e entregue a maleta"][mini(stage,2)]
+	if bool(spec.get("escape",false)) and stage == spec.points.size()-1 and world.heat > 0: text = "Despiste antes de entregar a carga"
 	if bool(spec.get("fragile",false)): text += " / carga %d%%" % maxi(0,roundi(shipment_integrity))
 	return "%s / %ds" % [text,ceili(clock)]
 
@@ -1222,13 +1249,22 @@ func tick_action_job(delta: float) -> void:
 					return
 			if not is_instance_valid(target_car) or target_car.hp <= float(spec.get("min_hp",0)):
 				fail_job("O veiculo do contrato ficou danificado demais.")
-			elif world.active_car == target_car and world.subject_position().distance_to(spec.points[stage]) < float(spec.get("radius",8)) and (stage < spec.points.size()-1 or stopped):
+			elif world.active_car == target_car and world.subject_position().distance_to(spec.points[stage]) < float(spec.get("radius",8)) and (stage < spec.points.size()-1 or stopped) and (stage < spec.points.size()-1 or not bool(spec.get("escape",false)) or world.heat <= 0):
 				stage += 1
 				if stage >= spec.points.size(): complete_job()
 		"rescue":
 			var car: Node = world.car_by_id(passenger_car)
 			if (spec.has("model") and (not is_instance_valid(target_car) or target_car.hp <= float(spec.get("min_hp",0)))) or (stage > 0 and (car == null or car.hp <= float(spec.get("min_hp",0)))): fail_job("O carro do passageiro ficou danificado demais.")
 			elif stage > 0 and world.active_car == car and stopped and world.subject_position().distance_to(spec.drop) < 6: complete_job()
+		"foot_race":
+			if stage > 0:
+				if world.active_car != null:
+					fail_job("O percurso deve ser feito a pe.")
+				elif world.player.position.distance_to(spec.points[stage]) < 2.5:
+					stage += 1
+					if stage >= spec.points.size(): complete_job()
+		"breach":
+			if stage >= spec.points.size() and world.heat <= 0 and world.subject_position().distance_to(spec.drop) < 7: complete_job()
 		"cargo":
 			if stage >= spec.points.size() and stopped and world.heat <= 0 and world.subject_position().distance_to(spec.drop) < 7: complete_job()
 		"escort":
@@ -1268,6 +1304,10 @@ func tick_action_job(delta: float) -> void:
 func action_prompt() -> String:
 	if not ACTION_JOBS.has(job): return ""
 	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind == "foot_race" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.points[0]) < 3:
+		return "F / Comecar percurso pelos becos"
+	if spec.kind == "breach" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
+		return "F / Recolher documentos" if progress >= 1 else "Atire na fechadura do cofre"
 	if spec.kind == "cargo" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
 		return "F / Recolher caixa de suprimentos"
 	if spec.kind == "escort" and stage == 0 and is_instance_valid(target_car) and world.subject_position().distance_to(target_car.position) < 10:
@@ -1287,6 +1327,11 @@ func action_prompt() -> String:
 func campaign_target_hit(target: Node) -> bool:
 	if not ACTION_JOBS.has(job) or int(target.get_meta("contract_job",-1)) != job or int(target.get_meta("contract_stage",-1)) != stage: return false
 	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind in ["precision","breach"]: hit_flash = 0.16
+	if spec.kind == "breach":
+		progress = 1
+		world.notify("Fechadura aberta. Aproxime-se e aperte F para recolher os documentos.")
+		return true
 	if spec.kind == "precision":
 		stage += 1
 		world.raise_heat(40 if stage >= spec.points.size() else 4)
