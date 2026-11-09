@@ -13498,3 +13498,55 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, -2.1)
 material_override = SubResource("StandardMaterial3D_iojyy")
 cast_shadow = 0
 mesh = SubResource("BoxMesh_6a7um")
+
+[node name="DetalhesClinica" type="Node3D" parent="Rooms/Room1"]
+
+[node name="FaixaEsquerda" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(-12.15, 1.05, 0)
+size = Vector3(0.08, 0.16, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="FaixaDireita" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(12.15, 1.05, 0)
+size = Vector3(0.08, 0.16, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="FaixaFundo" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(0, 1.05, -11.6)
+size = Vector3(23, 0.16, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="PainelRecepcao" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(-10.8, 2.15, 9.3)
+size = Vector3(0.08, 2.3, 3.2)
+material = SubResource("StandardMaterial3D_ficul")
+
+[node name="QuadroAvisos" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(10.8, 2.2, -5.4)
+size = Vector3(0.08, 1.8, 2.6)
+material = SubResource("StandardMaterial3D_xnqln")
+
+[node name="PainelMedicamentos" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(-10.8, 2.1, -8.8)
+size = Vector3(0.08, 2, 2.6)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="Luminaria1" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(-5, 5.6, 4)
+size = Vector3(3, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="Luminaria2" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(5, 5.6, 4)
+size = Vector3(3, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="Luminaria3" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(-5, 5.6, -5)
+size = Vector3(3, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="Luminaria4" type="CSGBox3D" parent="Rooms/Room1/DetalhesClinica"]
+position = Vector3(5, 5.6, -5)
+size = Vector3(3, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
