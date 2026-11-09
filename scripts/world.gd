@@ -55,6 +55,11 @@ var sight_timer := 0.0
 var last_seen := false
 var camera_check_timer := 0.0
 var camera_target := Vector3.ZERO
+var camera_focus_previous := Vector3.ZERO
+var camera_focus_current := Vector3.ZERO
+var camera_focus_interval := 1.0 / 60.0
+var camera_focus_elapsed := 0.0
+var camera_focus_ready := false
 var game_mode := "sandbox"
 var cutscene: Control
 var touch_controls: Control
@@ -803,6 +808,7 @@ func build_fuel_station(station_root: Node3D) -> void:
 func _physics_process(delta: float) -> void:
 	if not get_tree().paused:
 		tick_vehicle_entries(delta)
+		update_camera_focus_sample(delta)
 	if finished or get_tree().paused:
 		return
 	if engine_audio != null:
@@ -881,7 +887,7 @@ func _process(delta: float) -> void:
 		mouse_idle += delta
 		if active_car != null and absf(active_car.speed) > 4 and mouse_idle > 1.8:
 			camera_yaw = lerp_angle(camera_yaw, active_car.heading, delta * 2)
-		var focus := subject_position() + Vector3(0, 1.6, 0)
+		var focus := rendered_camera_focus(delta)
 		var distance := 9.5 if active_car != null else 6.5
 		var indoors: bool = active_car == null and (activities.bank.inside() or (life != null and life.inside_room(player.position)))
 		if indoors:
@@ -905,6 +911,24 @@ func _process(delta: float) -> void:
 	if hud_clock >= 0.05:
 		hud_clock = 0
 		hud.queue_redraw()
+
+func update_camera_focus_sample(delta: float) -> void:
+	var focus := subject_position() + Vector3(0, 1.6, 0)
+	if not camera_focus_ready or camera_focus_current.distance_to(focus) > 80.0:
+		camera_focus_previous = focus
+		camera_focus_current = focus
+		camera_focus_ready = true
+	else:
+		camera_focus_previous = camera_focus_current
+		camera_focus_current = focus
+	camera_focus_interval = maxf(delta, 0.001)
+	camera_focus_elapsed = 0.0
+
+func rendered_camera_focus(delta: float) -> Vector3:
+	if not camera_focus_ready:
+		return subject_position() + Vector3(0, 1.6, 0)
+	camera_focus_elapsed = minf(camera_focus_interval, camera_focus_elapsed + delta)
+	return camera_focus_previous.lerp(camera_focus_current, camera_focus_elapsed / camera_focus_interval)
 
 func finish(success: bool) -> void:
 	if network!=null and network.active():
