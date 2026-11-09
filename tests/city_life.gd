@@ -9,9 +9,16 @@ func run() -> void:
 	root.add_child(world)
 	world.start_mode("sandbox")
 	world.set_process(false)
-	assert(world.life.rooms.size() == 22 and world.life.people.size() == 103)
+	assert(world.life.rooms.size() == 22 and world.life.people.size() == 148)
 	assert(world.cars.filter(func(car): return car.traffic and car.position.x > 200).size() == 16)
 	assert(world.life.people.filter(func(person): return person.position.x > 200 and not person.stationary and not person.shopper).size() == 36)
+	var lobby_counts := {}
+	for person in world.life.people:
+		if person.has_meta("building_center"):
+			var center: Vector3 = person.get_meta("building_center")
+			lobby_counts[center] = int(lobby_counts.get(center,0))+1
+	assert(lobby_counts.size() == 17)
+	for count in lobby_counts.values(): assert(count == 3, "Three NPCs per large enterable building")
 	await physics_frame
 	for side in [-1, 1]:
 		for step in 5:
@@ -76,7 +83,7 @@ func run() -> void:
 	world.activities.tick_robbery(5.1)
 	Input.action_release("activity")
 	assert(world.cash == cash_before+1200 and world.activities.robbery_cooldowns[3] > 0)
-	print("PASS: walking pedestrians, animated roll, six accessible interiors, four interior contracts and four job pages")
+	print("PASS: walking pedestrians, animated roll, six accessible interiors, campaign contracts and four job pages")
 	world.queue_free()
 	await process_frame
 	await create_timer(0.2).timeout

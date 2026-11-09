@@ -87,6 +87,7 @@ func _ready() -> void:
 		contact.tint = Color("a6b19c")
 		add_child(contact)
 		contact.position = PLACES[i]+Vector3(1,0,5)
+		contact.set_meta("building_center",PLACES[i])
 		people.append(contact)
 	for store in 2:
 		var cx: float = [294,798][store]
@@ -112,6 +113,23 @@ func _ready() -> void:
 			shopper.position = shopper.route[i%shopper.route.size()]
 			shopper.point = (i+1)%shopper.route.size()
 			people.append(shopper)
+	var lobbies: Array = PLACES.duplicate()
+	for index in range(8,18):
+		lobbies.append(Vector3(-147+index*42,0,-105 if index == 12 else 105))
+	lobbies.append(HOME_BUILDING)
+	for index in lobbies.size():
+		# The six original buildings already have one service NPC each.
+		for slot in (2 if index < PLACES.size() else 3):
+			var resident := Pedestrian.new()
+			resident.name = "Predio%02dNPC%d" % [index,slot]
+			resident.world = world
+			resident.appearance_index = index+slot
+			resident.stationary = true
+			resident.set_meta("building_center",lobbies[index])
+			add_child(resident)
+			resident.position = lobbies[index]+[Vector3(-8,0,8),Vector3(8,0,6),Vector3(0,0,-7)][slot]
+			resident.model.rotation.y = [-PI/4,PI/3,PI][slot]
+			people.append(resident)
 
 func apartment_stair_route() -> Array[Vector3]:
 	var route: Array[Vector3]=[]

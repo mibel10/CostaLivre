@@ -62,6 +62,13 @@ func run() -> void:
 		car.police_phase = "parked"
 		car.speed = 0
 		car.velocity = Vector3.ZERO
+	assert(host.life.people.size() == 148 and client.life.people.size() == 148)
+	assert(host.life.get_node("Predio16NPC0").position == client.life.get_node("Predio16NPC0").position)
+	var resident_index: int = host.life.people.size()-1
+	host.life.people[resident_index].take_hit(10)
+	await wait_for(func(): return client.life.people[resident_index].hp == 50)
+	host.heat = 0
+	host.update_dispatch(0)
 	var theft: Dictionary=host.network.members[id].duplicate()
 	theft.car=1
 	theft.car_position=host.car_by_id(1).position
@@ -159,9 +166,13 @@ func run() -> void:
 	for round_index in 3:
 		host.activities.bank.reveal_time=0
 		var pattern: Array=host.activities.bank.pattern.duplicate()
-		for digit in pattern:
-			client.network.rules.send_action("digit",{"digit":digit})
+		for index in pattern.size():
+			client.network.rules.send_action("digit",{"digit":pattern[index]})
 			await create_timer(0.1).timeout
+			if index+1 < pattern.size():
+				await wait_for(func(): return host.activities.bank.entered == index+1)
+			else:
+				await wait_for(func(): return host.activities.bank.round_index > round_index or host.activities.bank.phase >= 2)
 	await wait_for(func(): return client.activities.bank.phase==2)
 	client.player.position=client.activities.bank.to_global(client.activities.bank.VAULT_PANEL)+Vector3(1,0.2,0)
 	await create_timer(0.3).timeout

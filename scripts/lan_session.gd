@@ -519,7 +519,7 @@ func _process(delta: float) -> void:
 			people.append([person.position,person.model.rotation.y,person.hp,person.robbed])
 		var officers: Array=[]
 		for officer in world.activities.officers:
-			officers.append([officer.position,officer.model.rotation.y,officer.hp])
+			officers.append([officer.position,officer.model.rotation.y,officer.hp,int(officer.get_meta("mission_contract",-1))])
 		var game: Dictionary=rules.export_state()
 		for id in members:
 			if rules.sheets.has(id):
@@ -611,6 +611,9 @@ func snapshot(data: Dictionary) -> void:
 		officer.position=data.officers[i][0]
 		officer.model.rotation.y=data.officers[i][1]
 		officer.hp=data.officers[i][2]
+		var contract: int = int(data.officers[i][3])
+		if contract >= 0: officer.set_meta("mission_contract",contract)
+		elif officer.has_meta("mission_contract"): officer.remove_meta("mission_contract")
 		officer.model.rotation.z=PI/2 if officer.hp<=0 else 0
 		officer.collision_layer=0 if officer.hp<=0 else 4
 	rules.apply_state(data.game)
