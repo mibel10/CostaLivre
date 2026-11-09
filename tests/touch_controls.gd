@@ -24,7 +24,11 @@ func run() -> void:
 	await process_frame
 	assert(not Input.is_action_pressed("shoot"))
 	world.activities.set_menu("jobs")
-	assert(touch.buttons().size() == 10, "Contracts have numeric and pagination controls")
+	var page_tap := InputEventScreenTouch.new()
+	page_tap.pressed = true
+	page_tap.position = world.hud.MENU_NEXT.get_center() * root.get_visible_rect().size / Vector2(1280, 720)
+	touch._input(page_tap)
+	assert(world.activities.job_page == 1, "Touching the next button changes the contracts page")
 	world.activities.set_menu("")
 	world.activities.weapon = 0
 	touch.action("weapon", true)

@@ -7,6 +7,24 @@ var muted := Color("a7b9bf")
 var gold := Color("ffd18a")
 var navy := Color(0.035, 0.085, 0.12, 0.82)
 var panel_styles := {}
+const CHOICE_MENUS := ["jobs", "guns", "heavy_guns", "cars", "garage_cars", "owned_cars", "garage", "credits"]
+const PAGE_MENUS := ["jobs", "cars", "garage_cars", "owned_cars"]
+const MENU_CLOSE := Rect2(762, 590, 156, 52)
+const MENU_PREVIOUS := Rect2(362, 590, 96, 52)
+const MENU_NEXT := Rect2(475, 590, 96, 52)
+const HACK_CLOSE := Rect2(778, 595, 136, 50)
+
+func choice_rect(index: int) -> Rect2:
+	var mobile := OS.has_feature("android")
+	return Rect2(362, 207 + index * (53 if mobile else 48), 556, 44 if mobile else 39)
+
+func hack_key_rect(index: int) -> Rect2:
+	var mobile := OS.has_feature("android")
+	return Rect2(365 + index * 142, 517, 118 if mobile else 100, 62 if mobile else 48)
+
+func draw_choice(rect: Rect2, value: String, size := 17) -> void:
+	panel(rect, Color("20343f"), 7)
+	text(value, rect.position + Vector2(16, (rect.size.y + size) * 0.5 - 2), size)
 
 const WEAPON_ICONS := [
 	[Vector2(9,14),Vector2(16,8),Vector2(35,8),Vector2(35,14),Vector2(46,14),Vector2(48,23),Vector2(43,31),Vector2(25,31),Vector2(18,26),Vector2(9,26)],
@@ -176,27 +194,33 @@ func draw_hack(bank: Node3D) -> void:
 	panel(Rect2(350, 185, 580, 335), Color(0.025, 0.075, 0.10, 0.97))
 	text("BANCO COSTA / CONEXÃO SEGURA", Vector2(380, 227), 21, gold)
 	text("Circuito %d / 3     ·     Falhas %d / 3" % [bank.round_index + 1, bank.mistakes], Vector2(380, 259), 15, muted)
-	text("Memorize a sequência…" if bank.reveal_time > 0 else "Repita usando as teclas 1, 2, 3 e 4", Vector2(380, 300), 19)
+	text("Memorize a sequência…" if bank.reveal_time > 0 else "Repita usando o teclado na tela", Vector2(380, 300), 19)
 	for i in bank.pattern.size():
 		panel(Rect2(385 + i * 99, 327, 82, 70), Color("203e4b"))
 		var value := str(bank.pattern[i]) if bank.reveal_time > 0 else ("✓" if i < bank.entered else "?")
 		text(value, Vector2(414 + i * 99, 374), 32, gold if i < bank.entered else ink)
 	bar(Vector2(380, 426), 520, bank.round_time / 14, Color("8ddbb5"))
 	text("%ds   ·   3 circuitos liberam o painel do cofre" % ceili(bank.round_time), Vector2(380, 457), 14, muted)
-	text("ESC · cancelar hack", Vector2(380, 492), 14, gold)
+	draw_hack_keys(bank.reveal_time <= 0)
 
 func draw_mission_hack(rules: Node) -> void:
 	panel(Rect2(350,185,580,335),Color(0.025,0.075,0.10,0.97))
 	text("TORRE COSTA / SERVIDOR PRINCIPAL",Vector2(380,227),21,gold)
 	text("Circuito %d / 3     ·     Falhas %d / 3" % [rules.mission_round+1,rules.mission_mistakes],Vector2(380,259),15,muted)
-	text("Memorize..." if rules.mission_reveal_time>0 else "Repita usando 1, 2, 3 e 4",Vector2(380,300),19)
+	text("Memorize..." if rules.mission_reveal_time>0 else "Repita usando o teclado na tela",Vector2(380,300),19)
 	for i in rules.mission_pattern.size():
 		panel(Rect2(385+i*99,327,82,70),Color("203e4b"))
 		var value:=str(rules.mission_pattern[i]) if rules.mission_reveal_time>0 else ("✓" if i<rules.mission_entered else "?")
 		text(value,Vector2(414+i*99,374),32,gold if i<rules.mission_entered else ink)
 	bar(Vector2(380,426),520,rules.mission_round_time/14.0,Color("8ddbb5"))
 	text("Terminal criptografado · agache para evitar a patrulha",Vector2(380,457),14,muted)
-	text("ESC · abandonar hack",Vector2(380,492),14,gold)
+	draw_hack_keys(rules.mission_reveal_time <= 0)
+
+func draw_hack_keys(ready: bool) -> void:
+	if ready:
+		for index in 4:
+			draw_choice(hack_key_rect(index), str(index + 1), 23)
+	draw_choice(HACK_CLOSE, "Cancelar")
 
 func draw_menu(a: Node) -> void:
 	backdrop()
@@ -205,12 +229,13 @@ func draw_menu(a: Node) -> void:
 		var lines := ["Car Concept · Eric Chadwick / Darmstadt Graphics Group GmbH, 2024", "Cesium Man · Cesium, 2017", "Modelos: CC BY 4.0 · creativecommons.org/licenses/by/4.0/", "Fonte: github.com/KhronosGroup/glTF-Sample-Assets", "Adaptados: escala, materiais, pintura, malhas agrupadas e animação.", "", "Texturas e céu HDR: Poly Haven · CC0 · polyhaven.com", "Asphalt 02 · Concrete Wall 006 · Kloppenheim 06 Pure Sky", "", "C / ESC · voltar"]
 		for i in lines.size():
 			text(lines[i], Vector2(270, 201 + i * 32), 16, gold if i == 9 else ink)
+		draw_choice(MENU_CLOSE, "Voltar")
 		return
-	panel(Rect2(330, 115, 620, 490))
+	panel(Rect2(330, 115, 620, 545))
 	var title: String = {"jobs": "CONTRATOS", "guns": "ARSENAL", "heavy_guns": "ARSENAL DA FAVELA", "cars": "APEX MOTORS", "garage": "OFICINA", "garage_cars": "VEICULOS / OFICINA", "owned_cars": "MEUS VEICULOS"}.get(a.menu, "")
 	text(title, Vector2(365, 166), 30, gold)
 	text("$ %d" % world.cash, Vector2(805, 165), 21, gold)
-	text("Escolha pelo número   ·   ESC para fechar", Vector2(366, 199), 14, muted)
+	text("Toque em uma opção" if OS.has_feature("android") else "Clique em uma opção", Vector2(366, 192), 15, muted)
 	var rows: Array = []
 	if a.menu == "jobs":
 		for i in range(a.job_page * 7, mini(a.job_count(), a.job_page * 7 + 7)):
@@ -229,21 +254,15 @@ func draw_menu(a: Node) -> void:
 		for index in range(a.car_page*3,mini(a.CAR_PRICES.size(),a.car_page*3+3)):
 			rows.append("%s   /   %d km/h   /   $%d" % [a.Catalog.NAMES[index+1],roundi(a.Catalog.SPEEDS[index+1]*3.6),a.CAR_PRICES[index]])
 	for i in rows.size():
-		panel(Rect2(362, 218 + i * 43, 556, 36), Color("20343f"), 5)
-		text(str(i + 1), Vector2(376, 243 + i * 43), 18, gold)
-		text(rows[i], Vector2(410, 242 + i * 43), 16)
-	if a.menu == "jobs":
-		text("Página %d/%d · setas esquerda/direita para trocar · números para escolher" % [a.job_page + 1,ceili(a.job_count()/7.0)], Vector2(366, 555), 12, muted)
-	elif a.menu == "owned_cars":
-		text("Setas: paginas / 1-3: retirar / mantenha a vaga livre",Vector2(366,555),14,muted)
-	elif a.menu in ["cars","garage_cars"]:
-		text("Pagina %d/3  /  setas: trocar  /  1-3: comprar" % (a.car_page+1),Vector2(366,555),14,muted)
-	elif world.toast_time > 0 and (world.toast.begins_with("Dinheiro") or world.toast.begins_with("Libere")):
-		text(world.toast, Vector2(366, 550), 12, gold)
-	elif a.menu in ["guns","heavy_guns"]:
-		text("1–5 · comprar/equipar     R · recarregar     Q · roda de armas", Vector2(366, 555), 13, muted)
-	else:
-		text("Carros comprados não aumentam seu nível de busca.", Vector2(366, 555), 13, muted)
+		draw_choice(choice_rect(i), rows[i], 20 if OS.has_feature("android") else 17)
+	if a.menu in PAGE_MENUS:
+		draw_choice(MENU_PREVIOUS, "‹  Anterior", 14)
+		draw_choice(MENU_NEXT, "Próxima  ›", 14)
+		var page: int = a.job_page if a.menu == "jobs" else a.car_page
+		text("Página %d" % (page + 1), Vector2(597, 622), 15, muted)
+	if world.toast_time > 0 and (world.toast.begins_with("Dinheiro") or world.toast.begins_with("Libere")):
+		text(world.toast, Vector2(366, 575), 14, gold)
+	draw_choice(MENU_CLOSE, "Voltar")
 
 func star(center: Vector2, color: Color) -> void:
 	var points := PackedVector2Array()

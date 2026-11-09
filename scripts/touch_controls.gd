@@ -54,15 +54,6 @@ func base_buttons() -> Array:
 		return []
 	if state == "death":
 		return [[Rect2(510,570,260,70),"RECOMEÇAR","restart"]]
-	if state in ["jobs","guns","heavy_guns","cars","garage_cars","owned_cars","garage","hack","mission_hack","credits"]:
-		var rows: Array = [[Rect2(1090,630,160,65),"VOLTAR","pause"]]
-		var count := 4 if state in ["hack","mission_hack","heavy_guns"] else (7 if state == "jobs" else (5 if state in ["guns","garage"] else (0 if state == "credits" else 3)))
-		for i in count:
-			rows.append([Rect2(40+i*140,635,125,60),str(i+1),str(i+1)])
-		if state in ["jobs","cars","garage_cars","owned_cars"]:
-			rows.append([Rect2(40,550,125,60),"<","previous"])
-			rows.append([Rect2(1100,550,125,60),">","next"])
-		return rows
 	if state != "":
 		return [] # Native pause/menu controls use Android touch-to-mouse input.
 	return [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
@@ -78,12 +69,6 @@ func action(name: String, pressed: bool) -> void:
 	if name == "roll":
 		if pressed:
 			world.player.start_roll()
-		return
-	if name.is_valid_int() or name in ["previous","next"]:
-		var key := InputEventKey.new()
-		key.physical_keycode = KEY_LEFT if name == "previous" else (KEY_RIGHT if name == "next" else KEY_1+name.to_int()-1)
-		key.pressed = pressed
-		Input.parse_input_event(key)
 		return
 	var event := InputEventAction.new()
 	event.action = name
@@ -105,6 +90,9 @@ func _input(event: InputEvent) -> void:
 			return
 		if context() == "cutscene":
 			world.cutscene.finish()
+			get_viewport().set_input_as_handled()
+			return
+		if world.activities.pointer_select(event.position):
 			get_viewport().set_input_as_handled()
 			return
 		if context() == "weapon_wheel":

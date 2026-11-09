@@ -94,6 +94,7 @@ var game_mode := "sandbox"
 var campaign_index := 0
 var campaign_path := "user://campaign.cfg"
 var campaign_save_path := "user://campaign_save.cfg"
+var hack_pointer := false
 
 func _ready() -> void:
 	if JOBS.size()==17:
@@ -137,7 +138,62 @@ func set_menu(value: String) -> void:
 	if world.pause_menu != null:
 		world.pause_menu.open_for(value)
 
+func turn_menu_page(step: int) -> void:
+	if menu == "jobs":
+		job_page = posmod(job_page + step, maxi(1, ceili(job_count() / 7.0)))
+	else:
+		var count := purchased_cars.size() if menu == "owned_cars" else CAR_PRICES.size()
+		car_page = posmod(car_page + step, maxi(1, ceili(count / 3.0)))
+	world.hud.queue_redraw()
+
+func pointer_select(point: Vector2) -> bool:
+	var hud: Control = world.hud
+	var at := point / hud.get_viewport_rect().size * Vector2(1280, 720)
+	var online: bool = world.network != null and world.network.active()
+	var mission_hack: bool = online and world.network.rules.local_mission_hacking()
+	if mission_hack or bank.local_hacking():
+		if hud.HACK_CLOSE.has_point(at):
+			if online:
+				world.network.rules.send_action("mission_cancel" if mission_hack else "cancel_hack")
+			else:
+				bank.hacking = false
+		else:
+			for index in 4:
+				if hud.hack_key_rect(index).has_point(at):
+					if online:
+						world.network.rules.send_action("mission_digit" if mission_hack else "digit", {"digit": index + 1})
+					else:
+						bank.enter_digit(index + 1)
+					break
+		return true
+	if menu not in hud.CHOICE_MENUS:
+		return false
+	if hud.MENU_CLOSE.has_point(at):
+		set_menu("")
+	elif menu in hud.PAGE_MENUS and hud.MENU_PREVIOUS.has_point(at):
+		turn_menu_page(-1)
+	elif menu in hud.PAGE_MENUS and hud.MENU_NEXT.has_point(at):
+		turn_menu_page(1)
+	elif menu != "credits":
+		var count := 7 if menu == "jobs" else (5 if menu in ["guns", "garage"] else (4 if menu == "heavy_guns" else 3))
+		for choice in count:
+			if not hud.choice_rect(choice).has_point(at):
+				continue
+			if menu == "jobs":
+				var index := choice + job_page * 7
+				if index < job_count():
+					set_menu("")
+					start_job(index)
+			elif menu == "owned_cars" and choice + car_page * 3 >= purchased_cars.size():
+				break
+			else:
+				buy(choice)
+			break
+	return true
+
 func handle_input(event: InputEvent) -> bool:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and pointer_select(event.position):
+		return true
 	if world.network!=null and world.network.active() and world.network.rules.local_mission_hacking():
 		if event.is_action_pressed("pause"):
 			world.network.rules.send_action("mission_cancel",{})
@@ -160,24 +216,11 @@ func handle_input(event: InputEvent) -> bool:
 		set_menu("" if menu == "credits" else "credits")
 		return true
 	if menu != "":
-		if menu in ["cars","garage_cars","owned_cars"] and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT,KEY_LEFT]:
-			car_page = posmod(car_page+(1 if event.physical_keycode == KEY_RIGHT else -1),maxi(1,ceili(purchased_cars.size()/3.0)) if menu == "owned_cars" else ceili(CAR_PRICES.size()/3.0))
-			world.hud.queue_redraw()
-			return true
-		if menu == "jobs" and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT, KEY_LEFT]:
-			var pages := ceili(job_count()/7.0)
-			job_page = posmod(job_page + (1 if event.physical_keycode == KEY_RIGHT else -1),pages)
-			world.hud.queue_redraw()
+		if menu in world.hud.PAGE_MENUS and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode in [KEY_RIGHT, KEY_LEFT]:
+			turn_menu_page(1 if event.physical_keycode == KEY_RIGHT else -1)
 			return true
 		if event.is_action_pressed("pause") or event.is_action_pressed("jobs") or event.is_action_pressed("map"):
 			set_menu("")
-		elif event is InputEventKey and event.pressed and not event.echo:
-			var choice: int = event.physical_keycode - KEY_1
-			if menu == "jobs" and choice >= 0 and choice < 7 and choice + job_page * 7 < job_count():
-				set_menu("")
-				start_job(choice + job_page * 7)
-			elif choice >= 0 and choice < (5 if menu in ["guns","garage"] else (4 if menu == "heavy_guns" else 3)):
-				buy(choice)
 		return true
 	if world.get_tree().paused or world.finished:
 		return false
@@ -1027,6 +1070,10 @@ func tick_supply() -> void:
 		world.play_cutscene("CONTATO CONFIRMADO", "Contato, abaixando a arma: Foi mal. Estava esperando voce. Pode deixar a carga aqui.")
 
 func _process(_delta: float) -> void:
+	var show_hack_pointer: bool = bank.local_hacking() or (world.network != null and world.network.active() and world.network.rules.local_mission_hacking())
+	if hack_pointer != show_hack_pointer:
+		hack_pointer = show_hack_pointer
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if hack_pointer or menu != "" else Input.MOUSE_MODE_CAPTURED
 	var objects: Node = world.get_node_or_null("ObjetivosCampanha") if world != null else null
 	if objects != null:
 		for target in objects.get_children():
