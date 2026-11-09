@@ -13989,3 +13989,11 @@ position = Vector3(0, 0.7, 0.25)
 text = "AGACHE / Z"
 font_size = 20
 pixel_size = 0.008
+
+[node name="Maleta23" type="CSGBox3D" parent="ObjetivosCampanha"]
+position = Vector3(567, 0.5, 112)
+size = Vector3(0.8, 1, 0.5)
+visible = false
+material = SubResource("Material_contato_arma")
+metadata/contract_job = 23
+metadata/contract_stage = 0

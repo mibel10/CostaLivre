@@ -634,7 +634,7 @@ func physics(delta: float) -> void:
 		if a.passenger_car >= 0:
 			for id in participants():
 				if int(network.members[id].get("car",-1)) == a.passenger_car: actor = id
-		if a.job==2 or (a.ACTION_JOBS.has(a.job) and a.ACTION_JOBS[a.job].kind == "drive"):
+		if a.job==2 or (a.ACTION_JOBS.has(a.job) and a.ACTION_JOBS[a.job].kind in ["drive","getaway"]):
 			for id in participants():
 				if a.target_car!=null and int(network.members[id].get("car",-1))==a.target_car.net_id:
 					actor=id

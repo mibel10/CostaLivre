@@ -82,13 +82,6 @@ func run() -> void:
 				assert(a.job == 8, "Rescue needs an escape before delivery")
 				world.heat = 0
 				a.tick_mission(0.1)
-			23:
-				world.active_car = null
-				for step in 3:
-					world.player.position = world.life.mission_position()
-					Input.action_press("activity")
-					world.life.tick_tasks(world.life.BUILDING_TASK_DURATION+0.1)
-					Input.action_release("activity")
 		assert(a.job == -1 and a.campaign_index == chapter+1,"Objective must complete and save next chapter")
 		print("CHAPTER PASS ",chapter+1)
 		world.cutscene.finish()
@@ -209,3 +202,17 @@ func finish_action(world: Node, car: Node) -> void:
 			world.player.position = spec.drop
 			world.heat = 0
 			a.tick_mission(0.1)
+		"getaway":
+			world.active_car = null
+			world.player.position = spec.pickup
+			assert(a.interact_campaign())
+			assert(world.heat >= 100)
+			world.active_car = a.target_car
+			a.target_car.speed = 0
+			for point in spec.points:
+				a.target_car.position = point
+				if point == spec.points[-1]:
+					a.tick_mission(0.1)
+					assert(a.job == 23, "Final getaway needs an escape before entering the garage")
+					world.heat = 0
+				a.tick_mission(0.1)

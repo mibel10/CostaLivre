@@ -8,19 +8,20 @@ const CAMPAIGN_LENGTH := 24
 const ACTION_JOBS := {
 	7: {"name":"Fuga de teste","kind":"drive","story":"Teste o Aurora X no circuito e devolva-o inteiro a oficina.","reward":3000,"model":3,"spawn":Vector3(-105,0.3,-5),"points":[Vector3(-126,0,-84),Vector3(84,0,-84),Vector3(84,0,84),Vector3(-21,0,63)],"time":120.0,"min_hp":80},
 	9: {"name":"Resgate na avenida","kind":"rescue","story":"Busque o ferido na avenida e leve-o de carro a Clinica Costa antes do tempo acabar.","reward":3200,"pickup":Vector3(168,0,-84),"drop":Vector3(63,0,38),"time":150.0},
-	10: {"name":"Interceptacao na praia","kind":"intercept","story":"Pare o carro do mensageiro sem destrui-lo, recolha a maleta a pe e fuja ate o mercado.","reward":3800,"model":1,"spawn":Vector3(-126,0.3,-84),"track":[Vector3(-126,0.3,-84),Vector3(84,0.3,-84),Vector3(84,0.3,84),Vector3(-126,0.3,84)],"drop":Vector3(105,0,-49),"time":220.0},
+	10: {"name":"Interceptação na praia","kind":"intercept","story":"Pare o carro do mensageiro sem destrui-lo, recolha a maleta a pe e fuja ate o mercado.","reward":3800,"model":1,"spawn":Vector3(-126,0.3,-84),"track":[Vector3(-126,0.3,-84),Vector3(84,0.3,-84),Vector3(84,0.3,84),Vector3(-126,0.3,84)],"drop":Vector3(105,0,-49),"time":220.0},
 	11: {"name":"Sinal pirata","kind":"precision","story":"Derrube os tres transmissores nos andares 3, 5 e 7 do estudio. Saia e despiste o alarme.","reward":4200,"points":[Vector3(143,13.4,67),Vector3(151,25.4,64),Vector3(147,37.4,57)],"exit":Vector3(147,0,84),"time":220.0},
-	12: {"name":"Cerco no decimo","kind":"escape_file","story":"Pegue o arquivo no decimo andar, sobreviva a invasao e desca para despistar a policia.","reward":4800,"pickup":Vector3(-67,54,67),"exit":Vector3(-63,0,80),"time":240.0},
+	12: {"name":"Cerco no décimo","kind":"escape_file","story":"Pegue o arquivo no decimo andar, sobreviva a invasao e desca para despistar a policia.","reward":4800,"pickup":Vector3(-67,54,67),"exit":Vector3(-63,0,80),"time":240.0},
 	13: {"name":"Corrida pela vida","kind":"rescue","story":"Pegue o carro de atendimento da clinica, resgate o morador no morro e volte com o veiculo inteiro.","reward":4000,"model":8,"spawn":Vector3(63,0.3,38),"pickup":Vector3(714,9.9,4.5),"drop":Vector3(63,0,38),"min_hp":80,"time":210.0},
 	14: {"name":"Becos sem freio","kind":"drive","story":"Pegue a moto e cruze as vielas da favela antes do tempo acabar. Os pontos estreitos exigem controle.","reward":3400,"model":9,"spawn":Vector3(378,10.2,4.5),"points":[Vector3(382.75,9.9,14),Vector3(382.75,9.9,20),Vector3(397,9.9,31),Vector3(420,7.4,31)],"radius":2.5,"time":100.0},
-	15: {"name":"Ultimo refugio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 30 segundos e elimine os tres invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":30.0,"time":160.0},
-	16: {"name":"Cacada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0},
+	15: {"name":"Último refúgio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 30 segundos e elimine os tres invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":30.0,"time":160.0},
+	16: {"name":"Caçada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0},
 	17: {"name":"Roubo de suprimentos","kind":"cargo","story":"Recolha tres caixas no supermercado, consiga um carro e leve a carga a oficina depois de despistar a policia.","reward":4200,"points":[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)],"drop":Vector3(-21,0,63),"time":220.0},
-	18: {"name":"Carga instavel","kind":"drive","story":"Transporte a carga fragil entre os mercados. Colisoes e trancos destroem a mercadoria.","reward":4600,"model":8,"spawn":Vector3(798,0.3,-78.5),"points":[Vector3(882,0,-84),Vector3(882,0,84),Vector3(294,0,-78.5)],"fragile":true,"time":210.0},
+	18: {"name":"Carga instável","kind":"drive","story":"Transporte a carga fragil entre os mercados. Colisoes e trancos destroem a mercadoria.","reward":4600,"model":8,"spawn":Vector3(798,0.3,-78.5),"points":[Vector3(882,0,-84),Vector3(882,0,84),Vector3(294,0,-78.5)],"fragile":true,"time":210.0},
 	19: {"name":"Comboio sob fogo","kind":"escort","story":"Aproxime-se do comboio e use F para partir. Siga o veiculo e proteja-o dos atiradores ate o destino.","reward":5200,"model":8,"spawn":Vector3(210,0.3,84),"track":[Vector3(210,0.3,84),Vector3(462,0.3,84),Vector3(462,0.3,126),Vector3(630,0.3,126)],"drop":Vector3(630,0,126),"guards":[Vector3(462,0.2,70),Vector3(462,0.2,110),Vector3(588,0.2,116)],"time":190.0},
 	20: {"name":"Passagem dos becos","kind":"foot_race","story":"Va ao inicio do percurso e use F. Corra, role e agache na passagem baixa para cruzar a favela a pe.","reward":3600,"points":[Vector3(344,8.83,31),Vector3(359,9.9,31),Vector3(382.75,9.9,20),Vector3(382.75,9.9,16),Vector3(397,9.9,31),Vector3(420,7.4,31)],"race_time":45.0,"time":240.0},
 	21: {"name":"Carga quente","kind":"drive","story":"Leve a carga entre os mercados sob perseguicao. Passe pelos pontos e despiste antes da entrega final.","reward":5200,"model":8,"spawn":Vector3(294,0.3,-78.5),"points":[Vector3(294,0,126),Vector3(798,0,126),Vector3(798,0,-78.5)],"escape":true,"start_heat":80,"time":240.0},
-	22: {"name":"Cofres do leste","kind":"breach","story":"Atire nas fechaduras dos tres cofres, recolha os documentos e entregue-os na APEX depois de despistar.","reward":5400,"points":[Vector3(441,1.1,112),Vector3(483,1.1,112),Vector3(525,1.1,112)],"drop":Vector3(21,0,42),"time":200.0}}
+	22: {"name":"Cofres do leste","kind":"breach","story":"Atire nas fechaduras dos tres cofres, recolha os documentos e entregue-os na APEX depois de despistar.","reward":5400,"points":[Vector3(441,1.1,112),Vector3(483,1.1,112),Vector3(525,1.1,112)],"drop":Vector3(21,0,42),"time":200.0},
+	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e cruze a cidade sob cinco estrelas. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0}}
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
@@ -416,7 +417,7 @@ func start_job(index: int) -> void:
 	stage = 0
 	clock = (360.0 if job >= 24 else ((180.0 if job == 8 else 100.0) if job >= 7 else (95.0 if job == 3 else 0.0)))
 	progress = 0
-	if ACTION_JOBS.has(job): setup_action_job()
+	if ACTION_JOBS.has(job) and not setup_action_job(): return
 	if job == 2:
 		target_car = world.spawn_car(Vector3(-84, 0.2, 42), CAR_COLORS[1], false, 2)
 	elif job == 4:
@@ -1162,6 +1163,12 @@ func interact_campaign() -> bool:
 			world.raise_heat(12)
 			world.notify("Documentos recolhidos. Abra o proximo cofre." if stage < spec.points.size() else "Documentos reunidos! Despiste e leve-os a APEX.")
 			return true
+		if spec.kind == "getaway" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
+			stage = 1
+			spawn_action_guards()
+			world.raise_heat(100)
+			world.notify("Maleta em maos! Pegue o Aurora X marcado, passe pelos pontos e despiste antes de entrar na garagem.")
+			return true
 		return false
 	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
 		passenger_car = world.active_car.net_id
@@ -1171,22 +1178,27 @@ func interact_campaign() -> bool:
 		return true
 	return false
 
-func setup_action_job() -> void:
+func setup_action_job() -> bool:
 	var spec: Dictionary = ACTION_JOBS[job]
 	clock = float(spec.time)
 	shipment_integrity = 100.0
 	previous_mission_speed = 0.0
 	if float(spec.get("start_heat",0)) > 0: world.raise_heat(float(spec.start_heat))
 	if spec.has("model"):
-		target_car = world.spawn_car(spec.spawn,Color("fafafa") if spec.kind == "rescue" else Color("e5c86a"),false,int(spec.model))
-		target_car.owned = spec.kind != "intercept"
+		var at := free_mission_car_spawn(spec.spawn,int(spec.model))
+		if not at.is_finite():
+			fail_job("A vaga do veiculo esta ocupada. Libere o local e tente novamente.")
+			return false
+		target_car = world.spawn_car(at,Color("fafafa") if spec.kind == "rescue" else Color("e5c86a"),false,int(spec.model))
+		target_car.owned = spec.kind not in ["intercept","getaway"]
 		target_car.set_meta("mission_loan",true)
 		if spec.kind == "intercept":
 			target_car.traffic = true
 			target_car.route.assign(spec.track)
+	return true
 
 func action_requires_car() -> bool:
-	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()))
+	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()) or (ACTION_JOBS[job].kind == "getaway" and stage > 0))
 
 func action_requires_foot() -> bool:
 	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "foot_race"
@@ -1194,6 +1206,9 @@ func action_requires_foot() -> bool:
 func action_destination() -> Vector3:
 	var spec: Dictionary = ACTION_JOBS[job]
 	match str(spec.kind):
+		"getaway":
+			if stage == 0: return spec.pickup
+			return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.points[mini(stage-1,spec.points.size()-1)]
 		"drive":
 			return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.points[mini(stage,spec.points.size()-1)]
 		"rescue":
@@ -1215,6 +1230,9 @@ func action_objective() -> String:
 	var spec: Dictionary = ACTION_JOBS[job]
 	var text := ""
 	match str(spec.kind):
+		"getaway":
+			text = "F / Roubar a maleta no escritorio" if stage == 0 else ("Pegue o Aurora X marcado" if world.active_car != target_car else "Fuga %d/%d / leve a maleta a garagem" % [stage,spec.points.size()])
+			if stage == spec.points.size() and world.heat > 0: text = "Despiste as cinco estrelas antes da entrega final"
 		"drive": text = "Pegue o veiculo marcado" if world.active_car != target_car else "Circuito %d/%d / preserve o carro" % [stage+1,spec.points.size()]
 		"rescue":
 			text = "Busque o passageiro de carro / F para embarcar" if stage == 0 else "Leve o passageiro ao destino"
@@ -1239,6 +1257,13 @@ func tick_action_job(delta: float) -> void:
 		return
 	var stopped: bool = world.active_car != null and absf(world.active_car.speed) < 3
 	match str(spec.kind):
+		"getaway":
+			if not is_instance_valid(target_car) or target_car.hp <= 0:
+				fail_job("O carro da fuga foi destruido.")
+			elif stage > 0 and world.active_car == target_car and world.subject_position().distance_to(spec.points[stage-1]) < 8:
+				if stage < spec.points.size() or (stopped and world.heat <= 0):
+					stage += 1
+					if stage > spec.points.size(): complete_job()
 		"drive":
 			if bool(spec.get("fragile",false)) and is_instance_valid(target_car):
 				var shock: float = absf(target_car.speed-previous_mission_speed)
@@ -1304,6 +1329,8 @@ func tick_action_job(delta: float) -> void:
 func action_prompt() -> String:
 	if not ACTION_JOBS.has(job): return ""
 	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind == "getaway" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
+		return "F / Roubar maleta e iniciar a fuga"
 	if spec.kind == "foot_race" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.points[0]) < 3:
 		return "F / Comecar percurso pelos becos"
 	if spec.kind == "breach" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
@@ -1351,3 +1378,15 @@ func spawn_action_guards() -> void:
 
 func contract_guards_alive() -> int:
 	return officers.filter(func(guard): return is_instance_valid(guard) and int(guard.get_meta("mission_contract",-1)) == job and guard.hp > 0).size()
+
+func free_mission_car_spawn(base: Vector3, model: int) -> Vector3:
+	var query := PhysicsShapeQueryParameters3D.new()
+	var box := BoxShape3D.new()
+	box.size = Catalog.SIZES[model]+Vector3(0.2,0,0.2)
+	query.shape = box
+	query.collision_mask = 7
+	for offset in [Vector3.ZERO,Vector3(0,0,6),Vector3(6,0,0),Vector3(-6,0,0),Vector3(0,0,-6)]:
+		var at: Vector3 = base+offset
+		query.transform = Transform3D(Basis.IDENTITY,at+Vector3.UP*box.size.y/2)
+		if world.get_world_3d().direct_space_state.intersect_shape(query,1).is_empty(): return at
+	return Vector3.INF
