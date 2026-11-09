@@ -291,6 +291,7 @@ func start_new_campaign() -> void:
 		return
 	if is_instance_valid(menu_music):
 		menu_music.stop()
+	world.activities.set_menu("")
 	world.game_mode = "campaign"
 	world.activities.game_mode = "campaign"
 	world.activities.new_campaign()
