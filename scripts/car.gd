@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 const Catalog = preload("res://scripts/vehicle_catalog.gd")
+const HumanVisual = preload("res://scripts/human_visual.gd")
 
 var world: Node3D
 var net_id := -1
@@ -33,6 +34,7 @@ var engine_upgrade := 0.0
 var suspension_height := 0.0
 var intact_materials := {}
 var rider: Node3D
+var rider_outfit := -1
 var wreck_timer := -1.0
 var exploded := false
 var despawn_timer := -1.0
@@ -63,10 +65,14 @@ func _physics_process(delta: float) -> void:
 		var owner_id: int = world.network.owners.get(net_id,0)
 		if (world.network.is_client() and (self != world.active_car or world.bus_passenger or hp <= 0)) or (not world.network.is_client() and hp > 0 and owner_id > 0 and owner_id != multiplayer.get_unique_id()):
 			if rider != null:
-				rider.visible = owner_id > 0
+				rider.visible = owner_id > 0 and hp > 0
+				if rider.visible:
+					apply_rider_outfit(int(world.network.members.get(owner_id, {}).get("outfit", 0)))
 			return
 	if rider != null:
 		rider.visible = driving and hp > 0
+		if rider.visible:
+			apply_rider_outfit(world.profile.outfit)
 		if not driving:
 			get_node("CustomVehicle").rotation.z = 0
 	if tier == Catalog.SUPERCAR and (not driving or hp <= 0 or world.finished):
@@ -355,9 +361,19 @@ func repair() -> void:
 			mesh.material_override = intact_materials[mesh]
 	intact_materials.clear()
 
+func apply_rider_outfit(index: int) -> void:
+	if index == rider_outfit:
+		return
+	rider_outfit = index
+	for part in rider.get_children():
+		match part.get_meta("outfit_part", ""):
+			"shirt": part.material_override = world.material(HumanVisual.OUTFIT_SHIRTS[index])
+			"pants": part.material_override = world.material(HumanVisual.OUTFIT_PANTS[index])
+
 func repaint(color: Color) -> void:
 	paint = color
 	rider = null
+	rider_outfit = -1
 	for child in get_children():
 		if child is CollisionShape3D:
 			continue

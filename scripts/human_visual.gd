@@ -1,6 +1,8 @@
 extends Node3D
 
 const HUMAN = preload("res://assets/models/CesiumMan.glb")
+const OUTFIT_SHIRTS := [Color("eeeade"),Color("9f4939"),Color("385b79"),Color("6d8052"),Color("b88c50"),Color("6f5271")]
+const OUTFIT_PANTS := [Color("264f84"),Color("383b43"),Color("566657"),Color("634c3d"),Color("374c68"),Color("4f5155")]
 var animation: AnimationPlayer
 var original_meshes := {}
 var police := false
@@ -75,8 +77,6 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 	var skin_index := 0 if cj_style else index
 	var cache_key := str(index)+":"+str(skin_index)
 	var skins := [Color("75482f"),Color("bd8461"),Color("4e3026"),Color("d4a683"),Color("8a593c"),Color("a66d50")]
-	var shirts := [Color("eeeade"),Color("9f4939"),Color("385b79"),Color("6d8052"),Color("b88c50"),Color("6f5271")]
-	var pants := [Color("264f84"),Color("383b43"),Color("566657"),Color("634c3d"),Color("374c68"),Color("4f5155")]
 	if outfit_cache.has(cache_key):
 		instance.mesh = outfit_cache[cache_key]
 		var cached_mat: StandardMaterial3D=instance.material_override
@@ -102,11 +102,11 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 			if height < 0.055:
 				color = Color("202025") if height > 0.018 else Color("b5b2a7")
 			elif height < 0.49:
-				color = pants[index]
+				color = OUTFIT_PANTS[index]
 			elif height < 0.515:
 				color = Color("27241f")
 			elif height < 0.81 and lateral < 0.18:
-				color = shirts[index]
+				color = OUTFIT_SHIRTS[index]
 				if height > 0.765 and lateral < 0.075:
 					color = skins[skin_index]
 			elif height > 0.945:

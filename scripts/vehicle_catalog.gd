@@ -62,7 +62,7 @@ static func build(car: CharacterBody3D) -> void:
 		var skin: Material = world.material(Color("75482f"))
 		var shirt: Material = world.material(Color("eeeade"))
 		var jeans: Material = world.material(Color("264f84"))
-		segment(car.rider,Vector3(0,1.13,0.38),Vector3(0,1.53,-0.05),0.18,shirt)
+		segment(car.rider,Vector3(0,1.13,0.38),Vector3(0,1.53,-0.05),0.18,shirt).set_meta("outfit_part", "shirt")
 		var head := SphereMesh.new()
 		head.radius = 0.13
 		head.height = 0.28
@@ -70,8 +70,8 @@ static func build(car: CharacterBody3D) -> void:
 		head.rings = 6
 		piece(car.rider,head,Transform3D(Basis.IDENTITY,Vector3(0,1.72,-0.17)),skin)
 		for side in [-1,1]:
-			segment(car.rider,Vector3(side*0.14,1.15,0.4),Vector3(side*0.3,0.81,-0.02),0.095,jeans)
-			segment(car.rider,Vector3(side*0.3,0.81,-0.02),Vector3(side*0.25,0.52,0.25),0.08,jeans)
+			segment(car.rider,Vector3(side*0.14,1.15,0.4),Vector3(side*0.3,0.81,-0.02),0.095,jeans).set_meta("outfit_part", "pants")
+			segment(car.rider,Vector3(side*0.3,0.81,-0.02),Vector3(side*0.25,0.52,0.25),0.08,jeans).set_meta("outfit_part", "pants")
 			segment(car.rider,Vector3(side*0.17,1.48,-0.05),Vector3(side*0.35,1.22,-0.72),0.065,skin)
 		car.rider.visible = false
 		return
@@ -132,7 +132,7 @@ static func piece(parent: Node3D, mesh: Mesh, transform: Transform3D, mat: Mater
 	parent.add_child(node)
 	return node
 
-static func segment(parent: Node3D, start: Vector3, end: Vector3, radius: float, mat: Material) -> void:
+static func segment(parent: Node3D, start: Vector3, end: Vector3, radius: float, mat: Material) -> MeshInstance3D:
 	var mesh := CylinderMesh.new()
 	mesh.top_radius = radius
 	mesh.bottom_radius = radius
@@ -140,6 +140,7 @@ static func segment(parent: Node3D, start: Vector3, end: Vector3, radius: float,
 	mesh.radial_segments = 10
 	var node := piece(parent,mesh,Transform3D(Basis.IDENTITY,(start+end)/2),mat)
 	node.quaternion = Quaternion(Vector3.UP,(end-start).normalized())
+	return node
 
 static func loft(parent: Node3D, profiles: Array, mat: Material) -> void:
 	var vertices: Array[Vector3] = []

@@ -10,6 +10,7 @@ func run() -> void:
 	world.start_mode("sandbox")
 	world.set_physics_process(false)
 	var a = world.activities
+	world.profile.outfit = 2
 	assert(a.CAR_PRICES[a.Catalog.BUS - 1] == 30000)
 	assert(is_equal_approx(a.Catalog.SPEEDS[a.Catalog.BUS] * 3.6, 160.0))
 	assert(a.CAR_PRICES[a.Catalog.SUPERCAR - 1] == 75000)
@@ -43,6 +44,7 @@ func run() -> void:
 			assert(a.handle_input(toggle) and not car.hovering)
 		if tier == 9:
 			assert(car.rider.visible)
+			assert(car.rider_outfit == 2 and car.rider.get_child(0).material_override.albedo_color.is_equal_approx(Color("385b79")))
 			world.interact()
 			await create_timer(0.4).timeout
 			assert(world.active_car == null and world.player.visible and not car.rider.visible)
