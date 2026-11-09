@@ -145,6 +145,8 @@ func build_car(car: CharacterBody3D) -> void:
 	var body := MeshInstance3D.new()
 	body.mesh = car_body
 	body.add_to_group("car_detail")
+	if car.police:
+		body.set_meta("police_lod", true)
 	body.visibility_range_end = 27
 	body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(body)
@@ -175,6 +177,8 @@ func build_car(car: CharacterBody3D) -> void:
 		var wheel := MeshInstance3D.new()
 		wheel.mesh = car_wheels[key].mesh
 		wheel.add_to_group("car_detail")
+		if car.police:
+			wheel.set_meta("police_lod", true)
 		wheel.visibility_range_end = 27
 		wheel.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		spin.add_child(wheel)
@@ -183,6 +187,8 @@ func build_car(car: CharacterBody3D) -> void:
 	far_body.name = "FarBody"
 	far_body.mesh = preload("res://assets/models/vehicle_far.res")
 	far_body.add_to_group("car_far")
+	if car.police:
+		far_body.set_meta("police_lod", true)
 	far_body.visibility_range_begin = 27
 	far_body.visibility_range_end = 170
 	far_body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

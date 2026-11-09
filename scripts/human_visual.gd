@@ -23,6 +23,8 @@ func _ready() -> void:
 		mesh.material_override = material
 		if cj_style or outfit_index >= 0:
 			apply_street_clothes(mesh)
+			if not cj_style:
+				mesh.lod_bias = 0.5
 	var players := actor.find_children("*", "AnimationPlayer", true, false)
 	if players.is_empty():
 		return
@@ -72,7 +74,7 @@ func animate(speed: float) -> void:
 func apply_street_clothes(instance: MeshInstance3D) -> void:
 	# Color the rest-pose vertices, so clothes follow the existing skin and bones.
 	var source: Mesh = instance.mesh
-	var dressed := ArrayMesh.new()
+	var dressed := ImporterMesh.new()
 	var index := posmod(outfit_index,6) if outfit_index >= 0 else 0
 	var skin_index := 0 if cj_style else index
 	var cache_key := str(index)+":"+str(skin_index)
@@ -120,9 +122,11 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 			colors.append(color)
 		arrays[Mesh.ARRAY_VERTEX] = vertices
 		arrays[Mesh.ARRAY_COLOR] = colors
-		dressed.add_surface_from_arrays(source.surface_get_primitive_type(surface),arrays)
-	instance.mesh = dressed
-	outfit_cache[cache_key] = dressed
+		dressed.add_surface(source.surface_get_primitive_type(surface), arrays)
+	dressed.generate_lods(60.0, 0.0, [])
+	var dressed_mesh := dressed.get_mesh()
+	instance.mesh = dressed_mesh
+	outfit_cache[cache_key] = dressed_mesh
 	var clothes: StandardMaterial3D=instance.material_override
 	if clothes==null:
 		clothes=StandardMaterial3D.new()

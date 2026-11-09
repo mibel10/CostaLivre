@@ -6,7 +6,7 @@ const UPSCALING_MODES := ["Desativado", "Qualidade", "Balanceado", "Performance"
 const UPSCALING_SCALES := [1.0, 0.9, 0.8, 0.7, 0.5]
 const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_WINDOWED]
 const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
-const NEAR := [85.0, 65.0, 45.0, 18.0, 12.0]
+const NEAR := [48.0, 38.0, 28.0, 18.0, 12.0]
 const FAR := [350.0, 280.0, 220.0, 170.0, 125.0]
 var world: Node3D
 var quality := 3
@@ -44,22 +44,25 @@ func load_settings() -> void:
 	toggle_sprint=bool(config.get_value("controls","toggle_sprint",false))
 	var value = config.get_value("video", "quality", 3)
 	quality = clampi(value, 0, 4) if typeof(value) == TYPE_INT else 3
-	customized=config.get_value("video","custom",false)
+	customized=config.get_value("video","custom",false) == true
 	value = config.get_value("video", "fps_limit", 30)
 	fps_limit = value if typeof(value) == TYPE_INT and value in FPS_LIMITS else 30
 	value = config.get_value("video","fps_corner",1)
 	fps_corner = value if typeof(value) == TYPE_INT and value >= -1 and value <= 3 else 1
-	texture_quality=clampi(config.get_value("video","textures",mini(quality,3)),0,3)
-	shadow_quality=clampi(config.get_value("video","shadows",[3,2,1,0,0][quality]),0,3)
-	antialiasing=clampi(config.get_value("video","aa",[3,2,0,0,0][quality]),0,3)
-	draw_distance=clampi(config.get_value("video","distance",quality),0,4)
-	detail_maps=config.get_value("video","details",quality<3)
-	var upscaling_value = config.get_value("video","upscaling",2)
-	upscaling=clampi(upscaling_value,0,4) if typeof(upscaling_value)==TYPE_INT else 2
-	window_mode=clampi(config.get_value("video","window_mode",2),0,2)
-	window_resolution=Vector2i(config.get_value("video","window_width",1280),config.get_value("video","window_height",720))
+	texture_quality = video_int(config, "textures", mini(quality, 3), 0, 3)
+	shadow_quality = video_int(config, "shadows", [3,2,1,0,0][quality], 0, 3)
+	antialiasing = video_int(config, "aa", 0, 0, 3) if customized else 0
+	draw_distance = video_int(config, "distance", quality, 0, 4)
+	detail_maps = config.get_value("video", "details", quality < 3) == true
+	upscaling = video_int(config, "upscaling", 2, 0, 4)
+	window_mode = video_int(config, "window_mode", 2, 0, 2)
+	window_resolution = Vector2i(video_int(config, "window_width", 1280, 1, 7680), video_int(config, "window_height", 720, 1, 4320))
 	if not OS.has_feature("android") and (window_resolution.x > DisplayServer.screen_get_size().x or window_resolution.y > DisplayServer.screen_get_size().y):
 		window_resolution=DisplayServer.screen_get_size()
+
+func video_int(config: ConfigFile, key: String, fallback: int, minimum: int, maximum: int) -> int:
+	var value = config.get_value("video", key, fallback)
+	return clampi(value, minimum, maximum) if value is int else fallback
 
 func save_settings() -> void:
 	var config := ConfigFile.new()
@@ -96,7 +99,7 @@ func set_quality(index: int, persist := true) -> void:
 	customized=false
 	texture_quality=mini(index,3)
 	shadow_quality=[3,2,1,0,0][index]
-	antialiasing=[3,2,0,0,0][index]
+	antialiasing=0
 	draw_distance=index
 	detail_maps=index<3
 	apply()
@@ -148,9 +151,9 @@ func apply_range(node: GeometryInstance3D) -> void:
 	if node.is_in_group("car_simple"):
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_detail"):
-		node.visibility_range_end = NEAR[draw_distance]
+		node.visibility_range_end = minf(NEAR[draw_distance], 14.0) if node.has_meta("police_lod") else NEAR[draw_distance]
 	elif node.is_in_group("car_far"):
-		node.visibility_range_begin = NEAR[draw_distance]
+		node.visibility_range_begin = minf(NEAR[draw_distance], 14.0) if node.has_meta("police_lod") else NEAR[draw_distance]
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_shadow"):
 		node.visibility_range_end = [0.1, 22.0, 34.0, 50.0][shadow_quality]
@@ -162,7 +165,7 @@ func apply() -> void:
 	apply_upscaling()
 	world.camera.far = FAR[draw_distance]
 	world.get_viewport().msaa_3d = Viewport.MSAA_4X if antialiasing == 3 else (Viewport.MSAA_2X if antialiasing == 2 else Viewport.MSAA_DISABLED)
-	world.get_viewport().screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if antialiasing == 1 else Viewport.SCREEN_SPACE_AA_DISABLED
+	# FXAA is unavailable in Compatibility. Old value 1 safely behaves as Off.
 	for mat in tracked:
 		apply_texture(mat)
 		mat.normal_enabled = tracked[mat] and detail_maps
@@ -173,8 +176,8 @@ func apply() -> void:
 	for child in world.get_children():
 		if child is DirectionalLight3D:
 			child.shadow_enabled = shadow_quality > 0
-			child.directional_shadow_max_distance = [0.0, 26.0, 50.0, 85.0][shadow_quality]
-			child.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL if shadow_quality <= 1 else DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+			child.directional_shadow_max_distance = [0.0, 26.0, 45.0, 60.0][shadow_quality]
+			child.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
 		if child is WorldEnvironment:
 			child.environment.fog_enabled = quality < 3
 			child.environment.fog_density = 0.0015 if quality < 2 else 0.003

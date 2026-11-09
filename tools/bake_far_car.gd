@@ -25,7 +25,7 @@ func run() -> void:
 	var total := 0
 	for i in 2:
 		var arrays := importer.get_surface_arrays(i)
-		var target := maxi(120, int(arrays[Mesh.ARRAY_INDEX].size() * 0.12))
+		var target := maxi(120, int(arrays[Mesh.ARRAY_INDEX].size() * 0.045))
 		for lod in importer.get_surface_lod_count(i):
 			var indices := importer.get_surface_lod_indices(i, lod)
 			if indices.size() < target:

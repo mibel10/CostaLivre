@@ -206,6 +206,9 @@ func _ready() -> void:
 		option.size=Vector2(395,34)
 		for item in spec[2]:
 			option.add_item(item)
+		if spec[0] == "aa":
+			option.set_item_text(1, "FXAA (indisponível)")
+			option.set_item_disabled(1, true)
 		pages.graphics.add_child(option)
 		advanced_options[spec[0]]=option
 		option.item_selected.connect(func(value): world.settings.set_custom(spec[0],value); refresh())
