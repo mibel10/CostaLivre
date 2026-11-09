@@ -27,8 +27,10 @@ func _ready() -> void:
 func dispatch(delta: float) -> void:
 	world.response_delay = maxf(0,world.response_delay-delta)
 	world.crime_grace = maxf(0,world.crime_grace-delta)
-	var actors: Array = world.network.rules.wanted_participants() if world.network != null and world.network.active() else [0]
 	var quota: int = (7 if world.heat > 80 else ceili(world.heat/20.0)) if world.response_delay <= 0 else 0
+	var actors: Array = []
+	if quota > 0:
+		actors = world.network.rules.wanted_participants() if world.network != null and world.network.active() else [0]
 	var assigned := {}
 	for car in world.cops.duplicate():
 		if not is_instance_valid(car):

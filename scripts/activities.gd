@@ -828,29 +828,31 @@ func nearest_robbery_target() -> CharacterBody3D:
 	if world.life == null or world.active_car != null:
 		return null
 	var closest: CharacterBody3D
-	var distance := 2.5
+	var distance := 2.5 * 2.5
+	var at: Vector3 = world.player.position
 	for person in world.life.people:
 		if person.stationary or person.robbed or person.hp <= 0:
 			continue
-		var current: float = world.player.position.distance_to(person.position)
+		var current: float = at.distance_squared_to(person.position)
 		if current < distance:
 			distance = current
 			closest = person
 	return closest
 
+func clear_pedestrian_robbery() -> void:
+	if is_instance_valid(pedestrian_target):
+		pedestrian_target.scared = false
+	pedestrian_target = null
+	pedestrian_robbery_progress = 0
+
 func tick_pedestrian_robbery(delta: float) -> void:
-	var target := nearest_robbery_target()
-	if target == null or not world.activity_held():
-		if is_instance_valid(pedestrian_target):
-			pedestrian_target.scared = false
-		pedestrian_target = null
-		pedestrian_robbery_progress = 0
+	var target := nearest_robbery_target() if world.activity_held() else null
+	if target == null:
+		clear_pedestrian_robbery()
 		return
 	if target != pedestrian_target:
-		if is_instance_valid(pedestrian_target):
-			pedestrian_target.scared = false
+		clear_pedestrian_robbery()
 		pedestrian_target = target
-		pedestrian_robbery_progress = 0
 		target.scared = true
 		world.raise_heat(8)
 		world.notify("Segure F perto do pedestre para pegar o dinheiro.")
@@ -859,9 +861,7 @@ func tick_pedestrian_robbery(delta: float) -> void:
 		var payout: int = world.rng.randi_range(40, 180)
 		world.cash += payout
 		pedestrian_target.robbed = true
-		pedestrian_target.scared = false
-		pedestrian_target = null
-		pedestrian_robbery_progress = 0
+		clear_pedestrian_robbery()
 		world.notify("+$%d. A policia foi alertada!" % payout)
 
 func reload() -> void:

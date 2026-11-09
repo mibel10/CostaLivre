@@ -6,6 +6,7 @@ var network: Node
 var sheets := {}
 var context_peer := 0
 var bus_riders := {}
+var robbery_worker := 0
 var attacker := 0
 var bank_owner := 1
 var last_actions := {}
@@ -358,11 +359,14 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		return
 	if bus_riders.has(id) and kind not in ["bus_exit", "mission_response"]:
 		return
-	var key := str(id)+kind
-	var now := Time.get_ticks_msec()
-	if now-int(last_actions.get(key,0))<(50 if kind in ["fire","digit"] else 150):
-		return
-	last_actions[key]=now
+	# Reliable keypad events can arrive in the same frame. The active hack
+	# already limits input through its reveal phase, attempts and lockout.
+	if kind not in ["digit", "mission_digit"]:
+		var key := str(id) + kind
+		var now := Time.get_ticks_msec()
+		if now - int(last_actions.get(key, 0)) < (50 if kind == "fire" else 150):
+			return
+		last_actions[key] = now
 	match kind:
 		"hover_mode":
 			var car_id: int = network.members.get(id, {}).get("car", -1)
@@ -441,7 +445,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if peer_id!=1 and not network.members[peer_id].is_empty():
 					network.personal.rpc_id(peer_id,"elevator",{"actor":id,"from":from,"to":to,"building":building,"position":arrival})
 		"digit":
-			if id==bank_owner:
+			if id == bank_owner and world.activities.bank.hacking and world.activities.bank.reveal_time <= 0.0:
 				with_actor(id,func(): world.activities.bank.enter_digit(clampi(int(data.get("digit",0)),1,4)))
 		"cancel_hack":
 			if id==bank_owner:
@@ -665,15 +669,16 @@ func punch_peer(id: int, yaw: float) -> void:
 				world.raise_heat(6, id)
 				break
 
-func tick_inventory(delta: float) -> void:
-	var a: Node=world.activities
-	a.fire_cooldown=maxf(0,a.fire_cooldown-delta)
-	if a.reload_time>0:
-		a.reload_time=maxf(0,a.reload_time-delta)
-		if a.reload_time<=0:
-			var count: int=mini(a.CAPACITIES[a.reload_weapon]-a.clips[a.reload_weapon],a.reserves[a.reload_weapon])
-			a.clips[a.reload_weapon]+=count
-			a.reserves[a.reload_weapon]-=count
+func tick_inventory(id: int, delta: float) -> void:
+	var inv = world.activities if id == local_id() else sheets[id].inventory
+	inv.fire_cooldown = maxf(0, inv.fire_cooldown - delta)
+	if inv.reload_time > 0:
+		inv.reload_time = maxf(0, inv.reload_time - delta)
+		if inv.reload_time <= 0:
+			var weapon: int = inv.reload_weapon
+			var count := clampi(world.activities.CAPACITIES[weapon] - inv.clips[weapon], 0, inv.reserves[weapon])
+			inv.clips[weapon] += count
+			inv.reserves[weapon] -= count
 
 func choose_actor(destination: Vector3, holding := false, require_car := false, require_foot := false) -> int:
 	var best := 0
@@ -725,7 +730,7 @@ func physics(delta: float) -> void:
 		var inv: Dictionary=sheets[id].inventory
 		var timers_active: bool=(world.activities.fire_cooldown>0 or world.activities.reload_time>0) if id==local_id() else (float(inv.fire_cooldown)>0 or float(inv.reload_time)>0)
 		if timers_active:
-			with_actor(id,func(): tick_inventory(delta))
+			tick_inventory(id, delta)
 	tick_mission_hack(delta)
 	if Input.is_action_pressed("shoot") and world.activities.menu=="" and not is_dead(local_id()):
 		fire_local()
@@ -737,17 +742,23 @@ func physics(delta: float) -> void:
 	if a.bank.phase==4:
 		bank_owner=choose_actor(a.bank.to_global(a.bank.ENTRY))
 	if sheets.has(bank_owner) and not is_dead(bank_owner):
-		with_actor(bank_owner,func(): a.bank.tick(delta))
+		if a.bank.hacking or a.bank.phase in [4, 5]:
+			with_actor(bank_owner,func(): a.bank.tick(delta))
+		else:
+			a.bank.tick(delta)
 	else:
 		a.bank.hacking=false
 		bank_owner=1
 	var worker := choose_actor(a.destination(),true)
+	if worker != robbery_worker:
+		robbery_worker = worker
+		a.robbery_index = -1
+		a.robbery_progress = 0
+		a.clear_pedestrian_robbery()
 	if worker>0:
 		with_actor(worker,func(): world.life.tick_tasks(delta); a.tick_robbery(delta); a.tick_pedestrian_robbery(delta))
 	else:
 		world.life.task_progress=0
-		a.robbery_progress=0
-		a.pedestrian_robbery_progress=0
 	if a.job>=0:
 		var actor := choose_actor(a.destination(),false,a.job in [0,2,3,8] or a.action_requires_car(),a.job>=24 or a.action_requires_foot())
 		if actor==0 and not is_dead(1) and not bus_riders.has(1) and a.job<24:
@@ -770,13 +781,18 @@ func physics(delta: float) -> void:
 		for observer in world.cops+a.officers:
 			if is_instance_valid(observer) and observer.hp>0 and world.police_can_see(observer):
 				visible_police.append(observer)
-	var seen := not visible_police.is_empty()
+	var seen := false
 	var pressured := {}
 	var arresting := {}
 	for observer in visible_police:
+		if not is_instance_valid(observer) or observer.is_queued_for_deletion() or observer.hp <= 0:
+			continue
 		var target: Array=police_target_actor(observer.position)
+		if not network.members.has(target[0]) or is_dead(target[0]):
+			continue
 		if wanted_heat(target[0]) <= 0 and not observer.has_meta("mission_contract"):
 			continue
+		seen = true
 		var distance:float=observer.position.distance_to(target[1])
 		if target_crouched(target[1]) and distance>8:
 			continue

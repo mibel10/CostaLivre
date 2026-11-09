@@ -48,6 +48,33 @@ func run() -> void:
 	var id: int=client_api.get_unique_id()
 	assert(host.player.position!=client.player.position,"Different spawn points")
 	assert(host.network.rules.sheets.has(id))
+	var rules: Node = host.network.rules
+	var inventory: Dictionary = rules.sheets[id].inventory
+	var saved_inventory := inventory.duplicate(true)
+	var host_ammo: int = host.activities.clips[1]
+	inventory.clips[1] = 3
+	inventory.reserves[1] = 8
+	inventory.reload_weapon = 1
+	inventory.reload_time = 0.25
+	rules.tick_inventory(id, 0.25)
+	assert(inventory.clips[1] == 11 and inventory.reserves[1] == 0 and host.activities.clips[1] == host_ammo)
+	rules.sheets[id].inventory = saved_inventory
+	var walker: Node3D = host.life.people[0]
+	var walker_position := walker.position
+	walker.position = host.player.position
+	Input.action_press("activity")
+	host.activities.tick_pedestrian_robbery(0.1)
+	assert(walker.scared)
+	rules.robbery_worker = 1
+	Input.action_release("activity")
+	rules.physics(0.0)
+	assert(not walker.scared and host.activities.pedestrian_target == null)
+	walker.position = walker_position
+	var observer := Node3D.new()
+	rules.visible_police.append(observer)
+	observer.free()
+	rules.police_sight_clock = 0.2
+	rules.physics(0.0)
 	host.heat = 100
 	host.response_delay = 0
 	host.station.dispatch(0)
@@ -167,13 +194,9 @@ func run() -> void:
 	for round_index in 3:
 		host.activities.bank.reveal_time=0
 		var pattern: Array=host.activities.bank.pattern.duplicate()
-		for index in pattern.size():
-			client.network.rules.send_action("digit",{"digit":pattern[index]})
-			await create_timer(0.1).timeout
-			if index+1 < pattern.size():
-				await wait_for(func(): return host.activities.bank.entered == index+1)
-			else:
-				await wait_for(func(): return host.activities.bank.round_index > round_index or host.activities.bank.phase >= 2)
+		for digit in pattern:
+			client.network.rules.send_action("digit", {"digit": digit})
+		await wait_for(func(): return host.activities.bank.round_index > round_index or host.activities.bank.phase >= 2)
 	await wait_for(func(): return client.activities.bank.phase==2)
 	client.player.position=client.activities.bank.to_global(client.activities.bank.VAULT_PANEL)+Vector3(1,0.2,0)
 	await create_timer(0.3).timeout
