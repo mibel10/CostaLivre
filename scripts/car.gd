@@ -116,6 +116,7 @@ func _physics_process(delta: float) -> void:
 		return
 	hit_cooldown = maxf(0, hit_cooldown - delta)
 	var steer := 0.0
+	var pursuit_blocked := false
 	if driving and world.finished:
 		speed = move_toward(speed, 0, delta * 2)
 	elif driving and not world.finished:
@@ -167,7 +168,8 @@ func _physics_process(delta: float) -> void:
 		var distance := position.distance_to(target)
 		if distance < 10:
 			chase_speed = 0.0 if world.heat <= 20 else 4.0
-		speed = move_toward(speed, chase_speed, delta * 6)
+		pursuit_blocked = world.life != null and world.life.inside_public_interior(target)
+		speed = move_toward(speed, 0.0 if pursuit_blocked else chase_speed, delta * (25.0 if pursuit_blocked else 6.0))
 	elif traffic and not route.is_empty():
 		if position.distance_to(route[route_index]) < 5:
 			route_index = (route_index + 1) % route.size()
@@ -181,6 +183,11 @@ func _physics_process(delta: float) -> void:
 		get_node("CustomVehicle").rotation.z = lerpf(get_node("CustomVehicle").rotation.z,-steer*minf(absf(speed)/30,1)*0.2,delta*6)
 	rotation.y = heading
 	var forward := -global_transform.basis.z
+	if police and not driving and police_phase == "pursuit" and world.life != null and absf(speed) > 0.01:
+		var nose: Vector3 = position + forward * signf(speed) * (Catalog.SIZES[tier].z * 0.5 + absf(speed) * delta)
+		if world.life.inside_public_interior(nose) and not world.life.inside_public_interior(position):
+			pursuit_blocked = true
+			speed = 0.0
 	velocity.x = forward.x * speed
 	velocity.z = forward.z * speed
 	velocity.y = -5 if is_on_floor() else velocity.y - 22 * delta
@@ -203,7 +210,7 @@ func _physics_process(delta: float) -> void:
 		velocity=Vector3.ZERO
 		speed=0
 	if police and police_phase=="pursuit" and world.heat > 0:
-		stuck_time = stuck_time + delta if get_real_velocity().length() < 1.5 else 0.0
+		stuck_time = stuck_time + delta if not pursuit_blocked and get_real_velocity().length() < 1.5 else 0.0
 		if stuck_time > 2.5:
 			heading += PI * 0.65
 			speed = -8
