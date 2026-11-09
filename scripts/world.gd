@@ -989,7 +989,7 @@ func respawn_local() -> void:
 			activities.bank.screen.material_override = material(Color("66bbcc"), true)
 			for bag in activities.bank.bag_models: bag.visible = true
 		activities.save_campaign()
-		activities.start_job(activities.campaign_index)
+		activities.start_job(activities.campaign_job_id(activities.campaign_index))
 	else:
 		if game_mode == "campaign": activities.save_campaign()
 		notify("Você renasceu.")

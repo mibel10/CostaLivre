@@ -80,6 +80,13 @@ func run() -> void:
 	assert(world.activities.weapon == 7 and world.activities.clips[7] == 11 and world.activities.reserves[7] == 42)
 	assert(world.activities.purchased_cars.size() == 1 and world.activities.purchased_cars[0].tier == 2 and world.activities.purchased_cars[0].net_id == -1, "Purchased cars survive campaign reload without stale scene IDs")
 	assert(world.cash == 1234, "Campaign retains heavy weapons, ammo and cash")
+	world.activities.campaign_index = world.activities.CAMPAIGN_LENGTH - 1
+	world.activities.start_job(world.activities.SECRET_DATA_JOB)
+	world.cutscene.finish()
+	world.finish(false)
+	world.respawn_local()
+	assert(world.activities.job == world.activities.SECRET_DATA_JOB, "Death retries the final campaign mission instead of a co-op mission")
+	world.cutscene.finish()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_test.cfg"))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_full_test.cfg"))
 	world.queue_free()
