@@ -586,29 +586,30 @@ func _process(delta: float) -> void:
 		return
 	if get_tree().paused:
 		return
-	mouse_idle += delta
-	if active_car != null and absf(active_car.speed) > 4 and mouse_idle > 1.8:
-		camera_yaw = lerp_angle(camera_yaw, active_car.heading, delta * 2)
-	var focus := subject_position() + Vector3(0, 1.6, 0)
-	var distance := 9.5 if active_car != null else 6.5
-	var indoors: bool = active_car == null and (activities.bank.inside() or (life != null and life.inside_room(player.position)))
-	if indoors:
-		distance = 3.8
-	var aiming: bool = active_car == null and Input.is_action_pressed("aim") and activities.weapon > 0
-	if active_car == null and activities.weapon > 0:
-		focus += Vector3(0.65, 0, 0).rotated(Vector3.UP, camera_yaw)
-	if aiming:
-		distance = 3.2
-	camera.fov = lerpf(camera.fov, (18.0 if activities.weapon == 6 else 52.0) if aiming else 68.0, 1 - exp(-delta * 10))
-	var offset := Vector3(0, sin(camera_pitch) * distance + (0.6 if indoors else 1.2), cos(camera_pitch) * distance).rotated(Vector3.UP, camera_yaw)
-	var desired := focus + offset
-	camera_check_timer -= delta
-	if camera_check_timer <= 0 or aiming:
-		camera_check_timer = 0.05
-		camera_target = safe_camera_position(focus,desired)-focus
-	camera.position = camera.position.lerp(focus+camera_target, 1 - exp(-delta * 12))
-	if camera.position.distance_to(focus) > 0.1:
-		camera.look_at(camera.position-offset if aiming else focus)
+	if cutscene == null or not cutscene.active:
+		mouse_idle += delta
+		if active_car != null and absf(active_car.speed) > 4 and mouse_idle > 1.8:
+			camera_yaw = lerp_angle(camera_yaw, active_car.heading, delta * 2)
+		var focus := subject_position() + Vector3(0, 1.6, 0)
+		var distance := 9.5 if active_car != null else 6.5
+		var indoors: bool = active_car == null and (activities.bank.inside() or (life != null and life.inside_room(player.position)))
+		if indoors:
+			distance = 3.8
+		var aiming: bool = active_car == null and Input.is_action_pressed("aim") and activities.weapon > 0
+		if active_car == null and activities.weapon > 0:
+			focus += Vector3(0.65, 0, 0).rotated(Vector3.UP, camera_yaw)
+		if aiming:
+			distance = 3.2
+		camera.fov = lerpf(camera.fov, (18.0 if activities.weapon == 6 else 52.0) if aiming else 68.0, 1 - exp(-delta * 10))
+		var offset := Vector3(0, sin(camera_pitch) * distance + (0.6 if indoors else 1.2), cos(camera_pitch) * distance).rotated(Vector3.UP, camera_yaw)
+		var desired := focus + offset
+		camera_check_timer -= delta
+		if camera_check_timer <= 0 or aiming:
+			camera_check_timer = 0.05
+			camera_target = safe_camera_position(focus,desired)-focus
+		camera.position = camera.position.lerp(focus+camera_target, 1 - exp(-delta * 12))
+		if camera.position.distance_to(focus) > 0.1:
+			camera.look_at(camera.position-offset if aiming else focus)
 	hud_clock += delta
 	if hud_clock >= 0.05:
 		hud_clock = 0
