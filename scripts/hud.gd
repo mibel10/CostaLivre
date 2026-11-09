@@ -8,6 +8,17 @@ var gold := Color("ffd18a")
 var navy := Color(0.035, 0.085, 0.12, 0.82)
 var panel_styles := {}
 
+const WEAPON_ICONS := [
+	[Vector2(9,14),Vector2(16,8),Vector2(35,8),Vector2(35,14),Vector2(46,14),Vector2(48,23),Vector2(43,31),Vector2(25,31),Vector2(18,26),Vector2(9,26)],
+	[Vector2(10,9),Vector2(52,9),Vector2(52,17),Vector2(33,17),Vector2(28,33),Vector2(17,33),Vector2(20,17),Vector2(10,17)],
+	[Vector2(3,12),Vector2(21,12),Vector2(21,9),Vector2(52,9),Vector2(52,13),Vector2(63,13),Vector2(63,17),Vector2(40,17),Vector2(43,28),Vector2(35,29),Vector2(30,17),Vector2(24,17),Vector2(20,25),Vector2(15,25),Vector2(17,17),Vector2(3,21)],
+	[Vector2(2,22),Vector2(19,13),Vector2(62,13),Vector2(62,18),Vector2(45,18),Vector2(45,22),Vector2(31,22),Vector2(31,18),Vector2(20,18),Vector2(4,30)],
+	[Vector2(7,12),Vector2(17,12),Vector2(17,9),Vector2(48,9),Vector2(48,13),Vector2(55,13),Vector2(55,17),Vector2(39,17),Vector2(39,31),Vector2(33,31),Vector2(31,17),Vector2(25,17),Vector2(22,27),Vector2(16,27),Vector2(17,17),Vector2(7,17)],
+	[Vector2(3,8),Vector2(15,11),Vector2(50,11),Vector2(60,7),Vector2(63,11),Vector2(63,21),Vector2(58,24),Vector2(49,20),Vector2(35,20),Vector2(32,32),Vector2(26,32),Vector2(28,20),Vector2(15,20),Vector2(3,23)],
+	[Vector2(2,19),Vector2(15,14),Vector2(27,14),Vector2(27,10),Vector2(23,10),Vector2(23,5),Vector2(43,5),Vector2(43,10),Vector2(38,10),Vector2(38,14),Vector2(62,14),Vector2(62,18),Vector2(37,18),Vector2(32,26),Vector2(28,26),Vector2(30,18),Vector2(16,18),Vector2(3,27)],
+	[Vector2(4,11),Vector2(15,11),Vector2(15,6),Vector2(48,6),Vector2(48,10),Vector2(57,10),Vector2(62,15),Vector2(62,24),Vector2(46,24),Vector2(46,28),Vector2(30,28),Vector2(26,34),Vector2(18,34),Vector2(21,23),Vector2(4,23)],
+]
+
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -39,8 +50,6 @@ func _draw() -> void:
 		text("VOCÊ FOI CALADO.", Vector2(340, 365), 57, Color("d34d50"))
 		text("Renascendo...", Vector2(550, 459), 18)
 		return
-	if world.extra != null and world.extra.wheel:
-		draw_wheel()
 	if a.menu in ["pause", "map", "mode", "cutscene", "campaign_complete", "touch_layout", "elevator", "network"]:
 		return
 	if world.network != null and world.network.active():
@@ -49,6 +58,9 @@ func _draw() -> void:
 		panel(Rect2(300,285,680,150))
 		text("VOCE FOI CALADO.",Vector2(400,345),40,Color("d34d50"))
 		text("Renascendo em outro ponto da cidade...",Vector2(420,395),19)
+		return
+	if world.extra != null and world.extra.wheel:
+		draw_wheel()
 		return
 	panel(Rect2(24, 24, 740 if a.ACTION_JOBS.has(a.job) or a.job == 8 else 365, 48))
 	text(a.objective(), Vector2(38, 45), 15)
@@ -120,13 +132,9 @@ func center_note(value: String, y: float, color: Color) -> void:
 
 func draw_wheel() -> void:
 	var a: Node = world.activities
-	var labels := ["Punhos", "Pistola", "Fuzil" if a.rifle_owned else "Fuzil · loja", "Escopeta" if a.shotgun_owned else "Escopeta · loja", "SMG" if a.smg_owned else "SMG · loja"]
-	for i in 3:
-		labels.append(a.WEAPON_NAMES[i+5] + ("" if a.heavy_owned[i] else " · favela"))
-	var centers: Array[Vector2] = []
 	for i in 8:
 		var angle := deg_to_rad(-90.0 + i * 45.0)
-		centers.append(Vector2(640,360) + Vector2(cos(angle),sin(angle)) * 133)
+		var center := Vector2(640,360) + Vector2(cos(angle),sin(angle)) * 133
 		var sector := PackedVector2Array()
 		for step in 17:
 			var edge := deg_to_rad(-112.5 + i * 45.0 + step * 2.8125)
@@ -134,9 +142,22 @@ func draw_wheel() -> void:
 		for step in range(16,-1,-1):
 			var edge := deg_to_rad(-112.5 + i * 45.0 + step * 2.8125)
 			sector.append(Vector2(640,360) + Vector2(cos(edge),sin(edge)) * 66)
-		draw_colored_polygon(sector, Color("bb9458") if world.extra.selection == i else Color(0.03, 0.07, 0.1, 0.92))
-		text(labels[i], centers[i] + Vector2(-55, 5), 16)
-	text("Solte Q para equipar · mova o mouse para escolher", Vector2(422, 600), 17, gold)
+		var selected: bool = world.extra.selection == i
+		draw_colored_polygon(sector, Color("765526") if selected else Color(0.03, 0.07, 0.1, 0.92))
+		var owned: bool = a.owns_weapon(i)
+		var color := ink if owned else muted
+		var icon := PackedVector2Array()
+		for point: Vector2 in WEAPON_ICONS[i]:
+			icon.append(center + point - Vector2(32, 26))
+		draw_colored_polygon(icon, color)
+		var ammo := "Sem munição" if i == 0 else "%d / %d" % [a.clips[i], a.reserves[i]]
+		if not owned:
+			ammo = "Loja" if i < 5 else "Favela"
+		draw_string(font, center + Vector2(-58, 27), ammo, HORIZONTAL_ALIGNMENT_CENTER, 116, 16, color)
+	var selected_name: String = a.WEAPON_NAMES[world.extra.selection]
+	draw_string(font, Vector2(565, 365), selected_name, HORIZONTAL_ALIGNMENT_CENTER, 150, 16, gold)
+	var hint := "Toque numa arma para equipar" if OS.has_feature("android") else "Solte Q para equipar · mova o mouse para escolher"
+	draw_string(font, Vector2(360, 600), hint, HORIZONTAL_ALIGNMENT_CENTER, 560, 17, gold)
 
 func backdrop() -> void:
 	draw_rect(Rect2(0, 0, 1280, 720), Color(0.015, 0.04, 0.06, 0.9))

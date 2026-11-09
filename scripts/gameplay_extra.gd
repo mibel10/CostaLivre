@@ -58,6 +58,9 @@ func play(name: String, volume := -18.0) -> void:
 	voice.volume_db = volume
 	voice.play()
 
+func wheel_weapon(offset: Vector2) -> int:
+	return posmod(roundi((rad_to_deg(offset.angle()) + 90.0) / 45.0), 8)
+
 func handle_input(event: InputEvent) -> bool:
 	if world.finished:
 		return false
@@ -80,13 +83,7 @@ func handle_input(event: InputEvent) -> bool:
 			var cursor: Vector2 = event.position / world.get_viewport().get_visible_rect().size * Vector2(1280, 720) - Vector2(640, 360)
 			if cursor.length() < 30:
 				return true
-			var angle := rad_to_deg(cursor.angle())
-			var best := 1000.0
-			for i in 8:
-				var difference := absf(wrapf(angle - (-90.0 + i * 45.0), -180.0, 180.0))
-				if difference < best:
-					best = difference
-					selection = i
+			selection = wheel_weapon(cursor)
 			if not world.activities.owns_weapon(selection):
 				selection = 0
 		return true

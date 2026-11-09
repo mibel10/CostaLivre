@@ -44,6 +44,8 @@ func context() -> String:
 		return "hack"
 	if world.network!=null and world.network.active() and world.network.rules.local_mission_hacking():
 		return "mission_hack"
+	if world.activities.menu == "" and world.extra.wheel:
+		return "weapon_wheel"
 	return world.activities.menu
 
 func base_buttons() -> Array:
@@ -68,17 +70,10 @@ func base_buttons() -> Array:
 func action(name: String, pressed: bool) -> void:
 	if name == "weapon":
 		if pressed:
-			var a: Node = world.activities
-			var available := [0, 1]
-			if a.rifle_owned:
-				available.append(2)
-			if a.shotgun_owned:
-				available.append(3)
-			if a.smg_owned:
-				available.append(4)
-			for i in 3:
-				if a.heavy_owned[i]: available.append(i+5)
-			a.weapon = available[(available.find(a.weapon) + 1) % available.size()]
+			world.extra.selection = world.activities.weapon
+			world.extra.wheel = true
+			release_all()
+			world.hud.queue_redraw()
 		return
 	if name == "roll":
 		if pressed:
@@ -110,6 +105,20 @@ func _input(event: InputEvent) -> void:
 			return
 		if context() == "cutscene":
 			world.cutscene.finish()
+			get_viewport().set_input_as_handled()
+			return
+		if context() == "weapon_wheel":
+			var offset: Vector2 = event.position / get_viewport_rect().size * Vector2(1280,720) - Vector2(640,360)
+			var distance := offset.length()
+			if distance >= 66.0 and distance <= 205.0:
+				var weapon: int = world.extra.wheel_weapon(offset)
+				if world.activities.owns_weapon(weapon):
+					world.activities.weapon = weapon
+					world.activities.reload_time = 0
+					world.extra.wheel = false
+			else:
+				world.extra.wheel = false
+			world.hud.queue_redraw()
 			get_viewport().set_input_as_handled()
 			return
 		for entry in buttons():
@@ -171,6 +180,9 @@ func _notification(what: int) -> void:
 
 func _process(_delta: float) -> void:
 	var state := context()
+	if state != "weapon_wheel" and world.extra.wheel:
+		world.extra.wheel = false
+		world.hud.queue_redraw()
 	if state != last_context:
 		release_all()
 		last_context = state

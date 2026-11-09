@@ -26,8 +26,16 @@ func run() -> void:
 	world.activities.set_menu("jobs")
 	assert(touch.buttons().size() == 10, "Contracts have numeric and pagination controls")
 	world.activities.set_menu("")
+	world.activities.weapon = 0
+	touch.action("weapon", true)
+	assert(world.extra.wheel and touch.context() == "weapon_wheel")
+	var tap := InputEventScreenTouch.new()
+	tap.pressed = true
+	tap.position = Vector2(734, 266) * root.get_visible_rect().size / Vector2(1280, 720)
+	touch._input(tap)
+	assert(world.activities.weapon == 1 and not world.extra.wheel, "Tapping the pistol equips it and closes the wheel")
 	world.queue_free()
 	await process_frame
 	await create_timer(0.25).timeout
-	print("PASS: Android-only UI, analog movement, held fire release and touch contract navigation")
+	print("PASS: Android-only UI, analog movement, held fire release, touch contract navigation and weapon wheel")
 	quit()
