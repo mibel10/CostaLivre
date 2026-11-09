@@ -6,8 +6,9 @@ const UPSCALING_MODES := ["Desativado", "Qualidade", "Balanceado", "Performance"
 const UPSCALING_SCALES := [1.0, 0.9, 0.8, 0.7, 0.5]
 const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_WINDOWED]
 const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
-const NEAR := [48.0, 38.0, 28.0, 18.0, 12.0]
-const FAR := [350.0, 280.0, 220.0, 170.0, 125.0]
+const NEAR := [60.0, 46.0, 34.0, 22.0, 14.0]
+const FAR := [420.0, 350.0, 280.0, 220.0, 165.0]
+const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65]
 var world: Node3D
 var quality := 3
 var customized := false
@@ -154,6 +155,7 @@ func register_visuals(node: Node) -> void:
 		register_visuals(child)
 
 func apply_range(node: GeometryInstance3D) -> void:
+	node.lod_bias = LOD_BIAS[draw_distance]
 	if node.is_in_group("car_simple"):
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_detail"):
@@ -178,9 +180,8 @@ func apply() -> void:
 			tracked.erase(id)
 		else:
 			apply_material(mat, original)
-	for group in ["car_detail", "car_far", "car_shadow", "car_simple"]:
-		for node in get_tree().get_nodes_in_group(group):
-			apply_range(node)
+	for node in world.find_children("*", "GeometryInstance3D", true, false):
+		apply_range(node)
 	for child in world.get_children():
 		if child is DirectionalLight3D:
 			child.shadow_enabled = shadow_quality > 0
@@ -191,8 +192,6 @@ func apply() -> void:
 			child.environment.fog_density = 0.0015 if quality < 2 else 0.003
 	for light in world.find_children("*", "OmniLight3D", true, false):
 		light.visible = quality < 4
-	for label in world.find_children("*", "Label3D", true, false):
-		apply_range(label)
 
 func set_upscaling(value: int) -> void:
 	if value < 0 or value >= UPSCALING_SCALES.size():
