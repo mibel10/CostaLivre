@@ -353,10 +353,11 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 		if cop.hp > 0 and world.heat > 0 and cop.position.x >= left and cop.position.x <= left + 372:
 			draw_circle(map_point(cop.position, origin, map_size), 3, Color("ed8277"))
 	var pos := map_point(world.subject_position(), origin, map_size)
-	var pump := map_point(world.FUEL_STATION, origin, map_size)
-	if pump.x >= origin.x and pump.x <= origin.x + map_size.x:
-		draw_circle(pump, 4, Color("f0c56d"))
-		draw_circle(pump, 2, Color("53636a"))
+	for station_at: Vector3 in world.FUEL_STATIONS:
+		var pump := map_point(station_at, origin, map_size)
+		if pump.x >= origin.x and pump.x <= origin.x + map_size.x:
+			draw_circle(pump, 4, Color("f0c56d"))
+			draw_circle(pump, 2, Color("53636a"))
 	var angle: float = world.active_car.heading if world.active_car != null else world.player.model.rotation.y
 	var points := PackedVector2Array()
 	for offset in [Vector2(0, -6), Vector2(4, 5), Vector2(0, 3), Vector2(-4, 5)]:

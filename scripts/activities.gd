@@ -419,7 +419,7 @@ func nearby_place() -> String:
 	return ""
 
 func prompt() -> String:
-	if world.active_car != null and not world.bus_passenger and world.active_car.position.distance_to(world.FUEL_STATION) < 7.0:
+	if world.active_car != null and not world.bus_passenger and world.near_fuel_station(world.active_car.position, 7.0):
 		if world.active_car.refuel_time > 0.0:
 			return "Abastecendo…"
 		if world.active_car.fuel < 1.0:

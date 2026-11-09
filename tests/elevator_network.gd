@@ -123,6 +123,32 @@ func run() -> void:
 		quit(1)
 		return
 	assert(await wait_until(func(): return client.engine_audio.pitch_scale>0.7, 2.0),"Engine audio updates in multiplayer")
+	var fuel_server_car: Node = host.car_by_id(1)
+	var fuel_client_car: Node = client.car_by_id(1)
+	var first_pump: Vector3 = host.FUEL_STATIONS[0] + Vector3.UP * 0.3
+	var second_pump: Vector3 = host.FUEL_STATIONS[1] + Vector3.UP * 0.3
+	remote_car.position = first_pump
+	remote_car.speed = 0.0
+	assert(await wait_until(func(): return host.car_by_id(1).position.distance_to(first_pump) < 1.0), "Host receives the car at the first pump")
+	fuel_server_car.fuel = 0.5
+	assert(await wait_until(func(): return absf(fuel_client_car.fuel - 0.5) < 0.02), "Fuel level replicates from host")
+	client.network.rules.send_action("refuel")
+	assert(await wait_until(func(): return fuel_server_car.refuel_time > 4.0), "Host starts refueling at the first pump")
+	await create_timer(1.0).timeout
+	assert(fuel_server_car.fuel < 1.0, "Fuel does not fill instantly")
+	assert(await wait_until(func(): return fuel_server_car.fuel == 1.0, 7.0), "Host fills the tank after five seconds at the first pump")
+	assert(await wait_until(func(): return fuel_client_car.fuel == 1.0), "First-pump fuel level replicates to the client")
+	remote_car.position = second_pump
+	remote_car.speed = 0.0
+	assert(await wait_until(func(): return host.car_by_id(1).position.distance_to(second_pump) < 1.0), "Host receives the car at the second pump")
+	fuel_server_car.fuel = 0.5
+	assert(await wait_until(func(): return absf(fuel_client_car.fuel - 0.5) < 0.02), "Second-pump fuel level replicates from host")
+	client.network.rules.send_action("refuel")
+	assert(await wait_until(func(): return fuel_server_car.refuel_time > 4.0), "The second pump starts refueling")
+	await create_timer(1.0).timeout
+	assert(fuel_server_car.fuel < 1.0, "The second pump does not fill instantly")
+	assert(await wait_until(func(): return fuel_server_car.fuel == 1.0, 7.0), "Host fills the tank after five seconds at the second pump")
+	assert(await wait_until(func(): return fuel_client_car.fuel == 1.0), "Second-pump fuel level replicates to the client")
 	host.network.rules.punch_peer(id,0.0)
 	assert(not host.network.rules.last_actions.has(str(id)+"punch_hit"),"Host rejects punches from vehicles")
 	var host_car: Node=host.car_by_id(1)

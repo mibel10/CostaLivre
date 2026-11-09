@@ -425,7 +425,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"refuel":
 			var car_id: int = int(network.members.get(id, {}).get("car", -1))
 			var car: Node = world.car_by_id(car_id)
-			if car != null and not bus_riders.has(id) and network.owners.get(car_id, 0) == id and car.hp > 0 and car.fuel < 1.0 and absf(car.speed) <= 0.25 and car.position.distance_to(world.FUEL_STATION) < 5.0:
+			if car != null and not bus_riders.has(id) and network.owners.get(car_id, 0) == id and car.hp > 0 and car.fuel < 1.0 and absf(car.speed) <= 0.25 and world.near_fuel_station(car.position):
 				car.refuel_time = 5.0
 				car.refuel_peer = id
 				private_notice(id, "Abastecendo...")
@@ -713,7 +713,7 @@ func physics(delta: float) -> void:
 				car.hovering = false
 		if car.refuel_time > 0.0:
 			var peer_id: int = car.refuel_peer
-			if not network.members.has(peer_id) or int(network.members[peer_id].get("car", -1)) != car.net_id or absf(car.speed) > 0.25 or car.position.distance_to(world.FUEL_STATION) >= 5.0:
+			if not network.members.has(peer_id) or int(network.members[peer_id].get("car", -1)) != car.net_id or absf(car.speed) > 0.25 or not world.near_fuel_station(car.position):
 				car.refuel_time = 0.0
 				car.refuel_peer = 0
 				private_notice(peer_id, "Abastecimento cancelado.")

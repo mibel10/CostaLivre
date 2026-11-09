@@ -59,7 +59,7 @@ var touch_controls: Control
 var network: Node
 var profile: Node
 var station: Node3D
-const FUEL_STATION := Vector3(134, 0, 134)
+const FUEL_STATIONS := [Vector3(134, 0, 134), Vector3(-134, 0, -134)]
 var vehicle_sequence := 0
 const SPAWNS := [Vector3(-8,0.3,12),Vector3(76,0.3,84),Vector3(134,0.3,42),Vector3(-134,0.3,-42),Vector3(42,0.3,-134),Vector3(-42,0.3,134),Vector3(8,0.3,-84),Vector3(84,0.3,8),Vector3(-84,0.3,-8),Vector3(126,0.3,-76),Vector3(-126,0.3,76),Vector3(0,0.3,50)]
 var camera_shape := SphereShape3D.new()
@@ -380,7 +380,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if extra != null and extra.handle_input(event):
 		return
-	if event.is_action_pressed("activity") and active_car != null and not bus_passenger and active_car.position.distance_to(FUEL_STATION) < 5.0:
+	if event.is_action_pressed("activity") and active_car != null and not bus_passenger and near_fuel_station(active_car.position):
 		if active_car.speed <= 0.25 and active_car.fuel < 1.0:
 			if network != null and network.active():
 				network.rules.send_action("refuel")
@@ -766,10 +766,20 @@ func notify(message: String) -> void:
 	toast_time = 4.5
 
 func create_fuel_station() -> void:
-	var station_root := Node3D.new()
-	station_root.name = "PostoUnico"
-	station_root.position = FUEL_STATION
-	add_child(station_root)
+	for index in FUEL_STATIONS.size():
+		var station_root := Node3D.new()
+		station_root.name = "Posto_%d" % (index + 1)
+		station_root.position = FUEL_STATIONS[index]
+		add_child(station_root)
+		build_fuel_station(station_root)
+
+func near_fuel_station(at: Vector3, radius := 5.0) -> bool:
+	for station_at: Vector3 in FUEL_STATIONS:
+		if at.distance_to(station_at) < radius:
+			return true
+	return false
+
+func build_fuel_station(station_root: Node3D) -> void:
 	for spec in [
 		[Vector3(0, 4.1, 0), Vector3(8, 0.5, 5), Color("e9bd62")],
 		[Vector3(-3.5, 2, -2), Vector3(0.25, 4, 0.25), Color("d6e0d6")],
@@ -797,7 +807,7 @@ func _physics_process(delta: float) -> void:
 		engine_audio.volume_db = -28 if active_car != null else -55
 		engine_audio.pitch_scale = 0.7 + absf(active_car.speed) / 24 if active_car != null else 0.7
 	if active_car != null and active_car.refuel_time > 0.0 and (network == null or not network.active()):
-		if active_car.speed > 0.25 or active_car.position.distance_to(FUEL_STATION) >= 5.0:
+		if active_car.speed > 0.25 or not near_fuel_station(active_car.position):
 			active_car.refuel_time = 0.0
 			notify("Abastecimento cancelado.")
 		else:

@@ -59,7 +59,12 @@ func run() -> void:
 	rules.tick_inventory(id, 0.25)
 	assert(inventory.clips[1] == 11 and inventory.reserves[1] == 0 and host.activities.clips[1] == host_ammo)
 	rules.sheets[id].inventory = saved_inventory
-	var walker: Node3D = host.life.people[0]
+	var walker: Node3D
+	for person in host.life.people:
+		if not person.stationary and not person.robbed and person.hp > 0:
+			walker = person
+			break
+	assert(walker != null, "The test needs an interactable pedestrian")
 	var walker_position := walker.position
 	walker.position = host.player.position
 	Input.action_press("activity")
