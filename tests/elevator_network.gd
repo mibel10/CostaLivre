@@ -79,6 +79,13 @@ func run() -> void:
 	client.network.rules.send_action("elevator",{"to":9})
 	await create_timer(0.4).timeout
 	assert(host.network.members[id].position.distance_to(before)<2.0,"Tower rejects non-existent floors")
+	client.life.use_elevator(client.life.ELEVATOR_BASEMENT)
+	assert(await wait_until(func(): return client.life.elevators.tower.floor == client.life.ELEVATOR_BASEMENT and client.life.elevators.tower.phase == "open"))
+	assert(absf(host.network.members[id].position.y - client.life.BASEMENT_HEIGHT) < 0.25, "Host accepts the basement landing")
+	assert(absf(client.player.position.y - client.life.BASEMENT_HEIGHT) < 0.25, "Client rides to the basement")
+	client.life.use_elevator(0)
+	assert(await wait_until(func(): return client.life.elevators.tower.floor == 0 and client.life.elevators.tower.phase == "open"))
+	assert(await wait_until(func(): return not host.network.members[id].has("elevator_target")))
 	host.life.leisure_cooldown=0.3
 	await create_timer(0.5).timeout
 	assert(host.life.leisure_cooldown<=0,"Leisure cooldown expires without a player holding the action")
@@ -90,7 +97,7 @@ func run() -> void:
 		push_error("Host did not assign the client's vehicle")
 		quit(1)
 		return
-	assert(client.engine_audio.pitch_scale>0.7,"Engine audio updates in multiplayer")
+	assert(await wait_until(func(): return client.engine_audio.pitch_scale>0.7, 2.0),"Engine audio updates in multiplayer")
 	host.network.rules.punch_peer(id,0.0)
 	assert(not host.network.rules.last_actions.has(str(id)+"punch_hit"),"Host rejects punches from vehicles")
 	var host_car: Node=host.car_by_id(1)

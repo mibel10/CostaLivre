@@ -17,6 +17,9 @@ const ELEVATOR_FLOORS := {"housing": 13, "apartment": 10, "tower": 8}
 const ELEVATOR_CENTERS := {"housing": Vector3(869,0,-111.5), "apartment": Vector3(-55,0,53.74), "tower": Vector3(155,0,72)}
 const ELEVATOR_SPEED := 8.0
 const DOOR_TIME := 0.3
+const ELEVATOR_CALL := -1
+const ELEVATOR_BASEMENT := -2
+const BASEMENT_HEIGHT := -8.3
 var elevators := {}
 var elevator_cabins := {}
 var elevator_gates := {}
@@ -157,7 +160,7 @@ func elevator_building_at(at: Vector3) -> String:
 	for building: String in ELEVATOR_FLOORS:
 		var offset: Vector3 = at - ELEVATOR_CENTERS[building]
 		var front := elevator_front(building) * offset.z
-		if absf(offset.x) < 1.65 and front > -1.4 and front < 3.0 and offset.y >= -0.25 and offset.y < (ELEVATOR_FLOORS[building]-1)*6+2.8:
+		if absf(offset.x) < 1.65 and front > -1.4 and front < 3.0 and offset.y >= BASEMENT_HEIGHT-0.25 and offset.y < (ELEVATOR_FLOORS[building]-1)*6+2.8:
 			return building
 	return ""
 
@@ -165,6 +168,8 @@ func elevator_front(building: String) -> float:
 	return -1.0 if building == "tower" else 1.0
 
 func elevator_position(building: String, floor_number: int) -> Vector3:
+	if floor_number == ELEVATOR_BASEMENT:
+		return ELEVATOR_CENTERS[building] + Vector3(0,BASEMENT_HEIGHT,0)
 	var floor_height := 0.0 if building == "housing" else -0.09
 	return ELEVATOR_CENTERS[building] + Vector3(0, floor_number*6+floor_height, 0)
 
@@ -213,13 +218,15 @@ func build_elevators() -> void:
 			leaves.append(elevator_box(cabin, Vector3(side*0.64,1.32,front*1.32), Vector3(1.28,2.64,0.07), door))
 		elevator_cabins[building] = [cabin,leaves]
 		var gates := {}
-		for floor_number in ELEVATOR_FLOORS[building]:
+		var stops := range(ELEVATOR_FLOORS[building])
+		stops.append(ELEVATOR_BASEMENT)
+		for floor_number in stops:
 			var origin := elevator_position(building,floor_number)
 			var gate := StaticBody3D.new()
 			add_child(gate)
 			gate.position = origin + Vector3(0,0,front*1.42)
 			var panels := []
-			if building == "apartment":
+			if building == "apartment" and floor_number >= 0:
 				var room: Node3D = rooms[2 if floor_number == 0 else floor_number+5]
 				panels = [room.get_node("ElevatorLeft"),room.get_node("ElevatorRight")]
 			else:
@@ -266,15 +273,17 @@ func request_elevator(at: Vector3, destination: int) -> void:
 	if building.is_empty():
 		return
 	var state: Dictionary = elevators[building]
-	var floor_number := roundi(at.y/6.0)
-	if not elevator_gates[building].has(floor_number) or absf(at.y-floor_number*6) > 1.35 or state.phase in ["closing","travel","opening"]:
+	var floor_number := ELEVATOR_BASEMENT if at.y < -4.0 else roundi(at.y/6.0)
+	if not elevator_gates[building].has(floor_number) or state.phase in ["closing","travel","opening"]:
 		return
 	var origin := elevator_position(building,floor_number)
+	if absf(at.y-origin.y) > 1.35:
+		return
 	var aboard: bool = state.floor == floor_number and inside_cabin(at,origin)
-	if destination >= 0:
-		if not aboard or not elevator_gates[building].has(destination):
+	if elevator_gates[building].has(destination):
+		if not aboard:
 			return
-	elif destination == -1:
+	elif destination == ELEVATOR_CALL:
 		if aboard or state.floor == floor_number:
 			if state.phase != "open":
 				state.phase = "opening"
@@ -358,6 +367,16 @@ func apply_elevator_snapshot(data: Dictionary) -> void:
 	if not elevator_ride.is_empty() and not world.network.rules.is_dead(id):
 		apply_elevator_arrival(elevator_origin(elevator_ride)+elevator_offset)
 		elevator_ride = ""
+
+func leave_elevator_session() -> void:
+	for building: String in elevators:
+		var riders: Dictionary = elevators[building].riders
+		var origin := elevator_origin(building)
+		var at: Vector3 = world.player.position
+		riders.clear()
+		if elevators[building].phase == "travel" and inside_cabin(at,origin):
+			riders[1] = at-origin
+	elevator_ride = ""
 
 func _physics_process(delta: float) -> void:
 	var online: bool = world.network != null and world.network.active()
@@ -463,6 +482,11 @@ func build_elevator_menu() -> void:
 		button.custom_minimum_size.y = 32
 		button.pressed.connect(use_elevator.bind(floor_number))
 		column.add_child(button)
+	var basement := Button.new()
+	basement.text = "Subsolo"
+	basement.custom_minimum_size.y = 32
+	basement.pressed.connect(use_elevator.bind(ELEVATOR_BASEMENT))
+	column.add_child(basement)
 	var close := Button.new()
 	close.text = "Voltar"
 	close.pressed.connect(func(): elevator_ui.hide(); world.activities.set_menu(""))
@@ -565,7 +589,7 @@ func interact() -> bool:
 	if elevator_action == 1:
 		return true
 	if elevator_action == 2:
-		use_elevator(-1)
+		use_elevator(ELEVATOR_CALL)
 		return true
 	if elevator_action == 3:
 		world.activities.set_menu("elevator")

@@ -2592,9 +2592,9 @@ texture_filter = 5
 
 [sub_resource type="MultiMesh" id="MultiMesh_sxolp"]
 transform_format = 1
-instance_count = 1
+instance_count = 10
 mesh = SubResource("BoxMesh_gd6u7")
-buffer = PackedFloat32Array(1128, 0, 0, 376, 0, 1, 0, -0.6, 0, 0, 294, 0)
+buffer = PackedFloat32Array(131.6, 0, 0, -122.2, 0, 1, 0, -0.6, 0, 0, 294, 0, 207.2, 0, 0, 50, 0, 1, 0, -0.6, 0, 0, 294, 0, 711.2, 0, 0, 512, 0, 1, 0, -0.6, 0, 0, 294, 0, 69.6, 0, 0, 905.2, 0, 1, 0, -0.6, 0, 0, 294, 0, 2.8, 0, 0, 869, 0, 1, 0, -0.6, 0, 0, 34.1, -129.95, 2.8, 0, 0, 869, 0, 1, 0, -0.6, 0, 0, 257.1, 18.45, 2.8, 0, 0, 155, 0, 1, 0, -0.6, 0, 0, 217.6, -38.2, 2.8, 0, 0, 155, 0, 1, 0, -0.6, 0, 0, 73.6, 110.2, 2.8, 0, 0, -55, 0, 1, 0, -0.6, 0, 0, 199.34, -47.33, 2.8, 0, 0, -55, 0, 1, 0, -0.6, 0, 0, 91.86, 101.07)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_08i17"]
 albedo_color = Color(0.8392157, 0.73333335, 0.5294118, 1)
@@ -6556,6 +6556,57 @@ roughness = 1.0
 albedo_color = Color(0.20, 0.36, 0.43, 1)
 roughness = 0.65
 
+[sub_resource type="BoxShape3D" id="SoloPoco_0"]
+size = Vector3(131.6, 1, 294)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_1"]
+size = Vector3(207.2, 1, 294)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_2"]
+size = Vector3(711.2, 1, 294)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_3"]
+size = Vector3(69.6, 1, 294)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_4"]
+size = Vector3(2.8, 1, 34.1)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_5"]
+size = Vector3(2.8, 1, 257.1)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_6"]
+size = Vector3(2.8, 1, 217.6)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_7"]
+size = Vector3(2.8, 1, 73.6)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_8"]
+size = Vector3(2.8, 1, 199.34)
+
+[sub_resource type="BoxShape3D" id="SoloPoco_9"]
+size = Vector3(2.8, 1, 91.86)
+
+[sub_resource type="StandardMaterial3D" id="SubsoloConcreto"]
+shading_mode = 0
+albedo_color = Color(0.23, 0.27, 0.31, 1)
+
+[sub_resource type="StandardMaterial3D" id="SubsoloPiso"]
+shading_mode = 0
+albedo_color = Color(0.12, 0.15, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="SubsoloFaixas"]
+shading_mode = 0
+albedo_color = Color(0.93, 0.79, 0.46, 1)
+
+[sub_resource type="BoxMesh" id="SubsoloFaixa"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="MultiMesh" id="SubsoloVagas"]
+transform_format = 1
+instance_count = 60
+mesh = SubResource("SubsoloFaixa")
+buffer = PackedFloat32Array(0.09, 0, 0, -67.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -64.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -61.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -58.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -51.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -48.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -45.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -42.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 25.7, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 0.09, 41.04, 0.09, 0, 0, -67.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -64.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -61.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -58.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -51.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -48.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -45.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -42.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 25.7, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 0.09, 66.44, 0.09, 0, 0, 142.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 145.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 148.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 151.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 158.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 161.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 164.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 167.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 25.7, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 0.09, 59.3, 0.09, 0, 0, 142.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 145.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 148.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 151.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 158.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 161.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 164.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 167.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 25.7, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 0.09, 84.7, 0.09, 0, 0, 856.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 859.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 862.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 865.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 872.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 875.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 878.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 881.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 25.7, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 0.09, -124.2, 0.09, 0, 0, 856.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 859.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 862.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 865.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 872.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 875.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 878.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 881.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 25.7, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 0.09, -98.8)
+
 [node name="CostaLivre" type="Node3D" unique_id=130586917]
 script = ExtResource("1_q1fcy")
 
@@ -8171,8 +8222,45 @@ multimesh = SubResource("MultiMesh_j5vvv")
 [node name="@StaticBody3D@7" type="StaticBody3D" parent="." unique_id=914273695]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 376, -0.6, 0)
 
-[node name="@CollisionShape3D@6" type="CollisionShape3D" parent="@StaticBody3D@7" unique_id=686364169]
-shape = SubResource("BoxShape3D_wlh1w")
+[node name="SoloPoco_0" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(-498.2, 0, 0)
+shape = SubResource("SoloPoco_0")
+
+[node name="SoloPoco_1" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(-326, 0, 0)
+shape = SubResource("SoloPoco_1")
+
+[node name="SoloPoco_2" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(136, 0, 0)
+shape = SubResource("SoloPoco_2")
+
+[node name="SoloPoco_3" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(529.2, 0, 0)
+shape = SubResource("SoloPoco_3")
+
+[node name="SoloPoco_4" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(493, 0, -129.95)
+shape = SubResource("SoloPoco_4")
+
+[node name="SoloPoco_5" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(493, 0, 18.45)
+shape = SubResource("SoloPoco_5")
+
+[node name="SoloPoco_6" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(-221, 0, -38.2)
+shape = SubResource("SoloPoco_6")
+
+[node name="SoloPoco_7" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(-221, 0, 110.2)
+shape = SubResource("SoloPoco_7")
+
+[node name="SoloPoco_8" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(-431, 0, -47.33)
+shape = SubResource("SoloPoco_8")
+
+[node name="SoloPoco_9" type="CollisionShape3D" parent="@StaticBody3D@7"]
+position = Vector3(-431, 0, 101.07)
+shape = SubResource("SoloPoco_9")
 
 [node name="@StaticBody3D@10" type="StaticBody3D" parent="." unique_id=177121134]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -190, -0.75, 0)
@@ -12564,9 +12652,30 @@ use_collision = true
 [node name="RecepcaoResidencial" type="Node3D" parent="."]
 position = Vector3(861, 0, -105)
 
-[node name="Piso" type="CSGBox3D" parent="RecepcaoResidencial"]
-position = Vector3(0, -0.12, 0)
-size = Vector3(24, 0.2, 24)
+[node name="PisoPoco0" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(-2.7, -0.12, 0)
+size = Vector3(18.6, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+
+[node name="PisoPoco1" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(10.7, -0.12, 0)
+size = Vector3(2.6, 0.2, 24)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+
+[node name="PisoPoco2" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, -0.12, -9.95)
+size = Vector3(2.8, 0.2, 4.1)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+
+[node name="PisoPoco3" type="CSGBox3D" parent="RecepcaoResidencial"]
+position = Vector3(8, -0.12, 3.45)
+size = Vector3(2.8, 0.2, 17.1)
 material = SubResource("StandardMaterial3D_6b1f1")
 use_collision = true
 
@@ -17460,3 +17569,133 @@ position = Vector3(0, 70.38, 1.45)
 size = Vector3(2.8, 3.24, 0.1)
 material = SubResource("StandardMaterial3D_6b1f1")
 use_collision = true
+
+[node name="EstacionamentoSubterraneo" type="Node3D" parent="."]
+
+[node name="PisoUnico" type="CSGBox3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(407, -8.5, -20)
+size = Vector3(970, 0.4, 220)
+material = SubResource("SubsoloPiso")
+use_collision = true
+
+[node name="ParedeNorte" type="CSGBox3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(407, -4.7, -130)
+size = Vector3(970, 7.2, 0.4)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="ParedeSul" type="CSGBox3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(407, -4.7, 90)
+size = Vector3(970, 7.2, 0.4)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="ParedeOeste" type="CSGBox3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(-78, -4.7, -20)
+size = Vector3(0.4, 7.2, 220)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="ParedeLeste" type="CSGBox3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(892, -4.7, -20)
+size = Vector3(0.4, 7.2, 220)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloLateralE" type="CSGBox3D" parent="PocosElevadores/ResidencialCosta"]
+position = Vector3(-1.45, -4.15, 0)
+size = Vector3(0.1, 8.3, 2.9)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloLateralD" type="CSGBox3D" parent="PocosElevadores/ResidencialCosta"]
+position = Vector3(1.45, -4.15, 0)
+size = Vector3(0.1, 8.3, 2.9)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloFundo" type="CSGBox3D" parent="PocosElevadores/ResidencialCosta"]
+position = Vector3(0, -4.15, -1.45)
+size = Vector3(2.8, 8.3, 0.1)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloVerga" type="CSGBox3D" parent="PocosElevadores/ResidencialCosta"]
+position = Vector3(0, -2.86, 1.45)
+size = Vector3(2.8, 5.36, 0.1)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SinalResidencialCosta" type="Label3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(-55, -4.85, 55.26)
+rotation = Vector3(0, 0, 0)
+text = "SUBSOLO / RESIDENCIAL COSTA"
+font_size = 38
+pixel_size = 0.009
+
+[node name="SubsoloLateralE" type="CSGBox3D" parent="PocosElevadores/DataCenter"]
+position = Vector3(-1.45, -4.15, 0)
+size = Vector3(0.1, 8.3, 2.9)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloLateralD" type="CSGBox3D" parent="PocosElevadores/DataCenter"]
+position = Vector3(1.45, -4.15, 0)
+size = Vector3(0.1, 8.3, 2.9)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloFundo" type="CSGBox3D" parent="PocosElevadores/DataCenter"]
+position = Vector3(0, -4.15, 1.45)
+size = Vector3(2.8, 8.3, 0.1)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloVerga" type="CSGBox3D" parent="PocosElevadores/DataCenter"]
+position = Vector3(0, -2.86, -1.45)
+size = Vector3(2.8, 5.36, 0.1)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SinalDataCenter" type="Label3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(155, -4.85, 70.48)
+rotation = Vector3(0, 3.14159265, 0)
+text = "SUBSOLO / DATA CENTER"
+font_size = 38
+pixel_size = 0.009
+
+[node name="SubsoloLateralE" type="CSGBox3D" parent="PocosElevadores/Apartamentos"]
+position = Vector3(-1.45, -4.15, 0)
+size = Vector3(0.1, 8.3, 2.9)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloLateralD" type="CSGBox3D" parent="PocosElevadores/Apartamentos"]
+position = Vector3(1.45, -4.15, 0)
+size = Vector3(0.1, 8.3, 2.9)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloFundo" type="CSGBox3D" parent="PocosElevadores/Apartamentos"]
+position = Vector3(0, -4.15, -1.45)
+size = Vector3(2.8, 8.3, 0.1)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SubsoloVerga" type="CSGBox3D" parent="PocosElevadores/Apartamentos"]
+position = Vector3(0, -2.86, 1.45)
+size = Vector3(2.8, 5.36, 0.1)
+material = SubResource("SubsoloConcreto")
+use_collision = true
+
+[node name="SinalApartamentos" type="Label3D" parent="EstacionamentoSubterraneo"]
+position = Vector3(869, -4.85, -109.98)
+rotation = Vector3(0, 0, 0)
+text = "SUBSOLO / APARTAMENTOS"
+font_size = 38
+pixel_size = 0.009
+
+[node name="Vagas" type="MultiMeshInstance3D" parent="EstacionamentoSubterraneo"]
+cast_shadow = 0
+material_override = SubResource("SubsoloFaixas")
+multimesh = SubResource("SubsoloVagas")

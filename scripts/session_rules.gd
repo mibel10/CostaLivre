@@ -424,7 +424,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 			)
 		"elevator":
 			var destination = data.get("to")
-			if destination is int and destination >= -1 and int(network.members[id].get("car",-1)) < 0:
+			if destination is int and int(network.members[id].get("car",-1)) < 0:
 				world.life.request_elevator(position_of(id),destination)
 		"digit":
 			if id == bank_owner and world.activities.bank.hacking and world.activities.bank.reveal_time <= 0.0:
@@ -812,8 +812,8 @@ func export_state() -> Dictionary:
 	return {"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
 
 func apply_state(data: Dictionary) -> void:
-	world.life.apply_elevator_snapshot(data.elevators)
 	sheets=data.get("sheets",{})
+	world.life.apply_elevator_snapshot(data.elevators)
 	world.heat=float(data.get("heat",0))
 	var a: Node=world.activities
 	for key in ["shipment_integrity","passenger_car","hill_errand_stage","hill_errand_owner","supply_stage","supply_owner","job","stage","clock","progress","completed","robbery_cooldowns"]:

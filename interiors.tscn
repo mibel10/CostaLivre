@@ -475,9 +475,9 @@ size = Vector3(1.8, 0.2, 2.4)
 
 [sub_resource type="MultiMesh" id="MultiMesh_1g5rm"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_kf2ac")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.34, -11.33, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.86, 2.07)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gvkxn"]
 shading_mode = 0
@@ -487,9 +487,9 @@ albedo_color = Color(0.5882353, 0.5176471, 0.41960785, 1)
 
 [sub_resource type="MultiMesh" id="MultiMesh_4v0vl"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_d0xfd")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.09, -11.205, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.61, 1.945)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjthw"]
 shading_mode = 0
@@ -1047,17 +1047,17 @@ size = Vector3(1.2, 1.3, 0.7)
 
 [sub_resource type="MultiMesh" id="MultiMesh_ckioy"]
 transform_format = 1
-instance_count = 5
+instance_count = 8
 mesh = SubResource("BoxMesh_255ns")
-buffer = PackedFloat32Array(25, 0, 0, 0, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
+buffer = PackedFloat32Array(19.1, 0, 0, -2.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, -0.2, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, -0.2, 0, 0, 1.6, 11.2, 19.1, 0, 0, -2.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 3.1, 0, 0, 10.95, 0, 0.2, 0, 5.8, 0, 0, 24, 0, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 19.6, -2.2, 2.8, 0, 0, 8, 0, 0.2, 0, 5.8, 0, 0, 1.6, 11.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4poql"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_os7gq"]
 transform_format = 1
-instance_count = 1
+instance_count = 4
 mesh = SubResource("BoxMesh_4poql")
-buffer = PackedFloat32Array(24.5, 0, 0, 0, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0)
+buffer = PackedFloat32Array(18.85, 0, 0, -2.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.85, 0, 0, 10.825, 0, 0.02, 0, -0.075, 0, 0, 23.5, 0, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 19.35, -2.075, 2.8, 0, 0, 8, 0, 0.02, 0, -0.075, 0, 0, 1.35, 11.075)
 
 [sub_resource type="BoxMesh" id="BoxMesh_setp6"]
 
@@ -6803,6 +6803,30 @@ size = Vector3(2.8, 0.2, 1.34)
 [sub_resource type="BoxShape3D" id="BoxShape3D_bul6p_Poco3"]
 size = Vector3(2.8, 0.2, 19.86)
 
+[sub_resource type="BoxShape3D" id="TerreoPoco2_0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="TerreoPoco2_1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="TerreoPoco2_2"]
+size = Vector3(2.8, 0.2, 1.34)
+
+[sub_resource type="BoxShape3D" id="TerreoPoco2_3"]
+size = Vector3(2.8, 0.2, 19.86)
+
+[sub_resource type="BoxShape3D" id="TerreoPoco5_0"]
+size = Vector3(19.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="TerreoPoco5_1"]
+size = Vector3(3.1, 0.2, 24)
+
+[sub_resource type="BoxShape3D" id="TerreoPoco5_2"]
+size = Vector3(2.8, 0.2, 19.6)
+
+[sub_resource type="BoxShape3D" id="TerreoPoco5_3"]
+size = Vector3(2.8, 0.2, 1.6)
+
 [node name="FixedInteriors" type="Node3D" unique_id=1077341304]
 
 [node name="Rooms" type="Node3D" parent="." unique_id=1431939275]
@@ -7149,8 +7173,21 @@ metadata/keep_mesh = true
 [node name="_StaticBody3D_1065" type="StaticBody3D" parent="Rooms/Room2" unique_id=1001431389]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 
-[node name="_CollisionShape3D_1064" type="CollisionShape3D" parent="Rooms/Room2/_StaticBody3D_1065" unique_id=2109778745]
-shape = SubResource("BoxShape3D_hm2g1")
+[node name="TerreoPoco2_0" type="CollisionShape3D" parent="Rooms/Room2/_StaticBody3D_1065"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("TerreoPoco2_0")
+
+[node name="TerreoPoco2_1" type="CollisionShape3D" parent="Rooms/Room2/_StaticBody3D_1065"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("TerreoPoco2_1")
+
+[node name="TerreoPoco2_2" type="CollisionShape3D" parent="Rooms/Room2/_StaticBody3D_1065"]
+position = Vector3(8, 0, -11.33)
+shape = SubResource("TerreoPoco2_2")
+
+[node name="TerreoPoco2_3" type="CollisionShape3D" parent="Rooms/Room2/_StaticBody3D_1065"]
+position = Vector3(8, 0, 2.07)
+shape = SubResource("TerreoPoco2_3")
 
 [node name="_StaticBody3D_1069" type="StaticBody3D" parent="Rooms/Room2" unique_id=1043880506]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.400002, 2.9, 0)
@@ -7616,8 +7653,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147, 0, 63)
 [node name="_StaticBody3D_1404" type="StaticBody3D" parent="Rooms/Room5" unique_id=1280486040]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 
-[node name="_CollisionShape3D_1403" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1404" unique_id=1670710548]
-shape = SubResource("BoxShape3D_8eveo")
+[node name="TerreoPoco5_0" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1404"]
+position = Vector3(-2.95, 0, 0)
+shape = SubResource("TerreoPoco5_0")
+
+[node name="TerreoPoco5_1" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1404"]
+position = Vector3(10.95, 0, 0)
+shape = SubResource("TerreoPoco5_1")
+
+[node name="TerreoPoco5_2" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1404"]
+position = Vector3(8, 0, -2.2)
+shape = SubResource("TerreoPoco5_2")
+
+[node name="TerreoPoco5_3" type="CollisionShape3D" parent="Rooms/Room5/_StaticBody3D_1404"]
+position = Vector3(8, 0, 11.2)
+shape = SubResource("TerreoPoco5_3")
 
 [node name="_StaticBody3D_1408" type="StaticBody3D" parent="Rooms/Room5" unique_id=266796789]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.8, 0)

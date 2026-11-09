@@ -400,6 +400,7 @@ func peer_left(id: int) -> void:
 
 func disconnect_room() -> void:
 	hide_mission_offer()
+	world.life.leave_elevator_session()
 	if world.bus_passenger:
 		var offset: Vector3 = world.vehicle_exit_offset(world.active_car)
 		var at: Vector3 = world.active_car.to_global(offset) if offset != Vector3.ZERO else world.SPAWNS[0]
@@ -467,7 +468,7 @@ func accept_state(id: int, state: Dictionary) -> void:
 		state.car = -1
 		state.speed = 0.0
 		state.held = false
-	if Time.get_ticks_msec()<int(members[id].get("elevator_target_until",0)):
+	elif Time.get_ticks_msec()<int(members[id].get("elevator_target_until",0)):
 		var arrival: Vector3=members[id].get("elevator_target",at)
 		state.position=arrival
 		state.car_position=arrival
