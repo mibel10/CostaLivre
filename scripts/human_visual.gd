@@ -21,8 +21,17 @@ func _ready() -> void:
 		mesh.material_override = material
 		if cj_style or outfit_index >= 0:
 			apply_street_clothes(mesh)
-	animation = actor.find_children("*", "AnimationPlayer", true, false)[0]
+	var players := actor.find_children("*", "AnimationPlayer", true, false)
+	if players.is_empty():
+		return
+	animation = players[0]
+	if not animation.get_animation_list().has("Animation"):
+		animation = null
+		return
 	var walk := animation.get_animation("Animation")
+	if walk == null:
+		animation = null
+		return
 	walk.loop_mode = Animation.LOOP_LINEAR
 	var library: AnimationLibrary = animation.get_animation_library("")
 	if not library.has_animation("Idle"):
@@ -47,6 +56,8 @@ func _ready() -> void:
 	animation.advance(0)
 
 func animate(speed: float) -> void:
+	if animation == null:
+		return
 	if speed < 0.2:
 		animation.speed_scale = 1
 		if animation.current_animation != "Idle":

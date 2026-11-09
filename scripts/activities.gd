@@ -1505,7 +1505,7 @@ func nearest_sentinel() -> Node:
 	var distance := 2.8
 	for guard in officers:
 		if is_instance_valid(guard) and bool(guard.get_meta("mission_sentinel",false)) and guard.hp > 0:
-			var current := world.player.position.distance_to(guard.position)
+			var current: float = world.player.position.distance_to(guard.position)
 			if current < distance:
 				nearest = guard
 				distance = current
@@ -1513,7 +1513,7 @@ func nearest_sentinel() -> Node:
 
 func mission_actor_crouched() -> bool:
 	if world.network!=null and world.network.active():
-		var actor:=world.network.rules.context_peer
+		var actor: int = world.network.rules.context_peer
 		return actor > 0 and bool(world.network.members.get(actor,{}).get("crouch",false))
 	return world.player.is_crouching
 
