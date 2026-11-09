@@ -34,7 +34,7 @@ func _ready() -> void:
 	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(canvas)
 	var shade := ColorRect.new()
-	shade.color = Color("0c1b25")
+	shade.color = Color(0.03, 0.07, 0.10, 0.68)
 	shade.size = Vector2(1280, 720)
 	canvas.add_child(shade)
 	var theme_resource := Theme.new()
@@ -76,6 +76,7 @@ func _ready() -> void:
 	pages.ending.size = Vector2(1280,720)
 	var backdrop := preload("res://scripts/title_backdrop.gd").new()
 	backdrop.size = Vector2(1280,720)
+	backdrop.modulate = Color(1, 1, 1, 0.38)
 	pages.mode.add_child(backdrop)
 	label(pages.mode,"COSTA",Vector2(64,145),76,Color("f4e8cf"))
 	label(pages.mode,"LIVRE",Vector2(64,222),76,Color("ffd18a"))
