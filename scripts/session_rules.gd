@@ -379,7 +379,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"punch": punch_peer(id,float(data.get("yaw",0)))
 		"reload": with_actor(id,world.activities.reload)
 		"job":
-			var requested_job:=clampi(int(data.get("index",0)),0,29)
+			var requested_job:=clampi(int(data.get("index",0)),0,world.activities.JOBS.size()-1)
 			if requested_job >= 24 and requested_job < 29:
 				propose_mission(id,requested_job)
 			elif world.activities.job>=0:

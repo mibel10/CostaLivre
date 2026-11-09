@@ -25,7 +25,9 @@ const ACTION_JOBS := {
 	21: {"name":"Carga quente","kind":"drive","story":"Leve a carga entre os mercados sob perseguicao. Passe pelos pontos e despiste antes da entrega final.","reward":5200,"model":8,"spawn":Vector3(294,0.3,-78.5),"points":[Vector3(294,0,126),Vector3(798,0,126),Vector3(798,0,-78.5)],"escape":true,"start_heat":80,"time":240.0},
 	22: {"name":"Cofres do leste","kind":"breach","story":"Atire nas fechaduras dos tres cofres, recolha os documentos e entregue-os na APEX depois de despistar.","reward":5400,"points":[Vector3(441,1.1,112),Vector3(483,1.1,112),Vector3(525,1.1,112)],"drop":Vector3(21,0,42),"time":200.0},
 	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e cruze a cidade sob cinco estrelas. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0},
-	29: {"name":"Operação Tubulação","kind":"infiltration","story":"Agache e abra a tubulação do Data Center. Elimine dois policiais sem alertar a equipe, conecte o pendrive, extraia os dados e fuja pelo mesmo caminho.","reward":11000,"time":360.0}
+	29: {"name":"Operação Tubulação","kind":"infiltration","story":"Agache e abra a tubulação do Data Center. Elimine dois policiais sem alertar a equipe, conecte o pendrive, extraia os dados e fuja pelo mesmo caminho.","reward":11000,"time":360.0},
+	30: {"name":"Corrida da costa a pé","kind":"foot_race","story":"Encontre o ponto de partida e corra pela avenida passando por todos os pontos antes do tempo acabar.","reward":2400,"points":[Vector3(-126,0,84),Vector3(-84,0,84),Vector3(-42,0,84),Vector3(0,0,84),Vector3(42,0,84)],"race_time":45.0,"time":180.0},
+	31: {"name":"Defesa da clínica","kind":"defend","story":"Defenda a Clínica Costa a pé. Enfrente os invasores e mantenha a posição até a área ficar segura.","reward":3600,"point":Vector3(63,0,26),"guards":[Vector3(55,0.2,34),Vector3(71,0.2,34),Vector3(63,0.2,39)],"duration":20.0,"time":160.0}
 }
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
@@ -110,6 +112,11 @@ func _ready() -> void:
 		JOBS.append("Operação Tubulação")
 		REWARDS.append(11000)
 		STORY_BEATS.append(ACTION_JOBS[SECRET_DATA_JOB].story)
+	if JOBS.size() == 30:
+		for id in [30, 31]:
+			JOBS.append(ACTION_JOBS[id].name)
+			REWARDS.append(ACTION_JOBS[id].reward)
+			STORY_BEATS.append(ACTION_JOBS[id].story)
 	bank = Bank.new()
 	bank.world = world
 	world.add_child(bank)
@@ -124,10 +131,10 @@ func _ready() -> void:
 	world.toast_time = 5
 
 func job_count() -> int:
-	return JOBS.size() if world.network!=null and world.network.active() else CAMPAIGN_LENGTH
+	return JOBS.size() if world.network!=null and world.network.active() else CAMPAIGN_LENGTH + 2
 
 func job_id_at(slot: int) -> int:
-	return slot if world.network != null and world.network.active() else campaign_job_id(slot)
+	return slot if world.network != null and world.network.active() else (campaign_job_id(slot) if slot < CAMPAIGN_LENGTH else 30 + slot - CAMPAIGN_LENGTH)
 
 func set_menu(value: String) -> void:
 	menu = value
@@ -1406,11 +1413,11 @@ func action_objective() -> String:
 		"rescue":
 			text = "Busque o passageiro de carro / F para embarcar" if stage == 0 else "Leve o passageiro ao destino"
 			if stage == 0 and spec.has("model") and world.active_car != target_car: text = "Pegue o carro de atendimento marcado"
-		"foot_race": text = "F / Iniciar percurso a pe" if stage == 0 else "Percurso %d/%d / agache sob o cano" % [stage,spec.points.size()-1]
+		"foot_race": text = "F / Iniciar percurso a pe" if stage == 0 else "Percurso %d/%d" % [stage,spec.points.size()-1]
 		"breach": text = ("Cofre %d/%d / " % [stage+1,spec.points.size()] + ("F: recolher documentos" if progress >= 1 else "atire na fechadura")) if stage < spec.points.size() else "Despiste e entregue os documentos na APEX"
 		"cargo": text = "F / Recolha a caixa %d/%d" % [stage+1,spec.points.size()] if stage < spec.points.size() else "Despiste e entregue a carga de carro na oficina"
 		"escort": text = "F / Autorizar saida do comboio" if stage == 0 else "Proteja o comboio / veiculo %d%%" % roundi(target_car.hp/target_car.MAX_HP*100)
-		"defend": text = "F / Iniciar defesa no oitavo andar" if stage == 0 else "Resista %ds / invasores restantes: %d" % [maxi(0,ceili(float(spec.duration)-progress)),contract_guards_alive()]
+		"defend": text = "F / Iniciar defesa" if stage == 0 else "Resista %ds / invasores restantes: %d" % [maxi(0,ceili(float(spec.duration)-progress)),contract_guards_alive()]
 		"precision": text = "Atire no transmissor %d/%d / andar %d" % [stage+1,spec.points.size(),floori(spec.points[stage].y/6)+1] if stage < spec.points.size() else "Saia do estudio e despiste o alarme"
 		"escape_file": text = ["Pegue o arquivo no decimo andar / F","Desca e saia do predio cercado","Despiste a policia com o arquivo"][mini(stage,2)]
 		"intercept": text = ["Danifique o carro do mensageiro sem destrui-lo","Saia do carro e use F para recolher a maleta","Despiste e entregue a maleta"][mini(stage,2)]
@@ -1515,7 +1522,7 @@ func action_prompt() -> String:
 	if spec.kind == "getaway" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
 		return "F / Roubar maleta e iniciar a fuga"
 	if spec.kind == "foot_race" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.points[0]) < 3:
-		return "F / Comecar percurso pelos becos"
+		return "F / Comecar percurso a pe"
 	if spec.kind == "breach" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
 		return "F / Recolher documentos" if progress >= 1 else "Atire na fechadura do cofre"
 	if spec.kind == "cargo" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
