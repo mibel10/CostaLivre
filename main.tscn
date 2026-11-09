@@ -17879,3 +17879,205 @@ material = SubResource("Material_contato_arma")
 position = Vector3(5.9, 3.35, 13.5)
 size = Vector3(0.1, 0.12, 3.1)
 material = SubResource("Material_contato_arma")
+
+[node name="PortoesDecorativosPredios" type="Node3D" parent="."]
+
+[node name="Predio0E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-66.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio0D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-60.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio1E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(60.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio1D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(66.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio2E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-66.0, 1.65, 76.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio2D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-60.0, 1.65, 76.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio3E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-108.0, 1.65, -7.949999999999999)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio3D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-102.0, 1.65, -7.949999999999999)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio4E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(102.0, 1.65, -49.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio4D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(108.0, 1.65, -49.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio5E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(144.0, 1.65, 76.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio5D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(150.0, 1.65, 76.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio6E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(186.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio6D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(192.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio7E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(228.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio7D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(234.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio8E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(270.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio8D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(276.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio9E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(312.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio9D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(318.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio10E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(354.0, 1.65, -91.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio10D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(360.0, 1.65, -91.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio11E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(396.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio11D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(402.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio12E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(438.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio12D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(444.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio13E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(480.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio13D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(486.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio14E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(522.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio14D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(528.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio15E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(564.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio15D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(570.0, 1.65, 118.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio16E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(858.0, 1.65, -91.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio16D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(864.0, 1.65, -91.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio17E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-24.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio17D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(-18.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio18E" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(18.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="Predio18D" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(24.0, 1.65, 34.05)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="BancoE" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(17.0, 1.65, -89.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
+
+[node name="BancoD" type="CSGBox3D" parent="PortoesDecorativosPredios"]
+position = Vector3(25.0, 1.65, -89.95)
+size = Vector3(0.12, 3.3, 2.5)
+material = SubResource("Material_contato_arma")
