@@ -100,10 +100,18 @@ func run() -> void:
 	theft.car=1
 	theft.car_position=host.car_by_id(1).position
 	host.network.accept_state(id,theft)
+	assert(not host.network.owners.has(1), "Reports cannot claim a car without server approval")
+	var steal_car: Node3D = client.car_by_id(1)
+	client.player.position = steal_car.position+Vector3(2.6,0.3,0)
+	await create_timer(0.25).timeout
+	client.network.rules.send_action("vehicle_entry",{"car":1})
+	await wait_for(func(): return client.active_car == steal_car)
 	assert(host.car_by_id(1).owned and host.heat>=12)
 	var theft_heat: float=host.heat
 	host.network.accept_state(id,theft)
 	assert(is_equal_approx(host.heat,theft_heat),"No repeat theft alert")
+	client.interact()
+	await create_timer(0.4).timeout
 	client.raise_heat(50)
 	await wait_for(func(): return client.heat>40 and host.heat>40)
 	host.update_dispatch(6)
@@ -122,8 +130,9 @@ func run() -> void:
 	client.cutscene.finish()
 	var rescue_car: Node = client.activities.target_car
 	client.player.position = rescue_car.position+Vector3(2.6,0.3,0)
+	await create_timer(0.25).timeout
 	client.interact()
-	await create_timer(0.5).timeout
+	await create_timer(2.35).timeout
 	assert(client.active_car == rescue_car)
 	rescue_car.position = client.activities.ACTION_JOBS[RESCUE_JOB].pickup+Vector3.UP*0.3
 	rescue_car.speed = 0
@@ -156,8 +165,9 @@ func run() -> void:
 	assert(purchase!=null and purchase.owned)
 	client.activities.set_menu("")
 	client.player.position=purchase.position+Vector3(2.6,0.3,0)
+	await create_timer(0.25).timeout
 	client.interact()
-	await create_timer(0.5).timeout
+	await create_timer(2.35).timeout
 	assert(client.active_car==purchase)
 	client.active_car.position=client.activities.GARAGE+Vector3(0,0.2,0)
 	await create_timer(0.3).timeout

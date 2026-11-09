@@ -24,7 +24,10 @@ func run() -> void:
 	assert(world.cars.size() == 74 and world.station.fleet.size() == 27, "Expanded city traffic, parked cars and police fleet")
 	world.player.position = Vector3(-5, 0.3, 7)
 	world.interact()
-	await create_timer(0.4).timeout
+	assert(world.active_car == null and world.car_transition)
+	await create_timer(1.0).timeout
+	assert(world.active_car == null and world.player.visible, "Driver stays outside during the entry animation")
+	await create_timer(1.15).timeout
 	assert(world.active_car != null and not world.player.visible)
 	assert(world.cops.is_empty() and world.heat == 0, "The starter car is owned")
 	world.raise_heat(12)
@@ -40,6 +43,7 @@ func run() -> void:
 	world.player.position = starter.position + Vector3(-2,0,0)
 	var heat_before: float = world.heat
 	world.interact()
+	await create_timer(2.15).timeout
 	assert(world.active_car == starter and world.heat == heat_before, "Re-entering your car is legal")
 	Input.action_press("forward")
 	var before: Vector3 = starter.position
@@ -150,8 +154,8 @@ func run() -> void:
 	world.cutscene.finish()
 	world.player.position = a.target_car.position + Vector3(2, 0, 0)
 	world.interact()
+	await create_timer(2.15).timeout
 	assert(world.active_car == a.target_car, "Marked supercar can be stolen")
-	await create_timer(0.4).timeout
 	a.target_car.position = a.GARAGE + Vector3.UP * 0.2
 	a.target_car.speed = 0
 	a.tick(0.1)

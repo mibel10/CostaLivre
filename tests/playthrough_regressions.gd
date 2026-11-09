@@ -20,7 +20,7 @@ func run() -> void:
 	world.player.position = car.position+Vector3(-2.3,0,0)
 	world.interact()
 	assert(world.player.model.position == Vector3.ZERO,"Entry begins at the character rather than teleporting to the door")
-	await create_timer(0.45).timeout
+	await create_timer(2.15).timeout
 	assert(not world.car_transition and not world.player.visible)
 	world.interact()
 	await create_timer(0.45).timeout

@@ -422,6 +422,10 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if world.activities.bank.interact():
 					bank_owner=id
 			)
+		"vehicle_entry":
+			var car_id = data.get("car")
+			if car_id is int and int(network.members[id].get("car",-1)) < 0 and world.life.elevator_rider_position(id) == null:
+				world.request_vehicle_entry(id,world.car_by_id(car_id),position_of(id))
 		"building_contact":
 			var contact = data.get("contact")
 			if contact is int and int(network.members[id].get("car",-1)) < 0:
@@ -522,6 +526,8 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
+		"vehicle_enter":
+			world.finish_vehicle_entry(world.car_by_id(int(data.car)))
 		"bus_board":
 			var bus: Node3D = world.car_by_id(int(data.car))
 			if bus == null:

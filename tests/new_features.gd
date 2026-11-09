@@ -14,7 +14,7 @@ func run() -> void:
 	var car = world.cars[0]
 	world.player.position = car.position + Vector3(-2,0,0)
 	world.interact()
-	await create_timer(0.4).timeout
+	await create_timer(2.15).timeout
 	car.speed = 25
 	world.interact()
 	assert(world.active_car == null and world.player.visible)

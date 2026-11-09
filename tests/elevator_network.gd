@@ -113,8 +113,10 @@ func run() -> void:
 	assert(await wait_until(func(): return client.life.elevators.tower.floor == 0 and client.life.elevators.tower.phase == "open"))
 	assert(await wait_until(func(): return not host.network.members[id].has("elevator_target")))
 	var remote_car: Node=client.car_by_id(1)
-	client.active_car=remote_car
-	remote_car.driving=true
+	client.player.position = remote_car.position+Vector3(2.6,0.3,0)
+	assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(remote_car.position) < 4.5))
+	client.network.rules.send_action("vehicle_entry",{"car":1})
+	assert(await wait_until(func(): return client.active_car == remote_car))
 	remote_car.speed=10.0
 	if not await wait_until(func(): return int(host.network.owners.get(1,0))==id):
 		push_error("Host did not assign the client's vehicle")

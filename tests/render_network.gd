@@ -85,8 +85,9 @@ func run() -> void:
 	await create_timer(0.3).timeout
 	var remote_loan: Node = client.car_by_id(loan_id)
 	client.player.position = remote_loan.position + Vector3.RIGHT * 2.5
+	await create_timer(0.25).timeout
 	client.interact()
-	await create_timer(0.4).timeout
+	await create_timer(2.35).timeout
 	assert(client.active_car == remote_loan)
 	host.activities.remove_car(loan)
 	await create_timer(0.3).timeout

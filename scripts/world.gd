@@ -42,6 +42,9 @@ var interiors: Node3D
 var life: Node3D
 var fps_counter: CanvasLayer
 var car_transition := false
+const VEHICLE_ENTRY_TIME := 2.0
+var vehicle_entries := {}
+var entry_visual := false
 var bus_passenger := false
 var traffic_refresh := 0.0
 var sight_timer := 0.0
@@ -450,45 +453,96 @@ func interact() -> void:
 		notify("Sem espaço para sair. Afaste o carro da parede.")
 	else:
 		var closest := nearest_car()
-		if closest != null:
-			if network != null and not network.car_available(closest):
+		if closest == null:
+			return
+		if network != null and network.active():
+			if not network.car_available(closest):
 				if closest.tier == closest.Catalog.BUS:
-					network.rules.send_action("bus_board", {"car": closest.net_id})
+					network.rules.send_action("bus_board",{"car":closest.net_id})
 				else:
-					notify("Este carro esta sendo usado por outro jogador.")
-				return
+					notify("Este carro está sendo usado por outro jogador.")
+			else:
+				network.rules.send_action("vehicle_entry",{"car":closest.net_id})
+		else:
+			request_vehicle_entry(1,closest,player.position)
+
+func request_vehicle_entry(id: int, car: Node3D, at: Vector3) -> void:
+	if not is_instance_valid(car) or car.police or car.hp <= 0 or vehicle_entries.has(id) or at.distance_squared_to(car.position) >= 20.25:
+		return
+	if id == 1 and (active_car != null or car_transition or finished):
+		return
+	if network != null and network.active() and int(network.owners.get(car.net_id,0)) not in [0,id]:
+		return
+	for other in vehicle_entries.values():
+		if other.car == car.net_id:
+			return
+	var side := -1.0 if car.to_local(at).x < 0 else 1.0
+	vehicle_entries[id] = {"car":car.net_id,"side":side,"time":0.0,"at":at}
+	if id == 1:
+		car_transition = true
+		entry_visual = true
+		player.velocity = Vector3.ZERO
+		player.roll_time = 0
+		player.model.position = Vector3.ZERO
+		player.model.rotation.x = 0
+		notify("Abrindo a porta…" if car.owned else "Arrombando a trava…")
+
+func tick_vehicle_entries(delta: float) -> void:
+	var online: bool = network != null and network.active()
+	if not online or not network.is_client():
+		for id: int in vehicle_entries.keys():
+			var entry: Dictionary = vehicle_entries[id]
+			var car := car_by_id(entry.car)
+			if car == null or car.hp <= 0 or (id == 1 and finished) or (online and (not network.members.has(id) or network.rules.is_dead(id))):
+				vehicle_entries.erase(id)
+				continue
+			entry.time += delta
+			if entry.time < VEHICLE_ENTRY_TIME:
+				continue
+			vehicle_entries.erase(id)
+			if entry.at.distance_squared_to(car.position) >= 20.25 or (online and int(network.owners.get(car.net_id,0)) not in [0,id]):
+				continue
+			car.traffic = false
+			if not car.owned:
+				car.owned = true
+				raise_heat(12,id)
+			if online:
+				network.owners[car.net_id] = id
+				network.vehicle_grants[id] = [car.net_id,Time.get_ticks_msec()+1200]
+				network.rules.send_personal(id,"vehicle_enter",{"car":car.net_id})
+			else:
+				finish_vehicle_entry(car)
+	var id := multiplayer.get_unique_id() if online else 1
+	if vehicle_entries.has(id) and active_car == null:
+		var entry: Dictionary = vehicle_entries[id]
+		var car := car_by_id(entry.car)
+		if car != null:
 			car_transition = true
-			active_car = closest
-			active_car.driving = false
-			active_car.traffic = false
-			player.visible = true
+			entry_visual = true
 			player.roll_time = 0
-			player.model.rotation.x = 0
-			player.collision_layer = 0
-			player.velocity = Vector3.ZERO
-			camera_yaw = active_car.heading
-			var entering_car := active_car
-			player.model.position = Vector3.ZERO
-			var entry_side := -1.0 if entering_car.to_local(player.global_position).x < 0 else 1.0
-			var door_target := player.to_local(entering_car.to_global(Vector3(entry_side*1.05,0,0)))
-			var enter_tween := create_tween()
-			enter_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-			enter_tween.tween_property(player.model,"position",door_target,0.32)
-			enter_tween.parallel().tween_property(player.model,"rotation:y",entering_car.heading,0.32)
-			enter_tween.tween_callback(func():
-				if active_car != entering_car or bus_passenger:
-					return
-				player.visible = false
-				player.model.position = Vector3.ZERO
-				player.model.process_mode = Node.PROCESS_MODE_DISABLED
-				entering_car.driving = true
-				car_transition = false
-			)
-			if not active_car.owned:
-				if network==null or not network.is_client():
-					raise_heat(12)
-				active_car.owned = true
-				notify("Carro roubado. A polícia foi avisada.")
+			player.model.pose_vehicle_entry(player,car,entry.side,entry.time)
+	elif entry_visual:
+		entry_visual = false
+		car_transition = false
+		player.model.position = Vector3.ZERO
+		player.model.rotation.x = 0
+
+func finish_vehicle_entry(car: Node3D) -> void:
+	if not is_instance_valid(car) or car.hp <= 0 or finished:
+		return
+	active_car = car
+	vehicle_entries.erase(multiplayer.get_unique_id() if network != null and network.active() else 1)
+	car.driving = true
+	car.traffic = false
+	car_transition = false
+	entry_visual = false
+	player.visible = false
+	player.model.position = Vector3.ZERO
+	player.model.rotation.x = 0
+	player.model.process_mode = Node.PROCESS_MODE_DISABLED
+	player.collision_layer = 0
+	player.velocity = Vector3.ZERO
+	camera_yaw = car.heading
 
 func nearest_car() -> CharacterBody3D:
 	var nearest: CharacterBody3D
@@ -586,6 +640,8 @@ func notify(message: String) -> void:
 	toast_time = 4.5
 
 func _physics_process(delta: float) -> void:
+	if not get_tree().paused:
+		tick_vehicle_entries(delta)
 	if finished or get_tree().paused:
 		return
 	if engine_audio != null:

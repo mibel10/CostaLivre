@@ -401,6 +401,8 @@ func peer_left(id: int) -> void:
 func disconnect_room() -> void:
 	hide_mission_offer()
 	world.life.leave_elevator_session()
+	world.vehicle_entries.clear()
+	vehicle_grants.clear()
 	if world.bus_passenger:
 		var offset: Vector3 = world.vehicle_exit_offset(world.active_car)
 		var at: Vector3 = world.active_car.to_global(offset) if offset != Vector3.ZERO else world.SPAWNS[0]
@@ -440,6 +442,8 @@ func disconnect_room() -> void:
 	world.activities.robbery_progress = 0.0
 	world.activities.clear_pedestrian_robbery()
 	code = ""
+
+var vehicle_grants := {}
 
 func car_available(car: Node) -> bool:
 	return not active() or int(owners.get(car.net_id,0)) in [0,multiplayer.get_unique_id()]
@@ -490,12 +494,30 @@ func accept_state(id: int, state: Dictionary) -> void:
 			state["car_position"] = bus.position
 			state["car"] = -1
 			state["held"] = false
+	if world.vehicle_entries.has(id):
+		var entry: Dictionary = world.vehicle_entries[id]
+		state.position = entry.at
+		state.car_position = entry.at
+		state.car = -1
+		state.held = false
 	var car_id := int(state.get("car",-1))
+	if vehicle_grants.has(id):
+		var grant: Array = vehicle_grants[id]
+		if car_id == int(grant[0]) or Time.get_ticks_msec() >= int(grant[1]):
+			vehicle_grants.erase(id)
+		else:
+			car_id = int(grant[0])
+			state.car = car_id
+			var granted_car: Node3D = world.car_by_id(car_id)
+			if granted_car != null:
+				state.car_position = granted_car.position
+				state.speed = granted_car.speed
+				state.car_heading = granted_car.heading
 	for index in owners.keys():
 		if owners[index]==id and index!=car_id:
 			owners.erase(index)
 	var selected_car: Node=world.car_by_id(car_id)
-	if selected_car!=null and not selected_car.police and selected_car.hp>0 and int(owners.get(car_id,0)) in [0,id] and not rules.is_dead(id):
+	if selected_car!=null and not selected_car.police and selected_car.hp>0 and int(owners.get(car_id,0)) == id and not rules.is_dead(id):
 		owners[car_id]=id
 		if not selected_car.owned:
 			selected_car.owned=true
@@ -581,7 +603,7 @@ func _process(delta: float) -> void:
 		for id in members:
 			if rules.sheets.has(id):
 				members[id]["hp"]=rules.sheets[id].health
-		packed_snapshot.rpc(var_to_bytes({"members":members,"owners":owners,"cars":cars,"people":people,"officers":officers,"game":game}).compress(FileAccess.COMPRESSION_DEFLATE))
+		packed_snapshot.rpc(var_to_bytes({"members":members,"owners":owners,"entries":world.vehicle_entries,"cars":cars,"people":people,"officers":officers,"game":game}).compress(FileAccess.COMPRESSION_DEFLATE))
 		update_avatars(members)
 	else:
 		report.rpc_id(1,local_state())
@@ -619,6 +641,7 @@ func packed_snapshot(packet: PackedByteArray) -> void:
 func snapshot(data: Dictionary) -> void:
 	owners=data.owners
 	members=data.members
+	world.vehicle_entries=data.entries
 	var present := {}
 	var local_cars := {}
 	for car in world.cars:
@@ -744,6 +767,11 @@ func update_avatars(states: Dictionary) -> void:
 		if close and on_foot:
 			avatar.node.animate(3.0 if avatar.at.distance_squared_to(state.position)>0.0064 else 0.0)
 		avatar.at=state.position
+		if world.vehicle_entries.has(id):
+			var entry: Dictionary = world.vehicle_entries[id]
+			var car: Node3D = world.car_by_id(entry.car)
+			if is_instance_valid(car):
+				avatar.node.model.pose_vehicle_entry(avatar.node,car,entry.side,entry.time)
 		if multiplayer.is_server():
 			avatar.node.position=avatar.at
 		avatar.heading=float(state.heading)

@@ -56,6 +56,19 @@ func _ready() -> void:
 			else:
 				idle.track_insert_key(track,0,walk.scale_track_interpolate(i,0))
 		library.add_animation("Idle",idle)
+	if not library.has_animation("DoorWork"):
+		var work: Animation = library.get_animation("Idle").duplicate()
+		work.length = 0.42
+		for i in work.get_track_count():
+			var path := String(work.track_get_path(i))
+			if work.track_get_type(i) != Animation.TYPE_ROTATION_3D or not ("arm_joint" in path and ("__2_" in path or "__3_" in path)):
+				continue
+			var rest: Quaternion = work.track_get_key_value(i,0)
+			var side := -1.0 if "joint_L" in path else 1.0
+			work.track_insert_key(i,0.0,rest*Quaternion(Vector3.RIGHT,0.38)*Quaternion(Vector3.FORWARD,side*0.15))
+			work.track_insert_key(i,0.21,rest*Quaternion(Vector3.RIGHT,0.68)*Quaternion(Vector3.FORWARD,side*0.27))
+			work.track_insert_key(i,0.42,work.track_get_key_value(i,0))
+		library.add_animation("DoorWork",work)
 	animation.play("Idle")
 	animation.advance(0)
 
@@ -70,6 +83,24 @@ func animate(speed: float) -> void:
 		animation.speed_scale = clampf(speed / 3.0, 0.55, 2.5)
 		if animation.current_animation != "Animation":
 			animation.play("Animation",0.18)
+
+func pose_vehicle_entry(actor: Node3D, car: Node3D, side: float, elapsed: float) -> void:
+	var width: float = car.Catalog.SIZES[car.tier].x
+	var target := actor.to_local(car.to_global(Vector3(side*(width/2+0.3),0,-0.35)))
+	var approach := smoothstep(0.0,0.4,elapsed)
+	var slip := smoothstep(1.6,2.0,elapsed)
+	var working := sin(elapsed*17.0)*0.055*approach*(1.0-slip)
+	position = target*approach + Vector3(0,-0.15*approach,-working).rotated(Vector3.UP,car.heading)
+	position = position.lerp(actor.to_local(car.global_position),slip)
+	var facing := car.global_position-actor.to_global(position)
+	rotation.y = atan2(-facing.x,-facing.z)-actor.rotation.y
+	rotation.x = (0.27+working)*approach*(1.0-slip)
+	if animation != null and elapsed >= 0.4 and elapsed < 1.65:
+		animation.speed_scale = 1.0
+		if animation.current_animation != "DoorWork":
+			animation.play("DoorWork",0.12)
+	else:
+		animate(1.0)
 
 func apply_street_clothes(instance: MeshInstance3D) -> void:
 	# Color the rest-pose vertices, so clothes follow the existing skin and bones.
