@@ -877,6 +877,8 @@ func reload() -> void:
 	reload_time = 1.2 if weapon == 1 else (1.8 if weapon == 2 else 2.0)
 
 func shoot() -> void:
+	if world.vehicle_falls.has(world.vehicle_local_id()):
+		return
 	if world.network!=null and world.network.active():
 		world.network.rules.fire_local()
 		return

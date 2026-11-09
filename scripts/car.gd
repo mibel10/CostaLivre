@@ -70,6 +70,10 @@ func _physics_process(delta: float) -> void:
 				if rider.visible:
 					apply_rider_outfit(int(world.network.members.get(owner_id, {}).get("outfit", 0)))
 			return
+	if world.vehicle_held_for_entry(net_id):
+		speed = 0.0
+		velocity = Vector3.ZERO
+		return
 	if rider != null:
 		rider.visible = driving and hp > 0
 		if rider.visible:

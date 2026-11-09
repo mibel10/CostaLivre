@@ -41,7 +41,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if world.life != null:
 		var id := multiplayer.get_unique_id() if world.network != null and world.network.active() else 1
-		if world.life.elevator_rider_position(id) != null:
+		if world.life.elevator_rider_position(id) != null or world.vehicle_falls.has(id):
 			velocity = Vector3.ZERO
 			return
 	if world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id()):

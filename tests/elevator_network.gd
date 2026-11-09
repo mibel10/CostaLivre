@@ -132,6 +132,22 @@ func run() -> void:
 		push_error("Host did not detonate the disabled client vehicle")
 		quit(1)
 		return
+	assert(await wait_until(func(): return not host.network.rules.is_dead(id) and not client.network.rules.is_dead(id)))
+	var moving: Node3D = host.spawn_car(Vector3(130,0.3,42),Color.BLUE,false,1)
+	var moving_id: int = moving.net_id
+	assert(await wait_until(func(): return client.car_by_id(moving_id) != null))
+	client.network.rules.receive_event("spawn",{"position":moving.position+Vector3.LEFT*2.5})
+	assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(moving.position)<4.5), "Client reported position beside the car")
+	client.network.rules.send_action("vehicle_entry",{"car":moving_id})
+	assert(await wait_until(func(): return client.active_car == client.car_by_id(moving_id)))
+	client.active_car.speed = 9.0
+	assert(await wait_until(func(): return moving.speed > 0.5))
+	host.player.position = moving.position+Vector3.LEFT*2.5
+	host.network.rules.send_action("vehicle_entry",{"car":moving_id})
+	assert(await wait_until(func(): return client.vehicle_falls.has(id) and client.active_car == null))
+	assert(not client.player.visible and host.vehicle_falls.has(id))
+	assert(await wait_until(func(): return host.active_car == moving and host.network.owners.get(moving_id) == 1))
+	assert(await wait_until(func(): return client.player.visible and not client.vehicle_falls.has(id)))
 	print("PASS: host-authoritative deliveries, elevators and vehicle explosion")
 	client.network.disconnect_room()
 	host.network.disconnect_room()

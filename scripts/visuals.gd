@@ -1,6 +1,8 @@
 extends RefCounted
 
 var car_body: ArrayMesh
+var entry_shell: ArrayMesh
+var entry_doors := {}
 var car_wheels := {}
 var paint_cache := {}
 var textures := {}
@@ -33,8 +35,8 @@ func surface(name: String, tint: Color, scale_factor := 0.3) -> StandardMaterial
 	textures[key] = mat
 	return mat
 
-func prepare_car(world: Node3D, use_baked := true) -> void:
-	if car_body != null:
+func prepare_car(world: Node3D, use_baked := true, split_doors := false) -> void:
+	if (entry_shell != null if split_doors else car_body != null):
 		return
 	if use_baked and ResourceLoader.exists("res://assets/models/vehicle.tscn"):
 		var baked: Node3D = load("res://assets/models/vehicle.tscn").instantiate()
@@ -56,6 +58,11 @@ func prepare_car(world: Node3D, use_baked := true) -> void:
 		if part_name.begins_with("Engine"):
 			continue
 		var group := "body"
+		if split_doors:
+			if "DoorL" in part_name:
+				group = "DoorL"
+			elif "DoorR" in part_name:
+				group = "DoorR"
 		var wheel: Node3D
 		var ancestor: Node = item
 		while ancestor != source:
@@ -68,6 +75,8 @@ func prepare_car(world: Node3D, use_baked := true) -> void:
 			origins[group] = wheel.global_position - source.global_position
 			wheel_transforms[group] = source.global_transform.affine_inverse() * wheel.global_transform
 			transform = wheel.global_transform.affine_inverse() * item.global_transform
+		if split_doors and wheel != null:
+			continue
 		if not groups.has(group):
 			groups[group] = {}
 		for s in item.mesh.get_surface_count():
@@ -83,11 +92,82 @@ func prepare_car(world: Node3D, use_baked := true) -> void:
 		var mesh := ArrayMesh.new()
 		for mat in groups[group]:
 			groups[group][mat].commit(mesh)
-		if group == "body":
+		if split_doors:
+			if group == "body":
+				entry_shell = mesh
+			else:
+				entry_doors[group] = mesh
+		elif group == "body":
 			car_body = mesh
 		else:
 			car_wheels[group] = {"mesh": mesh, "origin": origins[group], "transform": wheel_transforms[group]}
 	source.free()
+
+func pose_car_door(car: Node3D, side: float, amount: float) -> void:
+	var detail: Node3D = car.get_node_or_null("DetailedBody")
+	var parent := detail if detail != null else car
+	var articulation: Node3D = parent.get_node_or_null("EntryDoor")
+	if articulation == null:
+		if amount <= 0.0:
+			return
+		articulation = Node3D.new()
+		articulation.name = "EntryDoor"
+		parent.add_child(articulation)
+		if detail != null:
+			prepare_car(car.world,false,true)
+			entry_door_mesh(articulation,entry_shell,car.paint)
+			for mesh: ArrayMesh in entry_doors.values():
+				var bounds := mesh.get_aabb()
+				var direction := signf(bounds.get_center().x)
+				var hinge := Node3D.new()
+				hinge.name = "Left" if direction > 0 else "Right"
+				hinge.position = Vector3(bounds.get_center().x,bounds.get_center().y,bounds.end.z)
+				articulation.add_child(hinge)
+				entry_door_mesh(hinge,mesh,car.paint).position = -hinge.position
+		else:
+			var size: Vector3 = car.Catalog.SIZES[car.tier]
+			for direction in [-1.0,1.0]:
+				var hinge := Node3D.new()
+				hinge.name = "Left" if direction < 0 else "Right"
+				hinge.position = Vector3(direction*size.x*0.46,size.y*0.48,-size.z*0.21)
+				articulation.add_child(hinge)
+				var door := BoxMesh.new()
+				door.size = Vector3(0.08,size.y*0.37,size.z*0.31)
+				var leaf := MeshInstance3D.new()
+				leaf.mesh = door
+				leaf.material_override = car.world.material(car.paint)
+				leaf.position.z = door.size.z/2.0
+				hinge.add_child(leaf)
+	articulation.visible = amount > 0.0
+	if detail != null:
+		for node in detail.get_children():
+			if node is MeshInstance3D and (node.mesh == car_body or node.name == "FarBody"):
+				node.visible = amount <= 0.0
+	var left: Node3D = articulation.get_node_or_null("Left")
+	var right: Node3D = articulation.get_node_or_null("Right")
+	if left != null:
+		left.rotation.y = -amount*1.1 if side < 0 else 0.0
+	if right != null:
+		right.rotation.y = amount*1.1 if side > 0 else 0.0
+	if detail == null:
+		left.visible = side < 0
+		right.visible = side > 0
+
+func entry_door_mesh(parent: Node3D, mesh: ArrayMesh, paint: Color) -> MeshInstance3D:
+	var instance := MeshInstance3D.new()
+	instance.mesh = mesh
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for i in mesh.get_surface_count():
+		var original := mesh.surface_get_material(i)
+		if original is StandardMaterial3D and "Paint" in original.resource_name:
+			var key := original.resource_name+paint.to_html()
+			if not paint_cache.has(key):
+				var mat: StandardMaterial3D = original.duplicate()
+				mat.albedo_color = paint
+				paint_cache[key] = mat
+			instance.set_surface_override_material(i,paint_cache[key])
+	parent.add_child(instance)
+	return instance
 
 func simplify_material(original: Material) -> Material:
 	if simplified_materials.has(original):

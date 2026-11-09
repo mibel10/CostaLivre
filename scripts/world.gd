@@ -45,6 +45,8 @@ var car_transition := false
 const VEHICLE_ENTRY_TIME := 2.0
 var vehicle_entries := {}
 var entry_visual := false
+var vehicle_falls := {}
+var opened_vehicle_doors := {}
 var bus_passenger := false
 var traffic_refresh := 0.0
 var sight_timer := 0.0
@@ -370,6 +372,8 @@ func restore_pointer() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if pointer_needed else Input.MOUSE_MODE_CAPTURED
 
 func _unhandled_input(event: InputEvent) -> void:
+	if vehicle_falls.has(vehicle_local_id()):
+		return
 	if network != null and network.offer_panel.visible:
 		return
 	if extra != null and extra.handle_input(event):
@@ -419,7 +423,7 @@ func vehicle_exit_offset(car: Node3D) -> Vector3:
 	return Vector3.ZERO
 
 func interact() -> void:
-	if car_transition:
+	if car_transition or vehicle_falls.has(vehicle_local_id()):
 		return
 	if bus_passenger:
 		network.rules.send_action("bus_exit")
@@ -456,11 +460,8 @@ func interact() -> void:
 		if closest == null:
 			return
 		if network != null and network.active():
-			if not network.car_available(closest):
-				if closest.tier == closest.Catalog.BUS:
-					network.rules.send_action("bus_board",{"car":closest.net_id})
-				else:
-					notify("Este carro está sendo usado por outro jogador.")
+			if not network.car_available(closest) and closest.tier == closest.Catalog.BUS:
+				network.rules.send_action("bus_board",{"car":closest.net_id})
 			else:
 				network.rules.send_action("vehicle_entry",{"car":closest.net_id})
 		else:
@@ -471,13 +472,33 @@ func request_vehicle_entry(id: int, car: Node3D, at: Vector3) -> void:
 		return
 	if id == 1 and (active_car != null or car_transition or finished):
 		return
-	if network != null and network.active() and int(network.owners.get(car.net_id,0)) not in [0,id]:
+	if vehicle_falls.has(id):
+		return
+	var online: bool = network != null and network.active()
+	var driver: int = int(network.owners.get(car.net_id,0)) if online else 0
+	if driver == id:
+		return
+	var victim := driver if driver > 0 else (-1 if car.traffic and absf(car.speed) > 0.5 else 0)
+	if victim != 0 and (absf(car.speed) <= 0.5 or car.tier in [9,car.Catalog.BUS]):
+		if online:
+			network.rules.private_notice(id,"Este veículo está ocupado.")
+		else:
+			notify("Este veículo está ocupado.")
 		return
 	for other in vehicle_entries.values():
 		if other.car == car.net_id:
 			return
 	var side := -1.0 if car.to_local(at).x < 0 else 1.0
-	vehicle_entries[id] = {"car":car.net_id,"side":side,"time":0.0,"at":at}
+	var exit_at := Vector3.ZERO
+	if victim != 0:
+		var offset := vehicle_exit_offset(car)
+		if offset == Vector3.ZERO:
+			return
+		exit_at = car.to_global(offset)
+		if absf(offset.x) > 0.1:
+			side = signf(offset.x)
+	vehicle_entries[id] = {"car":car.net_id,"side":side,"time":0.0,"at":at,"victim":victim,
+		"exit":exit_at,"ejected":false,"duration":1.0 if victim != 0 else VEHICLE_ENTRY_TIME}
 	if id == 1:
 		car_transition = true
 		entry_visual = true
@@ -485,9 +506,26 @@ func request_vehicle_entry(id: int, car: Node3D, at: Vector3) -> void:
 		player.roll_time = 0
 		player.model.position = Vector3.ZERO
 		player.model.rotation.x = 0
-		notify("Abrindo a porta…" if car.owned else "Arrombando a trava…")
+		notify("Abrindo a porta…" if victim != 0 or car.owned else "Arrombando a trava…")
+
+func vehicle_local_id() -> int:
+	return multiplayer.get_unique_id() if network != null and network.active() else 1
+
+func vehicle_held_for_entry(car_id: int) -> bool:
+	if vehicle_entries.is_empty():
+		return false
+	for entry in vehicle_entries.values():
+		if entry.car == car_id:
+			return true
+	return false
 
 func tick_vehicle_entries(delta: float) -> void:
+	for id: int in vehicle_falls.keys():
+		vehicle_falls[id].time -= delta
+		if vehicle_falls[id].time <= 0.0:
+			vehicle_falls.erase(id)
+			if id == vehicle_local_id() and active_car == null and not finished and (network == null or not network.active() or not network.rules.is_dead(id)):
+				player.show()
 	var online: bool = network != null and network.active()
 	if not online or not network.is_client():
 		for id: int in vehicle_entries.keys():
@@ -497,22 +535,49 @@ func tick_vehicle_entries(delta: float) -> void:
 				vehicle_entries.erase(id)
 				continue
 			entry.time += delta
-			if entry.time < VEHICLE_ENTRY_TIME:
+			if entry.victim != 0 and not entry.ejected and entry.time >= 0.45:
+				if online and entry.victim > 0 and int(network.owners.get(car.net_id,0)) != int(entry.victim):
+					vehicle_entries.erase(id)
+					continue
+				eject_vehicle_driver(car,entry,online)
+				entry.ejected = true
+			if entry.time < entry.duration:
 				continue
 			vehicle_entries.erase(id)
 			if entry.at.distance_squared_to(car.position) >= 20.25 or (online and int(network.owners.get(car.net_id,0)) not in [0,id]):
 				continue
 			car.traffic = false
-			if not car.owned:
+			if not car.owned or entry.victim != 0:
 				car.owned = true
 				raise_heat(12,id)
 			if online:
 				network.owners[car.net_id] = id
+				var member: Dictionary = network.members[id]
+				member.car = car.net_id
+				member.car_position = car.position
+				member.car_heading = car.heading
+				member.speed = car.speed
 				network.vehicle_grants[id] = [car.net_id,Time.get_ticks_msec()+1200]
 				network.rules.send_personal(id,"vehicle_enter",{"car":car.net_id})
 			else:
 				finish_vehicle_entry(car)
-	var id := multiplayer.get_unique_id() if online else 1
+	var doors := {}
+	for entry in vehicle_entries.values():
+		var car := car_by_id(entry.car)
+		if car == null or car.hp <= 0 or car.tier == 9:
+			continue
+		var start := 0.13 if entry.victim != 0 else 1.55
+		var amount := smoothstep(start,start+0.25,float(entry.time))
+		amount *= 1.0-smoothstep(float(entry.duration)-0.16,float(entry.duration),float(entry.time))
+		if amount > 0:
+			visuals.pose_car_door(car,entry.side,amount)
+			doors[entry.car] = car
+	for car_id in opened_vehicle_doors:
+		var car: Node3D = opened_vehicle_doors[car_id]
+		if not doors.has(car_id) and is_instance_valid(car):
+			visuals.pose_car_door(car,0,0)
+	opened_vehicle_doors = doors
+	var id := vehicle_local_id()
 	if vehicle_entries.has(id) and active_car == null:
 		var entry: Dictionary = vehicle_entries[id]
 		var car := car_by_id(entry.car)
@@ -520,12 +585,59 @@ func tick_vehicle_entries(delta: float) -> void:
 			car_transition = true
 			entry_visual = true
 			player.roll_time = 0
-			player.model.pose_vehicle_entry(player,car,entry.side,entry.time)
+			player.model.pose_vehicle_entry(player,car,entry.side,entry.time*VEHICLE_ENTRY_TIME/entry.duration)
 	elif entry_visual:
 		entry_visual = false
 		car_transition = false
 		player.model.position = Vector3.ZERO
 		player.model.rotation.x = 0
+
+func eject_vehicle_driver(car: Node3D, entry: Dictionary, online: bool) -> void:
+	var victim: int = entry.victim
+	var outfit := 0
+	if online and victim > 0:
+		var member: Dictionary = network.members[victim]
+		outfit = int(member.get("outfit",0))
+		member.car = -1
+		member.position = entry.exit
+		member.car_position = entry.exit
+		member.speed = 0.0
+		network.owners.erase(car.net_id)
+		network.vehicle_grants.erase(victim)
+	car.traffic = false
+	var launch := Vector3(entry.side*2.9,1.7,-1.3).rotated(Vector3.UP,car.heading)
+	var from := car.to_global(Vector3(entry.side*0.85,0.45,-0.15))
+	var data := {"victim":victim,"at":entry.exit,"from":from,"launch":launch,"heading":car.heading,"outfit":outfit}
+	play_vehicle_fall(data)
+	if online:
+		for id in network.members:
+			if id != 1 and not network.members[id].is_empty():
+				network.personal.rpc_id(id,"vehicle_fall",data)
+
+func play_vehicle_fall(data: Dictionary) -> void:
+	var victim: int = data.victim
+	if victim > 0:
+		vehicle_falls[victim] = {"time":2.0,"at":data.at}
+		if victim == vehicle_local_id():
+			if active_car != null:
+				active_car.driving = false
+			active_car = null
+			bus_passenger = false
+			car_transition = false
+			player.position = data.at
+			player.velocity = Vector3.ZERO
+			player.collision_layer = 2
+			player.model.position = Vector3.ZERO
+			player.model.rotation = Vector3.ZERO
+			player.model.process_mode = Node.PROCESS_MODE_INHERIT
+			player.hide()
+	var ragdoll := preload("res://scripts/human_visual.gd").new()
+	ragdoll.add_to_group("ejected_driver")
+	ragdoll.outfit_index = data.outfit
+	ragdoll.position = data.from
+	ragdoll.rotation.y = data.heading
+	add_child(ragdoll)
+	ragdoll.start_driver_ragdoll(data.launch)
 
 func finish_vehicle_entry(car: Node3D) -> void:
 	if not is_instance_valid(car) or car.hp <= 0 or finished:

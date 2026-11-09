@@ -20,6 +20,24 @@ func run() -> void:
 	assert(world.active_car == null and world.player.visible)
 	await create_timer(0.4).timeout
 	car.speed = 0
+	var moving: Node3D = world.spawn_car(Vector3(150,0.3,12),Color.BLUE,false,1)
+	moving.traffic = true
+	moving.speed = 9.0
+	world.player.position = moving.position + Vector3.LEFT * 2.5
+	world.interact()
+	await create_timer(0.31).timeout
+	assert(world.active_car == null and moving.get_node("DetailedBody/EntryDoor/Left").rotation.y < -0.1)
+	await create_timer(0.33).timeout
+	var falls := get_nodes_in_group("ejected_driver")
+	assert(falls.size() == 1 and world.active_car == null)
+	var bones := falls[0].find_children("*","PhysicalBone3D",true,false)
+	assert(bones.size() >= 10 and bones.all(func(bone): return bone.get_bone_id() >= 0))
+	await create_timer(0.5).timeout
+	assert(world.active_car == moving and not moving.traffic)
+	world.interact()
+	await create_timer(0.4).timeout
+	await create_timer(1.1).timeout
+	assert(get_nodes_in_group("ejected_driver").is_empty())
 	world.player.position = Vector3(126,0,12)
 	world.camera_yaw = 0
 	var target = world.spawn_car(Vector3(126,0,10), Color.RED)

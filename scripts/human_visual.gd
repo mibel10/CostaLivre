@@ -102,6 +102,48 @@ func pose_vehicle_entry(actor: Node3D, car: Node3D, side: float, elapsed: float)
 	else:
 		animate(1.0)
 
+func start_driver_ragdoll(launch: Vector3) -> void:
+	if animation != null:
+		animation.stop(true)
+	var skeleton: Skeleton3D = find_children("*","Skeleton3D",true,false)[0]
+	var simulator := PhysicalBoneSimulator3D.new()
+	skeleton.add_child(simulator)
+	var bodies: Array[PhysicalBone3D] = []
+	for index in skeleton.get_bone_count():
+		var bone_name := String(skeleton.get_bone_name(index))
+		if not ("torso" in bone_name or "neck_joint_1" in bone_name or ("arm_joint" in bone_name and not "__3_" in bone_name) or ("leg_joint" in bone_name and (bone_name.ends_with("_1") or bone_name.ends_with("_2")))):
+			continue
+		var rest := skeleton.get_bone_global_pose(index)
+		var axis := Vector3(0,0.15,0)
+		var children := skeleton.get_bone_children(index)
+		if not children.is_empty():
+			axis = rest.affine_inverse()*skeleton.get_bone_global_pose(children[0]).origin
+		var body := PhysicalBone3D.new()
+		body.name = bone_name
+		body.collision_layer = 0
+		body.collision_mask = 1
+		body.mass = 4 if "torso" in bone_name else 1.5
+		body.set("bone_name",skeleton.get_bone_name(index))
+		simulator.add_child(body)
+		if not bodies.is_empty():
+			body.joint_type = PhysicalBone3D.JOINT_TYPE_CONE
+		var capsule := CapsuleShape3D.new()
+		capsule.radius = 0.11 if "torso" in bone_name or "neck" in bone_name else 0.065
+		capsule.height = maxf(capsule.radius*2,axis.length()+capsule.radius)
+		var shape := CollisionShape3D.new()
+		shape.shape = capsule
+		shape.position = axis*0.5
+		if axis.length_squared() > 0.0001:
+			shape.basis = Basis(Quaternion(Vector3.UP,axis.normalized()))
+		body.add_child(shape)
+		bodies.append(body)
+	simulator.physical_bones_start_simulation()
+	for body in bodies:
+		body.linear_velocity = launch
+		body.angular_velocity = Vector3(1.4,0.3,2.0)
+	await get_tree().create_timer(2.0,false).timeout
+	queue_free()
+
 func apply_street_clothes(instance: MeshInstance3D) -> void:
 	# Color the rest-pose vertices, so clothes follow the existing skin and bones.
 	var source: Mesh = instance.mesh

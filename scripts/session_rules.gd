@@ -357,7 +357,7 @@ func tick_mission_offer() -> void:
 func action(id: int, kind: String, data: Dictionary) -> void:
 	if not multiplayer.is_server() or not sheets.has(id) or is_dead(id):
 		return
-	if bus_riders.has(id) and kind not in ["bus_exit", "mission_response"]:
+	if world.vehicle_falls.has(id) or (bus_riders.has(id) and kind not in ["bus_exit", "mission_response"]):
 		return
 	# Reliable keypad events can arrive in the same frame. The active hack
 	# already limits input through its reveal phase, attempts and lockout.
@@ -526,6 +526,8 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
+		"vehicle_fall":
+			world.play_vehicle_fall(data)
 		"vehicle_enter":
 			world.finish_vehicle_entry(world.car_by_id(int(data.car)))
 		"bus_board":

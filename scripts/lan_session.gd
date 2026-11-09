@@ -402,6 +402,9 @@ func disconnect_room() -> void:
 	hide_mission_offer()
 	world.life.leave_elevator_session()
 	world.vehicle_entries.clear()
+	world.vehicle_falls.clear()
+	if world.active_car == null and not world.finished:
+		world.player.show()
 	vehicle_grants.clear()
 	if world.bus_passenger:
 		var offset: Vector3 = world.vehicle_exit_offset(world.active_car)
@@ -494,6 +497,11 @@ func accept_state(id: int, state: Dictionary) -> void:
 			state["car_position"] = bus.position
 			state["car"] = -1
 			state["held"] = false
+	if world.vehicle_falls.has(id):
+		state.position = world.vehicle_falls[id].at
+		state.car_position = state.position
+		state.car = -1
+		state.held = false
 	if world.vehicle_entries.has(id):
 		var entry: Dictionary = world.vehicle_entries[id]
 		state.position = entry.at
@@ -611,7 +619,7 @@ func _process(delta: float) -> void:
 func apply_car(id: int,state: Dictionary) -> void:
 	var index := int(state.get("car",-1))
 	var car: Node3D=world.car_by_id(index)
-	if car!=null and car.hp>0 and owners.get(index,0)==id:
+	if car!=null and car.hp>0 and owners.get(index,0)==id and not world.vehicle_held_for_entry(index):
 		var at: Vector3=state.car_position
 		var heading_value = state.get("car_heading", 0.0)
 		var speed_value = state.get("speed", 0.0)
@@ -753,7 +761,7 @@ func update_avatars(states: Dictionary) -> void:
 			avatar.tag.text=player_name
 		avatar.tag_at=(state.car_position if int(state.car)>=0 else state.position)+Vector3(0,3.0 if int(state.car)>=0 else 2.5,0)
 		var close: bool = avatar.tag_at.distance_to(world.subject_position())<80
-		avatar.node.visible=on_foot and close
+		avatar.node.visible=on_foot and close and not world.vehicle_falls.has(id)
 		avatar.node.set_weapon(int(state.get("weapon",1)))
 		avatar.node.set_crouched(bool(state.get("crouch",false)))
 		var remaining: float = float(state.get("roll",0))
@@ -762,7 +770,7 @@ func update_avatars(states: Dictionary) -> void:
 		avatar.node.model.position = pivot-Basis.from_euler(avatar.node.model.rotation)*pivot if remaining > 0 else Vector3(0,-0.28,0) if avatar.node.is_crouching else Vector3.ZERO
 		avatar.node.collision_layer=2 if on_foot and float(state.get("hp",100))>0 else 0
 		avatar.node.model.rotation.z=PI/2 if float(state.get("hp",100))<=0 else 0
-		avatar.tag.visible=close and not state.has("bus")
+		avatar.tag.visible=close and not state.has("bus") and not world.vehicle_falls.has(id)
 		avatar.node.model.process_mode=Node.PROCESS_MODE_INHERIT if close else Node.PROCESS_MODE_DISABLED
 		if close and on_foot:
 			avatar.node.animate(3.0 if avatar.at.distance_squared_to(state.position)>0.0064 else 0.0)
@@ -771,7 +779,7 @@ func update_avatars(states: Dictionary) -> void:
 			var entry: Dictionary = world.vehicle_entries[id]
 			var car: Node3D = world.car_by_id(entry.car)
 			if is_instance_valid(car):
-				avatar.node.model.pose_vehicle_entry(avatar.node,car,entry.side,entry.time)
+				avatar.node.model.pose_vehicle_entry(avatar.node,car,entry.side,entry.time*world.VEHICLE_ENTRY_TIME/entry.duration)
 		if multiplayer.is_server():
 			avatar.node.position=avatar.at
 		avatar.heading=float(state.heading)
