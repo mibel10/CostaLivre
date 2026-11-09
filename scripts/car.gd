@@ -86,9 +86,11 @@ func _physics_process(delta: float) -> void:
 	if tier == Catalog.SUPERCAR and (not driving or hp <= 0 or world.finished):
 		hovering = false
 	if traffic and not driving and not traffic_nearby and hp > 0:
+		update_ramp_tilt(delta)
 		return
 	# Parked colliders stay active without repeating floor queries every physics tick.
 	if hp > 0 and not driving and not traffic and (not police or police_phase=="parked") and absf(speed)<0.01 and is_on_floor() and Vector2(velocity.x,velocity.z).length_squared()<0.01:
+		update_ramp_tilt(delta)
 		return
 	if hp <= 0:
 		if exploded and despawn_timer >= 0 and (world.network == null or not world.network.active() or multiplayer.is_server()):
@@ -192,6 +194,7 @@ func _physics_process(delta: float) -> void:
 			velocity.y = clampf((height - global_position.y) * 5.0, -8.0, 8.0)
 	var previous := position
 	move_and_slide()
+	update_ramp_tilt(delta)
 	if driving and not world.finished and (world.network == null or not world.network.is_client()):
 		world.check_vehicle_entry(previous, position)
 	if is_on_floor():
@@ -497,3 +500,20 @@ func set_suspension(value: float) -> void:
 	var collider: CollisionShape3D = get_child(0)
 	collider.shape.size.y = Catalog.SIZES[tier].y+value
 	collider.position.y = collider.shape.size.y/2
+
+func update_ramp_tilt(delta: float) -> void:
+	var pitch := 0.0
+	if is_on_floor() and not hovering:
+		var normal := get_floor_normal()
+		var forward := Vector3(-sin(heading), 0, -cos(heading))
+		pitch = atan2(-normal.dot(forward), maxf(normal.y, 0.1))
+	var body_name := "Fusquinha" if tier == 0 else ("DetailedBody" if tier < 4 else "CustomVehicle")
+	var body: Node3D = get_node_or_null(body_name)
+	var blend := minf(1.0, delta * 8.0)
+	if body != null:
+		body.rotation.x = lerp_angle(body.rotation.x, -pitch if tier < 4 else pitch, blend)
+	if tier in [1, 2, 3]:
+		for wheel in wheels:
+			var hub := wheel.get_parent() as Node3D
+			if hub != null:
+				hub.rotation.x = lerpf(hub.rotation.x, pitch, blend)
