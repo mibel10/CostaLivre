@@ -99,6 +99,22 @@ func run() -> void:
 		a.target_car.speed = speed
 		a.tick_mission(0.1)
 	assert(a.job == -1 and a.shipment_integrity <= 0 and world.health == driver_health, "Impacts destroy cargo without killing the driver")
+	world.active_car = null
+	a.start_job(30)
+	world.player.position = a.ACTION_JOBS[30].points[0]
+	assert(a.interact_campaign())
+	for point in a.ACTION_JOBS[30].points.slice(1):
+		world.player.position = point
+		a.tick_mission(0.1)
+	assert(a.job == -1, "The on-foot race can be completed")
+	a.start_job(31)
+	world.player.position = a.ACTION_JOBS[31].point
+	assert(a.interact_campaign())
+	for guard in a.officers:
+		if int(guard.get_meta("mission_contract", -1)) == 31:
+			guard.take_hit(1000)
+	a.tick_mission(21.0)
+	assert(a.job == -1, "The clinic defense can be completed")
 	world.queue_free()
 	await process_frame
 	print("PASS: all 25 chapters through objective rules, bank, cutscene transitions and campaign ending")
@@ -113,6 +129,18 @@ func finish_action(world: Node, car: Node) -> void:
 	Input.action_release("activity")
 	assert(a.stage == original_stage, "Holding the old service button cannot finish the new mission")
 	match str(spec.kind):
+		"assault":
+			world.active_car = null
+			assert(a.contract_guards_alive() == 3)
+			for guard in a.officers:
+				if int(guard.get_meta("mission_contract", -1)) == a.job:
+					guard.take_hit(1000)
+			a.tick_mission(0.1)
+			assert(a.stage == 1)
+			world.player.position = spec.point
+			assert(a.interact_campaign())
+			world.player.position = spec.exit
+			a.tick_mission(0.1)
 		"clinic_evacuation":
 			world.active_car = a.target_car
 			a.target_car.speed = 0.0

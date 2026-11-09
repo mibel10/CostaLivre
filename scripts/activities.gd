@@ -15,7 +15,7 @@ const ACTION_JOBS := {
 	11: {"name":"Sinal pirata","kind":"precision","story":"Derrube os tres transmissores nos andares 3, 5 e 7 do estudio. Saia e despiste o alarme.","reward":4200,"points":[Vector3(143,13.4,67),Vector3(151,25.4,64),Vector3(147,37.4,57)],"exit":Vector3(147,0,84),"time":220.0},
 	12: {"name":"Cerco no décimo","kind":"escape_file","story":"Pegue o arquivo no decimo andar, sobreviva a invasao e desca para despistar a policia.","reward":4800,"pickup":Vector3(-67,54,67),"exit":Vector3(-63,0,80),"time":240.0},
 	13: {"name":"Corrida pela vida","kind":"rescue","story":"Pegue o carro de atendimento da clinica, resgate o morador no morro e volte com o veiculo inteiro.","reward":4000,"model":8,"spawn":Vector3(63,0.3,38),"pickup":Vector3(714,9.9,4.5),"drop":Vector3(63,0,38),"min_hp":80,"time":210.0},
-	14: {"name":"Becos sem freio","kind":"drive","story":"Pegue a moto e cruze as vielas da favela antes do tempo acabar. Os pontos estreitos exigem controle.","reward":3400,"model":9,"spawn":Vector3(378,10.2,4.5),"points":[Vector3(382.75,9.9,14),Vector3(382.75,9.9,20),Vector3(397,9.9,31),Vector3(420,7.4,31)],"radius":2.5,"time":100.0},
+	14: {"name":"Invasão ao estúdio","kind":"assault","story":"Entre no Estúdio Solar a pé, elimine os guardas, recupere os arquivos e saia do prédio.","reward":4000,"point":Vector3(147,0,58),"exit":Vector3(147,0,80),"guards":[Vector3(140,0.2,59),Vector3(154,0.2,59),Vector3(147,0.2,55)],"time":210.0},
 	15: {"name":"Último refúgio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 30 segundos e elimine os tres invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":30.0,"time":160.0},
 	16: {"name":"Caçada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0},
 	17: {"name":"Roubo de suprimentos","kind":"cargo","story":"Recolha tres caixas no supermercado, consiga um carro e leve a carga a oficina depois de despistar a policia.","reward":4200,"points":[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)],"drop":Vector3(-21,0,63),"time":220.0},
@@ -1229,7 +1229,7 @@ func show_passenger_boarding(start: Vector3, car_id: int) -> void:
 	var model := preload("res://scripts/human_visual.gd").new()
 	actor.add_child(model)
 	var side := 1.0 if car.to_local(start).x >= 0 else -1.0
-	var tween := create_tween()
+	var tween := actor.create_tween()
 	tween.tween_method(func(elapsed: float):
 		if is_instance_valid(car) and is_instance_valid(model):
 			model.pose_vehicle_entry(actor, car, side, elapsed)
@@ -1252,6 +1252,10 @@ func interact_campaign() -> bool:
 			stage += 1
 			world.raise_heat(12 if stage < spec.points.size() else 35)
 			world.notify("Paciente embarcado: %d/%d. Volte para a Clínica Costa." % [stage,spec.points.size()] if stage == spec.points.size() else "Paciente embarcado: %d/%d. Siga para a próxima localização." % [stage,spec.points.size()])
+			return true
+		if spec.kind == "assault" and stage == 1 and world.active_car == null and world.player.position.distance_to(spec.point) < 3:
+			stage = 2
+			world.notify("Arquivos recuperados. Saia do estúdio a pé.")
 			return true
 		if spec.kind == "infiltration":
 			if stage == 1:
@@ -1344,6 +1348,8 @@ func setup_action_job() -> bool:
 	clock = float(spec.time)
 	shipment_integrity = 100.0
 	previous_mission_speed = 0.0
+	if ACTION_JOBS[job].kind == "assault":
+		spawn_action_guards()
 	if ACTION_JOBS[job].kind == "infiltration":
 		world.heat = 0
 		world.response_delay = 0
@@ -1367,12 +1373,13 @@ func action_requires_car() -> bool:
 	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue","clinic_evacuation"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()) or (ACTION_JOBS[job].kind == "getaway" and stage > 0))
 
 func action_requires_foot() -> bool:
-	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["foot_race","infiltration"]
+	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["foot_race","infiltration","assault"]
 
 func action_destination() -> Vector3:
 	var spec: Dictionary = ACTION_JOBS[job]
 	match str(spec.kind):
 		"clinic_evacuation": return target_car.position if stage < spec.points.size() and is_instance_valid(target_car) and world.active_car != target_car else (spec.points[stage] if stage < spec.points.size() else spec.drop)
+		"assault": return spec.exit if stage == 2 else spec.point
 		"infiltration":
 			if stage == 1:
 				var guard := nearest_sentinel()
@@ -1403,6 +1410,7 @@ func action_objective() -> String:
 	var spec: Dictionary = ACTION_JOBS[job]
 	var text := ""
 	match str(spec.kind):
+		"assault": text = ["Elimine os guardas do estúdio: %d" % contract_guards_alive(), "F / Recolha os arquivos", "Saia do estúdio a pé"][mini(stage,2)]
 		"clinic_evacuation": text = "Pegue a ambulância marcada" if world.active_car != target_car else ("Recolha pacientes / %d/%d" % [stage,spec.points.size()] if stage < spec.points.size() else "Volte à Clínica Costa com a ambulância")
 		"infiltration":
 			text = ["Agache e atire na tampa da tubulacao", "Neutralize os dois policiais sem ruido / %d restantes" % contract_guards_alive(), "Entre no computador e conecte o pendrive", "Extraindo dados / %d%% / elimine a equipe tatica" % mini(roundi(progress/45.0*100),100), "Dados copiados / F para recuperar o pendrive", "Agache e fuja pela mesma tubulacao"][mini(stage,5)]
@@ -1433,6 +1441,12 @@ func tick_action_job(delta: float) -> void:
 		return
 	var stopped: bool = world.active_car != null and absf(world.active_car.speed) < 3
 	match str(spec.kind):
+		"assault":
+			if stage == 0 and contract_guards_alive() == 0:
+				stage = 1
+				world.notify("Área segura. Recolha os arquivos.")
+			elif stage == 2 and world.active_car == null and world.player.position.distance_to(spec.exit) < 5:
+				complete_job()
 		"clinic_evacuation":
 			if not is_instance_valid(target_car) or target_car.hp <= float(spec.min_hp):
 				fail_job("A ambulância ficou danificada demais.")
@@ -1519,6 +1533,8 @@ func tick_action_job(delta: float) -> void:
 func action_prompt() -> String:
 	if not ACTION_JOBS.has(job): return ""
 	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind == "assault" and stage == 1 and world.active_car == null and world.player.position.distance_to(spec.point) < 3:
+		return "F / Recolher arquivos"
 	if spec.kind == "getaway" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
 		return "F / Roubar maleta e iniciar a fuga"
 	if spec.kind == "foot_race" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.points[0]) < 3:
