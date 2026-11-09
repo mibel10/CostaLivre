@@ -8,6 +8,7 @@ var map_view: Control
 var quality_select: OptionButton
 var fps_select: OptionButton
 var counter_select: OptionButton
+var upscaling_select: OptionButton
 var window_mode_select: OptionButton
 var resolution_select: OptionButton
 var window_resolutions: Array[Vector2i] = []
@@ -208,6 +209,15 @@ func _ready() -> void:
 		pages.graphics.add_child(option)
 		advanced_options[spec[0]]=option
 		option.item_selected.connect(func(value): world.settings.set_custom(spec[0],value); refresh())
+	var upscaling_y: float = 472 if not OS.has_feature("android") else 454
+	label(pages.graphics, "Upscaling", Vector2(440, upscaling_y), 16)
+	upscaling_select=OptionButton.new()
+	upscaling_select.position=Vector2(440,upscaling_y+25)
+	upscaling_select.size=Vector2(395,34)
+	for mode in world.settings.UPSCALING_MODES:
+		upscaling_select.add_item(mode)
+	pages.graphics.add_child(upscaling_select)
+	upscaling_select.item_selected.connect(func(index): world.settings.set_upscaling(index); refresh())
 	status = label(pages.graphics, "", Vector2(0, 552 if not OS.has_feature("android") else 530), 18, Color("ffd18a"))
 	label(pages.controls, "CONTROLES", Vector2.ZERO, 27, Color("ffd18a"))
 	for i in REBIND_ACTIONS.size():
@@ -343,6 +353,7 @@ func refresh() -> void:
 		var value: int = {"textures":world.settings.texture_quality,"shadows":world.settings.shadow_quality,"aa":world.settings.antialiasing,"distance":world.settings.draw_distance,"details":int(world.settings.detail_maps)}[key]
 		advanced_options[key].select(value)
 	quality_select.select(5 if world.settings.customized else world.settings.quality)
+	upscaling_select.select(world.settings.upscaling)
 	if window_mode_select != null:
 		window_mode_select.select(world.settings.window_mode)
 		resolution_select.select(window_resolutions.find(world.settings.window_resolution))

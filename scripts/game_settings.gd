@@ -2,6 +2,8 @@ extends Node
 
 const QUALITIES := ["Ultra", "Alto", "Médio", "Baixo", "Batata"]
 const FPS_LIMITS := [30, 60, 120, 144, 180, 240, 360, 0]
+const UPSCALING_MODES := ["Desativado", "Qualidade", "Balanceado", "Performance", "Ultra performance"]
+const UPSCALING_SCALES := [1.0, 0.9, 0.8, 0.7, 0.5]
 const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_WINDOWED]
 const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const NEAR := [85.0, 65.0, 45.0, 18.0, 12.0]
@@ -17,6 +19,7 @@ var shadow_quality := 0
 var antialiasing := 0
 var draw_distance := 3
 var detail_maps := false
+var upscaling := 0
 var window_mode := 2
 var window_resolution := Vector2i(1280, 720)
 var toggle_crouch := false
@@ -50,6 +53,8 @@ func load_settings() -> void:
 	antialiasing=clampi(config.get_value("video","aa",[3,2,0,0,0][quality]),0,3)
 	draw_distance=clampi(config.get_value("video","distance",quality),0,4)
 	detail_maps=config.get_value("video","details",quality<3)
+	var upscaling_value = config.get_value("video","upscaling",0)
+	upscaling=clampi(upscaling_value,0,4) if typeof(upscaling_value)==TYPE_INT else 0
 	window_mode=clampi(config.get_value("video","window_mode",2),0,2)
 	window_resolution=Vector2i(config.get_value("video","window_width",1280),config.get_value("video","window_height",720))
 	if not OS.has_feature("android") and (window_resolution.x > DisplayServer.screen_get_size().x or window_resolution.y > DisplayServer.screen_get_size().y):
@@ -65,6 +70,7 @@ func save_settings() -> void:
 	config.set_value("video","aa",antialiasing)
 	config.set_value("video","distance",draw_distance)
 	config.set_value("video","details",detail_maps)
+	config.set_value("video","upscaling",upscaling)
 	config.set_value("controls","toggle_crouch",toggle_crouch)
 	config.set_value("controls","toggle_sprint",toggle_sprint)
 	config.set_value("video", "fps_limit", fps_limit)
@@ -153,11 +159,10 @@ func apply_range(node: GeometryInstance3D) -> void:
 func apply() -> void:
 	set_fps_limit(fps_limit, false)
 	apply_display_settings()
+	apply_upscaling()
 	world.camera.far = FAR[draw_distance]
 	world.get_viewport().msaa_3d = Viewport.MSAA_4X if antialiasing == 3 else (Viewport.MSAA_2X if antialiasing == 2 else Viewport.MSAA_DISABLED)
 	world.get_viewport().screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if antialiasing == 1 else Viewport.SCREEN_SPACE_AA_DISABLED
-	# Native resolution avoids an extra upscale pass on this older Compatibility GPU.
-	world.get_viewport().scaling_3d_scale = 1.0
 	for mat in tracked:
 		apply_texture(mat)
 		mat.normal_enabled = tracked[mat] and detail_maps
@@ -177,6 +182,17 @@ func apply() -> void:
 		light.visible = quality < 4
 	for label in world.find_children("*", "Label3D", true, false):
 		apply_range(label)
+
+func set_upscaling(value: int) -> void:
+	if value < 0 or value >= UPSCALING_SCALES.size():
+		return
+	upscaling=value
+	apply_upscaling()
+	save_settings()
+
+func apply_upscaling() -> void:
+	world.get_viewport().scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
+	world.get_viewport().scaling_3d_scale = UPSCALING_SCALES[upscaling]
 
 func get_window_resolutions() -> Array[Vector2i]:
 	var native_size := DisplayServer.screen_get_size()
