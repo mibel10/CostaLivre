@@ -100,8 +100,12 @@ func _physics_process(delta: float) -> void:
 	elif driving and not world.finished:
 		var throttle := (Input.get_action_strength("forward") - Input.get_action_strength("back")) if world.activities.menu=="" and not (world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id())) else 0.0
 		var top_speed: float = Catalog.SPEEDS[tier]*(1.0 if Input.is_action_pressed("sprint") else 0.76)+engine_upgrade
+		var acceleration: float = Catalog.ACCEL[tier]
+		if tier == Catalog.BUS:
+			top_speed = Catalog.SPEEDS[tier]
+			acceleration += engine_upgrade
 		if throttle != 0:
-			speed = move_toward(speed, throttle * (top_speed if throttle > 0 else (5.0 if tier == 9 else 12.0)), delta * (22 if speed * throttle < 0 else Catalog.ACCEL[tier]))
+			speed = move_toward(speed, throttle * (top_speed if throttle > 0 else (5.0 if tier == 9 else 12.0)), delta * (22 if speed * throttle < 0 else acceleration))
 		else:
 			speed = move_toward(speed, 0, delta * 3.5)
 		if Input.is_action_pressed("jump"):
@@ -191,7 +195,8 @@ func _physics_process(delta: float) -> void:
 			break
 	# Use actual travel, so wheels do not keep spinning when blocked by a wall.
 	var travel := Vector2(get_real_velocity().x,get_real_velocity().z).length() * delta
-	wheel_angle = fposmod(wheel_angle + travel / (0.36 if tier >= 4 else 0.384 * 0.95) * signf(speed),TAU)
+	var wheel_radius := 0.52 if tier == Catalog.BUS else (0.36 if tier >= 4 else 0.384 * 0.95)
+	wheel_angle = fposmod(wheel_angle + travel / wheel_radius * signf(speed),TAU)
 	steering_angle = move_toward(steering_angle,steer * 0.38,delta * 2)
 	var detail_distance: float = world.settings.NEAR[world.settings.draw_distance] + 3 if world.settings != null else 30.0
 	if world.camera != null and position.distance_squared_to(world.camera.position) < detail_distance * detail_distance:

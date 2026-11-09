@@ -217,7 +217,7 @@ func draw_menu(a: Node) -> void:
 		rows = ["Pistola + 48 munições   ·   $400", "Fuzil + 90 munições   ·   $1800", "Escopeta + 32 cartuchos   ·   $2400", "SMG + 96 munições   ·   $2100", "Munição para suas armas   ·   $150"]
 	else:
 		for index in range(a.car_page*3,mini(a.CAR_PRICES.size(),a.car_page*3+3)):
-			rows.append("%s   /   %d km/h   /   $%d" % [a.Catalog.NAMES[index+1],int(a.Catalog.SPEEDS[index+1]*3.6),a.CAR_PRICES[index]])
+			rows.append("%s   /   %d km/h   /   $%d" % [a.Catalog.NAMES[index+1],roundi(a.Catalog.SPEEDS[index+1]*3.6),a.CAR_PRICES[index]])
 	for i in rows.size():
 		panel(Rect2(362, 218 + i * 43, 556, 36), Color("20343f"), 5)
 		text(str(i + 1), Vector2(376, 243 + i * 43), 18, gold)

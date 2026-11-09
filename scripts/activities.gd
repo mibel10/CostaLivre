@@ -51,8 +51,8 @@ var purchased_cars: Array = []
 const GARAGE := Vector3(-21, 0, 63)
 const ROBBERIES := [Vector3(-63, 0, -8), Vector3(63, 0, -50), Vector3(21, 0, -89), Vector3(264.8, 0, -111.0), Vector3(264.8, 0, -105.5), Vector3(264.8, 0, -100.0), Vector3(264.8, 0, -94.5), Vector3(264.8, 0, -89.0), Vector3(768.8, 0, -111.0), Vector3(768.8, 0, -105.5), Vector3(768.8, 0, -100.0), Vector3(768.8, 0, -94.5), Vector3(768.8, 0, -89.0)]
 const RACE := [Vector3(-126, 0, 84), Vector3(-126, 0, -84), Vector3(84, 0, -84), Vector3(84, 0, 84), Vector3(0, 0, 84)]
-const CAR_PRICES := [2200,4800,8500,9500,12000,15000,1200,1800,3200]
-const CAR_COLORS := [Color("30c9bf"),Color("e04959"),Color("b894ed"),Color("e9c24c"),Color("385b9d"),Color("dd6336"),Color("7b9c87"),Color("b4bdc7"),Color("bb3945")]
+const CAR_PRICES := [2200,4800,8500,9500,12000,15000,1200,1800,3200,30000]
+const CAR_COLORS := [Color("30c9bf"),Color("e04959"),Color("b894ed"),Color("e9c24c"),Color("385b9d"),Color("dd6336"),Color("7b9c87"),Color("b4bdc7"),Color("bb3945"),Color("278e80")]
 var STORY_BEATS := ["O primeiro serviço vai colocar você no mapa.","O caixa da praia pode resolver uma dívida urgente.","Um carro raro espera na rua. Leve-o até a garagem.","Cruze a cidade antes que o tempo acabe.","Dois veículos rivais estão atrapalhando o plano.","O Banco Costa esconde um cofre atrás da segurança.","A polícia fechou o cerco. Sobreviva e despiste a busca.","Um cliente precisa de uma rota rápida pela costa.","Busque o informante de carro na favela, despiste a policia e leve-o ao esconderijo.","Atravesse a avenida leste no limite.","Uma rota noturna exige precisão.","A carga urgente não pode esperar.","Complete o circuito costeiro para fechar o contrato.","A clínica precisa de ajuda para atender a vizinhança.","Uma reunião importante depende de você.","Proteja um contato no apartamento seguro.","O café precisa de uma última mão antes do amanhecer."]
 var world: Node3D
 var menu := ""

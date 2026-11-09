@@ -10,8 +10,9 @@ func run() -> void:
 	world.start_mode("sandbox")
 	world.set_physics_process(false)
 	var a = world.activities
-	assert(a.CAR_PRICES.size() == 9)
-	for tier in range(4,10):
+	assert(a.CAR_PRICES[a.Catalog.BUS - 1] == 30000)
+	assert(is_equal_approx(a.Catalog.SPEEDS[a.Catalog.BUS] * 3.6, 160.0))
+	for tier in range(4,a.Catalog.NAMES.size()):
 		var car = world.spawn_car(Vector3(0,0.2,84),Color.RED,false,tier)
 		assert(car.model_name == a.Catalog.NAMES[tier])
 		assert(car.wheels.size() == (2 if tier == 9 else 4))
@@ -39,7 +40,7 @@ func run() -> void:
 		assert(car.wheels.size() == (2 if tier == 9 else 4),"Repainting preserves vehicle type")
 		world.cars.erase(car)
 		car.queue_free()
-	for index in range(3,9):
+	for index in range(3,a.CAR_PRICES.size()):
 		world.cash = 50000
 		a.car_page = index/3
 		a.set_menu("cars")
@@ -51,5 +52,5 @@ func run() -> void:
 		bought.queue_free()
 	world.queue_free()
 	await process_frame
-	print("PASS: six new models, motorcycle rider/exit, acceleration, repaint and dealer pagination")
+	print("PASS: fleet models including bus, motorcycle rider/exit, acceleration, repaint and dealer pagination")
 	quit()

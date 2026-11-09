@@ -1,9 +1,11 @@
 extends RefCounted
 
-const NAMES := ["Fusquinha","Vento GT","Tempestade","Aurora X","Cometa R","Eclipse V12","Raio RS","Bairro Compact","Litoral LX","Falcão 600"]
-const SPEEDS := [44.45,51.0,63.0,75.0,70.0,78.0,83.0,34.0,42.0,58.0]
-const ACCEL := [10.0,14.0,18.0,22.0,21.0,23.0,25.0,8.5,11.0,19.0]
-const SIZES := [Vector3(2.15,1.5,3.4),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.0,1.25,4.2),Vector3(2.1,1.3,4.7),Vector3(2.2,1.2,4.4),Vector3(1.8,1.65,3.5),Vector3(1.95,1.5,4.4),Vector3(0.75,1.35,2.3)]
+const BUS := 10
+const BUS_CAPACITY := 12
+const NAMES := ["Fusquinha","Vento GT","Tempestade","Aurora X","Cometa R","Eclipse V12","Raio RS","Bairro Compact","Litoral LX","Falcão 600","Ônibus Costa"]
+const SPEEDS := [44.45,51.0,63.0,75.0,70.0,78.0,83.0,34.0,42.0,58.0,160.0/3.6]
+const ACCEL := [10.0,14.0,18.0,22.0,21.0,23.0,25.0,8.5,11.0,19.0,8.0]
+const SIZES := [Vector3(2.15,1.5,3.4),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.0,1.25,4.2),Vector3(2.1,1.3,4.7),Vector3(2.2,1.2,4.4),Vector3(1.8,1.65,3.5),Vector3(1.95,1.5,4.4),Vector3(0.75,1.35,2.3),Vector3(2.8,3.4,9.2)]
 
 static func build(car: CharacterBody3D) -> void:
 	var root := Node3D.new()
@@ -22,6 +24,22 @@ static func build(car: CharacterBody3D) -> void:
 	glass.cull_mode = BaseMaterial3D.CULL_DISABLED
 	var dark: Material = world.material(Color("222a30"))
 	var metal: Material = world.material(Color("9ca8af"))
+	if car.tier == BUS:
+		box(root, Vector3(0, 1.1, 0), Vector3(2.8, 1.1, 9.2), paint)
+		box(root, Vector3(0, 2.42, 0), Vector3(2.72, 1.55, 9.05), glass)
+		box(root, Vector3(0, 3.25, 0), Vector3(2.8, 0.3, 9.2), paint)
+		for side in [-1, 1]:
+			for z in [-4.53, -3.1, -1.55, 0.0, 1.55, 3.1, 4.53]:
+				box(root, Vector3(side * 1.37, 2.42, z), Vector3(0.06, 1.55, 0.11), paint)
+			box(root, Vector3(side, 1.1, -4.62), Vector3(0.48, 0.22, 0.1), world.material(Color("f3e4b0")))
+			box(root, Vector3(side, 1.1, 4.62), Vector3(0.4, 0.25, 0.1), world.material(Color("b84037")))
+			make_wheel(car, root, Vector3(side * 1.15, 0.52, -2.85), true, 0.52, 0.4)
+			make_wheel(car, root, Vector3(side * 1.15, 0.52, 2.85), false, 0.52, 0.4)
+		box(root, Vector3(0, 0.75, -4.63), Vector3(2.75, 0.2, 0.12), dark)
+		box(root, Vector3(0, 0.75, 4.63), Vector3(2.75, 0.2, 0.12), dark)
+		world.visuals.merge_beetle_body(root)
+		shadow(car, SIZES[BUS])
+		return
 	if car.tier == 9:
 		box(root,Vector3(0,0.65,0),Vector3(0.28,0.22,1.4),dark)
 		loft(root,[Vector4(-0.75,0.25,0.65,1.05),Vector4(-0.3,0.34,0.6,1.2),Vector4(0.15,0.22,0.65,1.05)],paint)
