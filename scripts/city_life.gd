@@ -200,6 +200,12 @@ func inside_room(at: Vector3) -> bool:
 			return true
 	return false
 
+func inside_public_interior(at: Vector3) -> bool:
+	if inside_room(at) or (at.y >= -0.5 and world.activities.bank.contains_position(at)):
+		return true
+	# Inner faces of the two supermarket shells in main.tscn.
+	return at.y >= -0.5 and at.y < 14.0 and at.z > -116.8 and at.z < -83.2 and (absf(at.x - 294.0) < 35.8 or absf(at.x - 798.0) < 35.8)
+
 func build_elevator_menu() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 40

@@ -72,6 +72,19 @@ func run() -> void:
 	world.activities.handle_input(key)
 	assert(world.activities.job_page == 0)
 	world.activities.set_menu("")
+	var entrance := Vector3(294, 0.3, -83)
+	world.heat = 0.0
+	world.check_vehicle_entry(entrance + Vector3.BACK, entrance)
+	assert(world.heat == 0.0, "The supermarket entrance is still outside")
+	world.check_vehicle_entry(entrance, entrance + Vector3.FORWARD)
+	assert(world.heat == 60.0, "Driving across the threshold gives three stars")
+	world.heat = 20.0
+	world.check_vehicle_entry(entrance + Vector3.FORWARD, entrance + Vector3.FORWARD * 2)
+	assert(world.heat == 20.0, "Movement inside does not renew wanted level")
+	world.heat = 80.0
+	world.check_vehicle_entry(entrance, entrance + Vector3.FORWARD)
+	assert(world.heat == 80.0, "Entry preserves a higher wanted level")
+	world.heat = 0.0
 	for store in 2:
 		for cashier in 5:
 			assert(world.life.get_node("Mercado%dCaixa%d" % [store,cashier]).stationary)

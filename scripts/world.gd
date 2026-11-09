@@ -484,6 +484,12 @@ func raise_heat(amount: float) -> void:
 	heat = minf(100, heat + amount)
 	crime_grace = 14
 
+func check_vehicle_entry(previous: Vector3, current: Vector3) -> void:
+	if heat >= 60.0 or previous.is_equal_approx(current):
+		return
+	if life.inside_public_interior(current) and not life.inside_public_interior(previous):
+		raise_heat(60.0 - heat)
+
 func car_by_id(id: int) -> CharacterBody3D:
 	for car in cars:
 		if car.net_id==id:

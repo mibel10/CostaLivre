@@ -534,7 +534,8 @@ func apply_car(id: int,state: Dictionary) -> void:
 	var car: Node3D=world.car_by_id(index)
 	if car!=null and car.hp>0 and owners.get(index,0)==id:
 		var at: Vector3=state.car_position
-		if at.is_finite() and absf(at.x)<185 and absf(at.z)<143 and at.y>=-2 and at.y<4:
+		if at.is_finite() and at.x>=-195 and at.x<=945 and absf(at.z)<143 and at.y>=-2 and at.y<4:
+			world.check_vehicle_entry(car.position, at)
 			car.position=at
 			car.heading=float(state.car_heading)
 			car.rotation.y=car.heading

@@ -32,9 +32,10 @@ func _ready() -> void:
 		bag_models.append(fixed_bank.get_node("Bag%d" % i))
 
 func inside() -> bool:
-	if world.active_car != null:
-		return false
-	var p: Vector3 = to_local(world.player.position)
+	return world.active_car == null and contains_position(world.player.position)
+
+func contains_position(at: Vector3) -> bool:
+	var p := to_local(at)
 	return absf(p.x) < 13.6 and p.z > -13.5 and p.z < 13.7 and p.y < 7
 
 func near(local_point: Vector3) -> bool:

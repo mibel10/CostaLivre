@@ -156,7 +156,10 @@ func _physics_process(delta: float) -> void:
 	velocity.x = forward.x * speed
 	velocity.z = forward.z * speed
 	velocity.y = -5 if is_on_floor() else velocity.y - 22 * delta
+	var previous := position
 	move_and_slide()
+	if driving and not world.finished and (world.network == null or not world.network.is_client()):
+		world.check_vehicle_entry(previous, position)
 	if is_on_floor():
 		last_grounded=position
 	if position.y>20 or position.y < -6:
