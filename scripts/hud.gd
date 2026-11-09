@@ -182,10 +182,11 @@ func draw_wheel() -> void:
 		for point: Vector2 in WEAPON_ICONS[i]:
 			icon.append(center + point - Vector2(32, 26))
 		draw_colored_polygon(icon, color)
-		var ammo := "Sem munição" if i == 0 else "%d / %d" % [a.clips[i], a.reserves[i]]
-		if not owned:
-			ammo = "Loja" if i < 5 else "Favela"
-		draw_string(font, center + Vector2(-58, 27), ammo, HORIZONTAL_ALIGNMENT_CENTER, 116, 16, color)
+		if i > 0:
+			var ammo := "%d / %d" % [a.clips[i], a.reserves[i]]
+			if not owned:
+				ammo = "Loja" if i < 5 else "Favela"
+			draw_string(font, center + Vector2(-58, 27), ammo, HORIZONTAL_ALIGNMENT_CENTER, 116, 16, color)
 	var selected_name: String = a.WEAPON_NAMES[world.extra.selection]
 	draw_string(font, Vector2(565, 365), selected_name, HORIZONTAL_ALIGNMENT_CENTER, 150, 16, gold)
 	var hint := "Toque numa arma para equipar" if OS.has_feature("android") else "Solte Q para equipar · mova o mouse para escolher"
