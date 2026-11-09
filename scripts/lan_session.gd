@@ -570,16 +570,22 @@ func apply_car(id: int,state: Dictionary) -> void:
 	var car: Node3D=world.car_by_id(index)
 	if car!=null and car.hp>0 and owners.get(index,0)==id:
 		var at: Vector3=state.car_position
-		var max_height := 20.0 if car.tier == car.Catalog.SUPERCAR else 4.0
-		if at.is_finite() and at.x>=-195 and at.x<=945 and absf(at.z)<143 and at.y>=-2 and at.y<max_height:
+		var heading_value = state.get("car_heading", 0.0)
+		var speed_value = state.get("speed", 0.0)
+		if not (heading_value is float or heading_value is int) or not (speed_value is float or speed_value is int):
+			return
+		if not is_finite(heading_value) or not is_finite(speed_value):
+			return
+		# Match the vehicle recovery bounds so the favela ramp works for remote drivers.
+		if at.is_finite() and at.x>=-195 and at.x<=945 and absf(at.z)<143 and at.y>=-6.0 and at.y<=20.0:
 			world.check_vehicle_entry(car.position, at, id)
 			car.position=at
-			car.heading=float(state.car_heading)
+			car.heading=wrapf(float(heading_value), -PI, PI)
 			car.rotation.y=car.heading
 			var limit: float = car.Catalog.SPEEDS[car.tier] if car.tier == car.Catalog.BUS else 110.0
 			if car.tier == car.Catalog.SUPERCAR:
 				limit = car.Catalog.HOVER_SPEED if car.hovering else car.Catalog.SPEEDS[car.tier]
-			car.speed=clampf(float(state.speed),-20,limit)
+			car.speed=clampf(float(speed_value),-20,limit)
 
 @rpc("authority","call_remote","reliable",2)
 func packed_snapshot(packet: PackedByteArray) -> void:
@@ -719,7 +725,7 @@ func request_hit(index: int, amount: float, vehicle := false) -> void:
 		return
 	var car: Node=world.car_by_id(int(members[id].get("car",-1)))
 	var target: Node=world.car_by_id(index) if vehicle else (world.life.people[index] if index>=0 and index<world.life.people.size() else null)
-	if car==null or target==null or car.position.distance_to(target.position)>5:
+	if car==null or target==null or owners.get(car.net_id,0)!=id or absf(car.speed)<=3.0 or car.position.distance_to(target.position)>5:
 		return
 	rules.attacker=id
 	target.take_hit(minf(100,absf(car.speed)*5))

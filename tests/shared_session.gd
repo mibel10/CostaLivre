@@ -88,24 +88,25 @@ func run() -> void:
 	host.heat=0
 	host.update_dispatch(0)
 	await create_timer(0.3).timeout
-	client.activities.start_job(9)
-	await wait_for(func(): return host.activities.job==9 and client.activities.job==9)
+	const RESCUE_JOB := 13
+	client.activities.start_job(RESCUE_JOB)
+	await wait_for(func(): return host.activities.job==RESCUE_JOB and client.activities.job==RESCUE_JOB and is_instance_valid(client.activities.target_car))
 	host.cutscene.finish()
 	client.cutscene.finish()
-	var rescue_car: Node = client.car_by_id(1)
+	var rescue_car: Node = client.activities.target_car
 	client.player.position = rescue_car.position+Vector3(2.6,0.3,0)
 	client.interact()
 	await create_timer(0.5).timeout
 	assert(client.active_car == rescue_car)
-	rescue_car.position = client.activities.ACTION_JOBS[9].pickup+Vector3.UP*0.3
+	rescue_car.position = client.activities.ACTION_JOBS[RESCUE_JOB].pickup+Vector3.UP*0.3
 	rescue_car.speed = 0
 	await create_timer(0.4).timeout
 	client.network.rules.send_action("interact",{})
 	await wait_for(func(): return client.activities.stage == 1 and client.activities.passenger_car == rescue_car.net_id)
-	rescue_car.position = client.activities.ACTION_JOBS[9].drop+Vector3.UP*0.3
+	rescue_car.position = client.activities.ACTION_JOBS[RESCUE_JOB].drop+Vector3.UP*0.3
 	rescue_car.speed = 0
 	await wait_for(func(): return host.activities.job==-1 and client.activities.job==-1)
-	assert(client.cash>=900+host.activities.REWARDS[9],"Cooperative reward")
+	assert(client.cash>=900+host.activities.REWARDS[RESCUE_JOB],"Cooperative reward")
 	host.network.rules.sheets[id].protected_until=0
 	var cash: int=host.cash
 	host.network.rules.damage_peer(id,200,1)

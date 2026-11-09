@@ -30,7 +30,7 @@ func run() -> void:
 	var shadows: int=host.settings.shadow_quality
 	host.settings.set_custom("textures",3)
 	assert(host.settings.shadow_quality==shadows and host.settings.texture_quality==3)
-	assert(host.life.people.size()==41)
+	assert(host.life.people.size()==148)
 	host.start_mode("sandbox")
 	Input.action_press("aim")
 	host._process(0.016)
@@ -50,11 +50,12 @@ func run() -> void:
 	assert(host.network.active(),"Host creates a room")
 	var code: String=host.network.code
 	assert(code.length()==5)
+	client.network.discovery.set_dest_address("127.0.0.1", host.network.DISCOVERY)
+	client.network.discovery.put_packet(var_to_bytes({"game": "costa_query"}))
 	var discovery_deadline := Time.get_ticks_msec()+5000
 	while not client.network.rooms.has(code) and Time.get_ticks_msec()<discovery_deadline:
 		await process_frame
 	assert(client.network.rooms.has(code),"UDP discovery finds advertised room")
-	client.network.rooms[code]={"ip":"127.0.0.1","time":Time.get_ticks_msec()}
 	client.network.refresh_room_list()
 	assert(client.network.room_list.item_count>0)
 	client.network.room_list.select(0)
@@ -92,5 +93,5 @@ func run() -> void:
 	host.queue_free()
 	client.queue_free()
 	await process_frame
-	print("PASS: independent graphics, stable aim, 41 NPCs, discovery, direct invite, two peers, profiles, nametags, live outfit changes, cleanup")
+	print("PASS: independent graphics, stable aim, expanded NPC population, discovery, direct invite, two peers, profiles, nametags, live outfit changes, cleanup")
 	quit()

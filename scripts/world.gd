@@ -511,7 +511,9 @@ func raise_heat(amount: float, actor := 0) -> void:
 		return
 	if network != null and network.active():
 		var rules: Node = network.rules
-		var id: int = actor if actor > 0 else (rules.context_peer if rules.context_peer > 0 else multiplayer.get_unique_id())
+		var id: int = actor if actor > 0 else rules.context_peer
+		if id <= 0:
+			id = rules.attacker if rules.attacker > 0 else multiplayer.get_unique_id()
 		if rules.sheets.has(id) and not rules.is_dead(id):
 			rules.sheets[id].erase("wanted_reset")
 	if heat <= 0:
