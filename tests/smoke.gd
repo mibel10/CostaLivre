@@ -21,7 +21,7 @@ func run() -> void:
 	await physics_frame
 	await physics_frame
 	var a = world.activities
-	assert(world.cars.size() == 20, "City traffic, parked supercars and police fleet")
+	assert(world.cars.size() == 74 and world.station.fleet.size() == 27, "Expanded city traffic, parked cars and police fleet")
 	world.player.position = Vector3(-5, 0.3, 7)
 	world.interact()
 	await create_timer(0.4).timeout
@@ -151,7 +151,7 @@ func run() -> void:
 	world.player.position = a.target_car.position + Vector3(2, 0, 0)
 	world.interact()
 	assert(world.active_car == a.target_car, "Marked supercar can be stolen")
-	a.target_car.position = Vector3(-42, 0.2, 84)
+	a.target_car.position = a.GARAGE + Vector3.UP * 0.2
 	a.target_car.speed = 0
 	a.tick(0.1)
 	assert(a.job == -1, "Stolen luxury car can be delivered")

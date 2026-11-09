@@ -72,7 +72,7 @@ func run() -> void:
 	world.heat = 100
 	world.response_delay = 0
 	world.update_dispatch(0)
-	assert(world.cops.size() == 5)
+	assert(world.cops.size() == 7)
 	world.heat = 12
 	world.update_dispatch(0)
 	assert(world.cops.size() == 1)

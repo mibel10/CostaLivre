@@ -95,6 +95,7 @@ var campaign_index := 0
 var campaign_path := "user://campaign.cfg"
 var campaign_save_path := "user://campaign_save.cfg"
 var hack_pointer := false
+var prop_state := Vector4i(-2, -1, -1, -1)
 
 func _ready() -> void:
 	if JOBS.size()==17:
@@ -272,12 +273,10 @@ func handle_input(event: InputEvent) -> bool:
 		return true
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.physical_keycode in [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5]:
-			var selected: int = event.physical_keycode - KEY_1 + 1
-			if selected == 3:
-				weapon = 0
-			elif selected == 1 or (selected == 2 and rifle_owned) or (selected == 4 and shotgun_owned) or (selected == 5 and smg_owned):
+			var selected: int = [1, 2, 0, 3, 4][event.physical_keycode - KEY_1]
+			if owns_weapon(selected):
 				weapon = selected
-			reload_time = 0
+				reload_time = 0
 			return true
 	return false
 
@@ -411,6 +410,8 @@ func nearby_place() -> String:
 	if pos.distance_to(GARAGE) < 5:
 		return "garage"
 	for i in ROBBERIES.size():
+		if i == 2: # The bank uses its own vault flow.
+			continue
 		if pos.distance_to(ROBBERIES[i]) < (5 if i < 3 else 2.3):
 			return "robbery"
 	return ""
@@ -793,11 +794,16 @@ func tick_mission(delta: float) -> void:
 				fail_job("A janela da operacao fechou. Os dados foram perdidos.")
 
 func tick_robbery(delta: float) -> void:
+	if world.active_car != null or weapon == 0 or not world.activity_held():
+		robbery_progress = 0
+		robbery_index = -1
+		return
 	var nearby := -1
+	var at: Vector3 = world.subject_position()
 	for i in ROBBERIES.size():
-		if world.subject_position().distance_to(ROBBERIES[i]) < (5 if i < 3 else 2.3):
+		if i != 2 and at.distance_to(ROBBERIES[i]) < (5 if i < 3 else 2.3):
 			nearby = i
-	if nearby < 0 or world.active_car != null or weapon == 0 or not world.activity_held():
+	if nearby < 0:
 		robbery_progress = 0
 		robbery_index = -1
 		return
@@ -1078,6 +1084,10 @@ func _process(_delta: float) -> void:
 	if hack_pointer != show_hack_pointer:
 		hack_pointer = show_hack_pointer
 		world.restore_pointer()
+	var current_props := Vector4i(job, stage, int(progress >= 1.0), supply_stage)
+	if current_props == prop_state:
+		return
+	prop_state = current_props
 	var objects: Node = world.get_node_or_null("ObjetivosCampanha") if world != null else null
 	if objects != null:
 		for target in objects.get_children():
@@ -1195,7 +1205,7 @@ func interact_hill_errand() -> bool:
 func interact_campaign() -> bool:
 	if ACTION_JOBS.has(job):
 		var spec: Dictionary = ACTION_JOBS[job]
-		if spec.kind == "clinic_evacuation" and stage < spec.points.size() and world.active_car == target_car and absf(target_car.speed) < 3 and world.subject_position().distance_to(spec.points[stage]) < 5:
+		if spec.kind == "clinic_evacuation" and stage < spec.points.size() and is_instance_valid(target_car) and world.active_car == target_car and absf(target_car.speed) < 3 and world.subject_position().distance_to(spec.points[stage]) < 5:
 			stage += 1
 			world.raise_heat(12 if stage < spec.points.size() else 35)
 			world.notify("Paciente embarcado: %d/%d. Volte para a Clínica Costa." % [stage,spec.points.size()] if stage == spec.points.size() else "Paciente embarcado: %d/%d. Siga para a próxima localização." % [stage,spec.points.size()])
@@ -1234,7 +1244,7 @@ func interact_campaign() -> bool:
 			world.life.begin_apartment_stair_chase()
 			world.notify("Arquivo recolhido! A policia entrou pelas escadas. Saia do predio e despiste a busca.")
 			return true
-		if spec.kind == "intercept" and stage == 1 and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
+		if spec.kind == "intercept" and stage == 1 and is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
 			stage = 2
 			world.raise_heat(40)
 			world.notify("Maleta recolhida! Despiste a policia e entregue no destino marcado.")
@@ -1482,12 +1492,12 @@ func action_prompt() -> String:
 		return "F / Embarcar passageiro" if world.active_car != null else "Traga um carro para buscar o passageiro"
 	if spec.kind == "escape_file" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
 		return "F / Recolher o arquivo do decimo andar"
-	if spec.kind == "intercept" and stage == 1 and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
+	if spec.kind == "intercept" and stage == 1 and is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
 		return "F / Recolher a maleta"
 	if spec.kind == "clinic_evacuation":
 		if is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
 			return "E / Entrar na ambulância"
-		if stage < spec.points.size() and world.active_car == target_car and absf(target_car.speed) < 3 and world.subject_position().distance_to(spec.points[stage]) < 5:
+		if stage < spec.points.size() and is_instance_valid(target_car) and world.active_car == target_car and absf(target_car.speed) < 3 and world.subject_position().distance_to(spec.points[stage]) < 5:
 			return "F / Embarcar paciente"
 	if spec.kind == "infiltration":
 		if stage == 1:

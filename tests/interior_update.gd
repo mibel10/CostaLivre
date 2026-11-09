@@ -12,16 +12,9 @@ func run() -> void:
 	world.life.use_elevator(9)
 	await create_timer(1.1,true).timeout
 	assert(world.player.position.y > 53.7 and world.life.inside_room(world.player.position))
-	for job in [7,9,10,11,12,13,14,15,16]:
-		world.activities.start_job(job)
-		world.cutscene.finish()
-		for stage in 3:
-			world.player.position = world.life.mission_position()+Vector3(1.2,0.1,0)
-			Input.action_press("activity")
-			world.life.tick_tasks(world.life.BUILDING_TASK_DURATION+0.1)
-			Input.action_release("activity")
-		assert(world.activities.job == -1)
-		world.cutscene.finish()
+	world.life.refresh_room_visibility(world.player.position)
+	assert(world.life.rooms[14].visible, "The floor reached by elevator stays furnished")
+	assert(not world.life.rooms[2].visible, "The distant ground floor is culled")
 	var touch = load("res://scripts/touch_controls.gd").new()
 	touch.world = world
 	root.add_child(touch)
@@ -33,5 +26,5 @@ func run() -> void:
 	world.queue_free()
 	await process_frame
 	await create_timer(0.25).timeout
-	print("PASS: ten floors, elevator, nine interior missions, independent touch sizes")
+	print("PASS: ten floors, elevator, nearby room visibility and independent touch sizes")
 	quit()

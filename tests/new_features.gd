@@ -10,7 +10,7 @@ func run() -> void:
 	world.start_mode("sandbox")
 	await physics_frame
 	var extra = world.extra
-	assert(world.activities.JOBS.size() == 29)
+	assert(world.activities.JOBS.size() == 30)
 	var car = world.cars[0]
 	world.player.position = car.position + Vector3(-2,0,0)
 	world.interact()
@@ -36,21 +36,27 @@ func run() -> void:
 	key.pressed = false
 	extra.handle_input(key)
 	assert(not extra.wheel and Engine.time_scale == 1 and world.activities.weapon == 1)
-	for index in range(7,13):
-		world.activities.start_job(index)
-		world.cutscene.finish()
-		world.active_car = null
-		for stage in 3:
-			var destination: Vector3 = world.activities.destination()
-			world.player.position = destination
-			if index == 8:
-				world.activities.tick_mission(0.1)
-			else:
-				Input.action_press("activity")
-				world.life.tick_tasks(world.life.BUILDING_TASK_DURATION+0.1)
-				Input.action_release("activity")
-		assert(world.activities.job == -1, "Contract completes")
-		world.cutscene.finish()
+	world.activities.shotgun_owned = true
+	world.activities.smg_owned = true
+	var weapon_key := InputEventKey.new()
+	weapon_key.pressed = true
+	weapon_key.physical_keycode = KEY_4
+	assert(world.activities.handle_input(weapon_key) and world.activities.weapon == 3)
+	weapon_key.physical_keycode = KEY_5
+	assert(world.activities.handle_input(weapon_key) and world.activities.weapon == 4)
+	const SIGNAL_JOB := 11
+	world.activities.start_job(SIGNAL_JOB)
+	world.cutscene.finish()
+	world.active_car = null
+	var signal_job: Dictionary = world.activities.ACTION_JOBS[SIGNAL_JOB]
+	for index in signal_job.points.size():
+		var transmitter: Node = world.get_node("ObjetivosCampanha/Alvo11_%d" % index)
+		world.activities.weapon_impact({"collider": transmitter}, signal_job.points[index], 1)
+	world.player.position = signal_job.exit
+	world.heat = 0.0
+	world.activities.tick_mission(0.1)
+	assert(world.activities.job == -1, "Indoor contract completes")
+	world.cutscene.finish()
 	world.finish(false)
 	assert(Engine.time_scale == 0.18 and extra.death_filter.visible)
 	world.queue_free()

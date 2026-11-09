@@ -17,12 +17,12 @@ func run() -> void:
 	a.campaign_save_path = "res://artifacts/playthrough/full_campaign_save_test.cfg"
 	a.start_job(0)
 	var car = world.cars[0]
-	for chapter in 24:
-		assert(a.job == chapter,"Campaign chapters remain sequential")
+	for chapter in a.CAMPAIGN_LENGTH:
+		assert(a.job == a.campaign_job_id(chapter),"Campaign chapters remain sequential")
 		world.cutscene.finish()
 		world.active_car = car
 		car.speed = 0
-		if a.ACTION_JOBS.has(chapter):
+		if a.ACTION_JOBS.has(a.job):
 			finish_action(world,car)
 		match chapter:
 			0:
@@ -101,7 +101,7 @@ func run() -> void:
 	assert(a.job == -1 and a.shipment_integrity <= 0 and world.health == driver_health, "Impacts destroy cargo without killing the driver")
 	world.queue_free()
 	await process_frame
-	print("PASS: all 24 chapters through objective rules, bank, cutscene transitions and campaign ending")
+	print("PASS: all 25 chapters through objective rules, bank, cutscene transitions and campaign ending")
 	quit()
 
 func finish_action(world: Node, car: Node) -> void:
@@ -113,6 +113,36 @@ func finish_action(world: Node, car: Node) -> void:
 	Input.action_release("activity")
 	assert(a.stage == original_stage, "Holding the old service button cannot finish the new mission")
 	match str(spec.kind):
+		"clinic_evacuation":
+			world.active_car = a.target_car
+			a.target_car.speed = 0.0
+			for point in spec.points:
+				a.target_car.position = point
+				assert(a.interact_campaign())
+			a.target_car.position = spec.drop
+			a.tick_mission(0.1)
+		"infiltration":
+			world.active_car = null
+			world.player.is_crouching = true
+			assert(a.campaign_target_hit(world.get_node("ObjetivosCampanha/TampaTubulacao29")))
+			for guard in a.officers:
+				if guard.get_meta("mission_sentinel", false):
+					world.player.position = guard.position + Vector3.BACK.rotated(Vector3.UP, guard.rotation.y)
+					assert(a.interact_campaign())
+			a.tick_mission(0.1)
+			assert(a.stage == 2)
+			world.player.position = a.DATA_TERMINAL
+			assert(a.interact_campaign())
+			a.tick_mission(46.0)
+			assert(a.stage == 3, "Extraction still requires defeating the tactical team")
+			for guard in a.officers:
+				if guard.hp > 0 and guard.get_meta("mission_contract", -1) == a.job:
+					guard.take_hit(1000)
+			a.tick_mission(0.1)
+			assert(a.stage == 4 and a.interact_campaign())
+			world.player.position = a.DATA_VENT
+			assert(a.interact_campaign())
+			world.player.is_crouching = false
 		"drive":
 			world.active_car = a.target_car
 			a.target_car.speed = 0
