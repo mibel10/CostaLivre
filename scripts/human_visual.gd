@@ -17,14 +17,9 @@ func _ready() -> void:
 	add_child(actor)
 	for mesh in actor.find_children("*", "MeshInstance3D", true, false):
 		original_meshes[mesh]=mesh.mesh
-		var material := StandardMaterial3D.new()
-		material.albedo_color = Color("78909c") if not police else Color("405b80")
-		material.roughness = 0.9
-		mesh.material_override = material
-		if cj_style or outfit_index >= 0:
-			apply_street_clothes(mesh)
-			if not cj_style:
-				mesh.lod_bias = 0.5
+		apply_street_clothes(mesh)
+		if not cj_style and not police:
+			mesh.lod_bias = 0.5
 	var players := actor.find_children("*", "AnimationPlayer", true, false)
 	if players.is_empty():
 		return
@@ -150,17 +145,17 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 	var dressed := ImporterMesh.new()
 	var index := posmod(outfit_index,6) if outfit_index >= 0 else 0
 	var skin_index := 0 if cj_style else index
-	var cache_key := str(index)+":"+str(skin_index)
+	var cache_key := "%d:%d:%s" % [index, skin_index, police]
 	var skins := [Color("75482f"),Color("bd8461"),Color("4e3026"),Color("d4a683"),Color("8a593c"),Color("a66d50")]
+	var clothes := StandardMaterial3D.new()
+	clothes.vertex_color_use_as_albedo = true
+	clothes.roughness = 0.85
+	instance.material_override = clothes
 	if outfit_cache.has(cache_key):
 		instance.mesh = outfit_cache[cache_key]
-		var cached_mat: StandardMaterial3D=instance.material_override
-		if cached_mat==null:
-			cached_mat=StandardMaterial3D.new()
-		cached_mat.vertex_color_use_as_albedo = true
-		cached_mat.roughness = 0.92
-		instance.material_override = cached_mat
 		return
+	var shirt: Color = Color("293e56") if police else OUTFIT_SHIRTS[index]
+	var pants: Color = Color("252e39") if police else OUTFIT_PANTS[index]
 	var bounds := source.get_aabb()
 	var up := bounds.size.max_axis_index()
 	var side := 1 if up == 2 else 0
@@ -177,20 +172,20 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 			if height < 0.055:
 				color = Color("202025") if height > 0.018 else Color("b5b2a7")
 			elif height < 0.49:
-				color = OUTFIT_PANTS[index]
+				color = pants.darkened(0.14 * (1.0 - smoothstep(0.06, 0.18, height)))
 			elif height < 0.515:
 				color = Color("27241f")
 			elif height < 0.81 and lateral < 0.18:
-				color = OUTFIT_SHIRTS[index]
+				color = shirt
 				if height > 0.765 and lateral < 0.075:
 					color = skins[skin_index]
-			elif height > 0.945:
+			elif height > 0.94:
 				color = Color("181612")
 			if height > 0.835:
-				point[side] = bounds.get_center()[side]+(point[side]-bounds.get_center()[side])*0.6
-				point[forward] = bounds.get_center()[forward]+(point[forward]-bounds.get_center()[forward])*0.6
-				var neck: float = bounds.position[up]+bounds.size[up]*0.835
-				point[up] = neck+(point[up]-neck)*0.85
+				var head_blend := smoothstep(0.835, 0.9, height)
+				var center := bounds.get_center()
+				point[side] = lerpf(point[side], center[side], 0.32 * head_blend)
+				point[forward] = lerpf(point[forward], center[forward], 0.28 * head_blend)
 				vertices[i] = point
 			colors.append(color)
 		arrays[Mesh.ARRAY_VERTEX] = vertices
@@ -200,12 +195,6 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 	var dressed_mesh := dressed.get_mesh()
 	instance.mesh = dressed_mesh
 	outfit_cache[cache_key] = dressed_mesh
-	var clothes: StandardMaterial3D=instance.material_override
-	if clothes==null:
-		clothes=StandardMaterial3D.new()
-	clothes.vertex_color_use_as_albedo = true
-	clothes.roughness = 0.92
-	instance.material_override = clothes
 
 func apply_outfit(selected: int) -> void:
 	outfit_index=clampi(selected,0,5)
