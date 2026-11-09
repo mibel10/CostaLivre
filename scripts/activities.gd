@@ -125,6 +125,9 @@ func _ready() -> void:
 func job_count() -> int:
 	return JOBS.size() if world.network!=null and world.network.active() else CAMPAIGN_LENGTH
 
+func job_id_at(slot: int) -> int:
+	return slot if world.network != null and world.network.active() else campaign_job_id(slot)
+
 func set_menu(value: String) -> void:
 	menu = value
 	if world.network!=null and world.network.rules.context_peer>1:
@@ -183,7 +186,7 @@ func pointer_select(point: Vector2) -> bool:
 				var index := choice + job_page * 7
 				if index < job_count():
 					set_menu("")
-					start_job(index)
+					start_job(job_id_at(index))
 			elif menu == "owned_cars" and choice + car_page * 3 >= purchased_cars.size():
 				break
 			else:
@@ -444,16 +447,17 @@ func prompt() -> String:
 		return "E  ·  Entrar no carro"
 	return ""
 
-func start_job(index: int) -> void:
+func start_job(index: int, coop_accepted := false) -> void:
 	if world.network!=null and world.network.is_client():
 		world.network.rules.send_action("job",{"index":index})
 		return
-	if index in range(24,29) and (world.network==null or not world.network.active()):
-		world.notify("Esta operacao e exclusiva do multiplayer.")
-		return
-	if index in [27,28] and world.network.rules.participants().size() < 2:
-		world.notify("Esta missão exige dois jogadores ativos.")
-		return
+	if index >= 24 and index < 29:
+		if world.network == null or not world.network.active():
+			world.notify("Esta operação é exclusiva do multiplayer.")
+			return
+		if not coop_accepted:
+			world.network.rules.propose_mission(multiplayer.get_unique_id(), index)
+			return
 	if index < 0 or index >= JOBS.size():
 		return
 	# Replacing a contract cannot leave unbounded parked mission vehicles behind.

@@ -15,6 +15,7 @@ var local_body: CharacterBody3D
 var pending_mission := -1
 var mission_offer_deadline := 0
 var mission_offer_from := 0
+var mission_offer_started := false
 var mission_invites := {}
 var police_sight_clock := 0.0
 var visible_police: Array = []
@@ -280,47 +281,74 @@ func propose_mission(id: int,index: int) -> void:
 		private_notice(id,"Conclua o contrato atual antes de abrir outra operacao.")
 		return
 	var recipients:=[]
-	for peer_id in network.members:
-		if peer_id!=id and not network.members[peer_id].is_empty():
+	for peer_id in participants():
+		if peer_id != id:
 			recipients.append(peer_id)
 	if recipients.is_empty():
 		private_notice(id,"Esta operacao exclusiva precisa de outro jogador na sala.")
 		return
 	pending_mission=index
+	mission_offer_started = false
 	mission_offer_from=id
 	mission_offer_deadline=Time.get_ticks_msec()+45000
 	mission_invites.clear()
 	var host_name:=str(network.members.get(id,{}).get("name","Jogador"))
 	for peer_id in recipients:
 		mission_invites[peer_id]=true
-		network.personal.rpc_id(peer_id,"mission_offer",{"index":index,"host":host_name})
+		send_personal(peer_id, "mission_offer", {"index": index, "host": host_name})
 	private_notice(id,"Convite enviado. A operacao comeca quando um parceiro aceitar.")
 
+func send_personal(id: int, kind: String, data: Dictionary) -> void:
+	if id == local_id():
+		receive_event(kind, data)
+	else:
+		network.personal.rpc_id(id, kind, data)
+
+func teleport_to_contract(id: int, at: Vector3) -> void:
+	bus_riders.erase(id)
+	for car_id in network.owners.keys():
+		if network.owners[car_id] == id:
+			network.owners.erase(car_id)
+	var member: Dictionary = network.members[id]
+	member.erase("bus")
+	member["position"] = at
+	member["car_position"] = at
+	member["car"] = -1
+	member["held"] = false
+	member["elevator_target"] = at
+	member["elevator_target_until"] = Time.get_ticks_msec() + 600
+	send_personal(id, "spawn", {"position": at, "health": sheets[id].health})
+
 func respond_to_mission(id: int,accept: bool) -> void:
-	if pending_mission<24 or Time.get_ticks_msec()>mission_offer_deadline or not mission_invites.has(id) or not network.members.has(id):
-		network.personal.rpc_id(id,"mission_offer_close",{})
+	send_personal(id, "mission_offer_close", {})
+	if pending_mission < 24 or Time.get_ticks_msec() > mission_offer_deadline or not mission_invites.has(id):
 		return
-	network.personal.rpc_id(id,"mission_offer_close",{})
+	mission_invites.erase(id)
 	if not accept:
-		mission_invites.erase(id)
 		private_notice(mission_offer_from,str(network.members[id].get("name","Um parceiro"))+" recusou o convite.")
-		return
-	var selected:=pending_mission
-	pending_mission=-1
-	mission_offer_deadline=0
-	mission_invites.clear()
-	for peer_id in network.members:
-		if peer_id!=id:
-			network.personal.rpc_id(peer_id,"mission_offer_close",{})
-	world.activities.start_job(selected)
-	private_notice(id,"Convite aceito. Operacao iniciada!")
+	elif (mission_offer_started and world.activities.job == pending_mission) or (not mission_offer_started and world.activities.job < 0 and mission_offer_from in participants()):
+		var entrance: Vector3 = world.life.PLACES[5] + Vector3(0, 0.3, 15)
+		if pending_mission in [27, 28]:
+			entrance = Vector3(294 if pending_mission == 27 else 798, 0.3, -78.5)
+		if not mission_offer_started:
+			teleport_to_contract(mission_offer_from, entrance + Vector3.LEFT * 1.5)
+		var offset := 1.5 if not mission_offer_started else 2.5 + float(id % 3)
+		teleport_to_contract(id, entrance + Vector3.RIGHT * offset)
+		if not mission_offer_started:
+			mission_offer_started = true
+			world.activities.start_job(pending_mission, true)
+		private_notice(id, "Convite aceito. Você chegou à entrada da missão.")
+	if mission_invites.is_empty():
+		pending_mission = -1
+		mission_offer_deadline = 0
 
 func tick_mission_offer() -> void:
-	if pending_mission>=24 and Time.get_ticks_msec()>mission_offer_deadline:
-		for peer_id in network.members:
-			if peer_id!=mission_offer_from:
-				network.personal.rpc_id(peer_id,"mission_offer_close",{})
-		private_notice(mission_offer_from,"Convite expirou sem aceitacao.")
+	if pending_mission>=24 and (Time.get_ticks_msec()>mission_offer_deadline or (mission_offer_started and world.activities.job != pending_mission) or (not mission_offer_started and not network.members.has(mission_offer_from))):
+		for peer_id in mission_invites:
+			if network.members.has(peer_id):
+				send_personal(peer_id, "mission_offer_close", {})
+		if not mission_offer_started and network.members.has(mission_offer_from):
+			private_notice(mission_offer_from,"Convite encerrado sem aceitação.")
 		pending_mission=-1
 		mission_offer_deadline=0
 		mission_invites.clear()
@@ -328,7 +356,7 @@ func tick_mission_offer() -> void:
 func action(id: int, kind: String, data: Dictionary) -> void:
 	if not multiplayer.is_server() or not sheets.has(id) or is_dead(id):
 		return
-	if bus_riders.has(id) and kind != "bus_exit":
+	if bus_riders.has(id) and kind not in ["bus_exit", "mission_response"]:
 		return
 	var key := str(id)+kind
 	var now := Time.get_ticks_msec()
@@ -348,7 +376,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"reload": with_actor(id,world.activities.reload)
 		"job":
 			var requested_job:=clampi(int(data.get("index",0)),0,29)
-			if requested_job>=24:
+			if requested_job >= 24 and requested_job < 29:
 				propose_mission(id,requested_job)
 			elif world.activities.job>=0:
 				private_notice(id,"Conclua o contrato atual da sala primeiro.")

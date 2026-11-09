@@ -240,7 +240,8 @@ func draw_menu(a: Node) -> void:
 	var rows: Array = []
 	if a.menu == "jobs":
 		for i in range(a.job_page * 7, mini(a.job_count(), a.job_page * 7 + 7)):
-			rows.append("%s   ·   $%d" % [a.JOBS[i], a.REWARDS[i]])
+			var index: int = a.job_id_at(i)
+			rows.append("%s   ·   $%d" % [a.JOBS[index], a.REWARDS[index]])
 	elif a.menu == "garage":
 		rows = ["Reparo e cura   ·   $250", "Trocar pintura   ·   $300", "Melhorar motor   ·   $500", "Aumentar suspensao   /   $800", "Comprar veiculo"]
 	elif a.menu == "owned_cars":

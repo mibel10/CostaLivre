@@ -68,8 +68,11 @@ func _ready() -> void:
 	offer_column.add_child(offer_text)
 	var offer_buttons:=HBoxContainer.new()
 	offer_column.add_child(offer_buttons)
-	ui_button(offer_buttons,"ACEITAR",func(): rules.send_action("mission_response",{"accept":true}); hide_mission_offer())
-	ui_button(offer_buttons,"RECUSAR",func(): rules.send_action("mission_response",{"accept":false}); hide_mission_offer())
+	ui_button(offer_buttons, "ACEITAR" if OS.has_feature("android") else "L · ACEITAR", answer_mission_offer.bind(true))
+	ui_button(offer_buttons, "RECUSAR" if OS.has_feature("android") else "K · RECUSAR", answer_mission_offer.bind(false))
+	if OS.has_feature("android"):
+		for button in offer_buttons.get_children():
+			button.custom_minimum_size.y = 64
 	layer.add_child(offer_panel)
 	offer_panel.hide()
 	panel = PanelContainer.new()
@@ -184,12 +187,26 @@ func open_menu() -> void:
 
 func show_mission_offer(index: int, host_name: String) -> void:
 	var titles: Array=world.activities.JOBS
-	offer_text.text="%s convida voce para: %s\n\nOperacao cooperativa dentro de um predio. Aceitar inicia a missao para a sala." % [host_name,titles[clampi(index,24,titles.size()-1)]]
+	offer_text.text="%s convida você para %s.\n\nAo aceitar, você vai para a entrada da missão." % [host_name,titles[clampi(index,24,28)]]
 	offer_panel.show()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func hide_mission_offer() -> void:
-	if is_instance_valid(offer_panel):
+	if is_instance_valid(offer_panel) and offer_panel.visible:
 		offer_panel.hide()
+		if world.activities.menu == "" and not world.finished:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func answer_mission_offer(accept: bool) -> void:
+	if offer_panel.visible:
+		rules.send_action("mission_response", {"accept": accept})
+		hide_mission_offer()
+
+func _input(event: InputEvent) -> void:
+	if is_instance_valid(offer_panel) and offer_panel.visible and event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode in [KEY_L, KEY_K]:
+			get_viewport().set_input_as_handled()
+			answer_mission_offer(event.physical_keycode == KEY_L)
 
 func close_menu() -> void:
 	panel.hide()

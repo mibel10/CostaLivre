@@ -38,6 +38,8 @@ func context() -> String:
 		return ""
 	if world.finished:
 		return "death"
+	if world.network != null and world.network.offer_panel.visible:
+		return "mission_offer"
 	if world.cutscene.active:
 		return "cutscene"
 	if world.activities.bank.local_hacking():
@@ -87,6 +89,8 @@ func _input(event: InputEvent) -> void:
 		var point := screen_point(event.position)
 		if not event.pressed:
 			release_finger(event.index)
+			return
+		if context() == "mission_offer":
 			return
 		if context() == "cutscene":
 			world.cutscene.finish()

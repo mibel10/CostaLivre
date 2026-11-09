@@ -357,6 +357,8 @@ func spawn_car(at: Vector3, color: Color, police := false, tier := -1) -> Charac
 	return car
 
 func _unhandled_input(event: InputEvent) -> void:
+	if network != null and network.offer_panel.visible:
+		return
 	if extra != null and extra.handle_input(event):
 		return
 	if activities != null and activities.handle_input(event):
