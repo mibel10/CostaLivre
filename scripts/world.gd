@@ -405,8 +405,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if get_tree().paused or (activities != null and activities.menu != ""):
 		return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and elapsed > 0.25:
-		camera_yaw -= event.relative.x * 0.003
-		camera_pitch = clampf(camera_pitch + event.relative.y * 0.002, -0.45, 1.35)
+		camera_yaw -= event.relative.x * 0.003 * settings.camera_sensitivity
+		camera_pitch = clampf(camera_pitch + event.relative.y * 0.002 * settings.camera_sensitivity, -0.45, 1.35)
 		mouse_idle = 0
 	if event.is_action_pressed("interact") and not finished:
 		interact()

@@ -183,8 +183,8 @@ func _input(event: InputEvent) -> void:
 		if fingers[event.index] == "stick":
 			move_stick(screen_point(event.position))
 		elif fingers[event.index] == "look":
-			world.camera_yaw -= event.relative.x / ui_scale() * 0.005
-			world.camera_pitch = clampf(world.camera_pitch+event.relative.y/ui_scale()*0.004,-0.45,1.35)
+			world.camera_yaw -= event.relative.x / ui_scale() * 0.005 * world.settings.camera_sensitivity
+			world.camera_pitch = clampf(world.camera_pitch+event.relative.y/ui_scale()*0.004*world.settings.camera_sensitivity,-0.45,1.35)
 			world.mouse_idle = 0
 		get_viewport().set_input_as_handled()
 

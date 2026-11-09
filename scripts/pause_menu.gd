@@ -252,6 +252,20 @@ func _ready() -> void:
 		pages.controls.add_child(option)
 		option.toggled.connect(func(enabled): world.settings.set(setting[0],enabled); world.settings.save_settings())
 		toggle_y+=60
+	var sensitivity := HSlider.new()
+	sensitivity.min_value = 0.5
+	sensitivity.max_value = 2.0
+	sensitivity.step = 0.1
+	sensitivity.value = world.settings.camera_sensitivity
+	var sensitivity_label := label(pages.controls, "Sensibilidade da câmera · %d%%" % roundi(sensitivity.value * 100), Vector2(toggle_x, toggle_y), 17)
+	sensitivity.position = Vector2(toggle_x, toggle_y + 30)
+	sensitivity.size = Vector2(245, 34)
+	pages.controls.add_child(sensitivity)
+	sensitivity.value_changed.connect(func(value: float):
+		world.settings.camera_sensitivity = value
+		sensitivity_label.text = "Sensibilidade da câmera · %d%%" % roundi(value * 100)
+		world.settings.save_settings()
+	)
 	get_viewport().size_changed.connect(resize_canvas)
 	resize_canvas()
 	visible = false

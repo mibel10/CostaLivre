@@ -25,6 +25,7 @@ var window_mode := 2
 var window_resolution := Vector2i(1280, 720)
 var toggle_crouch := false
 var toggle_sprint := false
+var camera_sensitivity := 1.0
 var texture_cache := {}
 var tracked := {}
 
@@ -41,6 +42,9 @@ func load_settings() -> void:
 		return
 	toggle_crouch=bool(config.get_value("controls","toggle_crouch",false))
 	toggle_sprint=bool(config.get_value("controls","toggle_sprint",false))
+	var sensitivity = config.get_value("controls", "camera_sensitivity", 1.0)
+	if (sensitivity is float or sensitivity is int) and is_finite(float(sensitivity)):
+		camera_sensitivity = clampf(sensitivity, 0.5, 2.0)
 	var value = config.get_value("video", "quality", 3)
 	quality = clampi(value, 0, 5) if typeof(value) == TYPE_INT else 3
 	customized=config.get_value("video","custom",false) == true
@@ -80,6 +84,7 @@ func save_settings() -> void:
 	config.set_value("video","upscaling",upscaling)
 	config.set_value("controls","toggle_crouch",toggle_crouch)
 	config.set_value("controls","toggle_sprint",toggle_sprint)
+	config.set_value("controls", "camera_sensitivity", camera_sensitivity)
 	config.set_value("video", "fps_limit", fps_limit)
 	config.set_value("video","fps_corner",fps_corner)
 	config.set_value("video","window_mode",window_mode)
