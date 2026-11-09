@@ -10,7 +10,7 @@ const DATA_TERMINAL := Vector3(147, 0, 63)
 
 const ACTION_JOBS := {
 	7: {"name":"Fuga de teste","kind":"drive","story":"Teste o Aurora X no circuito e devolva-o inteiro a oficina.","reward":3000,"model":3,"spawn":Vector3(-105,0.3,-5),"points":[Vector3(-126,0,-84),Vector3(84,0,-84),Vector3(84,0,84),Vector3(-21,0,63)],"time":120.0,"min_hp":80},
-	9: {"name":"Resgate na avenida","kind":"rescue","story":"Busque o ferido na avenida e leve-o de carro a Clinica Costa antes do tempo acabar.","reward":3200,"pickup":Vector3(168,0,-84),"drop":Vector3(63,0,38),"time":150.0},
+	9: {"name":"Evacuação em cadeia","kind":"clinic_evacuation","story":"Leve a ambulância da Clínica Costa, recolha três pacientes espalhados pela cidade e volte antes que a perseguição alcance o veículo.","reward":5600,"model":8,"spawn":Vector3(63,0.3,38),"points":[Vector3(-126,0,84),Vector3(84,0,-84),Vector3(714,0,126)],"drop":Vector3(63,0,38),"time":210.0,"min_hp":65},
 	10: {"name":"Interceptação na praia","kind":"intercept","story":"Pare o carro do mensageiro sem destrui-lo, recolha a maleta a pe e fuja ate o mercado.","reward":3800,"model":1,"spawn":Vector3(-126,0.3,-84),"track":[Vector3(-126,0.3,-84),Vector3(84,0.3,-84),Vector3(84,0.3,84),Vector3(-126,0.3,84)],"drop":Vector3(105,0,-49),"time":220.0},
 	11: {"name":"Sinal pirata","kind":"precision","story":"Derrube os tres transmissores nos andares 3, 5 e 7 do estudio. Saia e despiste o alarme.","reward":4200,"points":[Vector3(143,13.4,67),Vector3(151,25.4,64),Vector3(147,37.4,57)],"exit":Vector3(147,0,84),"time":220.0},
 	12: {"name":"Cerco no décimo","kind":"escape_file","story":"Pegue o arquivo no decimo andar, sobreviva a invasao e desca para despistar a policia.","reward":4800,"pickup":Vector3(-67,54,67),"exit":Vector3(-63,0,80),"time":240.0},
@@ -1036,8 +1036,11 @@ func _process(_delta: float) -> void:
 		usb.visible = job == SECRET_DATA_JOB and stage == 4
 	var informant: Node3D = world.get_node_or_null("InformanteCampanha") if world != null else null
 	if informant != null:
-		informant.visible = stage == 0 and (job == 8 or (ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "rescue"))
-		if informant.visible: informant.position = (ACTION_JOBS[job].pickup if ACTION_JOBS.has(job) else INFORMANT_PICKUP)+Vector3(0,0,2)
+		var clinic_patient: bool = ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "clinic_evacuation" and stage < ACTION_JOBS[job].points.size()
+		informant.visible = (stage == 0 and job == 8) or clinic_patient or (stage == 0 and ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "rescue")
+		if informant.visible:
+			var patient_at: Vector3 = ACTION_JOBS[job].points[stage] if clinic_patient else (ACTION_JOBS[job].pickup if ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "rescue" else INFORMANT_PICKUP)
+			informant.position = patient_at+Vector3(0,0,2)
 	var gun: Node3D = world.get_node_or_null("ContatoBeco/Arma") if world != null else null
 	if gun != null:
 		gun.rotation.x = PI/2 if supply_stage >= 3 else 0.0
@@ -1135,6 +1138,11 @@ func interact_hill_errand() -> bool:
 func interact_campaign() -> bool:
 	if ACTION_JOBS.has(job):
 		var spec: Dictionary = ACTION_JOBS[job]
+		if spec.kind == "clinic_evacuation" and stage < spec.points.size() and world.active_car == target_car and absf(target_car.speed) < 3 and world.subject_position().distance_to(spec.points[stage]) < 5:
+			stage += 1
+			world.raise_heat(12 if stage < spec.points.size() else 35)
+			world.notify("Paciente embarcado: %d/%d. Volte para a Clínica Costa." % [stage,spec.points.size()] if stage == spec.points.size() else "Paciente embarcado: %d/%d. Siga para a próxima localização." % [stage,spec.points.size()])
+			return true
 		if spec.kind == "infiltration":
 			if stage == 1:
 				var guard := nearest_sentinel()
@@ -1235,7 +1243,7 @@ func setup_action_job() -> bool:
 		if not at.is_finite():
 			fail_job("A vaga do veiculo esta ocupada. Libere o local e tente novamente.")
 			return false
-		target_car = world.spawn_car(at,Color("fafafa") if spec.kind == "rescue" else Color("e5c86a"),false,int(spec.model))
+		target_car = world.spawn_car(at,Color("fafafa") if spec.kind in ["rescue","clinic_evacuation"] else Color("e5c86a"),false,int(spec.model))
 		target_car.owned = spec.kind not in ["intercept","getaway"]
 		target_car.set_meta("mission_loan",true)
 		if spec.kind == "intercept":
@@ -1244,7 +1252,7 @@ func setup_action_job() -> bool:
 	return true
 
 func action_requires_car() -> bool:
-	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()) or (ACTION_JOBS[job].kind == "getaway" and stage > 0))
+	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue","clinic_evacuation"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()) or (ACTION_JOBS[job].kind == "getaway" and stage > 0))
 
 func action_requires_foot() -> bool:
 	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["foot_race","infiltration"]
@@ -1252,6 +1260,7 @@ func action_requires_foot() -> bool:
 func action_destination() -> Vector3:
 	var spec: Dictionary = ACTION_JOBS[job]
 	match str(spec.kind):
+		"clinic_evacuation": return target_car.position if stage < spec.points.size() and is_instance_valid(target_car) and world.active_car != target_car else (spec.points[stage] if stage < spec.points.size() else spec.drop)
 		"infiltration":
 			if stage == 1:
 				var guard := nearest_sentinel()
@@ -1282,6 +1291,7 @@ func action_objective() -> String:
 	var spec: Dictionary = ACTION_JOBS[job]
 	var text := ""
 	match str(spec.kind):
+		"clinic_evacuation": text = "Pegue a ambulância marcada" if world.active_car != target_car else ("Recolha pacientes / %d/%d" % [stage,spec.points.size()] if stage < spec.points.size() else "Volte à Clínica Costa com a ambulância")
 		"infiltration":
 			text = ["Agache e atire na tampa da tubulacao", "Neutralize os dois policiais sem ruido / %d restantes" % contract_guards_alive(), "Entre no computador e conecte o pendrive", "Extraindo dados / %d%% / elimine a equipe tatica" % mini(roundi(progress/45.0*100),100), "Dados copiados / F para recuperar o pendrive", "Agache e fuja pela mesma tubulacao"][mini(stage,5)]
 		"getaway":
@@ -1311,6 +1321,11 @@ func tick_action_job(delta: float) -> void:
 		return
 	var stopped: bool = world.active_car != null and absf(world.active_car.speed) < 3
 	match str(spec.kind):
+		"clinic_evacuation":
+			if not is_instance_valid(target_car) or target_car.hp <= float(spec.min_hp):
+				fail_job("A ambulância ficou danificada demais.")
+			elif stage == spec.points.size() and world.active_car == target_car and stopped and world.subject_position().distance_to(spec.drop) < 6:
+				complete_job()
 		"infiltration":
 			if stage == 1 and contract_guards_alive() == 0:
 				stage = 2
@@ -1412,6 +1427,11 @@ func action_prompt() -> String:
 		return "F / Recolher o arquivo do decimo andar"
 	if spec.kind == "intercept" and stage == 1 and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
 		return "F / Recolher a maleta"
+	if spec.kind == "clinic_evacuation":
+		if is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
+			return "E / Entrar na ambulância"
+		if stage < spec.points.size() and world.active_car == target_car and absf(target_car.speed) < 3 and world.subject_position().distance_to(spec.points[stage]) < 5:
+			return "F / Embarcar paciente"
 	if spec.kind == "infiltration":
 		if stage == 1:
 			var guard := nearest_sentinel()
