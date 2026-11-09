@@ -94,10 +94,11 @@ func _draw() -> void:
 	text(detail, Vector2(38, 63), 11, muted)
 	panel(Rect2(1070, 24, 186, 45))
 	text("$ %d" % world.cash, Vector2(1086, 53), 23, gold)
-	if world.heat > 0:
+	var wanted: float = world.network.rules.wanted_heat(multiplayer.get_unique_id()) if world.network != null and world.network.active() else world.heat
+	if wanted > 0:
 		for i in 5:
-			star(Vector2(1136 + i * 24, 87), gold if world.heat > i * 20 else Color("42535c"))
-		bar(Vector2(1126, 104), 125, world.heat / 100, gold)
+			star(Vector2(1136 + i * 24, 87), gold if wanted > i * 20 else Color("42535c"))
+		bar(Vector2(1126, 104), 125, wanted / 100, gold)
 	minimap(Vector2(24, 210 if OS.has_feature("android") else 520), Vector2(164, 164))
 	bar(Vector2(24, 385 if OS.has_feature("android") else 692), 164, world.health / 100, Color("8ddbb5"))
 	if world.active_car != null:

@@ -76,6 +76,12 @@ func participants() -> Array:
 			result.append(id)
 	return result
 
+func wanted_participants() -> Array:
+	return participants().filter(func(id): return not bool(sheets.get(id, {}).get("wanted_reset", false)))
+
+func wanted_heat(id: int) -> float:
+	return 0.0 if bool(sheets.get(id, {}).get("wanted_reset", false)) else world.heat
+
 func position_of(id: int) -> Vector3:
 	if id==local_id():
 		return world.subject_position() if context_peer in [0,local_id()] else network.members.get(id,{}).get("car_position",local_body.position)
@@ -163,7 +169,7 @@ func tick_mission_hack(delta: float) -> void:
 func police_target_actor(at: Vector3) -> Array:
 	var selected: Array=[]
 	var closest:=INF
-	for id in participants():
+	for id in wanted_participants():
 		var candidate:Vector3=position_of(id)
 		var distance:=at.distance_squared_to(candidate)
 		if bool(network.members[id].get("crouch",false)) and distance>=64:
@@ -412,7 +418,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"cancel_hack":
 			if id==bank_owner:
 				world.activities.bank.hacking=false
-		"crime": world.raise_heat(clampf(float(data.get("amount",0)),0,80))
+		"crime": world.raise_heat(clampf(float(data.get("amount",0)),0,80), id)
 		"collision":
 			var car: Node=world.car_by_id(int(network.members[id].get("car",-1)))
 			if car!=null:
@@ -480,6 +486,11 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 		world.health=sheets[id].health
 	if sheets[id].health<=0:
 		sheets[id].dead_until=Time.get_ticks_msec()+3000
+		sheets[id]["wanted_reset"] = true
+		if wanted_participants().is_empty():
+			world.heat = 0.0
+			world.crime_grace = 0.0
+			world.response_delay = 0.0
 		leave_bus(id, true)
 		for car_id in network.owners.keys():
 			if network.owners[car_id]==id:
@@ -487,7 +498,7 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 		if killer>0 and killer!=id and sheets.has(killer):
 			award(killer,1500)
 			private_notice(killer,"Jogador eliminado / +$1500")
-			world.raise_heat(35)
+			world.raise_heat(35, killer)
 		private_notice(id,"Voce foi calado. Renascendo em 3 segundos...")
 
 func receive_event(kind: String, data: Dictionary) -> void:
@@ -623,7 +634,7 @@ func punch_peer(id: int, yaw: float) -> void:
 				attacker=id
 				target.take_hit(25)
 				attacker=0
-				world.raise_heat(6)
+				world.raise_heat(6, id)
 				break
 
 func tick_inventory(delta: float) -> void:
@@ -736,6 +747,8 @@ func physics(delta: float) -> void:
 	var arresting := {}
 	for observer in visible_police:
 		var target: Array=police_target_actor(observer.position)
+		if wanted_heat(target[0]) <= 0 and not observer.has_meta("mission_contract"):
+			continue
 		var distance:float=observer.position.distance_to(target[1])
 		if target_crouched(target[1]) and distance>8:
 			continue

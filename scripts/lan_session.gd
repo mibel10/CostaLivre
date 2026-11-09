@@ -462,7 +462,7 @@ func accept_state(id: int, state: Dictionary) -> void:
 		owners[car_id]=id
 		if not selected_car.owned:
 			selected_car.owned=true
-			world.raise_heat(12)
+			world.raise_heat(12, id)
 	else:
 		state.car=-1
 	state["name"]=Profile.clean_name(str(state.get("name","Jogador")))
@@ -556,7 +556,7 @@ func apply_car(id: int,state: Dictionary) -> void:
 		var at: Vector3=state.car_position
 		var max_height := 20.0 if car.tier == car.Catalog.SUPERCAR else 4.0
 		if at.is_finite() and at.x>=-195 and at.x<=945 and absf(at.z)<143 and at.y>=-2 and at.y<max_height:
-			world.check_vehicle_entry(car.position, at)
+			world.check_vehicle_entry(car.position, at, id)
 			car.position=at
 			car.heading=float(state.car_heading)
 			car.rotation.y=car.heading
