@@ -13550,3 +13550,570 @@ material = SubResource("StandardMaterial3D_bbgv6")
 position = Vector3(5, 5.6, -5)
 size = Vector3(3, 0.08, 0.35)
 material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room0"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room0/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room0/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room0/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room0/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room0/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room2"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room2/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room2/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room2/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room2/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room2/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room3"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room3/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room3/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room3/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room3/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room3/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room4"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room4/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room4/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room4/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room4/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room4/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room5"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room5/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room5/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room5/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room5/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room5/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room6"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room6/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room6/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room6/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room6/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room6/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room7"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room7/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room7/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room7/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room7/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room7/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room8"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room8/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room8/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room8/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room8/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room8/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room9"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room9/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room9/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room9/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room9/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room9/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room10"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room10/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room10/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room10/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room10/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room10/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room11"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room11/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room11/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room11/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room11/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room11/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room12"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room12/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room12/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room12/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room12/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room12/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room13"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room13/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room13/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room13/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room13/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room13/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room14"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room14/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room14/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room14/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room14/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room14/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room15"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room15/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room15/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room15/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room15/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room15/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room16"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room16/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room16/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room16/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room16/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room16/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room17"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room17/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room17/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room17/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room17/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room17/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room18"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room18/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room18/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room18/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room18/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room18/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room19"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room19/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room19/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room19/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room19/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room19/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room20"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room20/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room20/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room20/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room20/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room20/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesInterior" type="Node3D" parent="Rooms/Room21"]
+
+[node name="RodapeE" type="CSGBox3D" parent="Rooms/Room21/DetalhesInterior"]
+position = Vector3(-12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeD" type="CSGBox3D" parent="Rooms/Room21/DetalhesInterior"]
+position = Vector3(12.12, 0.24, 0)
+size = Vector3(0.08, 0.25, 22)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="RodapeF" type="CSGBox3D" parent="Rooms/Room21/DetalhesInterior"]
+position = Vector3(0, 0.24, -11.6)
+size = Vector3(23, 0.25, 0.08)
+material = SubResource("StandardMaterial3D_6hnok")
+
+[node name="LuzE" type="CSGBox3D" parent="Rooms/Room21/DetalhesInterior"]
+position = Vector3(-5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="LuzD" type="CSGBox3D" parent="Rooms/Room21/DetalhesInterior"]
+position = Vector3(5, 5.6, 0)
+size = Vector3(2.8, 0.08, 0.35)
+material = SubResource("StandardMaterial3D_bbgv6")
