@@ -17819,3 +17819,63 @@ material = SubResource("Material_contato_arma")
 position = Vector3(3.95, 3.0, 2.35)
 size = Vector3(0.1, 0.12, 2.8)
 material = SubResource("Material_contato_arma")
+
+[node name="GradeEsquerdo0" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-5.9, 1.8, 12.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="GradeEsquerdo1" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-5.9, 1.8, 13.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="GradeEsquerdo2" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-5.9, 1.8, 14.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="GradeEsquerdo3" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-5.9, 1.8, 15.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="TravessaEsquerdo0" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-5.9, 0.25, 13.5)
+size = Vector3(0.1, 0.12, 3.1)
+material = SubResource("Material_contato_arma")
+
+[node name="TravessaEsquerdo1" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-5.9, 3.35, 13.5)
+size = Vector3(0.1, 0.12, 3.1)
+material = SubResource("Material_contato_arma")
+
+[node name="GradeDireito0" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(5.9, 1.8, 12.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="GradeDireito1" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(5.9, 1.8, 13.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="GradeDireito2" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(5.9, 1.8, 14.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="GradeDireito3" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(5.9, 1.8, 15.0)
+size = Vector3(0.1, 3.6, 0.1)
+material = SubResource("Material_contato_arma")
+
+[node name="TravessaDireito0" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(5.9, 0.25, 13.5)
+size = Vector3(0.1, 0.12, 3.1)
+material = SubResource("Material_contato_arma")
+
+[node name="TravessaDireito1" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(5.9, 3.35, 13.5)
+size = Vector3(0.1, 0.12, 3.1)
+material = SubResource("Material_contato_arma")
