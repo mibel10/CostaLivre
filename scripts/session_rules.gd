@@ -43,7 +43,7 @@ func inventory() -> Dictionary:
 
 func add_peer(id: int) -> Vector3:
 	var inv := {"weapon":1,"rifle_owned":false,"shotgun_owned":false,"smg_owned":false,"heavy_owned":[false,false,false],"purchased_cars":[],"clips":[0,12,0,0,0,0,0,0],"reserves":[0,36,0,0,0,0,0,0],"fire_cooldown":0.0,"reload_time":0.0,"reload_weapon":0}
-	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0,"home":-1,"homes":[]}
+	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0,"home":-1,"homes":[],"building_job":{}}
 	if id==1:
 		sheets[id].cash=world.cash
 		sheets[id].inventory=inventory()
@@ -422,6 +422,11 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if world.activities.bank.interact():
 					bank_owner=id
 			)
+		"building_contact":
+			var contact = data.get("contact")
+			if contact is int and int(network.members[id].get("car",-1)) < 0:
+				var at := position_of(id)
+				with_actor(id,func(): world.life.apply_building_choice(id,at,contact))
 		"elevator":
 			var destination = data.get("to")
 			if destination is int and int(network.members[id].get("car",-1)) < 0:
@@ -692,6 +697,7 @@ func physics(delta: float) -> void:
 			sheets.erase(id)
 			continue
 		if is_dead(id):
+			world.life.building_job_for(id).clear()
 			if Time.get_ticks_msec()>=sheets[id].dead_until:
 				sheets[id].health=100.0
 				sheets[id].life+=1
@@ -706,6 +712,8 @@ func physics(delta: float) -> void:
 				else:
 					network.personal.rpc_id(id,"spawn",{"position":at})
 			continue
+		if world.life.tick_building_job(id,delta):
+			private_notice(id,"O tempo da entrega acabou.")
 		var inv: Dictionary=sheets[id].inventory
 		var timers_active: bool=(world.activities.fire_cooldown>0 or world.activities.reload_time>0) if id==local_id() else (float(inv.fire_cooldown)>0 or float(inv.reload_time)>0)
 		if timers_active:
@@ -714,7 +722,6 @@ func physics(delta: float) -> void:
 	if Input.is_action_pressed("shoot") and world.activities.menu=="" and not is_dead(local_id()):
 		fire_local()
 	var a: Node=world.activities
-	world.life.tick_leisure(delta)
 	a.tick_supply()
 	for i in a.robbery_cooldowns.size():
 		a.robbery_cooldowns[i]=maxf(0,a.robbery_cooldowns[i]-delta)

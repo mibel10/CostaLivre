@@ -10,6 +10,7 @@ func wait_until(condition: Callable, seconds := 8.0) -> bool:
 	return condition.call()
 
 func run() -> void:
+	create_timer(60).timeout.connect(func(): quit(1))
 	var host_api:=SceneMultiplayer.new()
 	var client_api:=SceneMultiplayer.new()
 	var host_view:=SubViewport.new()
@@ -58,6 +59,31 @@ func run() -> void:
 	host.network.members[id]["car_position"]=Vector3(10,0.3,0)
 	host.network.members[id]["crouch"]=true
 	assert(host.network.rules.police_target_actor(Vector3.ZERO)[0]==1,"Police can target a visible player instead of a hidden crouching player")
+	var contact := -1
+	for index: int in client.life.building_contacts:
+		if client.life.building_contacts[index][0] == "office":
+			contact = index
+			break
+	assert(contact >= 0)
+	var wages: int = host.network.rules.sheets[id].cash
+	var host_cash: int = host.cash
+	client.network.rules.send_action("building_contact",{"contact":contact})
+	await create_timer(0.25).timeout
+	assert(host.life.building_job_for(id).is_empty(), "The host rejects a request sent far from the NPC")
+	var office: Vector3 = client.life.people[contact].position + Vector3.BACK
+	client.player.position = office
+	assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(office) < 0.5))
+	assert(client.life.interact_building())
+	client.life.building_choice.pressed.emit()
+	assert(await wait_until(func(): return not client.life.building_job_for(id).is_empty()))
+	for step in 3:
+		var stop: Vector3 = client.life.building_destination(client.life.building_job_for(id))
+		client.player.position = stop
+		assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(stop) < 0.5), "Delivery %d at %s, host player at %s" % [step,stop,host.network.rules.position_of(id)])
+		await create_timer(0.18).timeout
+		assert(client.life.interact_building())
+		assert(await wait_until(func(): return client.life.building_job_for(id).get("step",3) == step+1))
+	assert(host.network.rules.sheets[id].cash == wages+200 and host.cash == host_cash, "Only the player who completes the deliveries receives payment")
 	for building in ["housing","apartment","tower"]:
 		var start: Vector3=client.life.elevator_position(building,0)
 		client.player.position=start
@@ -86,9 +112,6 @@ func run() -> void:
 	client.life.use_elevator(0)
 	assert(await wait_until(func(): return client.life.elevators.tower.floor == 0 and client.life.elevators.tower.phase == "open"))
 	assert(await wait_until(func(): return not host.network.members[id].has("elevator_target")))
-	host.life.leisure_cooldown=0.3
-	await create_timer(0.5).timeout
-	assert(host.life.leisure_cooldown<=0,"Leisure cooldown expires without a player holding the action")
 	var remote_car: Node=client.car_by_id(1)
 	client.active_car=remote_car
 	remote_car.driving=true
@@ -107,7 +130,7 @@ func run() -> void:
 		push_error("Host did not detonate the disabled client vehicle")
 		quit(1)
 		return
-	print("PASS: host authoritative elevators and vehicle explosion, multiplayer audio and cooldown")
+	print("PASS: host-authoritative deliveries, elevators and vehicle explosion")
 	client.network.disconnect_room()
 	host.network.disconnect_room()
 	host.queue_free()

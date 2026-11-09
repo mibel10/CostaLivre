@@ -245,6 +245,8 @@ func handle_input(event: InputEvent) -> bool:
 				world.active_car.hovering = not world.active_car.hovering
 			return true
 		if world.network!=null and world.network.active():
+			if world.life.interact_building():
+				return true
 			var place := nearby_place()
 			if place in ["guns","heavy_guns","cars","garage","owned_cars"]:
 				set_menu(place)
@@ -255,7 +257,7 @@ func handle_input(event: InputEvent) -> bool:
 			return true
 		if interact_campaign() or interact_hill_errand() or interact_supply():
 			return true
-		if world.life != null and world.life.interact():
+		if world.life != null and (world.life.interact_building() or world.life.interact()):
 			return true
 		if bank.interact():
 			return true
@@ -709,7 +711,8 @@ func tick(delta: float) -> void:
 	bank.tick(delta)
 	tick_supply()
 	if world.life != null:
-		world.life.tick_leisure(delta)
+		if world.life.tick_building_job(1,delta):
+			world.notify("O tempo da entrega acabou.")
 		world.life.tick_tasks(delta)
 	tick_police(delta)
 	world.marker.visible = job >= 0 and not (job in [1, 4, 5] and stage > 0) and job != 6

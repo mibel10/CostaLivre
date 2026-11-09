@@ -68,7 +68,7 @@ func _draw() -> void:
 		text("VOCÊ FOI CALADO.", Vector2(340, 365), 57, Color("d34d50"))
 		text("Renascendo...", Vector2(550, 459), 18)
 		return
-	if a.menu in ["pause", "map", "mode", "cutscene", "campaign_complete", "touch_layout", "elevator", "network"]:
+	if a.menu in ["pause", "map", "mode", "cutscene", "campaign_complete", "touch_layout", "elevator", "building_contact", "network"]:
 		return
 	if world.network != null and world.network.active():
 		text("SALA %s / %d DE 12" % [world.network.code,world.network.members.size()],Vector2(440,25),15,gold)

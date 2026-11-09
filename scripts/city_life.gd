@@ -11,7 +11,28 @@ var people: Array[CharacterBody3D] = []
 var rooms: Array[Node3D] = []
 var refresh := 0.0
 var task_progress := 0.0
-var leisure_cooldown := 0.0
+const BUILDING_OFFERS := {
+	"cafe": ["Café Maré", "Comprar café (+15 de vida) · $20", "Saiu café fresco. Quer um?"],
+	"clinic": ["Clínica Costa", "Pedir tratamento · $100", "Posso cuidar desses ferimentos."],
+	"rest": ["Recepção", "Descansar (+20 de vida)", "Pode sentar e descansar um pouco."],
+	"market": ["Mercado da Praia", "Comprar lanche (+25 de vida) · $35", "Quer um lanche para a viagem?"],
+	"office": ["Serviço de entregas", "Entregar 3 caixas em 60 s · +$200", "Tem três caixas para distribuir. Você pode ajudar?"],
+	"bank": ["Banco Costa", "Entregar 3 malotes em 60 s · +$200", "Precisamos levar estes malotes aos pontos de coleta."],
+	"guns": ["Arsenal", "Ver catálogo de armas comuns", "Quer ver o que temos no balcão?"],
+	"cars": ["Concessionária", "Ver catálogo de veículos", "Procurando um veículo?"],
+	"garage": ["Garagem Costa", "Ver serviços da oficina", "O que seu carro está precisando?"],
+}
+const BUILDING_REWARD := 200
+const BUILDING_JOB_TIME := 60.0
+const DELIVERY_POINTS := [Vector3(-3,0,8),Vector3(3,0,7),Vector3(0,0,3)]
+const BANK_WORK_POINTS := [Vector3(-3,0,8),Vector3(3,0,5),Vector3(0,0,11)]
+var building_contacts := {}
+var offline_building_job := {}
+var building_dialog: CenterContainer
+var building_title: Label
+var building_choice: Button
+var building_marker: Label3D
+var selected_contact := -1
 var elevator_ui: Control
 const ELEVATOR_FLOORS := {"housing": 13, "apartment": 10, "tower": 8}
 const ELEVATOR_CENTERS := {"housing": Vector3(869,0,-111.5), "apartment": Vector3(-55,0,53.74), "tower": Vector3(155,0,72)}
@@ -54,6 +75,7 @@ func _ready() -> void:
 		rooms.append(world.interiors.get_node("Rooms/Room%d" % i))
 	build_elevators()
 	build_elevator_menu()
+	build_contact_dialog()
 	for i in 32:
 		var center := Vector3(-105+(i%4)*42,0,-63+((i/4)%4)*42)
 		var ped := Pedestrian.new()
@@ -64,6 +86,12 @@ func _ready() -> void:
 		add_child(ped)
 		ped.position = ped.route[i%4]
 		ped.point = (i+1)%4
+		if i < 3:
+			var offer: String = ["guns","cars","garage"][i]
+			var center_at: Vector3 = [world.activities.GUN_SHOP,world.activities.DEALER,world.activities.GARAGE][i]
+			ped.position = center_at + Vector3(2,0,-1.5)
+			ped.stationary = true
+			building_contacts[people.size()] = [offer,center_at]
 		people.append(ped)
 	for i in 36:
 		var center := Vector3(231+(i%9)*84,0,-63+((i/9)%2)*126)
@@ -83,6 +111,8 @@ func _ready() -> void:
 		staff.tint = Color("93a5b0")
 		add_child(staff)
 		staff.position = world.activities.bank.to_global(Vector3(-9+i*3,0,-1.6))
+		if i == 0:
+			building_contacts[people.size()] = ["bank",world.activities.bank.global_position]
 		people.append(staff)
 
 	for i in PLACES.size():
@@ -94,6 +124,7 @@ func _ready() -> void:
 		add_child(contact)
 		contact.position = PLACES[i]+Vector3(1,0,5)
 		contact.set_meta("building_center",PLACES[i])
+		building_contacts[people.size()] = [["cafe","clinic","rest","office","market","office"][i],PLACES[i]]
 		people.append(contact)
 	for store in 2:
 		var cx: float = [294,798][store]
@@ -135,6 +166,8 @@ func _ready() -> void:
 			add_child(resident)
 			resident.position = lobbies[index]+[Vector3(-8,0,8),Vector3(8,0,6),Vector3(0,0,-7)][slot]
 			resident.model.rotation.y = [-PI/4,PI/3,PI][slot]
+			if index >= PLACES.size() and slot == 0:
+				building_contacts[people.size()] = ["rest" if lobbies[index] == HOME_BUILDING else "office",lobbies[index]]
 			people.append(resident)
 
 func apartment_stair_route() -> Array[Vector3]:
@@ -570,11 +603,13 @@ func prompt() -> String:
 		1: return "Elevador em movimento"
 		2: return "F / Chamar elevador"
 		3: return "F / Escolher andar do elevador"
-	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:
+	if near_building_mission(at):
 		return task_label()
-	if inside_room(at):
-		if absf(at.x - HOME_BUILDING.x) < 12 and absf(at.z - HOME_BUILDING.z) < 12 and at.y >= 0 and at.y < 78: return ""
-		return "F / Atendimento, descanso ou servico local"
+	var job := building_job_for(building_player_id())
+	if not job.is_empty() and at.distance_squared_to(building_destination(job)) < 4.0:
+		return "F / Entregar %s (%d/3)" % ["malote" if building_contacts[job.contact][0] == "bank" else "caixa",job.step+1]
+	if building_contact_at(at) >= 0:
+		return "F / Conversar"
 	return ""
 
 func interact() -> bool:
@@ -601,37 +636,150 @@ func interact() -> bool:
 			button.text = "Térreo" if i == 0 else "Andar %02d" % (i if building == "housing" else i+1)
 		elevator_ui.show()
 		return true
-	if (TASKS.has(world.activities.job) or NEW_TASKS.has(world.activities.job) or world.activities.job in [24,25,26]) and at.distance_to(mission_position())<2.5:
+	if near_building_mission(at):
 		return true # Holding F advances the work in tick_tasks.
-	if leisure_cooldown>0:
-		return false
-	for i in PLACES.size():
-		if (at-PLACES[i]).length()<10:
-			leisure_cooldown = 8
-			match i:
-				0:
-					if world.cash>=20:
-						world.cash-=20
-						world.health=minf(100,world.health+15)
-						world.notify("Cafe servido / +15 de vida / $20")
-				1:
-					if world.cash>=100:
-						world.cash-=100
-						world.health=100
-						world.notify("Atendimento concluido / vida cheia / $100")
-				2:
-					world.health=minf(100,world.health+20)
-					world.notify("Descansou no residencial / +20 de vida")
-				_:
-					if world.activities.game_mode == "sandbox" and world.activities.job < 0:
-						world.activities.start_job({3:7,4:10,5:11}[i])
-					else:
-						world.notify("Conclua seu contrato atual para iniciar outro servico.")
-			return true
 	return false
 
-func tick_leisure(delta: float) -> void:
-	leisure_cooldown=maxf(0,leisure_cooldown-delta)
+func near_building_mission(at: Vector3) -> bool:
+	var current: int = world.activities.job
+	return (TASKS.has(current) or NEW_TASKS.has(current) or current in [24,25,26]) and at.distance_squared_to(mission_position()) < 6.25
+
+func build_contact_dialog() -> void:
+	building_dialog = CenterContainer.new()
+	building_dialog.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	elevator_ui.get_parent().add_child(building_dialog)
+	var panel := PanelContainer.new()
+	building_dialog.add_child(panel)
+	var column := VBoxContainer.new()
+	column.custom_minimum_size.x = 390
+	column.add_theme_constant_override("separation",8)
+	panel.add_child(column)
+	building_title = Label.new()
+	building_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(building_title)
+	building_choice = Button.new()
+	building_choice.custom_minimum_size.y = 56
+	building_choice.pressed.connect(func(): submit_building_choice(selected_contact))
+	column.add_child(building_choice)
+	var close := Button.new()
+	close.text = "Sair"
+	close.custom_minimum_size.y = 56
+	close.pressed.connect(func(): world.activities.set_menu(""); building_dialog.hide())
+	column.add_child(close)
+	building_dialog.hide()
+	building_marker = Label3D.new()
+	building_marker.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	building_marker.no_depth_test = true
+	building_marker.pixel_size = 0.007
+	building_marker.modulate = Color("#ffd778")
+	building_marker.hide()
+	add_child(building_marker)
+
+func building_player_id() -> int:
+	return multiplayer.get_unique_id() if world.network != null and world.network.active() else 1
+
+func building_job_for(id: int) -> Dictionary:
+	if world.network != null and world.network.active():
+		var sheet: Dictionary = world.network.rules.sheets.get(id,{})
+		return sheet.get("building_job",{})
+	return offline_building_job
+
+func building_contact_at(at: Vector3) -> int:
+	var nearest := -1
+	var limit := 9.0
+	for index: int in building_contacts:
+		var npc: CharacterBody3D = people[index]
+		var distance := at.distance_squared_to(npc.position)
+		if npc.hp > 0 and distance < limit and absf(at.y-npc.position.y) < 1.5:
+			nearest = index
+			limit = distance
+	return nearest
+
+func building_destination(job: Dictionary) -> Vector3:
+	var contact: Array = building_contacts[job.contact]
+	return contact[1] + (BANK_WORK_POINTS if contact[0] == "bank" else DELIVERY_POINTS)[job.step]
+
+func interact_building() -> bool:
+	if world.active_car != null:
+		return false
+	var at: Vector3 = world.player.position
+	if home_floor_at(at) >= 0 or elevator_interaction(at) != 0 or near_building_mission(at):
+		return false
+	var job := building_job_for(building_player_id())
+	if not job.is_empty() and at.distance_squared_to(building_destination(job)) < 4.0:
+		submit_building_choice(-1)
+		return true
+	var contact := building_contact_at(at)
+	if contact < 0:
+		return false
+	selected_contact = contact
+	var offer: Array = BUILDING_OFFERS[building_contacts[contact][0]]
+	building_title.text = "%s\n%s" % [offer[0],offer[2]]
+	building_choice.text = offer[1]
+	world.activities.set_menu("building_contact")
+	building_dialog.show()
+	return true
+
+func submit_building_choice(contact: int) -> void:
+	if world.activities.menu == "building_contact":
+		world.activities.set_menu("")
+		building_dialog.hide()
+	if world.active_car != null:
+		return
+	if contact >= 0 and building_contact_at(world.player.position) == contact:
+		var offer: String = building_contacts[contact][0]
+		if offer in ["guns","cars","garage"]:
+			if world.activities.nearby_place() == offer:
+				world.activities.set_menu(offer)
+			return
+	if world.network != null and world.network.active():
+		world.network.rules.send_action("building_contact",{"contact":contact})
+	else:
+		apply_building_choice(1,world.player.position,contact)
+
+func apply_building_choice(id: int, at: Vector3, contact: int) -> void:
+	var job := building_job_for(id)
+	if contact == -1:
+		if job.is_empty() or job.remaining <= 0 or at.distance_squared_to(building_destination(job)) >= 4.0:
+			return
+		job.step += 1
+		if job.step == 3:
+			job.clear()
+			world.cash += BUILDING_REWARD
+			world.notify("Serviço concluído · +$%d" % BUILDING_REWARD)
+		return
+	if contact < 0 or contact != building_contact_at(at):
+		return
+	match building_contacts[contact][0]:
+		"office", "bank":
+			if not job.is_empty():
+				world.notify("Conclua a entrega em andamento.")
+				return
+			job.merge({"contact":contact,"step":0,"remaining":BUILDING_JOB_TIME})
+			world.notify("Entregue os 3 volumes nos pontos marcados.")
+		"cafe": purchase_building_service(20,15.0,"Café servido")
+		"clinic": purchase_building_service(100,100.0,"Tratamento concluído")
+		"market": purchase_building_service(35,25.0,"Lanche consumido")
+		"rest": purchase_building_service(0,20.0,"Você descansou")
+
+func purchase_building_service(price: int, recovery: float, message: String) -> void:
+	if world.health >= 100:
+		world.notify("Sua vida já está cheia.")
+		return
+	if not world.activities.spend(price):
+		return
+	world.health = minf(100,world.health+recovery)
+	world.notify(message)
+
+func tick_building_job(id: int, delta: float) -> bool:
+	var job := building_job_for(id)
+	if job.is_empty():
+		return false
+	job.remaining -= delta
+	if job.remaining > 0:
+		return false
+	job.clear()
+	return true
 
 func tick_tasks(delta: float) -> void:
 	var a: Node = world.activities
@@ -684,6 +832,15 @@ func refresh_room_visibility(subject: Vector3) -> void:
 func _process(delta: float) -> void:
 	if elevator_ui != null and world.activities.menu != "elevator":
 		elevator_ui.hide()
+	if world.activities.menu != "building_contact":
+		building_dialog.hide()
+	var service := building_job_for(building_player_id())
+	building_marker.visible = not service.is_empty() and not world.finished
+	if building_marker.visible:
+		building_marker.position = building_destination(service) + Vector3.UP * 1.6
+		var label := "Entrega %d/3 · %ds" % [service.step+1,ceili(service.remaining)]
+		if building_marker.text != label:
+			building_marker.text = label
 	refresh += delta
 	if refresh < 0.5:
 		return

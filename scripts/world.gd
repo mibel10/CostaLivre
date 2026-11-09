@@ -705,6 +705,7 @@ func finish(success: bool) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func respawn_local() -> void:
+	life.offline_building_job.clear()
 	if active_car != null: active_car.driving = false
 	active_car = null
 	car_transition = false

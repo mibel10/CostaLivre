@@ -27,7 +27,7 @@ func run() -> void:
 			var from := Vector3(x, ground + 1, side * 31.0)
 			var hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 2, 1))
 			assert(not hit.is_empty() and absf(hit.position.y - ground) < 0.02, "Favela steps must not block the walking ramp")
-	var ped = world.life.people[0]
+	var ped = world.life.people[3]
 	world.player.position = ped.position + Vector3(2,0,0)
 	world.life._process(1)
 	var before: Vector3 = ped.position
@@ -72,6 +72,44 @@ func run() -> void:
 	world.activities.handle_input(key)
 	assert(world.activities.job_page == 0)
 	world.activities.set_menu("")
+	assert(world.life.building_contacts.size() == 21)
+	var office := -1
+	var cafe := -1
+	for index: int in world.life.building_contacts:
+		var npc: CharacterBody3D = world.life.people[index]
+		assert(npc.stationary and world.life.building_contact_at(npc.position) == index)
+		match world.life.building_contacts[index][0]:
+			"office": office = index
+			"cafe": cafe = index
+		if world.life.building_contacts[index][0] in ["office","bank"]:
+			for step in 3:
+				var stop: Vector3 = world.life.building_destination({"contact":index,"step":step})
+				var ray := PhysicsRayQueryParameters3D.create(stop+Vector3.UP*2,stop-Vector3.UP,1)
+				var surface: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(ray)
+				assert(not surface.is_empty() and absf(surface.position.y-stop.y) < 0.25, "Delivery point must sit on walkable ground: %s" % stop)
+	var activity := InputEventAction.new()
+	activity.action = "activity"
+	activity.pressed = true
+	world.player.position = world.life.people[cafe].position + Vector3.BACK
+	world.health = 50
+	var before_purchase: int = world.cash
+	assert(world.activities.handle_input(activity) and world.activities.menu == "building_contact")
+	world.life.building_choice.pressed.emit()
+	assert(world.cash == before_purchase-20 and world.health == 65)
+	world.player.position = world.life.people[office].position + Vector3.BACK
+	assert(world.activities.handle_input(activity) and world.activities.menu == "building_contact")
+	world.life.building_choice.pressed.emit()
+	var delivery: Dictionary = world.life.offline_building_job
+	assert(delivery.step == 0 and is_equal_approx(delivery.remaining,60))
+	for step in 3:
+		world.player.position = world.life.building_destination(delivery)
+		assert(world.activities.handle_input(activity))
+	assert(delivery.is_empty() and world.cash == before_purchase+180)
+	world.player.position = world.life.people[office].position + Vector3.BACK
+	assert(world.activities.handle_input(activity) and world.activities.menu == "building_contact")
+	world.life.building_choice.pressed.emit()
+	assert(world.life.tick_building_job(1,60.1) and delivery.is_empty())
+	assert(world.cash == before_purchase+180, "Expired deliveries do not pay")
 	var entrance := Vector3(294, 0.3, -83)
 	world.heat = 0.0
 	world.check_vehicle_entry(entrance + Vector3.BACK, entrance)
@@ -96,7 +134,7 @@ func run() -> void:
 	world.activities.tick_robbery(5.1)
 	Input.action_release("activity")
 	assert(world.cash == cash_before+1200 and world.activities.robbery_cooldowns[3] > 0)
-	print("PASS: walking pedestrians, animated roll, six accessible interiors, campaign contracts and four job pages")
+	print("PASS: existing contacts, purchase, repeatable delivery, city pedestrians and campaign contracts")
 	world.queue_free()
 	await process_frame
 	await create_timer(0.2).timeout
