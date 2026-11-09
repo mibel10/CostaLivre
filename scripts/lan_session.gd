@@ -533,7 +533,7 @@ func _process(delta: float) -> void:
 				members[id]["car_position"] = bus.position
 		var cars: Array = []
 		for car in world.cars:
-			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer})
+			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer})
 		var people: Array = []
 		for person in world.life.people:
 			people.append([person.position,person.model.rotation.y,person.hp,person.robbed])
@@ -554,12 +554,15 @@ func apply_car(id: int,state: Dictionary) -> void:
 	var car: Node3D=world.car_by_id(index)
 	if car!=null and car.hp>0 and owners.get(index,0)==id:
 		var at: Vector3=state.car_position
-		if at.is_finite() and at.x>=-195 and at.x<=945 and absf(at.z)<143 and at.y>=-2 and at.y<4:
+		var max_height := 20.0 if car.tier == car.Catalog.SUPERCAR else 4.0
+		if at.is_finite() and at.x>=-195 and at.x<=945 and absf(at.z)<143 and at.y>=-2 and at.y<max_height:
 			world.check_vehicle_entry(car.position, at)
 			car.position=at
 			car.heading=float(state.car_heading)
 			car.rotation.y=car.heading
 			var limit: float = car.Catalog.SPEEDS[car.tier] if car.tier == car.Catalog.BUS else 110.0
+			if car.tier == car.Catalog.SUPERCAR:
+				limit = car.Catalog.HOVER_SPEED if car.hovering else car.Catalog.SPEEDS[car.tier]
 			car.speed=clampf(float(state.speed),-20,limit)
 
 @rpc("authority","call_remote","reliable",2)
@@ -598,6 +601,7 @@ func snapshot(data: Dictionary) -> void:
 		car.despawn_timer=float(state.get("despawn_timer",car.despawn_timer))
 		car.police_phase=state.phase
 		car.owned=state.owned
+		car.hovering=bool(state.get("hovering", false))
 		car.engine_upgrade=state.engine
 		car.set_suspension(float(state.get("suspension",0)))
 	for car in world.cars.duplicate():

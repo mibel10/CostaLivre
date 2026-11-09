@@ -12,6 +12,7 @@ func run() -> void:
 	var a = world.activities
 	assert(a.CAR_PRICES[a.Catalog.BUS - 1] == 30000)
 	assert(is_equal_approx(a.Catalog.SPEEDS[a.Catalog.BUS] * 3.6, 160.0))
+	assert(a.CAR_PRICES[a.Catalog.SUPERCAR - 1] == 75000)
 	for tier in range(4,a.Catalog.NAMES.size()):
 		var car = world.spawn_car(Vector3(0,0.2,84),Color.RED,false,tier)
 		assert(car.model_name == a.Catalog.NAMES[tier])
@@ -30,6 +31,16 @@ func run() -> void:
 			await physics_frame
 		Input.action_release("forward")
 		assert(car.speed>0 and car.position.z<83.5,"Each new vehicle accelerates on the road")
+		if tier == a.Catalog.SUPERCAR:
+			var toggle := InputEventAction.new()
+			toggle.action = "activity"
+			toggle.pressed = true
+			car.speed = 0.0
+			assert(a.handle_input(toggle) and car.hovering)
+			for frame in 65:
+				await physics_frame
+			assert(car.position.y > a.Catalog.SIZES[a.Catalog.BUS].y, "Hover clears the bus roof")
+			assert(a.handle_input(toggle) and not car.hovering)
 		if tier == 9:
 			assert(car.rider.visible)
 			world.interact()
@@ -41,7 +52,7 @@ func run() -> void:
 		world.cars.erase(car)
 		car.queue_free()
 	for index in range(3,a.CAR_PRICES.size()):
-		world.cash = 50000
+		world.cash = 100000
 		a.car_page = index/3
 		a.set_menu("cars")
 		a.buy(index%3)

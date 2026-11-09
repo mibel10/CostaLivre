@@ -86,6 +86,9 @@ func _draw() -> void:
 		text("%03d" % int(absf(world.active_car.speed) * 3.6), Vector2(1120, 659), 36)
 		text("km/h", Vector2(1200, 657), 13, muted)
 		text(world.active_car.model_name, Vector2(1120, 684), 14, muted)
+		if world.active_car.tier == a.Catalog.SUPERCAR:
+			var mode := "FLUTUANTE" if world.active_car.hovering else "ESTRADA"
+			text(("%s · %s" % ["USAR" if OS.has_feature("android") else "F", mode]), Vector2(1105, 623), 14, gold)
 		if world.active_car.tier == a.Catalog.BUS and world.network.active():
 			var bus_id: int = world.active_car.net_id
 			var occupants := int(world.network.owners.has(bus_id))

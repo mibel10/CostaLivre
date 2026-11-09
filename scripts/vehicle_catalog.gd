@@ -2,10 +2,13 @@ extends RefCounted
 
 const BUS := 10
 const BUS_CAPACITY := 12
-const NAMES := ["Fusquinha","Vento GT","Tempestade","Aurora X","Cometa R","Eclipse V12","Raio RS","Bairro Compact","Litoral LX","Falcão 600","Ônibus Costa"]
-const SPEEDS := [44.45,51.0,63.0,75.0,70.0,78.0,83.0,34.0,42.0,58.0,160.0/3.6]
-const ACCEL := [10.0,14.0,18.0,22.0,21.0,23.0,25.0,8.5,11.0,19.0,8.0]
-const SIZES := [Vector3(2.15,1.5,3.4),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.0,1.25,4.2),Vector3(2.1,1.3,4.7),Vector3(2.2,1.2,4.4),Vector3(1.8,1.65,3.5),Vector3(1.95,1.5,4.4),Vector3(0.75,1.35,2.3),Vector3(2.8,3.4,9.2)]
+const SUPERCAR := 11
+const HOVER_SPEED := 160.0 / 3.6
+const HOVER_HEIGHT := 3.85
+const NAMES := ["Fusquinha","Vento GT","Tempestade","Aurora X","Cometa R","Eclipse V12","Raio RS","Bairro Compact","Litoral LX","Falcão 600","Ônibus Costa","Vórtice X"]
+const SPEEDS := [44.45,51.0,63.0,75.0,70.0,78.0,83.0,34.0,42.0,58.0,160.0/3.6,230.0/3.6]
+const ACCEL := [10.0,14.0,18.0,22.0,21.0,23.0,25.0,8.5,11.0,19.0,8.0,38.0]
+const SIZES := [Vector3(2.15,1.5,3.4),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.1,1.25,4.35),Vector3(2.0,1.25,4.2),Vector3(2.1,1.3,4.7),Vector3(2.2,1.2,4.4),Vector3(1.8,1.65,3.5),Vector3(1.95,1.5,4.4),Vector3(0.75,1.35,2.3),Vector3(2.8,3.4,9.2),Vector3(2.25,1.18,4.6)]
 
 static func build(car: CharacterBody3D) -> void:
 	var root := Node3D.new()
@@ -88,7 +91,11 @@ static func build(car: CharacterBody3D) -> void:
 		box(root,Vector3(side*width*0.65,deck-0.05,half+0.015),Vector3(0.35,0.1,0.08),world.material(Color("b84037")))
 		for z in [-half*0.64,half*0.64]:
 			make_wheel(car,root,Vector3(side*width,0.36,z),z<0,0.36,0.22)
-	if car.tier == 4:
+	if car.tier == SUPERCAR:
+		for side in [-1, 1]:
+			box(root, Vector3(side * width * 0.8, 0.53, 0), Vector3(0.32, 0.19, 3.4), metal)
+		box(root, Vector3(0, 0.91, half * 0.82), Vector3(size.x, 0.08, 0.38), dark)
+	elif car.tier == 4:
 		box(root,Vector3(0,deck+0.02,-1.15),Vector3(0.23,0.025,1.0),dark)
 	elif car.tier == 5:
 		for side in [-1,1]:

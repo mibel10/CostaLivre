@@ -330,6 +330,11 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		return
 	last_actions[key]=now
 	match kind:
+		"hover_mode":
+			var car_id: int = network.members.get(id, {}).get("car", -1)
+			var car: Node = world.car_by_id(car_id)
+			if car != null and car.tier == car.Catalog.SUPERCAR and car.hp > 0 and network.owners.get(car_id, 0) == id:
+				car.hovering = not car.hovering
 		"bus_board": board_bus(id, int(data.get("car", -1)))
 		"bus_exit": leave_bus(id)
 		"fire": fire_peer(id,data)

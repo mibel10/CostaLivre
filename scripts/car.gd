@@ -13,6 +13,7 @@ var traffic := false
 var speed := 0.0
 var heading := 0.0
 var driving := false
+var hovering := false
 var wheels: Array[Node3D] = []
 var lights: Array[MeshInstance3D] = []
 var route: Array[Vector3] = []
@@ -68,6 +69,8 @@ func _physics_process(delta: float) -> void:
 		rider.visible = driving and hp > 0
 		if not driving:
 			get_node("CustomVehicle").rotation.z = 0
+	if tier == Catalog.SUPERCAR and (not driving or hp <= 0 or world.finished):
+		hovering = false
 	# Parked colliders stay active without repeating floor queries every physics tick.
 	if hp > 0 and not driving and not traffic and (not police or police_phase=="parked") and absf(speed)<0.01 and is_on_floor() and Vector2(velocity.x,velocity.z).length_squared()<0.01:
 		return
@@ -104,6 +107,10 @@ func _physics_process(delta: float) -> void:
 		if tier == Catalog.BUS:
 			top_speed = Catalog.SPEEDS[tier]
 			acceleration += engine_upgrade
+		elif tier == Catalog.SUPERCAR:
+			top_speed = Catalog.HOVER_SPEED if hovering else Catalog.SPEEDS[tier]
+			acceleration = 55.0 if hovering else Catalog.ACCEL[tier]
+			speed = clampf(speed, -12.0, top_speed)
 		if throttle != 0:
 			speed = move_toward(speed, throttle * (top_speed if throttle > 0 else (5.0 if tier == 9 else 12.0)), delta * (22 if speed * throttle < 0 else acceleration))
 		else:
@@ -160,6 +167,13 @@ func _physics_process(delta: float) -> void:
 	velocity.x = forward.x * speed
 	velocity.z = forward.z * speed
 	velocity.y = -5 if is_on_floor() else velocity.y - 22 * delta
+	if hovering:
+		var origin := global_position + Vector3.UP * 0.3
+		var ground := get_world_3d().direct_space_state.intersect_ray(
+			PhysicsRayQueryParameters3D.create(origin, origin + Vector3.DOWN * 9.0, 1))
+		if not ground.is_empty():
+			var height: float = ground.position.y + Catalog.HOVER_HEIGHT
+			velocity.y = clampf((height - global_position.y) * 5.0, -8.0, 8.0)
 	var previous := position
 	move_and_slide()
 	if driving and not world.finished and (world.network == null or not world.network.is_client()):
