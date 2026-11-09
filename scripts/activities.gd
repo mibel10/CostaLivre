@@ -17,7 +17,7 @@ const ACTION_JOBS := {
 	13: {"name":"Corrida pela vida","kind":"rescue","story":"Pegue o carro de atendimento da clinica, resgate o morador no morro e volte com o veiculo inteiro.","reward":4000,"model":8,"spawn":Vector3(63,0.3,38),"pickup":Vector3(714,9.9,4.5),"drop":Vector3(63,0,38),"min_hp":80,"time":210.0},
 	14: {"name":"Invasão ao estúdio","kind":"assault","story":"Entre no Estúdio Solar a pé, elimine os guardas, recupere os arquivos e saia do prédio.","reward":4000,"point":Vector3(147,0,58),"exit":Vector3(147,0,80),"guards":[Vector3(140,0.2,59),Vector3(154,0.2,59),Vector3(147,0.2,55)],"time":210.0},
 	15: {"name":"Último refúgio","kind":"defend","story":"Ative o encontro no oitavo andar, resista por 60 segundos e elimine quatro ondas de invasores.","reward":4800,"point":Vector3(-67,42,67),"guards":[Vector3(-69,42.2,63),Vector3(-57,42.2,63),Vector3(-63,42.2,56)],"duration":60.0,"waves":4,"time":160.0},
-	16: {"name":"Caçada ao cobrador","kind":"intercept","story":"Intercepte o cobrador que fugiu do cafe, recupere a maleta e leve o dinheiro de volta.","reward":3800,"model":7,"spawn":Vector3(504,0.3,126),"track":[Vector3(504,0.3,126),Vector3(882,0.3,126),Vector3(882,0.3,42),Vector3(504,0.3,42)],"drop":Vector3(-63,0,35),"time":240.0},
+	16: {"name":"Retomada do café","kind":"assault","story":"O Café Maré foi tomado por criminosos. Entre a pé, elimine os invasores, recupere o caixa e saia em segurança.","reward":3800,"point":Vector3(-70,0,14),"exit":Vector3(-63,0,37),"guards":[Vector3(-69,0.2,19),Vector3(-57,0.2,17),Vector3(-64,0.2,13)],"time":240.0},
 	17: {"name":"Roubo de suprimentos","kind":"cargo","story":"Recolha tres caixas no supermercado, consiga um carro e leve a carga a oficina depois de despistar a policia.","reward":4200,"points":[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)],"drop":Vector3(-21,0,63),"time":220.0},
 	18: {"name":"Carga instável","kind":"drive","story":"Transporte a carga fragil entre os mercados. Colisoes e trancos destroem a mercadoria.","reward":4600,"model":8,"spawn":Vector3(798,0.3,-78.5),"points":[Vector3(882,0,-84),Vector3(882,0,84),Vector3(294,0,-78.5)],"fragile":true,"time":210.0},
 	19: {"name":"Comboio sob fogo","kind":"escort","story":"Aproxime-se do comboio e use F para partir. Siga o veiculo e proteja-o dos atiradores ate o destino.","reward":5200,"model":8,"spawn":Vector3(210,0.3,84),"track":[Vector3(210,0.3,84),Vector3(462,0.3,84),Vector3(462,0.3,126),Vector3(630,0.3,126)],"drop":Vector3(630,0,126),"guards":[Vector3(462,0.2,70),Vector3(462,0.2,110),Vector3(588,0.2,116)],"time":190.0},
@@ -1255,7 +1255,7 @@ func interact_campaign() -> bool:
 			return true
 		if spec.kind == "assault" and stage == 1 and world.active_car == null and world.player.position.distance_to(spec.point) < 3:
 			stage = 2
-			world.notify("Arquivos recuperados. Saia do estúdio a pé.")
+			world.notify("Objetivo recuperado. Saia do prédio a pé.")
 			return true
 		if spec.kind == "infiltration":
 			if stage == 1:
@@ -1410,7 +1410,7 @@ func action_objective() -> String:
 	var spec: Dictionary = ACTION_JOBS[job]
 	var text := ""
 	match str(spec.kind):
-		"assault": text = ["Elimine os guardas do estúdio: %d" % contract_guards_alive(), "F / Recolha os arquivos", "Saia do estúdio a pé"][mini(stage,2)]
+		"assault": text = ["Elimine os invasores: %d" % contract_guards_alive(), "F / Recolha o objetivo", "Saia do prédio a pé"][mini(stage,2)]
 		"clinic_evacuation": text = "Pegue a ambulância marcada" if world.active_car != target_car else ("Recolha pacientes / %d/%d" % [stage,spec.points.size()] if stage < spec.points.size() else "Volte à Clínica Costa com a ambulância")
 		"infiltration":
 			text = ["Agache e atire na tampa da tubulacao", "Neutralize os dois policiais sem ruido / %d restantes" % contract_guards_alive(), "Entre no computador e conecte o pendrive", "Extraindo dados / %d%% / elimine a equipe tatica" % mini(roundi(progress/45.0*100),100), "Dados copiados / F para recuperar o pendrive", "Agache e fuja pela mesma tubulacao"][mini(stage,5)]
@@ -1444,7 +1444,7 @@ func tick_action_job(delta: float) -> void:
 		"assault":
 			if stage == 0 and contract_guards_alive() == 0:
 				stage = 1
-				world.notify("Área segura. Recolha os arquivos.")
+				world.notify("Área segura. Recolha o objetivo.")
 			elif stage == 2 and world.active_car == null and world.player.position.distance_to(spec.exit) < 5:
 				complete_job()
 		"clinic_evacuation":
@@ -1542,7 +1542,7 @@ func action_prompt() -> String:
 	if not ACTION_JOBS.has(job): return ""
 	var spec: Dictionary = ACTION_JOBS[job]
 	if spec.kind == "assault" and stage == 1 and world.active_car == null and world.player.position.distance_to(spec.point) < 3:
-		return "F / Recolher arquivos"
+		return "F / Recolher objetivo"
 	if spec.kind == "getaway" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
 		return "F / Roubar maleta e iniciar a fuga"
 	if spec.kind == "foot_race" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.points[0]) < 3:
