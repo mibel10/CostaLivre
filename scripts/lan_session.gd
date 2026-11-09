@@ -600,7 +600,7 @@ func _process(delta: float) -> void:
 				members[id]["car_position"] = bus.position
 		var cars: Array = []
 		for car in world.cars:
-			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer})
+			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer,"fuel":car.fuel,"refuel_time":car.refuel_time})
 		var people: Array = []
 		for person in world.life.people:
 			people.append([person.position,person.model.rotation.y,person.hp,person.robbed])
@@ -636,7 +636,7 @@ func apply_car(id: int,state: Dictionary) -> void:
 			var limit: float = car.Catalog.SPEEDS[car.tier] if car.tier == car.Catalog.BUS else 110.0
 			if car.tier == car.Catalog.SUPERCAR:
 				limit = car.Catalog.HOVER_SPEED if car.hovering else car.Catalog.SPEEDS[car.tier]
-			car.speed=clampf(float(speed_value),-20,limit)
+			car.speed=0.0 if car.fuel <= 0.0 else clampf(float(speed_value),-20,limit)
 
 @rpc("authority","call_remote","reliable",2)
 func packed_snapshot(packet: PackedByteArray) -> void:
@@ -679,6 +679,8 @@ func snapshot(data: Dictionary) -> void:
 		car.apply_network_health(float(state.hp))
 		car.apply_network_damage(float(state.wreck_timer),bool(state.exploded))
 		car.despawn_timer=float(state.get("despawn_timer",car.despawn_timer))
+		car.fuel=clampf(float(state.get("fuel",car.fuel)),0.0,1.0)
+		car.refuel_time=maxf(0.0,float(state.get("refuel_time",0.0)))
 		car.police_phase=state.phase
 		car.owned=state.owned
 		car.hovering=bool(state.get("hovering", false))

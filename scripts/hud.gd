@@ -105,6 +105,9 @@ func _draw() -> void:
 		text("%03d" % int(absf(world.active_car.speed) * 3.6), Vector2(1120, 659), 36)
 		text("km/h", Vector2(1200, 657), 13, muted)
 		text(world.active_car.model_name, Vector2(1120, 684), 14, muted)
+		text("Combustível %d%%" % roundi(world.active_car.fuel * 100.0), Vector2(1105, 706), 14, Color("ef9b70") if world.active_car.fuel <= 0.1 else muted)
+		if world.active_car.fuel <= 0.1:
+			text("Abasteça!", Vector2(1154, 626), 15, Color("ff846e"))
 		if world.active_car.tier == a.Catalog.SUPERCAR:
 			var mode := "FLUTUANTE" if world.active_car.hovering else "ESTRADA"
 			text(("%s · %s" % ["USAR" if OS.has_feature("android") else "F", mode]), Vector2(1105, 623), 14, gold)
@@ -350,6 +353,10 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 		if cop.hp > 0 and world.heat > 0 and cop.position.x >= left and cop.position.x <= left + 372:
 			draw_circle(map_point(cop.position, origin, map_size), 3, Color("ed8277"))
 	var pos := map_point(world.subject_position(), origin, map_size)
+	var pump := map_point(world.FUEL_STATION, origin, map_size)
+	if pump.x >= origin.x and pump.x <= origin.x + map_size.x:
+		draw_circle(pump, 4, Color("f0c56d"))
+		draw_circle(pump, 2, Color("53636a"))
 	var angle: float = world.active_car.heading if world.active_car != null else world.player.model.rotation.y
 	var points := PackedVector2Array()
 	for offset in [Vector2(0, -6), Vector2(4, 5), Vector2(0, 3), Vector2(-4, 5)]:

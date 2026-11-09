@@ -422,6 +422,13 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if world.activities.bank.interact():
 					bank_owner=id
 			)
+		"refuel":
+			var car_id: int = int(network.members.get(id, {}).get("car", -1))
+			var car: Node = world.car_by_id(car_id)
+			if car != null and not bus_riders.has(id) and network.owners.get(car_id, 0) == id and car.hp > 0 and car.fuel < 1.0 and absf(car.speed) <= 0.25 and car.position.distance_to(world.FUEL_STATION) < 5.0:
+				car.refuel_time = 5.0
+				car.refuel_peer = id
+				private_notice(id, "Abastecendo...")
 		"vehicle_entry":
 			var car_id = data.get("car")
 			if car_id is int and int(network.members[id].get("car",-1)) < 0 and world.life.elevator_rider_position(id) == null:
@@ -696,6 +703,26 @@ func physics(delta: float) -> void:
 		if Input.is_action_pressed("shoot") and world.activities.menu=="" and not is_dead(local_id()):
 			fire_local()
 		return
+	for car in world.cars:
+		if int(network.owners.get(car.net_id, 0)) > 0:
+			car.fuel = maxf(0.0, car.fuel - absf(car.speed) * delta / 6000.0)
+			if car.fuel <= 0.0:
+				car.speed = 0.0
+				car.velocity.x = 0.0
+				car.velocity.z = 0.0
+				car.hovering = false
+		if car.refuel_time > 0.0:
+			var peer_id: int = car.refuel_peer
+			if not network.members.has(peer_id) or int(network.members[peer_id].get("car", -1)) != car.net_id or absf(car.speed) > 0.25 or car.position.distance_to(world.FUEL_STATION) >= 5.0:
+				car.refuel_time = 0.0
+				car.refuel_peer = 0
+				private_notice(peer_id, "Abastecimento cancelado.")
+			else:
+				car.refuel_time = maxf(0.0, car.refuel_time - delta)
+				if car.refuel_time <= 0.0:
+					car.fuel = 1.0
+					car.refuel_peer = 0
+					private_notice(peer_id, "Tanque cheio.")
 	for id in bus_riders.keys():
 		var bus: Node = world.car_by_id(bus_riders[id])
 		if bus == null or bus.hp <= 0:

@@ -13,6 +13,9 @@ var police := false
 var traffic := false
 var traffic_nearby := true
 var speed := 0.0
+var fuel := 1.0
+var refuel_time := 0.0
+var refuel_peer := 0
 var heading := 0.0
 var driving := false
 var hovering := false
@@ -114,7 +117,7 @@ func _physics_process(delta: float) -> void:
 	if driving and world.finished:
 		speed = move_toward(speed, 0, delta * 2)
 	elif driving and not world.finished:
-		var throttle := (Input.get_action_strength("forward") - Input.get_action_strength("back")) if world.activities.menu=="" and not (world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id())) else 0.0
+		var throttle := (Input.get_action_strength("forward") - Input.get_action_strength("back")) if fuel > 0.0 and world.activities.menu=="" and not (world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id())) else 0.0
 		var top_speed: float = Catalog.SPEEDS[tier]*(1.0 if Input.is_action_pressed("sprint") else 0.76)+engine_upgrade
 		var acceleration: float = Catalog.ACCEL[tier]
 		if tier == Catalog.BUS:
@@ -222,6 +225,13 @@ func _physics_process(delta: float) -> void:
 			break
 	# Use actual travel, so wheels do not keep spinning when blocked by a wall.
 	var travel := Vector2(get_real_velocity().x,get_real_velocity().z).length() * delta
+	if driving and (world.network == null or not world.network.active()):
+		fuel = maxf(0.0, fuel - travel / 6000.0)
+		if fuel <= 0.0:
+			speed = 0.0
+			velocity.x = 0.0
+			velocity.z = 0.0
+			hovering = false
 	var wheel_radius := 0.52 if tier == Catalog.BUS else (0.36 if tier >= 4 else 0.384 * 0.95)
 	wheel_angle = fposmod(wheel_angle + travel / wheel_radius * signf(speed),TAU)
 	steering_angle = move_toward(steering_angle,steer * 0.38,delta * 2)
