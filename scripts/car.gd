@@ -121,13 +121,12 @@ func _physics_process(delta: float) -> void:
 	elif driving and not world.finished:
 		var throttle := (Input.get_action_strength("forward") - Input.get_action_strength("back")) if fuel > 0.0 and world.activities.menu=="" and not (world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id())) else 0.0
 		var top_speed: float = Catalog.SPEEDS[tier]*(1.0 if Input.is_action_pressed("sprint") else 0.76)+engine_upgrade
-		var acceleration: float = Catalog.ACCEL[tier]
+		var acceleration: float = Catalog.ACCEL[tier] + engine_upgrade
 		if tier == Catalog.BUS:
 			top_speed = Catalog.SPEEDS[tier]
-			acceleration += engine_upgrade
 		elif tier == Catalog.SUPERCAR:
 			top_speed = Catalog.HOVER_SPEED if hovering else Catalog.SPEEDS[tier]
-			acceleration = 55.0 if hovering else Catalog.ACCEL[tier]
+			acceleration = (55.0 if hovering else Catalog.ACCEL[tier]) + engine_upgrade
 			speed = clampf(speed, -12.0, top_speed)
 		if throttle != 0:
 			speed = move_toward(speed, throttle * (top_speed if throttle > 0 else (5.0 if tier == 9 else 12.0)), delta * (22 if speed * throttle < 0 else acceleration))
