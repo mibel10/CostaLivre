@@ -57,8 +57,10 @@ func load_settings() -> void:
 	upscaling = video_int(config, "upscaling", 2, 0, 4)
 	window_mode = video_int(config, "window_mode", 2, 0, 2)
 	window_resolution = Vector2i(video_int(config, "window_width", 1280, 1, 7680), video_int(config, "window_height", 720, 1, 4320))
-	if not OS.has_feature("android") and (window_resolution.x > DisplayServer.screen_get_size().x or window_resolution.y > DisplayServer.screen_get_size().y):
-		window_resolution=DisplayServer.screen_get_size()
+	if not OS.has_feature("android"):
+		var screen_size := DisplayServer.screen_get_size()
+		if screen_size.x > 0 and screen_size.y > 0 and (window_resolution.x > screen_size.x or window_resolution.y > screen_size.y):
+			window_resolution = screen_size
 
 func video_int(config: ConfigFile, key: String, fallback: int, minimum: int, maximum: int) -> int:
 	var value = config.get_value("video", key, fallback)
