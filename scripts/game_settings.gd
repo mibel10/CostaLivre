@@ -152,7 +152,7 @@ func apply_range(node: GeometryInstance3D) -> void:
 		node.visibility_range_begin = NEAR[draw_distance]
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_shadow"):
-		node.visibility_range_end = 55.0 if quality < 3 else 0.1
+		node.visibility_range_end = [0.1, 22.0, 34.0, 50.0][shadow_quality]
 	elif node is Label3D:
 		node.visibility_range_end = 110.0 if quality < 3 else 65.0
 
@@ -173,8 +173,8 @@ func apply() -> void:
 	for child in world.get_children():
 		if child is DirectionalLight3D:
 			child.shadow_enabled = shadow_quality > 0
-			child.directional_shadow_max_distance = [0.0,35.0,70.0,110.0][shadow_quality]
-			child.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+			child.directional_shadow_max_distance = [0.0, 26.0, 50.0, 85.0][shadow_quality]
+			child.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL if shadow_quality <= 1 else DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 		if child is WorldEnvironment:
 			child.environment.fog_enabled = quality < 3
 			child.environment.fog_density = 0.0015 if quality < 2 else 0.003
