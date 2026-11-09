@@ -533,6 +533,8 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
+		"passenger_boarding":
+			world.activities.show_passenger_boarding(data.start, int(data.car))
 		"vehicle_fall":
 			world.play_vehicle_fall(data)
 		"vehicle_enter":

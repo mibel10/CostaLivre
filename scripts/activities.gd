@@ -1212,10 +1212,36 @@ func interact_hill_errand() -> bool:
 	if game_mode == "campaign": save_campaign()
 	return true
 
+func show_passenger_boarding(start: Vector3, car_id: int) -> void:
+	var car: Node3D = world.car_by_id(car_id)
+	if not is_instance_valid(car):
+		return
+	var actor := Node3D.new()
+	world.add_child(actor)
+	actor.global_position = start
+	var model := preload("res://scripts/human_visual.gd").new()
+	actor.add_child(model)
+	var side := 1.0 if car.to_local(start).x >= 0 else -1.0
+	var tween := create_tween()
+	tween.tween_method(func(elapsed: float):
+		if is_instance_valid(car) and is_instance_valid(model):
+			model.pose_vehicle_entry(actor, car, side, elapsed)
+	, 0.0, 2.0, 2.0)
+	tween.tween_callback(actor.queue_free)
+
+func start_passenger_boarding(start: Vector3, car: Node3D) -> void:
+	var data := {"start": start + Vector3(0, 0, 2), "car": car.net_id}
+	if world.network != null and world.network.active():
+		for id in world.network.rules.participants():
+			world.network.rules.send_personal(id, "passenger_boarding", data)
+	else:
+		show_passenger_boarding(data.start, data.car)
+
 func interact_campaign() -> bool:
 	if ACTION_JOBS.has(job):
 		var spec: Dictionary = ACTION_JOBS[job]
 		if spec.kind == "clinic_evacuation" and stage < spec.points.size() and is_instance_valid(target_car) and world.active_car == target_car and absf(target_car.speed) < 3 and world.subject_position().distance_to(spec.points[stage]) < 5:
+			start_passenger_boarding(spec.points[stage], target_car)
 			stage += 1
 			world.raise_heat(12 if stage < spec.points.size() else 35)
 			world.notify("Paciente embarcado: %d/%d. Volte para a Clínica Costa." % [stage,spec.points.size()] if stage == spec.points.size() else "Paciente embarcado: %d/%d. Siga para a próxima localização." % [stage,spec.points.size()])
@@ -1245,6 +1271,7 @@ func interact_campaign() -> bool:
 				complete_job()
 				return true
 		if spec.kind == "rescue" and stage == 0 and world.active_car != null and (target_car == null or world.active_car == target_car) and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(spec.pickup) < 5:
+			start_passenger_boarding(spec.pickup, world.active_car)
 			passenger_car = world.active_car.net_id
 			stage = 1
 			world.notify("Passageiro a bordo. Chegue ao destino antes do tempo acabar.")
@@ -1297,6 +1324,7 @@ func interact_campaign() -> bool:
 			return true
 		return false
 	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
+		start_passenger_boarding(INFORMANT_PICKUP, world.active_car)
 		passenger_car = world.active_car.net_id
 		stage = 1
 		world.raise_heat(60)
