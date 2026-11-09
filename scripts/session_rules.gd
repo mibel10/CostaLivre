@@ -835,7 +835,7 @@ func physics(delta: float) -> void:
 		elif not arresting.has(id) or is_dead(id):
 			network.members[id]["arrest_progress"]=0.0
 	if not seen and world.crime_grace<=0:
-		world.heat=maxf(0,world.heat-delta*3)
+		world.heat=maxf(0,world.heat-delta*world.HEAT_DECAY_RATE)
 	update_marker()
 
 func update_marker() -> void:

@@ -16,6 +16,8 @@ var camera_yaw := 0.0
 var camera_pitch := 0.34
 var mouse_idle := 0.0
 var heat := 0.0
+const HEAT_DECAY_RATE := 4.0
+const CRIME_GRACE_SECONDS := 12.0
 var response_delay := 0.0
 var crime_grace := 0.0
 var health := 100.0
@@ -700,7 +702,7 @@ func raise_heat(amount: float, actor := 0) -> void:
 	if heat <= 0:
 		response_delay = 6
 	heat = minf(100, heat + amount)
-	crime_grace = 14
+	crime_grace = CRIME_GRACE_SECONDS
 
 func check_vehicle_entry(previous: Vector3, current: Vector3, actor := 0) -> void:
 	var wanted: float = network.rules.wanted_heat(actor if actor > 0 else multiplayer.get_unique_id()) if network != null and network.active() else heat
@@ -861,7 +863,7 @@ func _physics_process(delta: float) -> void:
 	var seen := last_seen
 	if heat > 0:
 		if not seen and crime_grace <= 0:
-			heat = maxf(0, heat - delta * 3.0)
+			heat = maxf(0, heat - delta * HEAT_DECAY_RATE)
 		if seen and nearest_cop < 4.5 and (active_car == null or absf(active_car.speed) < 2):
 			bust_progress += delta
 			if bust_progress > 9:
