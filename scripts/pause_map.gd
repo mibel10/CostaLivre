@@ -41,7 +41,7 @@ func zoom_at(multiplier: float, anchor: Vector2) -> void:
 	queue_redraw()
 
 func clamp_center() -> void:
-	center.x = clampf(center.x, -186, 938)
+	center.x = clampf(center.x, -186, 1120)
 	center.y = clampf(center.y, -144, 144)
 	if zoom == 1:
 		center = Vector2(376, 0)
@@ -130,7 +130,7 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("1f343f"))
 	points.clear()
 	var start := project(Vector3(-186, 0, -145))
-	var end := project(Vector3(938, 0, 145))
+	var end := project(Vector3(1120, 0, 145))
 	draw_rect(Rect2(start, end - start), Color("405453"))
 	for center_x in [378.0, 714.0]:
 		var hill_start := project(Vector3(center_x - 84, 0, -35))
@@ -147,7 +147,7 @@ func _draw() -> void:
 			draw_line(project(Vector3(road, 0, -144)), project(Vector3(road, 0, 144)), Color("929f9d"), 4 * sqrt(zoom))
 
 	for road in range(-126, 127, 42):
-		draw_line(project(Vector3(-186, 0, road)), project(Vector3(938, 0, road)), Color("929f9d"), 4 * sqrt(zoom))
+		draw_line(project(Vector3(-186, 0, road)), project(Vector3(1120 if road == 0 else 938, 0, road)), Color("929f9d"), 4 * sqrt(zoom))
 	for center_x in [294.0, 798.0]:
 		var store_start := project(Vector3(center_x - 36, 0, -117))
 		var store_end := project(Vector3(center_x + 36, 0, -83))
@@ -164,6 +164,7 @@ func _draw() -> void:
 		var z := -105.0 if ix == 12 else 105.0
 		dot(Vector3(x,0,z + 14), Color("9fd4b5"), "Predio entravel")
 	dot(Vector3(861,0,-93), Color("b6d9d4"), "Apartamentos")
+	dot(Vector3(1035,0,55), Color("8db8ef"), "Cadeia Costa")
 	dot(a.GUN_SHOP, Color("9ed8ff"), "Arsenal")
 	dot(a.DEALER, Color("c7afff"), "APEX")
 	dot(a.GARAGE, Color("8ddbb5"), "Oficina")

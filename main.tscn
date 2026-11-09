@@ -6707,7 +6707,7 @@ mesh = SubResource("BoxMesh_o472y")
 shape = SubResource("BoxShape3D_f4e07")
 
 [node name="@MeshInstance3D@549" type="MeshInstance3D" parent="." unique_id=494350934]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 938, 6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1120, 6, 0)
 visible = false
 material_override = SubResource("StandardMaterial3D_rcfhl")
 mesh = SubResource("BoxMesh_7cso3")
@@ -8275,7 +8275,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -186, 0.4, 0)
 shape = SubResource("BoxShape3D_ctb7y")
 
 [node name="@StaticBody3D@45" type="StaticBody3D" parent="." unique_id=422758018]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 938, 0.4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1120, 0.4, 0)
 
 [node name="@CollisionShape3D@44" type="CollisionShape3D" parent="@StaticBody3D@45" unique_id=1363184208]
 shape = SubResource("BoxShape3D_8ogf0")
@@ -17053,55 +17053,55 @@ material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste0" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1000, 9.0, -120)
+position = Vector3(1200, 9.0, -120)
 size = Vector3(24, 20, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste1" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1068, 13.5, -88)
+position = Vector3(1268, 13.5, -88)
 size = Vector3(24, 29, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste2" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1136, 18.0, -56)
+position = Vector3(1336, 18.0, -56)
 size = Vector3(24, 38, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste3" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1000, 22.5, -24)
+position = Vector3(1200, 22.5, -24)
 size = Vector3(24, 47, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste4" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1068, 9.5, 8)
+position = Vector3(1268, 9.5, 8)
 size = Vector3(24, 21, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste5" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1136, 14.0, 40)
+position = Vector3(1336, 14.0, 40)
 size = Vector3(24, 30, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste6" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1000, 18.5, 72)
+position = Vector3(1200, 18.5, 72)
 size = Vector3(24, 39, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste7" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1068, 23.0, 104)
+position = Vector3(1268, 23.0, 104)
 size = Vector3(24, 48, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste8" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1136, 10.0, 136)
+position = Vector3(1336, 10.0, 136)
 size = Vector3(24, 22, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
@@ -18081,3 +18081,139 @@ material = SubResource("Material_contato_arma")
 position = Vector3(25.0, 1.65, -89.95)
 size = Vector3(0.12, 3.3, 2.5)
 material = SubResource("Material_contato_arma")
+
+[node name="ExtensaoLeste" type="Node3D" parent="."]
+
+[node name="Terreno" type="CSGBox3D" parent="ExtensaoLeste"]
+position = Vector3(1029, -0.5, 0)
+size = Vector3(182, 1, 288)
+material = SubResource("StandardMaterial3D_wjjbu")
+use_collision = true
+
+[node name="EstradaCentral" type="CSGBox3D" parent="ExtensaoLeste"]
+position = Vector3(1029, 0.01, 0)
+size = Vector3(182, 0.02, 12)
+material = SubResource("Material_horizonte_rua")
+
+[node name="LimiteNorte" type="CSGBox3D" parent="ExtensaoLeste"]
+position = Vector3(1029, 4, -144)
+size = Vector3(182, 8, 1)
+visible = false
+use_collision = true
+
+[node name="LimiteSul" type="CSGBox3D" parent="ExtensaoLeste"]
+position = Vector3(1029, 4, 144)
+size = Vector3(182, 8, 1)
+visible = false
+use_collision = true
+
+[node name="CadeiaCosta" type="Node3D" parent="."]
+position = Vector3(1035, 0, 55)
+
+[node name="Piso" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(0, -0.12, 0)
+size = Vector3(60, 0.24, 40)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Teto" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(0, 6.1, 0)
+size = Vector3(60, 0.2, 40)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Fundo" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(0, 3, -20)
+size = Vector3(60, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="LateralE" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(-30, 3, 0)
+size = Vector3(0.4, 6, 40)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="LateralD" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(30, 3, 0)
+size = Vector3(0.4, 6, 40)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="FrenteE" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(-16.5, 3, 20)
+size = Vector3(27, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="FrenteD" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(16.5, 3, 20)
+size = Vector3(27, 6, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="FrenteTopo" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(0, 5, 20)
+size = Vector3(6, 2, 0.4)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="CorredorParedeE" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(-18, 3, -7)
+size = Vector3(0.3, 6, 20)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="CorredorParedeD" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(18, 3, -7)
+size = Vector3(0.3, 6, 20)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ParedaoCelaE1" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(-23, 2.5, -12)
+size = Vector3(10, 5, 0.3)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ParedaoCelaE2" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(-23, 2.5, 0)
+size = Vector3(10, 5, 0.3)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ParedaoCelaD1" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(23, 2.5, -12)
+size = Vector3(10, 5, 0.3)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="ParedaoCelaD2" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(23, 2.5, 0)
+size = Vector3(10, 5, 0.3)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="RecepcaoBalcao" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(-9, 0.65, 14)
+size = Vector3(6, 1.3, 1.2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BancoE" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(-25, 0.4, 8)
+size = Vector3(5, 0.8, 1.2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="BancoD" type="CSGBox3D" parent="CadeiaCosta"]
+position = Vector3(25, 0.4, 8)
+size = Vector3(5, 0.8, 1.2)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Identificacao" type="Label3D" parent="CadeiaCosta"]
+position = Vector3(0, 4.6, 20.3)
+text = "CADEIA COSTA"
+font_size = 48
+pixel_size = 0.015

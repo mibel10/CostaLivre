@@ -7,7 +7,7 @@ const UPSCALING_SCALES := [1.0, 0.9, 0.8, 0.7, 0.5]
 const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_WINDOWED]
 const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const NEAR := [60.0, 46.0, 34.0, 22.0, 14.0, 80.0]
-const FAR := [420.0, 350.0, 280.0, 220.0, 165.0, 1250.0]
+const FAR := [420.0, 350.0, 280.0, 220.0, 165.0, 1450.0]
 const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65, 1.2]
 var world: Node3D
 var quality := 3

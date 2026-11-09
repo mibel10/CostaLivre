@@ -9,6 +9,14 @@ func run() -> void:
 	root.add_child(world)
 	world.start_mode("sandbox")
 	world.set_process(false)
+	await physics_frame
+	var space: PhysicsDirectSpaceState3D = world.get_world_3d().direct_space_state
+	var road := PhysicsRayQueryParameters3D.create(Vector3(930,1,0), Vector3(946,1,0), 1)
+	assert(space.intersect_ray(road).is_empty(), "The east extension connects to the city")
+	var extension_ground := PhysicsRayQueryParameters3D.create(Vector3(1000,3,0), Vector3(1000,-2,0), 1)
+	assert(not space.intersect_ray(extension_ground).is_empty(), "The new road has solid ground")
+	var gate := PhysicsRayQueryParameters3D.create(Vector3(1035,1,80), Vector3(1035,1,70), 1)
+	assert(space.intersect_ray(gate).is_empty(), "The prison entrance is accessible")
 	assert(world.life.rooms.size() == 22 and world.life.people.size() == 148)
 	assert(world.cars.filter(func(car): return car.traffic and car.position.x > 200).size() == 16)
 	assert(world.life.people.filter(func(person): return person.position.x > 200 and not person.stationary and not person.shopper).size() == 36)

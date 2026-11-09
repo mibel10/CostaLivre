@@ -281,7 +281,7 @@ func star(center: Vector2, color: Color) -> void:
 func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	panel(Rect2(origin - Vector2(4, 4), map_size + Vector2(8, 8)))
 	draw_rect(Rect2(origin, map_size), Color("33474e"))
-	var left := clampf(world.subject_position().x - 186.0, -186.0, 566.0)
+	var left := clampf(world.subject_position().x - 186.0, -186.0, 748.0)
 	if left <= -168.0:
 		var coast := map_point(Vector3(-168,0,0), origin, map_size).x
 		draw_rect(Rect2(origin, Vector2(coast - origin.x, map_size.y)), Color("488592"))
@@ -330,7 +330,7 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	if world.marker.visible:
 		draw_line(map_point(world.subject_position(), origin, map_size), map_point(a.destination(), origin, map_size), Color(1, 0.8, 0.4, 0.6), 1)
 		draw_circle(map_point(a.destination(), origin, map_size), 5, gold)
-	for entry in [[a.GUN_SHOP, "A"], [a.DEALER, "C"], [a.GARAGE, "+"]]:
+	for entry in [[a.GUN_SHOP, "A"], [a.DEALER, "C"], [a.GARAGE, "+"], [Vector3(1035, 0, 55), "P"]]:
 		if entry[0].x < left or entry[0].x > left + 372: continue
 		var p := map_point(entry[0], origin, map_size)
 		if full:
@@ -369,4 +369,4 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	draw_polyline(points,Color("10252e"),1.5,true)
 
 func map_point(pos: Vector3, origin: Vector2, map_size: Vector2) -> Vector2:
-	return origin + Vector2(clampf((pos.x - clampf(world.subject_position().x - 186.0, -186.0, 566.0)) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size
+	return origin + Vector2(clampf((pos.x - clampf(world.subject_position().x - 186.0, -186.0, 748.0)) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size
