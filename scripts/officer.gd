@@ -33,6 +33,9 @@ func _physics_process(delta: float) -> void:
 		return
 	var contract: bool = has_meta("mission_contract")
 	if contract and int(get_meta("mission_contract")) != world.activities.job: return
+	if bool(get_meta("mission_sentinel",false)) and world.activities.stage in [0,1] and world.heat <= 0:
+		model.animate(0)
+		return
 	var player_target: Vector3=world.police_target(self)
 	if contract and position.distance_to(player_target) > 60:
 		model.animate(0)
@@ -77,9 +80,9 @@ func _physics_process(delta: float) -> void:
 			if target_peer==0 and hit.collider is CharacterBody3D and hit.collider.get_script()==preload("res://scripts/car.gd"):
 				target_peer=int(world.network.owners.get(hit.collider.net_id,0))
 			if target_peer>0:
-				world.network.rules.damage_peer(target_peer,6,0)
+				world.network.rules.damage_peer(target_peer,12 if bool(get_meta("mission_heavy",false)) else 6,0)
 		elif hit.collider==world.player or hit.collider==world.active_car:
-			world.damage(3 if world.active_car!=null else 6)
+			world.damage(6 if bool(get_meta("mission_heavy",false)) else (3 if world.active_car!=null else 6))
 
 func take_hit(amount: float) -> void:
 	if world.network!=null and world.network.is_client():
@@ -87,8 +90,21 @@ func take_hit(amount: float) -> void:
 		return
 	if hp <= 0:
 		return
+	if bool(get_meta("mission_sentinel",false)) and world.activities.job == 29 and world.activities.stage in [0,1]:
+		world.activities.trigger_infiltration_alarm()
 	hp = maxf(0, hp - amount)
 	world.raise_heat(8)
 	if hp <= 0:
 		model.rotation.z = PI / 2
 		collision_layer = 0
+
+func is_behind(at: Vector3) -> bool:
+	return Vector3.FORWARD.rotated(Vector3.UP,rotation.y).dot((at-position).normalized()) < -0.35
+
+func silent_takedown() -> void:
+	if hp <= 0 or not bool(get_meta("mission_sentinel",false)):
+		return
+	hp = 0
+	model.rotation.z = PI/2
+	collision_layer = 0
+	world.activities.mission_sentinel_killed()

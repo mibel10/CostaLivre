@@ -3,7 +3,10 @@ extends Node
 const Officer = preload("res://scripts/officer.gd")
 const Bank = preload("res://scripts/bank.gd")
 const Catalog = preload("res://scripts/vehicle_catalog.gd")
-const CAMPAIGN_LENGTH := 24
+const CAMPAIGN_LENGTH := 25
+const SECRET_DATA_JOB := 29
+const DATA_VENT := Vector3(147, 0.8, 49)
+const DATA_TERMINAL := Vector3(147, 0, 63)
 
 const ACTION_JOBS := {
 	7: {"name":"Fuga de teste","kind":"drive","story":"Teste o Aurora X no circuito e devolva-o inteiro a oficina.","reward":3000,"model":3,"spawn":Vector3(-105,0.3,-5),"points":[Vector3(-126,0,-84),Vector3(84,0,-84),Vector3(84,0,84),Vector3(-21,0,63)],"time":120.0,"min_hp":80},
@@ -21,7 +24,9 @@ const ACTION_JOBS := {
 	20: {"name":"Passagem dos becos","kind":"foot_race","story":"Va ao inicio do percurso e use F. Corra, role e agache na passagem baixa para cruzar a favela a pe.","reward":3600,"points":[Vector3(344,8.83,31),Vector3(359,9.9,31),Vector3(382.75,9.9,20),Vector3(382.75,9.9,16),Vector3(397,9.9,31),Vector3(420,7.4,31)],"race_time":45.0,"time":240.0},
 	21: {"name":"Carga quente","kind":"drive","story":"Leve a carga entre os mercados sob perseguicao. Passe pelos pontos e despiste antes da entrega final.","reward":5200,"model":8,"spawn":Vector3(294,0.3,-78.5),"points":[Vector3(294,0,126),Vector3(798,0,126),Vector3(798,0,-78.5)],"escape":true,"start_heat":80,"time":240.0},
 	22: {"name":"Cofres do leste","kind":"breach","story":"Atire nas fechaduras dos tres cofres, recolha os documentos e entregue-os na APEX depois de despistar.","reward":5400,"points":[Vector3(441,1.1,112),Vector3(483,1.1,112),Vector3(525,1.1,112)],"drop":Vector3(21,0,42),"time":200.0},
-	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e cruze a cidade sob cinco estrelas. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0}}
+	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e cruze a cidade sob cinco estrelas. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0},
+	29: {"name":"Operação Tubulação","kind":"infiltration","story":"Agache e abra a tubulação do Data Center. Elimine dois policiais sem alertar a equipe, conecte o pendrive, extraia os dados e fuja pelo mesmo caminho.","reward":11000,"time":360.0}
+}
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
 var REWARDS := [2400, 800, 3200, 2200, 2800, 2000, 1800, 1800, 2200, 2600, 3000, 3400, 3800, 2300, 1700, 2600, 1900]
@@ -99,6 +104,10 @@ func _ready() -> void:
 		JOBS.append_array(["Sincronização do estoque [COOP]", "Bloqueio do mercado [COOP]"])
 		REWARDS.append_array([6200,7400,8600,9000,10000])
 		STORY_BEATS.append_array(["Desligue as cameras, invada o servidor, baixe os arquivos e escape da policia.","Cruze os andares sem ser visto, hackeie o controle central e saia com a chave-mestra.","Apague os rastros no mainframe e fuja do predio antes da equipe tatica.","Dois parceiros devem ativar os dois controles ao mesmo tempo.","Dois parceiros devem operar os terminais simultaneamente."])
+	if JOBS.size() == 29:
+		JOBS.append("Operação Tubulação")
+		REWARDS.append(11000)
+		STORY_BEATS.append(ACTION_JOBS[SECRET_DATA_JOB].story)
 	bank = Bank.new()
 	bank.world = world
 	world.add_child(bank)
@@ -390,7 +399,7 @@ func start_job(index: int) -> void:
 	if world.network!=null and world.network.is_client():
 		world.network.rules.send_action("job",{"index":index})
 		return
-	if index>=24 and (world.network==null or not world.network.active()):
+	if index in range(24,29) and (world.network==null or not world.network.active()):
 		world.notify("Esta operacao e exclusiva do multiplayer.")
 		return
 	if index in [27,28] and world.network.rules.participants().size() < 2:
@@ -427,11 +436,15 @@ func start_job(index: int) -> void:
 			targets.append(car)
 	elif job == 6:
 		world.raise_heat(80)
-	elif job>=24:
+	elif job in range(24,29):
 		world.raise_heat(42)
 	world.notify("Contrato: %s. Recompensa $%d." % [JOBS[job], REWARDS[job]])
 	if world.cutscene != null:
-		world.play_cutscene("CAPÍTULO %02d  ·  %s" % [index + 1, JOBS[index].to_upper()], ("Entre no predio e realize os tres servicos marcados. Nos andares altos, use F no elevador." if index in [7,9,10,11,12,13,14,15,16] and not ACTION_JOBS.has(index) else STORY_BEATS[index]))
+		var chapter := CAMPAIGN_LENGTH if index == SECRET_DATA_JOB else (campaign_index + 1 if game_mode == "campaign" and campaign_job_id(campaign_index) == index else index + 1)
+		world.play_cutscene("CAPÍTULO %02d  ·  %s" % [chapter, JOBS[index].to_upper()], ("Entre no predio e realize os tres servicos marcados. Nos andares altos, use F no elevador." if index in [7,9,10,11,12,13,14,15,16] and not ACTION_JOBS.has(index) else STORY_BEATS[index]))
+
+func campaign_job_id(index: int) -> int:
+	return SECRET_DATA_JOB if index == CAMPAIGN_LENGTH - 1 else index
 
 func begin_campaign() -> void:
 	load_campaign()
@@ -439,7 +452,7 @@ func begin_campaign() -> void:
 		world.pause_menu.show_campaign_complete()
 		return
 	save_campaign()
-	start_job(campaign_index)
+	start_job(campaign_job_id(campaign_index))
 
 func save_campaign() -> bool:
 	var save := ConfigFile.new()
@@ -535,9 +548,9 @@ func new_campaign() -> void:
 
 func advance_campaign() -> void:
 	if campaign_index >= CAMPAIGN_LENGTH:
-		world.play_cutscene("COSTA LIVRE", "Você concluiu os 24 capítulos e mudou o destino da cidade.", func(): world.pause_menu.show_campaign_complete())
+		world.play_cutscene("COSTA LIVRE", "Você concluiu os 25 capítulos e mudou o destino da cidade.", func(): world.pause_menu.show_campaign_complete())
 	else:
-		start_job(campaign_index)
+		start_job(campaign_job_id(campaign_index))
 
 func fail_job(message: String) -> void:
 	var failed_index := job
@@ -545,7 +558,7 @@ func fail_job(message: String) -> void:
 	progress = 0
 	world.notify(message)
 	if game_mode == "campaign":
-		world.play_cutscene("MISSÃO FALHOU", "%s  ·  Vamos tentar de novo." % JOBS[failed_index], func(): start_job(campaign_index))
+		world.play_cutscene("MISSÃO FALHOU", "%s  ·  Vamos tentar de novo." % JOBS[failed_index], func(): start_job(campaign_job_id(campaign_index)))
 
 func remove_car(car: CharacterBody3D) -> void:
 	if not is_instance_valid(car): return
@@ -617,7 +630,7 @@ func complete_job() -> void:
 	progress = 0
 	world.marker.visible = false
 	if game_mode == "campaign":
-		campaign_index = finished_index + 1
+		if finished_index == campaign_job_id(campaign_index): campaign_index += 1
 		save_campaign()
 		world.play_cutscene("CAPÍTULO CONCLUÍDO", "%s  ·  +$%d" % [JOBS[finished_index], REWARDS[finished_index]], advance_campaign)
 	else:
@@ -817,7 +830,8 @@ func shoot() -> void:
 		return
 	clips[weapon] -= 1
 	fire_cooldown = FIRE_INTERVAL[weapon]
-	world.raise_heat(3)
+	mission_noise()
+	if not mission_shot_is_quiet(): world.raise_heat(3)
 	var camera: Camera3D = world.camera
 	var origin := camera.global_position
 	var end := origin - camera.global_basis.z * (600 if weapon == 6 else 180)
@@ -1017,6 +1031,9 @@ func _process(_delta: float) -> void:
 			if not target.has_meta("opened") or bool(target.get_meta("opened")) != opened:
 				target.material = world.material(Color("80efac") if opened else Color("ffc45c"),true)
 				target.set_meta("opened",opened)
+	var usb: Node3D = world.get_node_or_null("Computador29/Pendrive29")
+	if usb != null:
+		usb.visible = job == SECRET_DATA_JOB and stage == 4
 	var informant: Node3D = world.get_node_or_null("InformanteCampanha") if world != null else null
 	if informant != null:
 		informant.visible = stage == 0 and (job == 8 or (ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "rescue"))
@@ -1118,6 +1135,30 @@ func interact_hill_errand() -> bool:
 func interact_campaign() -> bool:
 	if ACTION_JOBS.has(job):
 		var spec: Dictionary = ACTION_JOBS[job]
+		if spec.kind == "infiltration":
+			if stage == 1:
+				var guard := nearest_sentinel()
+				if guard == null or world.active_car != null or world.player.position.distance_to(guard.position) > 2.8: return false
+				if not mission_actor_crouched() or not guard.is_behind(world.player.position):
+					trigger_infiltration_alarm()
+					world.notify("O policial percebeu voce! A equipe tática foi alertada.")
+					return true
+				guard.silent_takedown()
+				world.notify("Policial neutralizado sem ruido. Restantes: %d." % contract_guards_alive())
+				return true
+			if stage == 2 and world.active_car == null and world.player.position.distance_to(DATA_TERMINAL) < 3:
+				stage = 3
+				progress = 0
+				spawn_infiltration_team()
+				world.notify("Pendrive conectado. Extraindo dados por 45 segundos: proteja o computador!")
+				return true
+			if stage == 4 and world.active_car == null and world.player.position.distance_to(DATA_TERMINAL) < 3:
+				stage = 5
+				world.notify("Dados copiados. Pendrive recuperado; volte agachado pela tubulacao.")
+				return true
+			if stage == 5 and world.active_car == null and world.player.is_crouching and world.player.position.distance_to(DATA_VENT) < 3:
+				complete_job()
+				return true
 		if spec.kind == "rescue" and stage == 0 and world.active_car != null and (target_car == null or world.active_car == target_car) and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(spec.pickup) < 5:
 			passenger_car = world.active_car.net_id
 			stage = 1
@@ -1183,6 +1224,11 @@ func setup_action_job() -> bool:
 	clock = float(spec.time)
 	shipment_integrity = 100.0
 	previous_mission_speed = 0.0
+	if ACTION_JOBS[job].kind == "infiltration":
+		world.heat = 0
+		world.response_delay = 0
+		world.crime_grace = 0
+		spawn_infiltration_sentinels()
 	if float(spec.get("start_heat",0)) > 0: world.raise_heat(float(spec.start_heat))
 	if spec.has("model"):
 		var at := free_mission_car_spawn(spec.spawn,int(spec.model))
@@ -1201,11 +1247,17 @@ func action_requires_car() -> bool:
 	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()) or (ACTION_JOBS[job].kind == "getaway" and stage > 0))
 
 func action_requires_foot() -> bool:
-	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind == "foot_race"
+	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["foot_race","infiltration"]
 
 func action_destination() -> Vector3:
 	var spec: Dictionary = ACTION_JOBS[job]
 	match str(spec.kind):
+		"infiltration":
+			if stage == 1:
+				var guard := nearest_sentinel()
+				if guard != null: return guard.position
+				return DATA_TERMINAL
+			return DATA_VENT if stage in [0,5] else DATA_TERMINAL
 		"getaway":
 			if stage == 0: return spec.pickup
 			return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.points[mini(stage-1,spec.points.size()-1)]
@@ -1230,6 +1282,8 @@ func action_objective() -> String:
 	var spec: Dictionary = ACTION_JOBS[job]
 	var text := ""
 	match str(spec.kind):
+		"infiltration":
+			text = ["Agache e atire na tampa da tubulacao", "Neutralize os dois policiais sem ruido / %d restantes" % contract_guards_alive(), "Entre no computador e conecte o pendrive", "Extraindo dados / %d%% / elimine a equipe tatica" % mini(roundi(progress/45.0*100),100), "Dados copiados / F para recuperar o pendrive", "Agache e fuja pela mesma tubulacao"][mini(stage,5)]
 		"getaway":
 			text = "F / Roubar a maleta no escritorio" if stage == 0 else ("Pegue o Aurora X marcado" if world.active_car != target_car else "Fuga %d/%d / leve a maleta a garagem" % [stage,spec.points.size()])
 			if stage == spec.points.size() and world.heat > 0: text = "Despiste as cinco estrelas antes da entrega final"
@@ -1257,6 +1311,15 @@ func tick_action_job(delta: float) -> void:
 		return
 	var stopped: bool = world.active_car != null and absf(world.active_car.speed) < 3
 	match str(spec.kind):
+		"infiltration":
+			if stage == 1 and contract_guards_alive() == 0:
+				stage = 2
+				world.notify("Area segura. Conecte o pendrive no computador.")
+			elif stage == 3:
+				progress += delta
+				if progress >= 45 and contract_guards_alive() == 0:
+					stage = 4
+					world.notify("Extracao concluida. Recupere o pendrive do computador.")
 		"getaway":
 			if not is_instance_valid(target_car) or target_car.hp <= 0:
 				fail_job("O carro da fuga foi destruido.")
@@ -1349,11 +1412,30 @@ func action_prompt() -> String:
 		return "F / Recolher o arquivo do decimo andar"
 	if spec.kind == "intercept" and stage == 1 and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
 		return "F / Recolher a maleta"
+	if spec.kind == "infiltration":
+		if stage == 1:
+			var guard := nearest_sentinel()
+			if guard != null and world.active_car == null and world.player.position.distance_to(guard.position) < 2.8:
+				return "F / Neutralizar em silencio" if world.player.is_crouching and guard.is_behind(world.player.position) else "Agache e aproxime-se por tras"
+		if stage == 2 and world.active_car == null and world.player.position.distance_to(DATA_TERMINAL) < 3:
+			return "F / Conectar pendrive"
+		if stage == 4 and world.active_car == null and world.player.position.distance_to(DATA_TERMINAL) < 3:
+			return "F / Recuperar pendrive"
+		if stage == 5 and world.active_car == null and world.player.is_crouching and world.player.position.distance_to(DATA_VENT) < 3:
+			return "F / Sair pela tubulacao"
 	return ""
 
 func campaign_target_hit(target: Node) -> bool:
 	if not ACTION_JOBS.has(job) or int(target.get_meta("contract_job",-1)) != job or int(target.get_meta("contract_stage",-1)) != stage: return false
 	var spec: Dictionary = ACTION_JOBS[job]
+	if spec.kind == "infiltration" and stage == 0:
+		if not mission_actor_crouched():
+			trigger_infiltration_alarm()
+		stage = 1
+		target.visible = false
+		target.use_collision = false
+		world.notify("Tampa aberta. Entre agachado e neutralize os dois policiais." if world.heat <= 0 else "Tampa aberta, mas a equipe tática ouviu voce!")
+		return true
 	if spec.kind in ["precision","breach"]: hit_flash = 0.16
 	if spec.kind == "breach":
 		progress = 1
@@ -1375,6 +1457,60 @@ func spawn_action_guards() -> void:
 		world.add_child(guard)
 		guard.position = at
 		officers.append(guard)
+
+func spawn_infiltration_sentinels() -> void:
+	for i in 2:
+		var guard := Officer.new()
+		guard.world = world
+		guard.set_meta("mission_contract",job)
+		guard.set_meta("mission_sentinel",true)
+		world.add_child(guard)
+		guard.position = [Vector3(144,0.2,62),Vector3(150,0.2,62)][i]
+		guard.rotation.y = PI
+		officers.append(guard)
+
+func spawn_infiltration_team() -> void:
+	for at in [Vector3(144,0.2,63),Vector3(150,0.2,63),Vector3(144,0.2,67),Vector3(150,0.2,67)]:
+		var guard := Officer.new()
+		guard.world = world
+		guard.hp = 180
+		guard.set_meta("mission_contract",job)
+		guard.set_meta("mission_heavy",true)
+		world.add_child(guard)
+		guard.position = at
+		officers.append(guard)
+
+func nearest_sentinel() -> Node:
+	var nearest: Node
+	var distance := 2.8
+	for guard in officers:
+		if is_instance_valid(guard) and bool(guard.get_meta("mission_sentinel",false)) and guard.hp > 0:
+			var current := world.player.position.distance_to(guard.position)
+			if current < distance:
+				nearest = guard
+				distance = current
+	return nearest
+
+func mission_actor_crouched() -> bool:
+	if world.network!=null and world.network.active():
+		var actor:=world.network.rules.context_peer
+		return actor > 0 and bool(world.network.members.get(actor,{}).get("crouch",false))
+	return world.player.is_crouching
+
+func mission_noise() -> void:
+	if job == SECRET_DATA_JOB and stage in [1,2]: trigger_infiltration_alarm()
+
+func mission_shot_is_quiet() -> bool:
+	return job == SECRET_DATA_JOB and stage == 0
+
+func trigger_infiltration_alarm() -> void:
+	if job != SECRET_DATA_JOB or stage >= 3: return
+	world.raise_heat(100)
+
+func mission_sentinel_killed() -> void:
+	if job == SECRET_DATA_JOB and stage == 1 and contract_guards_alive() == 0:
+		stage = 2
+		world.notify("Area segura. Conecte o pendrive no computador.")
 
 func contract_guards_alive() -> int:
 	return officers.filter(func(guard): return is_instance_valid(guard) and int(guard.get_meta("mission_contract",-1)) == job and guard.hp > 0).size()

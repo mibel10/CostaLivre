@@ -331,7 +331,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"punch": punch_peer(id,float(data.get("yaw",0)))
 		"reload": with_actor(id,world.activities.reload)
 		"job":
-			var requested_job:=clampi(int(data.get("index",0)),0,28)
+			var requested_job:=clampi(int(data.get("index",0)),0,29)
 			if requested_job>=24:
 				propose_mission(id,requested_job)
 			elif world.activities.job>=0:
@@ -504,7 +504,8 @@ func fire_peer(id: int,data: Dictionary) -> void:
 			return
 		a.clips[selected]-=1
 		a.fire_cooldown=a.FIRE_INTERVAL[selected]
-		world.raise_heat(3)
+		a.mission_noise()
+		if not a.mission_shot_is_quiet(): world.raise_heat(3)
 		var end := origin+direction.normalized()*(600 if selected==6 else 180)
 		var query := PhysicsRayQueryParameters3D.create(origin,end,7)
 		query.exclude=[world.player.get_rid()]
