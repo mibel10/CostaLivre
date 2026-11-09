@@ -492,11 +492,12 @@ func interact() -> void:
 
 func nearest_car() -> CharacterBody3D:
 	var nearest: CharacterBody3D
-	var distance := 4.5
+	var distance := 4.5 * 4.5
+	var at := player.position
 	for car in cars:
 		if car.police or car.hp <= 0:
 			continue
-		var current := player.position.distance_to(car.position)
+		var current := at.distance_squared_to(car.position)
 		if current < distance:
 			distance = current
 			nearest = car
@@ -529,6 +530,8 @@ func check_vehicle_entry(previous: Vector3, current: Vector3, actor := 0) -> voi
 		raise_heat(maxf(0.0, 60.0 - heat), actor)
 
 func car_by_id(id: int) -> CharacterBody3D:
+	if id < 0:
+		return null
 	for car in cars:
 		if car.net_id==id:
 			return car

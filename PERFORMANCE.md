@@ -37,6 +37,12 @@ godot_console.exe --path . --script res://tools/profile_render.gd
 godot_console.exe --path . --script res://tools/profile_render.gd -- --balanced
 ```
 
+## Follow-up without graphics changes
+
+The follow-up kept the map, assets, resolution, shadows and preset settings intact. It replaced repeated linear car lookups in client snapshots with one per-packet index, removed inventory copies from multiplayer timers and idle bank updates, and skipped pedestrian robbery searches when the player is not interacting. The graphics registry now holds weak references to materials so repainting and removing vehicles do not keep obsolete materials alive.
+
+The same native Ultra benchmark on the same Intel GPU measured 32.5 / 25.3 / 48.4 / 34.1 FPS before the follow-up and 33.2 / 30.3 / 50.1 / 35.3 FPS afterwards (street / driving / bank / pursuit). The driving 1% low was 17.0 FPS afterwards. Run-to-run variation is substantial, so the figures do not establish a sustained gain or a 30 FPS minimum.
+
 ## Historical measurements
 
 These measurements predate the latest map expansion and audio/combat additions; they remain a historical baseline, not a new performance guarantee for the expanded map.

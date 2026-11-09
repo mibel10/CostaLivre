@@ -475,18 +475,20 @@ func _process(delta: float) -> void:
 	if refresh < 0.5:
 		return
 	refresh = 0
-	if world.network!=null and world.network.active() and world.network.is_client():
-		var subject: Vector3=world.subject_position()
+	var subject: Vector3 = world.subject_position()
+	var online: bool = world.network != null and world.network.active()
+	if online and world.network.is_client():
 		for ped in people:
 			ped.visible=ped.hp>0 and ped.position.distance_squared_to(subject)<3600
 			ped.model.process_mode=Node.PROCESS_MODE_INHERIT if ped.visible else Node.PROCESS_MODE_DISABLED
 			ped.set_physics_process(false)
 		refresh_room_visibility(subject)
 		return
-	var observers: Array[Vector3]=[world.subject_position()]
-	if world.network!=null and world.network.active() and multiplayer.is_server():
+	var observers: Array[Vector3] = [subject]
+	if online and multiplayer.is_server():
 		for id in world.network.rules.participants():
-			observers.append(world.network.rules.position_of(id))
+			if id != multiplayer.get_unique_id():
+				observers.append(world.network.rules.position_of(id))
 	var distances := {}
 	for ped in people:
 		var nearest := INF
@@ -500,8 +502,8 @@ func _process(delta: float) -> void:
 		var simulate: bool=ped.hp>0 and distances[ped]<3600 and active_count<[24,20,16,12,10][world.settings.quality]
 		if simulate:
 			active_count+=1
-		var near: bool=ped.position.distance_squared_to(world.subject_position())<3600 and ped.hp>0
-		ped.visible=near and (simulate or (world.network!=null and world.network.is_client()))
+		var near: bool = ped.position.distance_squared_to(subject) < 3600 and ped.hp > 0
+		ped.visible = near and simulate
 		ped.model.process_mode=Node.PROCESS_MODE_INHERIT if ped.visible else Node.PROCESS_MODE_DISABLED
-		ped.set_physics_process(simulate and not ped.stationary and not (world.network!=null and world.network.is_client()))
-	refresh_room_visibility(world.subject_position())
+		ped.set_physics_process(simulate and not ped.stationary)
+	refresh_room_visibility(subject)
