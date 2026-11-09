@@ -5,6 +5,9 @@ var wheel := false
 var selection := 0
 var punch_time := 0.0
 var punch_arm: MeshInstance3D
+var last_car: Node3D
+var was_reloading := false
+var last_hack_entered := 0
 var audio: AudioStreamPlayer
 var step_audio: AudioStreamPlayer
 var siren_audio: AudioStreamPlayer
@@ -25,7 +28,7 @@ func _ready() -> void:
 	siren_audio = AudioStreamPlayer.new()
 	siren_audio.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(siren_audio)
-	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion"]:
+	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit"]:
 		var wav := AudioStreamWAV.new()
 		wav.format = AudioStreamWAV.FORMAT_16_BITS
 		wav.mix_rate = 22050
@@ -35,6 +38,9 @@ func _ready() -> void:
 		for i in count:
 			var t := float(i) / 22050
 			var frequency := 750.0 if name == "cash" else (520.0 + sin(t * 25) * 190 if name == "siren" else (460.0 + 310.0 * fmod(floor(t*18),2.0) if name=="hack" else 90.0))
+			if name == "door": frequency = 125.0 + 65.0 * exp(-t * 18.0)
+			elif name == "reload": frequency = 380.0 + 110.0 * fmod(floor(t * 20.0), 2.0)
+			elif name == "digit": frequency = 920.0
 			var value := sin(TAU * frequency * t) * exp(-t * (3 if name == "death" else (7 if name=="explosion" else 20)))
 			if name=="explosion": value=(value*0.35+randf_range(-1.0,1.0)*exp(-t*11))*minf(1.0,t*90)
 			data.encode_s16(i * 2, int(value * 14000))
@@ -134,6 +140,19 @@ func _process(delta: float) -> void:
 		return
 	if world.get_tree().paused:
 		return
+	var current_car: Node3D = world.active_car
+	if current_car != last_car:
+		if current_car != null or is_instance_valid(last_car):
+			play("door", -20)
+		last_car = current_car
+	var reloading: bool = world.activities.reload_time > 0.0
+	if reloading and not was_reloading:
+		play("reload", -22)
+	was_reloading = reloading
+	var entered: int = world.activities.bank.entered if world.activities.bank.local_hacking() else 0
+	if entered > last_hack_entered:
+		play("digit", -24)
+	last_hack_entered = entered
 	punch_time = maxf(0, punch_time - delta)
 	punch_arm.visible = punch_time > 0
 	if punch_time > 0:
