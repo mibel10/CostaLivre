@@ -112,7 +112,9 @@ func punch() -> void:
 	play("punch")
 	var origin: Vector3 = world.player.position + Vector3(0, 1.1, 0)
 	var forward := Vector3.FORWARD.rotated(Vector3.UP, world.camera_yaw)
-	for target in world.cars + world.activities.officers + (world.life.people if world.life != null else []):
+	var targets: Array = world.cars + world.activities.officers + (world.life.people if world.life != null else [])
+	targets.sort_custom(func(a, b): return (a.position + Vector3.UP).distance_squared_to(origin) < (b.position + Vector3.UP).distance_squared_to(origin))
+	for target in targets:
 		var offset: Vector3 = target.position + Vector3(0, 1, 0) - origin
 		if offset.length() < 2.5 and offset.normalized().dot(forward) > 0.35:
 			var query := PhysicsRayQueryParameters3D.create(origin, target.position + Vector3(0, 1, 0), 1)

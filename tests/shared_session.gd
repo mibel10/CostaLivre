@@ -49,16 +49,22 @@ func run() -> void:
 	assert(host.player.position!=client.player.position,"Different spawn points")
 	assert(host.network.rules.sheets.has(id))
 	var rules: Node = host.network.rules
-	var punch_car: Node3D = host.cars[0]
+	var farther_car: Node3D = host.cars[0]
+	var farther_position: Vector3 = farther_car.position
+	var farther_hp: float = farther_car.hp
+	var punch_car: Node3D = host.cars[1]
 	var punch_car_position: Vector3 = punch_car.position
 	var punch_player_position: Vector3 = host.player.position
 	var punch_car_hp: float = punch_car.hp
 	punch_car.position = Vector3(900, 50, 900)
+	farther_car.position = punch_car.position + Vector3(0, 0, -0.4)
 	host.player.position = punch_car.position + Vector3(0, 0, 2)
 	rules.punch_peer(1, 0.0)
 	assert(punch_car.hp == punch_car_hp - 25, "Host applies punch damage to vehicles")
+	assert(farther_car.hp == farther_hp, "Host hits the closest target first")
 	await wait_for(func(): return client.car_by_id(punch_car.net_id).hp == punch_car.hp)
 	punch_car.position = punch_car_position
+	farther_car.position = farther_position
 	host.player.position = punch_player_position
 	host.heat = 0
 	var inventory: Dictionary = rules.sheets[id].inventory

@@ -676,9 +676,9 @@ func punch_peer(id: int, yaw: float) -> void:
 	targets.append_array(world.life.people)
 	targets.append_array(world.activities.officers)
 	targets.append_array(world.cars)
+	targets = targets.filter(func(target): return is_instance_valid(target))
+	targets.sort_custom(func(a, b): return (a.position + Vector3.UP).distance_squared_to(origin) < (b.position + Vector3.UP).distance_squared_to(origin))
 	for target in targets:
-		if target==null:
-			continue
 		var offset: Vector3=target.position+Vector3(0,1,0)-origin
 		if offset.length()<2.7 and offset.normalized().dot(Vector3.FORWARD.rotated(Vector3.UP,yaw))>0.3:
 			if world.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(origin,origin+offset,1)).is_empty():

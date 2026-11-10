@@ -42,9 +42,11 @@ func run() -> void:
 	assert(get_nodes_in_group("ejected_driver").is_empty())
 	world.player.position = Vector3(900,50,900)
 	world.camera_yaw = 0
+	var farther = world.spawn_car(Vector3(900,50,897.6), Color.BLUE)
 	var target = world.spawn_car(Vector3(900,50,898), Color.RED)
 	extra.punch()
 	assert(target.hp == target.MAX_HP-25 and extra.punch_time > 0)
+	assert(farther.hp == farther.MAX_HP, "Punch hits the closest target first")
 	extra._process(0.1)
 	assert(extra.punch_arm.visible and extra.punch_arm.position.z < -0.3)
 	var key := InputEventKey.new()
