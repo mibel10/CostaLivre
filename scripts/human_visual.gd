@@ -14,8 +14,38 @@ var weapon_magazine: MeshInstance3D
 var weapon_tween: Tween
 var displayed_weapon := -1
 var weapon_recoil := 0.0
+var weapon_aim_hold := 0.0
+var weapon_aim: WeaponAim
 var rig: Node3D
 var crouch_tween: Tween
+
+class WeaponAim extends SkeletonModifier3D:
+	var visual: Node3D
+	var shoulder: int
+	var elbow: int
+	var wrist: int
+	var pitch := 0.0
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if influence <= 0.0:
+			return
+		var skeleton := get_skeleton()
+		var to_skeleton := skeleton.global_basis.inverse()
+		var forward := visual.global_basis.orthonormalized() * Vector3(0, sin(pitch), -cos(pitch))
+		var aim := (to_skeleton * forward).normalized()
+		var up := (to_skeleton * Vector3.UP).normalized()
+		# Keep a slight bend in the elbow while the wrist lines up with the sight.
+		align_segment(skeleton, shoulder, elbow, (aim - up * 0.19).normalized())
+		align_segment(skeleton, elbow, wrist, (aim + up * 0.12).normalized())
+		var grip := skeleton.get_bone_global_pose(wrist)
+		grip.basis = Basis.looking_at(aim, up).scaled_local(grip.basis.get_scale())
+		skeleton.set_bone_global_pose(wrist, grip)
+
+	func align_segment(skeleton: Skeleton3D, bone: int, child: int, direction: Vector3) -> void:
+		var pose := skeleton.get_bone_global_pose(bone)
+		var offset := skeleton.get_bone_global_pose(child).origin - pose.origin
+		pose.basis = Basis(Quaternion(offset.normalized(), direction)) * pose.basis
+		skeleton.set_bone_global_pose(bone, pose)
 
 func _ready() -> void:
 	var actor: Node3D = HUMAN.instantiate()
@@ -96,8 +126,15 @@ func show_crouch(crouched: bool) -> void:
 
 func build_weapon(world: Node3D) -> MeshInstance3D:
 	var skeleton: Skeleton3D = find_children("*", "Skeleton3D", true, false)[0]
+	weapon_aim = WeaponAim.new()
+	weapon_aim.visual = self
+	weapon_aim.wrist = skeleton.find_bone("Skeleton_arm_joint_R__3_")
+	weapon_aim.elbow = skeleton.get_bone_parent(weapon_aim.wrist)
+	weapon_aim.shoulder = skeleton.get_bone_parent(weapon_aim.elbow)
+	weapon_aim.influence = 0.0
+	skeleton.add_child(weapon_aim)
 	var hand := BoneAttachment3D.new()
-	hand.bone_name = "Skeleton_arm_joint_R__3_"
+	hand.bone_idx = weapon_aim.wrist
 	skeleton.add_child(hand)
 	weapon_mesh = world.box(hand, Vector3.ZERO, Vector3(0.07, 0.09, 0.24), Color("25313a"))
 	weapon_magazine = world.box(weapon_mesh, Vector3(0, -0.1, 0.06), Vector3(0.06, 0.16, 0.08), Color("25313a"))
@@ -111,6 +148,7 @@ func show_weapon(selected: int) -> void:
 	if weapon_tween != null:
 		weapon_tween.kill()
 	weapon_recoil = 0.0
+	weapon_aim_hold = 0.0
 	if selected == 0 and not weapon_mesh.visible:
 		return
 	weapon_mesh.show()
@@ -127,6 +165,13 @@ func show_weapon(selected: int) -> void:
 func kick_weapon(selected: int) -> void:
 	show_weapon(selected)
 	weapon_recoil = 0.36 if selected >= 5 else 0.20
+	weapon_aim_hold = 0.18
+	weapon_aim.influence = maxf(weapon_aim.influence, 0.75)
+
+func set_weapon_aim(active: bool, pitch: float, delta: float) -> void:
+	weapon_aim_hold = maxf(0.0, weapon_aim_hold - delta)
+	weapon_aim.pitch = move_toward(weapon_aim.pitch, pitch, delta * 12.0)
+	weapon_aim.influence = move_toward(weapon_aim.influence, 1.0 if active else 0.0, delta * 11.0)
 
 func update_weapon_pose(delta: float, reload_fraction: float) -> void:
 	var handling := sin(clampf(reload_fraction, 0.0, 1.0) * PI)

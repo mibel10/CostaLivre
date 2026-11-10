@@ -459,7 +459,7 @@ func car_available(car: Node) -> bool:
 	return not active() or int(owners.get(car.net_id,0)) in [0,multiplayer.get_unique_id()]
 
 func local_state() -> Dictionary:
-	return {"roll":world.player.roll_time/world.player.ROLL_DURATION,"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.outfit,"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null and not world.bus_passenger else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
+	return {"aim_weapon":world.player.aim_weapon,"weapon_pitch":world.player.weapon_pitch,"roll":world.player.roll_time/world.player.ROLL_DURATION,"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.outfit,"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null and not world.bus_passenger else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
 
 @rpc("any_peer","call_remote","unreliable_ordered",1)
 func report(state: Dictionary) -> void:
@@ -564,6 +564,9 @@ func accept_state(id: int, state: Dictionary) -> void:
 	var reported_roll = state.get("roll",0)
 	var roll: float = float(reported_roll) if reported_roll is float or reported_roll is int else 0.0
 	state["roll"] = clampf(roll,0,1) if is_finite(roll) and int(state.car)<0 and not rules.is_dead(id) else 0.0
+	var pitch = state.get("weapon_pitch", 0.0)
+	state["weapon_pitch"] = clampf(float(pitch), -1.35, 1.35) if (pitch is float or pitch is int) and is_finite(float(pitch)) else 0.0
+	state["aim_weapon"] = state.get("aim_weapon") == true and int(state.get("weapon", 0)) > 0 and int(state.car) < 0 and not state.has("bus") and state.roll == 0.0 and not riding is Vector3 and not rules.is_dead(id) and not world.vehicle_entries.has(id) and not world.vehicle_falls.has(id)
 	members[id]=state
 
 func _process(delta: float) -> void:
@@ -797,6 +800,9 @@ func update_avatars(states: Dictionary) -> void:
 		avatar.node.set_weapon(clampi(int(state.get("weapon", 1)), 0, 7), rules.sheets.get(id, {}).get("inventory", {}))
 		avatar.node.set_crouched(bool(state.get("crouch",false)))
 		var remaining: float = float(state.get("roll",0))
+		avatar.node.aim_weapon = bool(state.get("aim_weapon", false))
+		avatar.node.weapon_pitch = float(state.get("weapon_pitch", 0.0))
+		avatar.node.can_point_weapon = on_foot and remaining == 0.0 and float(state.get("hp", 100)) > 0.0 and not world.vehicle_entries.has(id)
 		avatar.node.model.rotation.x = (1.0-remaining)*TAU if remaining > 0 else 0.0
 		var pivot := Vector3(0,0.92,0)
 		avatar.node.model.position = pivot-Basis.from_euler(avatar.node.model.rotation)*pivot if remaining > 0 else Vector3.ZERO
@@ -841,11 +847,15 @@ func personal(kind: String, data: Dictionary) -> void:
 	rules.receive_event(kind,data)
 
 @rpc("authority","call_local","unreliable",3)
-func shot_effect(from: Vector3, to: Vector3, weapon: int, shooter: int) -> void:
+func shot_effect(from: Vector3, to: Vector3, weapon: int, shooter: int, direction: Vector3) -> void:
 	world.activities.shot_effect(from, to, weapon)
-	var actor: Node3D = rules.local_body if shooter == multiplayer.get_unique_id() else avatars.get(shooter, {}).get("node")
-	if is_instance_valid(actor):
-		actor.model.kick_weapon(weapon)
+	if shooter == multiplayer.get_unique_id():
+		rules.local_body.model.kick_weapon(weapon)
+	elif avatars.has(shooter):
+		var avatar: Dictionary = avatars[shooter]
+		avatar.heading = atan2(-direction.x, -direction.z)
+		avatar.node.weapon_pitch = clampf(asin(clampf(direction.y, -1.0, 1.0)), -1.35, 1.35)
+		avatar.node.model.kick_weapon(weapon)
 
 func authenticating(id: int) -> void:
 	multiplayer.send_auth(id,var_to_bytes({"version":announced_version,"code":code,"platform":OS.get_name()}))

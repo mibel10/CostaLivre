@@ -90,6 +90,26 @@ func run() -> void:
 	Input.action_release("aim")
 	world._process(0.2)
 	assert(world.player.model.visible, "Leaving sniper aim restores the model")
+	world.set_process(false)
+	world.activities.weapon = 1
+	var hand: BoneAttachment3D = world.player.gun.get_parent()
+	var resting_y: float = hand.global_position.y - world.player.global_position.y
+	touch.action("aim", true)
+	for pitch in [0.0, 0.45, -0.45]:
+		var direction := Vector3(0, sin(pitch), -cos(pitch))
+		world.camera.look_at(world.camera.global_position + direction)
+		await create_timer(0.28).timeout
+		var barrel: Vector3 = -world.player.gun.global_basis.z.normalized()
+		assert(barrel.dot(direction) > 0.98, "The barrel follows the camera at different elevations")
+		if pitch == 0.0:
+			assert(hand.global_position.y - world.player.global_position.y > resting_y + 0.3, "The character raises the arm to aim")
+	touch.action("aim", false)
+	await create_timer(0.22).timeout
+	assert(world.player.model.weapon_aim.influence == 0.0, "Releasing aim lowers the arm")
+	touch.action("shoot", true)
+	await create_timer(0.16).timeout
+	assert(world.player.model.weapon_aim.influence > 0.9, "Touch fire also raises the arm")
+	touch.action("shoot", false)
 	world.queue_free()
 	await process_frame
 	await create_timer(0.25).timeout

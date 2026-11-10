@@ -79,6 +79,17 @@ func run() -> void:
 	assert(remote.gun.rotation.z > 0.15 and remote.model.weapon_magazine.position.y < -0.16, "The remote reload follows the host timer")
 	await create_timer(0.8).timeout
 	assert(remote.gun.rotation.is_zero_approx(), "The weapon returns to its resting pose")
+	client.set_process(false)
+	var aim_direction := Vector3(0, 0.43, -0.9).normalized()
+	client.camera.look_at(client.camera.global_position + aim_direction)
+	Input.action_press("aim")
+	await create_timer(0.55).timeout
+	var remote_barrel: Vector3 = -remote.gun.global_basis.z.normalized()
+	assert(remote_barrel.dot(aim_direction) > 0.96, "Other players see the raised arm and aim elevation")
+	Input.action_release("aim")
+	await create_timer(0.35).timeout
+	assert(remote.model.weapon_aim.influence == 0.0, "The replicated arm returns to rest")
+	client.set_process(true)
 	client.player.set_crouched(true)
 	assert(is_equal_approx(client.player.body_collider.shape.height, 1.15), "Crouch collision changes immediately")
 	assert(client.player.model.rig.scale.y > 1.0, "Crouch starts a visual transition")

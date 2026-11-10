@@ -7,6 +7,9 @@ var gun: MeshInstance3D
 var is_crouching := false
 var weapon_reload_remaining := 0.0
 var weapon_reload_duration := 0.0
+var aim_weapon := false
+var weapon_pitch := 0.0
+var can_point_weapon := false
 
 func _ready() -> void:
 	collision_layer=2
@@ -43,6 +46,7 @@ func set_weapon(selected: int, inventory: Dictionary) -> void:
 
 func _process(delta: float) -> void:
 	weapon_reload_remaining = maxf(0.0, weapon_reload_remaining - delta)
+	model.set_weapon_aim(can_point_weapon and visible and (aim_weapon or model.weapon_aim_hold > 0.0), weapon_pitch, delta)
 	if visible:
 		model.update_weapon_pose(delta, weapon_reload_remaining / weapon_reload_duration if weapon_reload_duration > 0.0 else 0.0)
 
