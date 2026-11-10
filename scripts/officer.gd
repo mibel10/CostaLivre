@@ -75,7 +75,7 @@ func _physics_process(delta: float) -> void:
 		return
 	var victim: Node3D = hit.collider
 	var online: bool = world.network != null and world.network.active()
-	var damage := 12 if bool(get_meta("mission_heavy", false)) else 6
+	var damage := 18 if bool(get_meta("mission_heavy", false)) else 9
 	if contract and int(get_meta("mission_vehicle", -1)) >= 0 and victim == world.car_by_id(int(get_meta("mission_vehicle"))):
 		victim.take_hit(12)
 	elif online:
@@ -84,9 +84,9 @@ func _physics_process(delta: float) -> void:
 			target_peer = int(world.network.owners.get(victim.net_id, 0))
 		if target_peer <= 0:
 			return
-		world.network.rules.damage_peer(target_peer, damage, 0)
+		world.network.rules.damage_peer(target_peer, damage, 0, true)
 	elif victim == world.player or victim == world.active_car:
-		world.damage(3 if damage == 6 and world.active_car != null else damage)
+		world.damage(4.5 if damage == 9 and world.active_car != null else damage, true)
 	else:
 		return
 	if online:

@@ -251,6 +251,25 @@ func run() -> void:
 	await create_timer(0.3).timeout
 	assert(host.network.rules.sheets[id].cash == remaining, "Reject remote purchase away from shop")
 	client.activities.set_menu("")
+	host.network.rules.damage_peer(id, 200, 0, true)
+	assert(host.network.rules.sheets[id].get("prison_stage", -1) == 0, "Police death assigns prison on the host")
+	await wait_for(func(): return not host.network.rules.is_dead(id) and client.player.position.distance_to(client.PRISON_SPAWN) < 3, 8.0)
+	assert(host.network.rules.sheets[1].get("prison_stage", -1) == -1, "Other players remain free")
+	for step in client.PRISON_POINTS.size():
+		client.player.position = client.PRISON_POINTS[step] + Vector3.UP * 0.3
+		await wait_for(func(): return host.network.rules.position_of(id).distance_to(client.PRISON_POINTS[step]) < 2)
+		if step == 1:
+			Input.action_press("crouch")
+			await wait_for(func(): return bool(host.network.members[id].get("crouch", false)))
+		if step in [2, 4]:
+			host.tick_prison(id, host.network.rules.position_of(id), true, 11.0)
+		else:
+			client.network.rules.send_action("prison_step", {})
+		var expected: int = step + 1 if step + 1 < client.PRISON_POINTS.size() else -1
+		await wait_for(func(): return int(host.network.rules.sheets[id].get("prison_stage", -2)) == expected)
+		if step == 1: Input.action_release("crouch")
+	await wait_for(func(): return client.player.position.z > 76)
+	assert(client.player.position.z > 76, "Escape releases the correct player")
 	client.network.disconnect_room()
 	await wait_for(func(): return host.network.members.size()==1)
 	client.network.announced_version="old-build"

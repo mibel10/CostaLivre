@@ -486,6 +486,11 @@ func accept_state(id: int, state: Dictionary) -> void:
 	else:
 		members[id].erase("elevator_target")
 		members[id].erase("elevator_target_until")
+	if int(rules.sheets.get(id, {}).get("prison_stage", -1)) >= 0:
+		state.position = Vector3(clampf(state.position.x, 1005.5, 1064.5), clampf(state.position.y, 0.0, 5.0), clampf(state.position.z, 35.5, 74.0))
+		state.car_position = state.position
+		state.car = -1
+		state.speed = 0.0
 	# This timer is owned by the host; clients do not report arrest progress.
 	state["arrest_progress"]=float(members[id].get("arrest_progress",0.0))
 	state.erase("bus")

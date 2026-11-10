@@ -87,6 +87,27 @@ func run() -> void:
 	world.respawn_local()
 	assert(world.activities.job == world.activities.SECRET_DATA_JOB, "Death retries the final campaign mission instead of a co-op mission")
 	world.cutscene.finish()
+	world.damage(200.0, true)
+	assert(world.finished and world.prison_after_death, "Police death sends the player to prison")
+	world.respawn_local()
+	assert(world.prison_stage == 0 and world.player.position == world.PRISON_SPAWN)
+	for step in world.PRISON_POINTS.size():
+		world.player.position = world.PRISON_POINTS[step]
+		world.player.is_crouching = false
+		if step == 1:
+			world.prison_interact(1, world.player.position)
+			assert(world.prison_stage == step, "The passage requires crouching")
+			world.player.is_crouching = true
+		if step in [2, 4]:
+			world.tick_prison(1, world.player.position, true, 1.0)
+			world.tick_prison(1, world.player.position, false, 1.0)
+			assert(world.prison_progress == 0.0 and world.prison_stage == step, "Releasing the interaction resets progress")
+			world.tick_prison(1, world.player.position, true, 11.0)
+		else:
+			world.prison_interact(1, world.player.position)
+	world.player.is_crouching = false
+	assert(world.prison_stage == -1 and world.activities.job == world.activities.SECRET_DATA_JOB, "Escape resumes the campaign chapter")
+	world.cutscene.finish()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_test.cfg"))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_full_test.cfg"))
 	world.queue_free()

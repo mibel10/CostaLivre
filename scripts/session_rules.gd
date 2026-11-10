@@ -357,6 +357,10 @@ func tick_mission_offer() -> void:
 func action(id: int, kind: String, data: Dictionary) -> void:
 	if not multiplayer.is_server() or not sheets.has(id) or is_dead(id):
 		return
+	if int(sheets[id].get("prison_stage", -1)) >= 0:
+		if kind == "prison_step":
+			world.prison_interact(id, position_of(id))
+		return
 	if world.vehicle_falls.has(id) or (bus_riders.has(id) and kind not in ["bus_exit", "mission_response"]):
 		return
 	# Reliable keypad events can arrive in the same frame. The active hack
@@ -505,7 +509,7 @@ func leave_bus(id: int, forced := false) -> void:
 	else:
 		network.personal.rpc_id(id, "bus_exit", {"position": at})
 
-func damage_peer(id: int, amount: float, killer := 0) -> void:
+func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> void:
 	if not multiplayer.is_server() or not sheets.has(id) or is_dead(id) or not is_finite(amount):
 		return
 	if killer>0 and Time.get_ticks_msec()<sheets[id].protected_until:
@@ -515,6 +519,8 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 	if (id==local_id() and context_peer in [0,local_id()]) or id==context_peer:
 		world.health=sheets[id].health
 	if sheets[id].health<=0:
+		if by_police or int(sheets[id].get("prison_stage", -1)) >= 0:
+			sheets[id]["prison_stage"] = 0
 		sheets[id].dead_until=Time.get_ticks_msec()+3000
 		sheets[id]["wanted_reset"] = true
 		if wanted_participants().is_empty():
@@ -529,10 +535,14 @@ func damage_peer(id: int, amount: float, killer := 0) -> void:
 			award(killer,1500)
 			private_notice(killer,"Jogador eliminado / +$1500")
 			world.raise_heat(35, killer)
-		private_notice(id,"Voce foi calado. Renascendo em 3 segundos...")
+		private_notice(id, "Você foi preso. Acordará na cadeia." if int(sheets[id].get("prison_stage", -1)) >= 0 else "Você foi calado. Renascendo em 3 segundos...")
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
+		"prison_escape":
+			if sheets.has(local_id()): sheets[local_id()]["prison_stage"] = -1
+			world.life.apply_elevator_arrival(Vector3(1035, 0.3, 79))
+			world.notify("Você fugiu da cadeia!")
 		"passenger_boarding":
 			world.activities.show_passenger_boarding(data.start, int(data.car))
 		"vehicle_fall":
@@ -741,6 +751,8 @@ func physics(delta: float) -> void:
 				sheets[id].protected_until=Time.get_ticks_msec()+5000
 				var home_floor: int = int(sheets[id].get("home", -1))
 				var at: Vector3 = world.life.HOME_BUILDING + Vector3(0,(home_floor+1)*6+0.3,5) if home_floor >= 0 else next_spawn()
+				if int(sheets[id].get("prison_stage", -1)) >= 0:
+					at = world.PRISON_SPAWN
 				network.members[id].position=at
 				network.members[id].car_position=at
 				network.members[id].car=-1
@@ -749,6 +761,8 @@ func physics(delta: float) -> void:
 				else:
 					network.personal.rpc_id(id,"spawn",{"position":at})
 			continue
+		if int(sheets[id].get("prison_stage", -1)) >= 0:
+			world.tick_prison(id, position_of(id), held(id), delta)
 		if world.life.tick_building_job(id,delta):
 			private_notice(id,"O tempo da entrega acabou.")
 		var inv: Dictionary=sheets[id].inventory
@@ -826,7 +840,7 @@ func physics(delta: float) -> void:
 				continue
 			if not pressured.has(target[0]):
 				pressured[target[0]]=true
-				damage_peer(target[0],delta*(1.5 if distance>4 else 5.0),0)
+				damage_peer(target[0],delta*(2.25 if distance>4 else 7.5),0,true)
 			var in_car:bool=int(network.members[target[0]].get("car",-1))>=0
 			if distance<3.5 and (not in_car or absf(float(network.members[target[0]].get("speed",0)))<2):
 				arresting[target[0]]=true
@@ -835,7 +849,7 @@ func physics(delta: float) -> void:
 			network.members[id]["arrest_progress"]=float(network.members[id].get("arrest_progress",0.0))+delta
 			if float(network.members[id]["arrest_progress"])>=5.0:
 				network.members[id]["arrest_progress"]=0.0
-				damage_peer(id,200.0,0)
+				damage_peer(id,200.0,0,true)
 				award(id,-500)
 				private_notice(id,"Preso pela policia / multa de $500")
 		elif not arresting.has(id) or is_dead(id):

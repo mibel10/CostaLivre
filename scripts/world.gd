@@ -24,6 +24,12 @@ var health := 100.0
 var cash := 900
 var activities: Node
 var bust_progress := 0.0
+const PRISON_SPAWN := Vector3(1012, 0.3, 40)
+const PRISON_POINTS := [Vector3(1012,0,40), Vector3(1012,0,61), Vector3(1035,0,60), Vector3(1054,0,65), Vector3(1035,0,48), Vector3(1035,0,73)]
+const PRISON_TEXT := ["Pegue a ferramenta na cela", "Agache para abrir o acesso ao corredor", "Segure F para desligar as câmeras", "Encontre o cartão de acesso", "Segure F para desativar o alarme", "Abra a saída"]
+var prison_stage := -1
+var prison_progress := 0.0
+var prison_after_death := false
 var retry_after_death := false
 var finished := false
 var won := false
@@ -408,6 +414,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		camera_yaw -= event.relative.x * 0.003 * settings.camera_sensitivity
 		camera_pitch = clampf(camera_pitch + event.relative.y * 0.002 * settings.camera_sensitivity, -0.45, 1.35)
 		mouse_idle = 0
+	if prison_stage_for() >= 0 and (event.is_action_pressed("reset") or event.is_action_pressed("interact")):
+		return
 	if event.is_action_pressed("interact") and not finished:
 		interact()
 	if event.is_action_pressed("reset") and not finished:
@@ -757,12 +765,86 @@ func safe_camera_position(focus: Vector3, desired: Vector3) -> Vector3:
 	var fractions := get_world_3d().direct_space_state.cast_motion(query)
 	return focus+query.motion*fractions[0]
 
-func damage(amount: float) -> void:
+func prison_stage_for(id: int = 0) -> int:
+	if network != null and network.active():
+		var peer := id if id > 0 else multiplayer.get_unique_id()
+		return int(network.rules.sheets.get(peer, {}).get("prison_stage", -1))
+	return prison_stage
+
+func prison_prompt() -> String:
+	var stage := prison_stage_for()
+	if stage < 0 or stage >= PRISON_POINTS.size():
+		return ""
+	if player.position.distance_to(PRISON_POINTS[stage]) < 2.8:
+		var text: String = "F / " + PRISON_TEXT[stage]
+		if stage in [2, 4]:
+			var amount: float = float(network.rules.sheets.get(multiplayer.get_unique_id(), {}).get("prison_progress", 0.0)) if network != null and network.active() else prison_progress
+			text += " · %d%%" % roundi(clampf(amount / (5.0 if stage == 2 else 10.0), 0, 1) * 100.0)
+		return text
+	return "Cadeia / " + PRISON_TEXT[stage]
+
+func tick_prison(id: int, at: Vector3, held: bool, delta: float) -> void:
+	var stage := prison_stage_for(id)
+	if stage not in [2, 4]:
+		return
+	var online: bool = network != null and network.active()
+	var amount: float = float(network.rules.sheets[id].get("prison_progress", 0.0)) if online else prison_progress
+	amount = amount + delta if held and at.distance_to(PRISON_POINTS[stage]) < 2.8 else 0.0
+	if online:
+		network.rules.sheets[id]["prison_progress"] = amount
+	else:
+		prison_progress = amount
+	if amount >= (5.0 if stage == 2 else 10.0):
+		prison_interact(id, at)
+
+func prison_interact(id: int, at: Vector3) -> void:
+	var stage := prison_stage_for(id)
+	if stage < 0 or stage >= PRISON_POINTS.size() or at.distance_to(PRISON_POINTS[stage]) >= 2.8:
+		return
+	var online: bool = network != null and network.active()
+	var crouched: bool = player.is_crouching if not online or id == multiplayer.get_unique_id() else bool(network.members[id].get("crouch", false))
+	if stage == 1 and not crouched:
+		if online: network.rules.private_notice(id, "Agache para abrir a passagem.")
+		else: notify("Agache para abrir a passagem.")
+		return
+	var amount: float = float(network.rules.sheets[id].get("prison_progress", 0.0)) if online else prison_progress
+	if stage in [2, 4] and amount < (5.0 if stage == 2 else 10.0):
+		if online: network.rules.private_notice(id, "Mantenha F pressionado para concluir.")
+		else: notify("Mantenha F pressionado para concluir.")
+		return
+	prison_progress = 0.0
+	if online: network.rules.sheets[id]["prison_progress"] = 0.0
+	stage += 1
+	if network != null and network.active():
+		network.rules.sheets[id]["prison_stage"] = stage if stage < PRISON_POINTS.size() else -1
+		if stage >= PRISON_POINTS.size():
+			network.rules.send_personal(id, "prison_escape", {})
+			var exit := Vector3(1035, 0.3, 79)
+			network.members[id].position = exit
+			network.members[id].car_position = exit
+			network.members[id]["elevator_target"] = exit
+			network.members[id]["elevator_target_until"] = Time.get_ticks_msec() + 1500
+		else:
+			network.rules.private_notice(id, PRISON_TEXT[stage])
+	else:
+		prison_stage = stage if stage < PRISON_POINTS.size() else -1
+		if stage >= PRISON_POINTS.size():
+			player.position = Vector3(1035,0.3,79)
+			notify("Você fugiu da cadeia!")
+			if game_mode == "campaign":
+				activities.save_campaign()
+				activities.start_job(activities.campaign_job_id(activities.campaign_index))
+		else:
+			notify(PRISON_TEXT[stage])
+			if game_mode == "campaign": activities.save_campaign()
+
+func damage(amount: float, by_police := false) -> void:
 	if network!=null and network.active():
 		network.rules.hurt_local(amount)
 		return
 	health = maxf(0, health - amount)
 	if health <= 0:
+		prison_after_death = by_police or prison_stage >= 0
 		finish(false)
 
 func notify(message: String) -> void:
@@ -811,6 +893,11 @@ func _physics_process(delta: float) -> void:
 		update_camera_focus_sample(delta)
 	if finished or get_tree().paused:
 		return
+	if prison_stage_for() >= 0 and (network == null or not network.active()):
+		tick_prison(1, player.position, Input.is_action_pressed("activity") and activities.menu == "", delta)
+	if prison_stage_for() >= 0 and active_car == null:
+		player.position.x = clampf(player.position.x, 1005.5, 1064.5)
+		player.position.z = clampf(player.position.z, 35.5, 74.0)
 	if engine_audio != null:
 		engine_audio.volume_db = -28 if active_car != null else -55
 		engine_audio.pitch_scale = 0.7 + absf(active_car.speed) / 24 if active_car != null else 0.7
@@ -873,12 +960,19 @@ func _physics_process(delta: float) -> void:
 		if seen and nearest_cop < 4.5 and (active_car == null or absf(active_car.speed) < 2):
 			bust_progress += delta
 			if bust_progress > 9:
+				prison_after_death = true
 				finish(false)
 		else:
 			bust_progress = maxf(0, bust_progress - delta * 2)
 	else:
 		bust_progress = 0
 func _process(delta: float) -> void:
+	var escape_marker: Label3D = get_node_or_null("MarcadorFuga")
+	if escape_marker != null:
+		var stage := prison_stage_for()
+		escape_marker.visible = stage >= 0 and stage < PRISON_POINTS.size() and not finished
+		if escape_marker.visible:
+			escape_marker.position = PRISON_POINTS[stage] + Vector3.UP * 2.2
 	if camera == null:
 		return
 	if get_tree().paused:
@@ -961,6 +1055,10 @@ func respawn_local() -> void:
 	car_transition = false
 	var home: int = life.owned_home
 	player.position = life.HOME_BUILDING + Vector3(0,(home + 1) * 6 + 0.3,5) if home >= 0 else Vector3(-5,0.3,12)
+	if prison_after_death or prison_stage >= 0:
+		prison_stage = 0
+		prison_after_death = false
+		player.position = PRISON_SPAWN
 	player.velocity = Vector3.ZERO
 	player.visible = true
 	player.collision_layer = 2
@@ -977,6 +1075,12 @@ func respawn_local() -> void:
 	camera.position = player.position + Vector3(0,4,7)
 	camera_check_timer = 0
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if prison_stage >= 0:
+		retry_after_death = false
+		bust_progress = 0
+		notify("Você está preso. " + PRISON_TEXT[prison_stage])
+		if game_mode == "campaign": activities.save_campaign()
+		return
 	if retry_after_death:
 		retry_after_death = false
 		if activities.campaign_index == 5:

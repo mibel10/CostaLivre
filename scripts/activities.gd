@@ -235,6 +235,15 @@ func handle_input(event: InputEvent) -> bool:
 		return true
 	if world.get_tree().paused or world.finished:
 		return false
+	if world.prison_stage_for() >= 0:
+		if event.is_action_pressed("activity"):
+			if world.network != null and world.network.active():
+				world.network.rules.send_action("prison_step", {})
+			else:
+				world.prison_interact(1, world.player.position)
+			return true
+		if event.is_action_pressed("jobs"):
+			return true
 	if event.is_action_pressed("jobs"):
 		if game_mode == "campaign":
 			world.notify("Complete o capítulo atual para liberar a próxima missão.")
@@ -426,6 +435,8 @@ func nearby_place() -> String:
 	return ""
 
 func prompt() -> String:
+	if world.prison_stage_for() >= 0:
+		return world.prison_prompt()
 	if world.active_car != null and not world.bus_passenger and world.near_fuel_station(world.active_car.position, 7.0):
 		if world.active_car.refuel_time > 0.0:
 			return "Abastecendo…"
@@ -516,6 +527,10 @@ func campaign_job_id(index: int) -> int:
 
 func begin_campaign() -> void:
 	load_campaign()
+	if world.prison_stage >= 0:
+		world.player.position = world.PRISON_SPAWN
+		world.notify("Você está preso. " + world.PRISON_TEXT[world.prison_stage])
+		return
 	if campaign_index >= CAMPAIGN_LENGTH:
 		world.pause_menu.show_campaign_complete()
 		return
@@ -525,6 +540,7 @@ func begin_campaign() -> void:
 func save_campaign() -> bool:
 	var save := ConfigFile.new()
 	save.set_value("story", "next_mission", campaign_index)
+	save.set_value("story", "prison_stage", world.prison_stage)
 	save.set_value("story", "cash", world.cash)
 	save.set_value("story", "home_floor", world.life.owned_home)
 	save.set_value("story", "homes", world.life.owned_homes)
@@ -558,6 +574,7 @@ func load_campaign() -> void:
 		campaign_index = clampi(legacy.get_value("story", "next_mission", 0) if legacy.load(campaign_path) == OK else 0, 0, CAMPAIGN_LENGTH)
 		return
 	campaign_index = clampi(save.get_value("story", "next_mission", 0), 0, CAMPAIGN_LENGTH)
+	world.prison_stage = clampi(int(save.get_value("story", "prison_stage", -1)), -1, world.PRISON_POINTS.size() - 1)
 	world.cash = int(save.get_value("story", "cash", world.cash))
 	world.life.owned_home = clampi(int(save.get_value("story", "home_floor", -1)), -1, 11)
 	world.life.owned_homes.clear()
@@ -594,6 +611,8 @@ func has_campaign_save() -> bool:
 	return FileAccess.file_exists(campaign_save_path)
 
 func new_campaign() -> void:
+	world.prison_stage = -1
+	world.prison_progress = 0.0
 	world.life.owned_home = -1
 	world.life.owned_homes.clear()
 	campaign_index = 0

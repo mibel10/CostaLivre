@@ -327,6 +327,10 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 				var other := map_point(Vector3(x + 4,0,z + 4), origin, map_size)
 				draw_rect(Rect2(corner, other - corner), Color("c78f72"))
 	var a: Node = world.activities
+	var prison_stage: int = world.prison_stage_for()
+	if prison_stage >= 0 and prison_stage < world.PRISON_POINTS.size():
+		var target: Vector3 = world.PRISON_POINTS[prison_stage]
+		draw_circle(map_point(target, origin, map_size), 5, gold)
 	if world.marker.visible:
 		draw_line(map_point(world.subject_position(), origin, map_size), map_point(a.destination(), origin, map_size), Color(1, 0.8, 0.4, 0.6), 1)
 		draw_circle(map_point(a.destination(), origin, map_size), 5, gold)
