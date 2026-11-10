@@ -1080,6 +1080,15 @@ func respawn_local() -> void:
 	camera.position = player.position + Vector3(0,4,7)
 	camera_check_timer = 0
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if retry_after_death and activities.campaign_index == 5:
+		activities.bank.phase = 0
+		activities.bank.taken = [false, false, false]
+		activities.bank.mistakes = 0
+		activities.bank.lockout = 0
+		activities.bank.door.rotation.y = 0
+		activities.bank.security_light.material_override = material(Color("ef9d6b"), true)
+		activities.bank.screen.material_override = material(Color("66bbcc"), true)
+		for bag in activities.bank.bag_models: bag.visible = true
 	if prison_stage >= 0:
 		retry_after_death = false
 		bust_progress = 0
@@ -1088,15 +1097,6 @@ func respawn_local() -> void:
 		return
 	if retry_after_death:
 		retry_after_death = false
-		if activities.campaign_index == 5:
-			activities.bank.phase = 0
-			activities.bank.taken = [false, false, false]
-			activities.bank.mistakes = 0
-			activities.bank.lockout = 0
-			activities.bank.door.rotation.y = 0
-			activities.bank.security_light.material_override = material(Color("ef9d6b"), true)
-			activities.bank.screen.material_override = material(Color("66bbcc"), true)
-			for bag in activities.bank.bag_models: bag.visible = true
 		activities.save_campaign()
 		activities.start_job(activities.campaign_job_id(activities.campaign_index))
 	else:

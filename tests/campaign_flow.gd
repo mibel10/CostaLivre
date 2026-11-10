@@ -120,6 +120,21 @@ func run() -> void:
 	world.player.is_crouching = false
 	assert(world.prison_stage == -1 and world.activities.job == world.activities.SECRET_DATA_JOB, "Escape resumes the campaign chapter")
 	world.cutscene.finish()
+	world.activities.campaign_index = 5
+	world.activities.start_job(5)
+	world.cutscene.finish()
+	world.activities.bank.phase = 5
+	world.activities.bank.taken = [true, true, true]
+	for bag in world.activities.bank.bag_models: bag.visible = false
+	world.damage(200.0, true)
+	world.respawn_local()
+	assert(world.prison_stage == 0 and world.activities.bank.phase == 0, "Police death resets the bank before prison escape")
+	assert(world.activities.bank.taken == [false, false, false] and world.activities.bank.bag_models.all(func(bag): return bag.visible))
+	world.prison_stage = world.PRISON_POINTS.size() - 1
+	world.player.position = world.PRISON_POINTS.back()
+	world.prison_interact(1, world.player.position)
+	assert(world.activities.job == 5 and world.activities.bank.phase == 0, "The bank mission can restart after prison escape")
+	world.cutscene.finish()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_test.cfg"))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://campaign_flow_full_test.cfg"))
 	world.queue_free()
