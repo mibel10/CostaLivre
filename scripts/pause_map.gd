@@ -172,7 +172,10 @@ func _draw() -> void:
 		for station in world.station.STATIONS:
 			dot(station.center,Color("8db8ef"),"Delegacia / %d viaturas" % int(station.count))
 	dot(a.HEAVY_SHOP,Color("9ed8ff"),"Arsenal da favela")
-	dot(a.SUPPLY_PICKUP,Color("ffd18a"),"Entrega no beco")
+	if a.supply_stage in [1, 2, 3] and (world.network == null or not world.network.active() or a.supply_owner == multiplayer.get_unique_id()):
+		dot(a.SUPPLY_ALLEY, Color("ffd18a"), "Entrega da carga / destino")
+	elif a.supply_stage == 0:
+		dot(a.SUPPLY_PICKUP, Color("ffd18a"), "Entrega no beco")
 	dot(a.HILL_RESIDENT,Color("ffd18a"),"Morador / entrega de remedios")
 	for pad in a.CAR_SPAWNERS:
 		dot(pad[0],Color("c7afff"),"Retirada de veiculos comprados")

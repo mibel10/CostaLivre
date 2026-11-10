@@ -331,6 +331,10 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	if prison_stage >= 0 and prison_stage < world.PRISON_POINTS.size():
 		var target: Vector3 = world.PRISON_POINTS[prison_stage]
 		draw_circle(map_point(target, origin, map_size), 5, gold)
+	if a.supply_stage in [1, 2, 3] and (world.network == null or not world.network.active() or a.supply_owner == multiplayer.get_unique_id()):
+		var delivery_target: Vector2 = map_point(a.SUPPLY_ALLEY, origin, map_size)
+		draw_line(map_point(world.subject_position(), origin, map_size), delivery_target, Color(1, 0.8, 0.4, 0.6), 1)
+		draw_circle(delivery_target, 5, gold)
 	if world.marker.visible:
 		draw_line(map_point(world.subject_position(), origin, map_size), map_point(a.destination(), origin, map_size), Color(1, 0.8, 0.4, 0.6), 1)
 		draw_circle(map_point(a.destination(), origin, map_size), 5, gold)
