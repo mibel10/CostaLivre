@@ -26,6 +26,7 @@ var cash := 900
 var activities: Node
 var bust_progress := 0.0
 const PRISON_SPAWN := Vector3(1012, 0.3, 40)
+const PRISON_INTERIOR := AABB(Vector3(1005.2, -0.4, 35.2), Vector3(59.6, 10.3, 39.6))
 const PRISON_POINTS := [Vector3(1012,0,40), Vector3(1012,0,61), Vector3(1035,0,60), Vector3(1054,0,65), Vector3(1035,0,48), Vector3(1035,0,73)]
 const PRISON_TEXT := ["Pegue a ferramenta na cela", "Agache para abrir o acesso ao corredor", "Segure F para desligar as câmeras", "Encontre o cartão de acesso", "Segure F para desativar o alarme", "Abra a saída"]
 var prison_stage := -1
@@ -1020,7 +1021,7 @@ func _process(delta: float) -> void:
 			camera_yaw = lerp_angle(camera_yaw, active_car.heading, delta * 2)
 		var focus := rendered_camera_focus(delta)
 		var distance := 9.5 if active_car != null else 6.5
-		var indoors: bool = active_car == null and (activities.bank.inside() or (life != null and life.inside_room(player.position)))
+		var indoors: bool = active_car == null and (PRISON_INTERIOR.has_point(player.position) or activities.bank.inside() or (life != null and life.inside_room(player.position)))
 		if indoors:
 			distance = 3.8
 		var aiming: bool = active_car == null and Input.is_action_pressed("aim") and activities.weapon > 0

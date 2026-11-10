@@ -103,6 +103,25 @@ func run() -> void:
 	assert(world.finished and world.prison_after_death, "Police death sends the player to prison")
 	world.respawn_local()
 	assert(world.prison_stage == 0 and world.player.position == world.PRISON_SPAWN)
+	await physics_frame
+	var prison_space: PhysicsDirectSpaceState3D = world.get_world_3d().direct_space_state
+	var gate_ray := PhysicsRayQueryParameters3D.create(Vector3(1035, 1.3, 40.38), Vector3(1026, 1.3, 40.38), 1)
+	var gate_hit: Dictionary = prison_space.intersect_ray(gate_ray)
+	assert(not gate_hit.is_empty() and gate_hit.collider.name == "CelaOeste0", "A barred cell has solid collision")
+	world.player.set_physics_process(false)
+	world.player.position = Vector3(1012, 0.08, 40)
+	assert(world.player.move_and_collide(Vector3(0, 0, 18.5), true) == null, "The intake corridor is walkable")
+	world.player.position = Vector3(1012, 0.08, 59.3)
+	assert(world.player.move_and_collide(Vector3(0, 0, 3.8), true) != null, "The technical passage blocks a standing player")
+	world.player.set_crouched(true)
+	await physics_frame
+	assert(world.player.move_and_collide(Vector3(0, 0, 3.8), true) == null, "The technical passage remains walkable while crouched")
+	world.player.set_crouched(false)
+	world.player.position = Vector3(1012, 0.08, 63.8)
+	assert(world.player.move_and_collide(Vector3(23, 0, 0), true) == null, "The intake route connects to the cell block")
+	world.player.position = Vector3(1040.5, 3.14, 45.5)
+	assert(world.player.move_and_collide(Vector3(-11, 0, 0), true) == null, "The upper bridge connects both galleries")
+	world.player.set_physics_process(true)
 	for step in world.PRISON_POINTS.size():
 		world.player.position = world.PRISON_POINTS[step]
 		world.player.is_crouching = false
