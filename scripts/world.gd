@@ -190,6 +190,11 @@ func start_mode(mode: String) -> void:
 	if mode == "sandbox" and game_mode == "campaign":
 		life.owned_home = -1
 		life.owned_homes.clear()
+		if prison_stage >= 0:
+			prison_stage = -1
+			prison_progress = 0.0
+			player.position = SPAWNS[0]
+			player.velocity = Vector3.ZERO
 	game_mode = mode
 	if is_instance_valid(pause_menu.menu_music):
 		pause_menu.menu_music.stop()

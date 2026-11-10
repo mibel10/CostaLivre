@@ -528,6 +528,8 @@ func campaign_job_id(index: int) -> int:
 func begin_campaign() -> void:
 	load_campaign()
 	if world.prison_stage >= 0:
+		job = -1
+		world.marker.hide()
 		world.player.position = world.PRISON_SPAWN
 		world.notify("Você está preso. " + world.PRISON_TEXT[world.prison_stage])
 		return
