@@ -51,6 +51,15 @@ func run() -> void:
 			var from := Vector3(x, ground + 1, side * 31.0)
 			var hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 2, 1))
 			assert(not hit.is_empty() and absf(hit.position.y - ground) < 0.02, "Favela steps must not block the walking ramp")
+	world.player.position = Vector3(23, 0, 32.5)
+	var original_quality: int = world.settings.quality
+	world.settings.quality = 0
+	world.life._process(1)
+	var simulated: Array = world.life.people.filter(func(person): return person.is_physics_processing())
+	world.settings.quality = 4
+	world.life._process(1)
+	assert(simulated.size() > 10 and simulated == world.life.people.filter(func(person): return person.is_physics_processing()), "Graphics quality cannot change which pedestrians the game simulates")
+	world.settings.quality = original_quality
 	var ped = world.life.people[3]
 	world.player.position = ped.position + Vector3(2,0,0)
 	world.life._process(1)

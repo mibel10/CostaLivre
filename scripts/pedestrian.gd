@@ -31,6 +31,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if hp <= 0 or stationary or route.is_empty() or world.finished:
 		return
+	if world.network != null and world.network.is_client():
+		return
 	if shopper and shopping_pause > 0 and world.heat < 20:
 		shopping_pause -= delta
 		model.animate(0)

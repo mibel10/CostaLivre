@@ -878,7 +878,7 @@ func _process(delta: float) -> void:
 	var active_count := 0
 	for ped in sorted:
 		var cashier: bool = ped.has_meta("supermarket_cashier")
-		var simulate: bool = ped.hp > 0 and distances[ped] < 3600 and (cashier or active_count < [24,20,16,12,10,24][world.settings.quality])
+		var simulate: bool = ped.hp > 0 and distances[ped] < 3600 and (cashier or active_count < 24)
 		if simulate and not cashier:
 			active_count += 1
 		var near: bool = ped.position.distance_squared_to(subject) < 3600 and ped.hp > 0
