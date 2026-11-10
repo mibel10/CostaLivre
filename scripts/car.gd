@@ -428,6 +428,11 @@ func explode() -> void:
 				victim.take_hit(200, -1)
 			else:
 				victim.take_hit(200)
+	if (world.network == null or not world.network.active()) and world.active_car != null and not struck.has(world.player.get_instance_id()) and not struck.has(int(world.player.get_meta("peer_id", 0))):
+		var distance := global_position.distance_to(world.active_car.global_position)
+		if distance <= 7.5:
+			var damage := 200.0 if distance <= 3.75 else lerpf(200.0, 80.0, (distance - 3.75) / 3.75)
+			world.damage(damage)
 	if world.network!=null and world.network.active() and multiplayer.is_server():
 		for id in world.network.members:
 			if struck.has(id):

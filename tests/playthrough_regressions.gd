@@ -48,6 +48,17 @@ func run() -> void:
 	world.pause_menu.show_page("map")
 	assert(world.pause_menu.awaiting_action == "","Leaving controls cancels key capture")
 	world.pause_menu.resume()
+	var occupied = world.spawn_car(Vector3(980, 0.2, 0), Color.BLUE)
+	world.active_car = occupied
+	world.health = 100
+	world.player.collision_layer = 0
+	var nearby = world.spawn_car(occupied.position + Vector3(6, 0, 0), Color.RED)
+	nearby.explode()
+	assert(world.health < 100, "A nearby explosion damages a driver with a hidden collider")
+	world.health = 100
+	occupied.explode()
+	assert(world.health == 0 and world.finished, "The driver's own exploding car deals damage")
+	world.active_car = null
 	world.queue_free()
 	await process_frame
 	print("PASS: all map labels, batched body, repair appearance, entry/exit, interior camera and rebind cancellation")
