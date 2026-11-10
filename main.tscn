@@ -7066,6 +7066,98 @@ size = Vector3(9.41, 1.1, 0.065)
 [sub_resource type="BoxShape3D" id="CadeiaCol_GuardaPonteB"]
 size = Vector3(9.41, 1.1, 0.065)
 
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Parede"]
+albedo_color = Color(0.73, 0.76, 0.73, 1)
+roughness = 0.82
+albedo_texture = ExtResource("4_y83ir")
+uv1_scale = Vector3(0.55, 0.55, 0.55)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Piso"]
+albedo_color = Color(0.43, 0.46, 0.48, 1)
+roughness = 0.82
+albedo_texture = ExtResource("4_y83ir")
+uv1_scale = Vector3(0.55, 0.55, 0.55)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Grafite"]
+albedo_color = Color(0.15, 0.19, 0.22, 1)
+roughness = 0.39
+metallic = 0.19
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Amarelo"]
+albedo_color = Color(0.88, 0.59, 0.11, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Vermelho"]
+albedo_color = Color(0.53, 0.095, 0.08, 1)
+roughness = 0.39
+metallic = 0.17
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Aco"]
+albedo_color = Color(0.37, 0.44, 0.49, 1)
+roughness = 0.39
+metallic = 0.47
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Pneu"]
+albedo_color = Color(0.1, 0.11, 0.12, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Luz"]
+albedo_color = Color(0.82, 0.92, 1, 1)
+roughness = 0.82
+emission_enabled = true
+emission = Color(0.82, 0.92, 1, 1)
+emission_energy_multiplier = 1.1
+
+[sub_resource type="StandardMaterial3D" id="OficinaMat_Tela"]
+albedo_color = Color(0.26, 0.78, 0.64, 1)
+roughness = 0.82
+emission_enabled = true
+emission = Color(0.26, 0.78, 0.64, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="BoxMesh" id="OficinaBoxUnit"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="MultiMesh" id="OficinaMulti0"]
+transform_format = 1
+mesh = SubResource("OficinaBoxUnit")
+instance_count = 33
+buffer = PackedFloat32Array(13.1, 0, 0, 0, 0, 1.55, 0, 5.07, 0, 0, 0.21, 12.24, 0.23, 0, 0, -5.94, 0, 0.17, 0, 0.43, 0, 0, 0.04, 12.2, 0.23, 0, 0, -5.94, 0, 0.17, 0, 0.89, 0, 0, 0.04, 12.2, 0.23, 0, 0, -5.94, 0, 0.17, 0, 1.35, 0, 0, 0.04, 12.2, 0.23, 0, 0, -5.94, 0, 0.17, 0, 1.81, 0, 0, 0.04, 12.2, 0.23, 0, 0, 5.94, 0, 0.17, 0, 0.43, 0, 0, 0.04, 12.2, 0.23, 0, 0, 5.94, 0, 0.17, 0, 0.89, 0, 0, 0.04, 12.2, 0.23, 0, 0, 5.94, 0, 0.17, 0, 1.35, 0, 0, 0.04, 12.2, 0.23, 0, 0, 5.94, 0, 0.17, 0, 1.81, 0, 0, 0.04, 12.2, 0.09, 0, 0, -9.76, 0, 1.43, 0, 0.72, 0, 0, 23.48, 0, 0.09, 0, 0, 9.76, 0, 1.43, 0, 0.72, 0, 0, 23.48, 0, 19.52, 0, 0, 0, 0, 1.43, 0, 0.72, 0, 0, 0.1, -11.77, 0.63, 0, 0, -6.68, 0, 0.14, 0, 0.093, 0, 0, 0.82, -1.2, 0.57, 0, 0, -6.32, 0, 0.06, 0, 0.071, 0, 0, 0.17, -0.61, 0.63, 0, 0, -2.42, 0, 0.14, 0, 0.093, 0, 0, 0.82, -1.2, 0.57, 0, 0, -2.78, 0, 0.06, 0, 0.071, 0, 0, 0.17, -0.61, 3.38, 0, 0, -4.55, 0, 0.75, 0, 3.97, 0, 0, 0.12, -11.62, 3.54, 0, 0, -4.55, 0, 0.13, 0, 5.73, 0, 0, 0.39, -6, 3.54, 0, 0, -4.55, 0, 0.13, 0, 5.73, 0, 0, 0.39, 1.6, 3.54, 0, 0, -4.55, 0, 0.13, 0, 5.73, 0, 0, 0.39, 8.3, 0.63, 0, 0, 2.42, 0, 0.14, 0, 0.093, 0, 0, 0.82, -1.2, 0.57, 0, 0, 2.78, 0, 0.06, 0, 0.071, 0, 0, 0.17, -0.61, 0.63, 0, 0, 6.68, 0, 0.14, 0, 0.093, 0, 0, 0.82, -1.2, 0.57, 0, 0, 6.32, 0, 0.06, 0, 0.071, 0, 0, 0.17, -0.61, 3.38, 0, 0, 4.55, 0, 0.75, 0, 3.97, 0, 0, 0.12, -11.62, 3.54, 0, 0, 4.55, 0, 0.13, 0, 5.73, 0, 0, 0.39, -6, 3.54, 0, 0, 4.55, 0, 0.13, 0, 5.73, 0, 0, 0.39, 1.6, 3.54, 0, 0, 4.55, 0, 0.13, 0, 5.73, 0, 0, 0.39, 8.3, 2.74, 0, 0, -7.9, 0, 1.62, 0, 1.87, 0, 0, 0.18, -11.25, 0.68, 0, 0, -7.18, 0, 0.47, 0, 1.27, 0, 0, 0.34, -10.67, 2.74, 0, 0, 7.9, 0, 1.62, 0, 1.87, 0, 0, 0.18, -11.25, 0.68, 0, 0, 8.62, 0, 0.47, 0, 1.27, 0, 0, 0.34, -10.67, 2.02, 0, 0, -8.5, 0, 0.12, 0, 1.26, 0, 0, 5.04, -6)
+
+[sub_resource type="MultiMesh" id="OficinaMulti1"]
+transform_format = 1
+mesh = SubResource("OficinaBoxUnit")
+instance_count = 18
+buffer = PackedFloat32Array(13.15, 0, 0, 0, 0, 0.12, 0, 4.35, 0, 0, 0.16, 12.4, 0.2, 0, 0, -5.94, 0, 2.22, 0, 1.12, 0, 0, 0.08, 12.15, 0.2, 0, 0, 5.94, 0, 2.22, 0, 1.12, 0, 0, 0.08, 12.15, 0.11, 0, 0, -9.76, 0, 0.13, 0, 1.49, 0, 0, 23.48, 0, 0.11, 0, 0, 9.76, 0, 0.13, 0, 1.49, 0, 0, 23.48, 0, 19.52, 0, 0, 0, 0, 0.13, 0, 1.49, 0, 0, 0.11, -11.72, 0.19, 0, 0, -6.68, 0, 0.36, 0, 2.95, 0, 0, 0.04, -0.94, 0.19, 0, 0, -2.42, 0, 0.36, 0, 2.95, 0, 0, 0.04, -0.94, 0.067, 0, 0, -6.45, 0, 0.008, 0, 0.05, 0, 0, 11.4, 0, 0.067, 0, 0, -2.65, 0, 0.008, 0, 0.05, 0, 0, 11.4, 0, 3.85, 0, 0, -4.55, 0, 0.008, 0, 0.051, 0, 0, 0.068, -5.7, 3.85, 0, 0, -4.55, 0, 0.008, 0, 0.051, 0, 0, 0.068, 5.7, 0.19, 0, 0, 2.42, 0, 0.36, 0, 2.95, 0, 0, 0.04, -0.94, 0.19, 0, 0, 6.68, 0, 0.36, 0, 2.95, 0, 0, 0.04, -0.94, 0.067, 0, 0, 2.65, 0, 0.008, 0, 0.05, 0, 0, 11.4, 0, 0.067, 0, 0, 6.45, 0, 0.008, 0, 0.05, 0, 0, 11.4, 0, 3.85, 0, 0, 4.55, 0, 0.008, 0, 0.051, 0, 0, 0.068, -5.7, 3.85, 0, 0, 4.55, 0, 0.008, 0, 0.051, 0, 0, 0.068, 5.7)
+
+[sub_resource type="MultiMesh" id="OficinaMulti2"]
+transform_format = 1
+mesh = SubResource("OficinaBoxUnit")
+instance_count = 51
+buffer = PackedFloat32Array(0.13, 0, 0, -5.94, 0, 4.1, 0, 2.04, 0, 0, 0.16, 11.97, 0.13, 0, 0, 5.94, 0, 4.1, 0, 2.04, 0, 0, 0.16, 11.97, 11.85, 0, 0, 0, 0, 0.045, 0, 4.03, 0, 0, 0.19, 11.99, 11.85, 0, 0, 0, 0, 0.045, 0, 4.104, 0, 0, 0.19, 11.99, 11.85, 0, 0, 0, 0, 0.045, 0, 4.178, 0, 0, 0.19, 11.99, 11.85, 0, 0, 0, 0, 0.045, 0, 4.252, 0, 0, 0.19, 11.99, 11.85, 0, 0, 0, 0, 0.045, 0, 4.326, 0, 0, 0.19, 11.99, 11.85, 0, 0, 0, 0, 0.045, 0, 4.4, 0, 0, 0.19, 11.99, 11.85, 0, 0, 0, 0, 0.045, 0, 4.474, 0, 0, 0.19, 11.99, 11.85, 0, 0, 0, 0, 0.045, 0, 4.548, 0, 0, 0.19, 11.99, 0.12, 0, 0, -9.76, 0, 0.47, 0, 4.55, 0, 0, 20.7, -0.6, 0.09, 0, 0, -9.76, 0, 5.8, 0, 3, 0, 0, 0.16, -9, 0.09, 0, 0, -9.76, 0, 5.8, 0, 3, 0, 0, 0.16, -3, 0.09, 0, 0, -9.76, 0, 5.8, 0, 3, 0, 0, 0.16, 3, 0.09, 0, 0, -9.76, 0, 5.8, 0, 3, 0, 0, 0.16, 9, 0.12, 0, 0, 9.76, 0, 0.47, 0, 4.55, 0, 0, 20.7, -0.6, 0.09, 0, 0, 9.76, 0, 5.8, 0, 3, 0, 0, 0.16, -9, 0.09, 0, 0, 9.76, 0, 5.8, 0, 3, 0, 0, 0.16, -3, 0.09, 0, 0, 9.76, 0, 5.8, 0, 3, 0, 0, 0.16, 3, 0.09, 0, 0, 9.76, 0, 5.8, 0, 3, 0, 0, 0.16, 9, 0.15, 0, 0, -6.68, 0, 1.07, 0, 0.57, 0, 0, 0.06, -0.943, 0.15, 0, 0, -2.42, 0, 1.07, 0, 0.57, 0, 0, 0.06, -0.943, 0.15, 0, 0, 2.42, 0, 1.07, 0, 0.57, 0, 0, 0.06, -0.943, 0.15, 0, 0, 6.68, 0, 1.07, 0, 0.57, 0, 0, 0.06, -0.943, 2.84, 0, 0, -7.9, 0, 0.1, 0, 0.93, 0, 0, 1.22, -10.72, 2.18, 0, 0, -7.9, 0, 0.036, 0, 0.25, 0, 0, 0.045, -10.128, 2.18, 0, 0, -7.9, 0, 0.036, 0, 0.48, 0, 0, 0.045, -10.128, 2.18, 0, 0, -7.9, 0, 0.036, 0, 0.71, 0, 0, 0.045, -10.128, 0.07, 0, 0, -8.98, 0, 0.37, 0, 1.73, 0, 0, 0.044, -11.13, 0.07, 0, 0, -8.74, 0, 0.37, 0, 1.85, 0, 0, 0.044, -11.13, 0.07, 0, 0, -8.5, 0, 0.37, 0, 1.97, 0, 0, 0.044, -11.13, 0.07, 0, 0, -8.26, 0, 0.37, 0, 1.73, 0, 0, 0.044, -11.13, 0.07, 0, 0, -8.02, 0, 0.37, 0, 1.85, 0, 0, 0.044, -11.13, 0.07, 0, 0, -7.78, 0, 0.37, 0, 1.97, 0, 0, 0.044, -11.13, 0.07, 0, 0, -7.54, 0, 0.37, 0, 1.73, 0, 0, 0.044, -11.13, 0.07, 0, 0, -7.3, 0, 0.37, 0, 1.85, 0, 0, 0.044, -11.13, 0.07, 0, 0, -7.06, 0, 0.37, 0, 1.97, 0, 0, 0.044, -11.13, 2.84, 0, 0, 7.9, 0, 0.1, 0, 0.93, 0, 0, 1.22, -10.72, 2.18, 0, 0, 7.9, 0, 0.036, 0, 0.25, 0, 0, 0.045, -10.128, 2.18, 0, 0, 7.9, 0, 0.036, 0, 0.48, 0, 0, 0.045, -10.128, 2.18, 0, 0, 7.9, 0, 0.036, 0, 0.71, 0, 0, 0.045, -10.128, 0.07, 0, 0, 6.82, 0, 0.37, 0, 1.73, 0, 0, 0.044, -11.13, 0.07, 0, 0, 7.06, 0, 0.37, 0, 1.85, 0, 0, 0.044, -11.13, 0.07, 0, 0, 7.3, 0, 0.37, 0, 1.97, 0, 0, 0.044, -11.13, 0.07, 0, 0, 7.54, 0, 0.37, 0, 1.73, 0, 0, 0.044, -11.13, 0.07, 0, 0, 7.78, 0, 0.37, 0, 1.85, 0, 0, 0.044, -11.13, 0.07, 0, 0, 8.02, 0, 0.37, 0, 1.97, 0, 0, 0.044, -11.13, 0.07, 0, 0, 8.26, 0, 0.37, 0, 1.73, 0, 0, 0.044, -11.13, 0.07, 0, 0, 8.5, 0, 0.37, 0, 1.85, 0, 0, 0.044, -11.13, 0.07, 0, 0, 8.74, 0, 0.37, 0, 1.97, 0, 0, 0.044, -11.13, 1.26, 0, 0, 8.98, 0, 0.17, 0, 0.105, 0, 0, 3.27, -8.13)
+
+[sub_resource type="MultiMesh" id="OficinaMulti3"]
+transform_format = 1
+mesh = SubResource("OficinaBoxUnit")
+instance_count = 6
+buffer = PackedFloat32Array(3.18, 0, 0, -4.55, 0, 0.042, 0, 5.65, 0, 0, 0.28, -6, 3.18, 0, 0, -4.55, 0, 0.042, 0, 5.65, 0, 0, 0.28, 1.6, 3.18, 0, 0, -4.55, 0, 0.042, 0, 5.65, 0, 0, 0.28, 8.3, 3.18, 0, 0, 4.55, 0, 0.042, 0, 5.65, 0, 0, 0.28, -6, 3.18, 0, 0, 4.55, 0, 0.042, 0, 5.65, 0, 0, 0.28, 1.6, 3.18, 0, 0, 4.55, 0, 0.042, 0, 5.65, 0, 0, 0.28, 8.3)
+
+[sub_resource type="MultiMesh" id="OficinaMulti4"]
+transform_format = 1
+mesh = SubResource("OficinaBoxUnit")
+instance_count = 2
+buffer = PackedFloat32Array(2.72, 0, 0, -7.9, 0, 0.9, 0, 0.45, 0, 0, 1.14, -10.72, 2.72, 0, 0, 7.9, 0, 0.9, 0, 0.45, 0, 0, 1.14, -10.72)
+
+[sub_resource type="MultiMesh" id="OficinaMulti5"]
+transform_format = 1
+mesh = SubResource("OficinaBoxUnit")
+instance_count = 2
+buffer = PackedFloat32Array(0.54, 0, 0, -7.18, 0, 0.29, 0, 1.33, 0, 0, 0.043, -10.483, 0.54, 0, 0, 8.62, 0, 0.29, 0, 1.33, 0, 0, 0.043, -10.483)
+
 [node name="CostaLivre" type="Node3D" unique_id=130586917]
 script = ExtResource("1_q1fcy")
 
@@ -16488,56 +16580,58 @@ position = Vector3(-21, 0, 63)
 [node name="Esquerda" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(-10, 3, 0)
 size = Vector3(0.4, 6, 24)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Parede")
 use_collision = true
 
 [node name="Direita" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(10, 3, 0)
 size = Vector3(0.4, 6, 24)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Parede")
 use_collision = true
 
 [node name="Fundo" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(0, 3, -12)
 size = Vector3(20, 6, 0.4)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Parede")
 use_collision = true
 
 [node name="Cobertura" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(0, 6.1, 0)
 size = Vector3(20, 0.3, 24)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Grafite")
 use_collision = true
 
 [node name="PortaoEsquerdo" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(-8, 3, 12)
 size = Vector3(4, 6, 0.4)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Parede")
 use_collision = true
 
 [node name="PortaoDireito" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(8, 3, 12)
 size = Vector3(4, 6, 0.4)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Parede")
 use_collision = true
 
 [node name="PortaoTopo" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(0, 5, 12)
 size = Vector3(12, 2, 0.4)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Grafite")
 use_collision = true
 
 [node name="Bancada" type="CSGBox3D" parent="GaragemCosta"]
 position = Vector3(-8.5, 0.6, -6)
 size = Vector3(2, 1.2, 5)
-material = SubResource("StandardMaterial3D_6b1f1")
+material = SubResource("OficinaMat_Grafite")
 use_collision = true
 
 [node name="Oficina" type="Label3D" parent="GaragemCosta"]
-position = Vector3(0, 4.8, 12.3)
-text = "OFICINA COSTA\nPINTURA / SUSPENSAO / VEICULOS"
-font_size = 36
-pixel_size = 0.016
+position = Vector3(0, 5.05, 12.35)
+text = "OFICINA COSTA"
+font = ExtResource("5_l6mbj")
+font_size = 56
+pixel_size = 0.024
+modulate = Color(0.95, 0.83, 0.53, 1)
 
 [node name="RetiradaVeiculos0" type="CSGBox3D" parent="."]
 position = Vector3(-8.5, 0.8, 19)
@@ -18107,66 +18201,6 @@ material = SubResource("Material_contato_arma")
 [node name="PortaoDireitoTravessa1" type="CSGBox3D" parent="PortariaMercado1"]
 position = Vector3(3.95, 3.0, 2.35)
 size = Vector3(0.1, 0.12, 2.8)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeEsquerdo0" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(-5.9, 1.8, 12.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeEsquerdo1" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(-5.9, 1.8, 13.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeEsquerdo2" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(-5.9, 1.8, 14.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeEsquerdo3" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(-5.9, 1.8, 15.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="TravessaEsquerdo0" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(-5.9, 0.25, 13.5)
-size = Vector3(0.1, 0.12, 3.1)
-material = SubResource("Material_contato_arma")
-
-[node name="TravessaEsquerdo1" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(-5.9, 3.35, 13.5)
-size = Vector3(0.1, 0.12, 3.1)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeDireito0" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(5.9, 1.8, 12.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeDireito1" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(5.9, 1.8, 13.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeDireito2" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(5.9, 1.8, 14.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="GradeDireito3" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(5.9, 1.8, 15.0)
-size = Vector3(0.1, 3.6, 0.1)
-material = SubResource("Material_contato_arma")
-
-[node name="TravessaDireito0" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(5.9, 0.25, 13.5)
-size = Vector3(0.1, 0.12, 3.1)
-material = SubResource("Material_contato_arma")
-
-[node name="TravessaDireito1" type="CSGBox3D" parent="GaragemCosta"]
-position = Vector3(5.9, 3.35, 13.5)
-size = Vector3(0.1, 0.12, 3.1)
 material = SubResource("Material_contato_arma")
 
 [node name="PortoesDecorativosPredios" type="Node3D" parent="."]
@@ -19888,4 +19922,178 @@ material = SubResource("CadeiaMat_Ferrugem")
 position = Vector3(0, 0.018, 23.9)
 size = Vector3(21, 0.04, 7.9)
 material = SubResource("CadeiaMat_Piso")
+cast_shadow = 0
+
+[node name="PisoTecnico" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(0, 0.027, 0)
+size = Vector3(19.55, 0.042, 23.55)
+material = SubResource("OficinaMat_Piso")
+
+[node name="AcessoOficina" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(0, 0.02, 13.8)
+size = Vector3(11.85, 0.03, 4.2)
+material = SubResource("OficinaMat_Piso")
+
+[node name="ColunaElevador10" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-6.68, 1.91, -1.2)
+size = Vector3(0.29, 3.82, 0.48)
+material = SubResource("OficinaMat_Vermelho")
+use_collision = true
+
+[node name="ColunaElevador11" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(-2.42, 1.91, -1.2)
+size = Vector3(0.29, 3.82, 0.48)
+material = SubResource("OficinaMat_Vermelho")
+use_collision = true
+
+[node name="PlacaBox1" type="Label3D" parent="GaragemCosta"]
+position = Vector3(-4.55, 4, -11.54)
+text = "BOX 01"
+font = ExtResource("5_l6mbj")
+font_size = 40
+pixel_size = 0.014
+modulate = Color(0.95, 0.89, 0.72, 1)
+
+[node name="Luminaria1_-2_7" type="OmniLight3D" parent="GaragemCosta"]
+position = Vector3(-4.55, 5.46, -2.7)
+light_color = Color(0.89, 0.95, 1, 1)
+light_energy = 0.81
+omni_range = 9.5
+
+[node name="Luminaria1_5_3" type="OmniLight3D" parent="GaragemCosta"]
+position = Vector3(-4.55, 5.46, 5.3)
+light_color = Color(0.89, 0.95, 1, 1)
+light_energy = 0.81
+omni_range = 9.5
+
+[node name="ColunaElevador20" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(2.42, 1.91, -1.2)
+size = Vector3(0.29, 3.82, 0.48)
+material = SubResource("OficinaMat_Vermelho")
+use_collision = true
+
+[node name="ColunaElevador21" type="CSGBox3D" parent="GaragemCosta"]
+position = Vector3(6.68, 1.91, -1.2)
+size = Vector3(0.29, 3.82, 0.48)
+material = SubResource("OficinaMat_Vermelho")
+use_collision = true
+
+[node name="PlacaBox2" type="Label3D" parent="GaragemCosta"]
+position = Vector3(4.55, 4, -11.54)
+text = "BOX 02"
+font = ExtResource("5_l6mbj")
+font_size = 40
+pixel_size = 0.014
+modulate = Color(0.95, 0.89, 0.72, 1)
+
+[node name="Luminaria2_-2_7" type="OmniLight3D" parent="GaragemCosta"]
+position = Vector3(4.55, 5.46, -2.7)
+light_color = Color(0.89, 0.95, 1, 1)
+light_energy = 0.81
+omni_range = 9.5
+
+[node name="Luminaria2_5_3" type="OmniLight3D" parent="GaragemCosta"]
+position = Vector3(4.55, 5.46, 5.3)
+light_color = Color(0.89, 0.95, 1, 1)
+light_energy = 0.81
+omni_range = 9.5
+
+[node name="PneuEstoque0" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -9.2)
+radius = 0.39
+height = 0.23
+sides = 16
+material = SubResource("OficinaMat_Pneu")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="CuboPneuEstoque0" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -9.07)
+radius = 0.205
+height = 0.046
+sides = 16
+material = SubResource("OficinaMat_Aco")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="PneuEstoque1" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -8.48)
+radius = 0.39
+height = 0.23
+sides = 16
+material = SubResource("OficinaMat_Pneu")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="CuboPneuEstoque1" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -8.35)
+radius = 0.205
+height = 0.046
+sides = 16
+material = SubResource("OficinaMat_Aco")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="PneuEstoque2" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -7.76)
+radius = 0.39
+height = 0.23
+sides = 16
+material = SubResource("OficinaMat_Pneu")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="CuboPneuEstoque2" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -7.63)
+radius = 0.205
+height = 0.046
+sides = 16
+material = SubResource("OficinaMat_Aco")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="PneuEstoque3" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -7.04)
+radius = 0.39
+height = 0.23
+sides = 16
+material = SubResource("OficinaMat_Pneu")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="CuboPneuEstoque3" type="CSGCylinder3D" parent="GaragemCosta"]
+position = Vector3(8.98, 0.49, -6.91)
+radius = 0.205
+height = 0.046
+sides = 16
+material = SubResource("OficinaMat_Aco")
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="ServicoOficina" type="Label3D" parent="GaragemCosta"]
+position = Vector3(0, 3.94, -11.66)
+text = "MECÂNICA  /  PINTURA  /  SUSPENSÃO"
+font = ExtResource("5_l6mbj")
+font_size = 31
+pixel_size = 0.012
+modulate = Color(0.95, 0.89, 0.72, 1)
+
+[node name="DetalhesOficinaGrafite0" type="MultiMeshInstance3D" parent="GaragemCosta"]
+material_override = SubResource("OficinaMat_Grafite")
+multimesh = SubResource("OficinaMulti0")
+
+[node name="DetalhesOficinaAmarelo1" type="MultiMeshInstance3D" parent="GaragemCosta"]
+material_override = SubResource("OficinaMat_Amarelo")
+multimesh = SubResource("OficinaMulti1")
+cast_shadow = 0
+
+[node name="DetalhesOficinaAco2" type="MultiMeshInstance3D" parent="GaragemCosta"]
+material_override = SubResource("OficinaMat_Aco")
+multimesh = SubResource("OficinaMulti2")
+cast_shadow = 0
+
+[node name="DetalhesOficinaLuz3" type="MultiMeshInstance3D" parent="GaragemCosta"]
+material_override = SubResource("OficinaMat_Luz")
+multimesh = SubResource("OficinaMulti3")
+cast_shadow = 0
+
+[node name="DetalhesOficinaVermelho4" type="MultiMeshInstance3D" parent="GaragemCosta"]
+material_override = SubResource("OficinaMat_Vermelho")
+multimesh = SubResource("OficinaMulti4")
+
+[node name="DetalhesOficinaTela5" type="MultiMeshInstance3D" parent="GaragemCosta"]
+material_override = SubResource("OficinaMat_Tela")
+multimesh = SubResource("OficinaMulti5")
 cast_shadow = 0
