@@ -80,6 +80,9 @@ func _draw() -> void:
 	if world.extra != null and world.extra.wheel:
 		draw_wheel()
 		return
+	if a.menu == "" and a.weapon == 6 and world.active_car == null and not world.car_transition and Input.is_action_pressed("aim"):
+		draw_sniper_scope(a)
+		return
 	panel(Rect2(24, 24, 740 if a.ACTION_JOBS.has(a.job) or a.job == 8 else 365, 48))
 	text(a.objective(), Vector2(38, 45), 15)
 	var detail := ""
@@ -155,6 +158,31 @@ func _draw() -> void:
 		text("FIM DA LINHA", Vector2(411, 301), 30, gold)
 		text("%d contratos concluídos   ·   $ %d" % [a.completed, world.cash], Vector2(413, 342), 18)
 		text("Renascendo...", Vector2(413, 406), 19, gold)
+
+func draw_sniper_scope(a: Node) -> void:
+	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+	var viewport_size := get_viewport_rect().size
+	var center := viewport_size * 0.5
+	var radius := minf(viewport_size.x, viewport_size.y) * (0.36 if OS.has_feature("android") else 0.42)
+	var outer_radius := viewport_size.length()
+	var black := Color(0.01, 0.015, 0.018, 1.0)
+	for i in 96:
+		var angle := TAU * i / 96.0
+		var next := TAU * (i + 1) / 96.0
+		var direction := Vector2(cos(angle), sin(angle))
+		var next_direction := Vector2(cos(next), sin(next))
+		draw_colored_polygon(PackedVector2Array([center + direction * radius, center + direction * outer_radius, center + next_direction * outer_radius, center + next_direction * radius]), black)
+	draw_arc(center, radius, 0, TAU, 96, Color("282d2b"), 8, true)
+	var reticle := Color(0.04, 0.05, 0.045, 0.95)
+	draw_line(center + Vector2(-radius, 0), center + Vector2(radius, 0), reticle, 1.4)
+	draw_line(center + Vector2(0, -radius), center + Vector2(0, radius), reticle, 1.4)
+	for mark in range(1, 6):
+		var distance := radius * mark / 6.0
+		for side in [-1, 1]:
+			draw_line(center + Vector2(side * distance, -5), center + Vector2(side * distance, 5), reticle, 1.5)
+			draw_line(center + Vector2(-5, side * distance), center + Vector2(5, side * distance), reticle, 1.5)
+	draw_circle(center, 2.0, Color("de534b"))
+	draw_string(font, center + Vector2(-75, radius * 0.82), "%d / %d" % [a.clips[6], a.reserves[6]], HORIZONTAL_ALIGNMENT_CENTER, 150, 18, ink)
 
 func center_note(value: String, y: float, color: Color) -> void:
 	var width := font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 28

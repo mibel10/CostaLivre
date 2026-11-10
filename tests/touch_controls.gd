@@ -51,6 +51,13 @@ func run() -> void:
 	world.active_car = car
 	assert("interact" in touch.gameplay_actions() and "weapon" not in touch.gameplay_actions(), "Driving shows exit and hides the weapon wheel")
 	world.active_car = null
+	world.activities.weapon = 6
+	Input.action_press("aim")
+	world._process(0.2)
+	assert(not world.player.model.visible and world.camera.fov < 68, "Sniper aiming zooms and hides the local model")
+	Input.action_release("aim")
+	world._process(0.2)
+	assert(world.player.model.visible, "Leaving sniper aim restores the model")
 	world.queue_free()
 	await process_frame
 	await create_timer(0.25).timeout

@@ -12,6 +12,7 @@ var active_car: CharacterBody3D
 var cars: Array[CharacterBody3D] = []
 var cops: Array[CharacterBody3D] = []
 var camera: Camera3D
+var sniper_scope_hidden := false
 var camera_yaw := 0.0
 var camera_pitch := 0.34
 var mouse_idle := 0.0
@@ -975,6 +976,10 @@ func _process(delta: float) -> void:
 			escape_marker.position = PRISON_POINTS[stage] + Vector3.UP * 2.2
 	if camera == null:
 		return
+	var scoped: bool = not get_tree().paused and not finished and active_car == null and not car_transition and activities.menu == "" and not extra.wheel and activities.weapon == 6 and Input.is_action_pressed("aim") and (network == null or not network.active() or not network.rules.is_dead(multiplayer.get_unique_id())) and (cutscene == null or not cutscene.active)
+	if sniper_scope_hidden != scoped:
+		player.model.visible = not scoped
+		sniper_scope_hidden = scoped
 	if get_tree().paused:
 		return
 	if cutscene == null or not cutscene.active:
