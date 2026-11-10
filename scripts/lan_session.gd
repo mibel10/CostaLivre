@@ -212,6 +212,8 @@ func close_menu() -> void:
 	world.activities.set_menu("" if active() else return_menu)
 
 func host() -> void:
+	if world.restart_after_admin():
+		return
 	disconnect_room()
 	peer = ENetMultiplayerPeer.new()
 	var error := peer.create_server(PORT,11)
@@ -251,6 +253,8 @@ func join_room() -> void:
 	connect_target(target)
 
 func connect_target(target: Dictionary) -> void:
+	if world.restart_after_admin():
+		return
 	disconnect_room()
 	code=target.code
 	refusal_reason=""

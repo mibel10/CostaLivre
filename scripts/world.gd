@@ -68,6 +68,7 @@ var camera_focus_interval := 1.0 / 60.0
 var camera_focus_elapsed := 0.0
 var camera_focus_ready := false
 var game_mode := "sandbox"
+var admin_used := false
 var cutscene: Control
 var touch_controls: Control
 var network: Node
@@ -181,6 +182,8 @@ func _ready() -> void:
 	pause_menu.show_mode_select()
 
 func start_mode(mode: String) -> void:
+	if mode != "sandbox" and restart_after_admin():
+		return
 	if mode == "campaign" and network != null and network.active():
 		notify("Desconecte da sala para jogar a campanha.")
 		return
@@ -198,6 +201,12 @@ func start_mode(mode: String) -> void:
 		activities.job = -1
 		marker.visible = false
 		notify("Modo jogo livre: explore a cidade, faça contratos ou crie sua própria aventura.")
+
+func restart_after_admin() -> bool:
+	if not admin_used:
+		return false
+	get_tree().reload_current_scene.call_deferred()
+	return true
 
 func _notification(what: int) -> void:
 	if not OS.has_feature("android") or activities == null or pause_menu == null:

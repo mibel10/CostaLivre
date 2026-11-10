@@ -138,8 +138,30 @@ func run() -> void:
 	world._unhandled_input(action("map"))
 	assert(not paused and not ui.visible)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(settings.config_path))
+	world.activities.set_menu("pause")
+	var old_cash: int = world.cash
+	assert(ui.admin_entry.is_visible_in_tree())
+	ui.admin_entry.pressed.emit()
+	assert(ui.page == "admin")
+	world.game_mode = "campaign"
+	ui.admin_action("cash")
+	assert(world.cash == old_cash, "Campaign cannot use the panel even if its page was previously open")
+	world.game_mode = "sandbox"
+	world.network.peer = ENetMultiplayerPeer.new()
+	ui.admin_action("cash")
+	assert(world.cash == old_cash, "A pending network connection also blocks admin actions")
+	world.network.peer = null
+	ui.admin_action("cash")
+	assert(world.cash == old_cash + 10000)
+	current_scene = world
+	world.network.host()
+	assert(world.network.peer == null, "Hosting cannot carry over an edited sandbox")
+	await process_frame
+	await process_frame
+	assert(current_scene != world and is_instance_valid(current_scene))
+	assert(current_scene.cash == old_cash and current_scene.activities.menu == "mode")
 	print("PASS: native pause navigation, zoom/pan, all five graphics levels, all eight frame caps, saving, validation and resume")
-	world.queue_free()
+	current_scene.queue_free()
 	await process_frame
 	await create_timer(0.2).timeout
 	quit(0)

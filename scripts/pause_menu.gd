@@ -14,6 +14,8 @@ var resolution_select: OptionButton
 var window_resolutions: Array[Vector2i] = []
 var status: Label
 var campaign_save_button: Button
+var admin_entry: Button
+var admin_status: Label
 var advanced_options := {}
 var clock := 0.0
 var awaiting_action := ""
@@ -66,7 +68,7 @@ func _ready() -> void:
 	campaign_save_button = button(canvas, "Salvar campanha", Rect2(45, 525, 265, 48), world.activities.save_campaign_now)
 	button(canvas,"Multiplayer / sala",Rect2(45,585,265,44),func(): world.network.open_menu())
 	label(canvas, "ESC · voltar / continuar", Vector2(46, 642), 15, Color("a7b9bf"))
-	for name in ["home", "map", "graphics", "controls", "mode", "ending", "character"]:
+	for name in ["home", "map", "graphics", "controls", "mode", "ending", "character", "admin"]:
 		var control := Control.new()
 		control.position = Vector2(360, 60)
 		control.size = Vector2(865, 600)
@@ -132,6 +134,16 @@ func _ready() -> void:
 	label(pages.home, "MODO ATUAL", Vector2(0, 180), 14, Color("a7b9bf"))
 	label(pages.home, "HISTÓRIA" if world.game_mode == "campaign" else "JOGO LIVRE", Vector2(0, 207), 24, Color("ffd18a"))
 	label(pages.home, "No modo história, o progresso fica salvo neste aparelho.", Vector2(0, 265), 17, Color("a7b9bf"))
+	admin_entry = button(pages.home, "·", Rect2(806, 8, 52, 48), func(): show_page("admin"))
+	admin_entry.flat = true
+	label(pages.admin, "FERRAMENTAS DO JOGO LIVRE", Vector2.ZERO, 30, Color("ffd18a"))
+	admin_status = label(pages.admin, "", Vector2(0, 58), 20)
+	button(pages.admin, "Adicionar $10.000", Rect2(0, 115, 330, 55), func(): admin_action("cash"))
+	button(pages.admin, "Restaurar vida", Rect2(0, 180, 330, 55), func(): admin_action("health"))
+	button(pages.admin, "Zerar procurado", Rect2(0, 245, 330, 55), func(): admin_action("wanted"))
+	button(pages.admin, "Reparar e abastecer veículo atual", Rect2(0, 310, 440, 55), func(): admin_action("car"))
+	button(pages.admin, "Voltar", Rect2(0, 385, 180, 55), func(): show_page("home"))
+	label(pages.admin, "Ao trocar de modo ou conectar, a sessão de testes será encerrada.", Vector2(0, 465), 17, Color("a7b9bf"))
 	label(pages.map, "MAPA DA CIDADE", Vector2.ZERO, 27, Color("ffd18a"))
 	map_view = preload("res://scripts/pause_map.gd").new()
 	map_view.world = world
@@ -354,6 +366,8 @@ func show_campaign_complete() -> void:
 	world.activities.set_menu("campaign_complete")
 
 func start_new_campaign() -> void:
+	if world.restart_after_admin():
+		return
 	if world.network != null and world.network.active():
 		world.notify("Desconecte da sala para jogar a campanha.")
 		return
@@ -365,6 +379,13 @@ func start_new_campaign() -> void:
 	world.activities.new_campaign()
 
 func show_page(value: String) -> void:
+	if value == "mode" and world.restart_after_admin():
+		return
+	admin_entry.visible = admin_allowed()
+	if value == "admin":
+		if not admin_allowed():
+			return
+		admin_status.text = "Saldo atual · $%d" % world.cash
 	if value != "controls":
 		awaiting_action = ""
 		refresh_controls()
@@ -383,6 +404,33 @@ func show_page(value: String) -> void:
 		map_view.queue_redraw()
 	elif value == "graphics":
 		world.restore_pointer()
+
+func admin_allowed() -> bool:
+	return world.game_mode == "sandbox" and world.activities.menu == "pause" and world.network.peer == null and not world.finished
+
+func admin_action(action: String) -> void:
+	if not admin_allowed() or page != "admin":
+		return
+	match action:
+		"cash":
+			world.cash += 10000
+		"health":
+			world.health = 100.0
+		"wanted":
+			world.heat = 0.0
+			world.bust_progress = 0.0
+			world.update_dispatch(0.0)
+		"car":
+			if not is_instance_valid(world.active_car):
+				admin_status.text = "Entre em um veículo para usar esta ferramenta."
+				return
+			world.active_car.repair()
+			world.active_car.fuel = 1.0
+		_:
+			return
+	world.admin_used = true
+	admin_status.text = "Aplicado · Saldo $%d" % world.cash
+	world.hud.queue_redraw()
 
 func refresh() -> void:
 	for key in advanced_options:
