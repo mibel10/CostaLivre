@@ -251,6 +251,19 @@ func run() -> void:
 	await create_timer(0.3).timeout
 	assert(host.network.rules.sheets[id].cash == remaining, "Reject remote purchase away from shop")
 	client.activities.set_menu("")
+	client.player.position = client.activities.SUPPLY_PICKUP + Vector3.UP * 0.3
+	await wait_for(func(): return host.network.rules.position_of(id).distance_to(host.activities.SUPPLY_PICKUP) < 2)
+	await wait_for(func(): return host.network.avatars[id].node.position.distance_to(host.activities.SUPPLY_PICKUP) < 2)
+	client.network.rules.send_action("interact", {})
+	await wait_for(func(): return host.activities.supply_stage == 1)
+	client.player.position = client.activities.SUPPLY_ALLEY + Vector3.UP * 0.3
+	await wait_for(func(): return client.cutscene.active)
+	assert(client.cutscene.duration_msec == 30000 and not host.cutscene.active, "Only the delivery owner sees the full cinematic")
+	client.cutscene.finish()
+	await wait_for(func(): return host.activities.supply_stage == 3)
+	await wait_for(func(): return host.network.avatars[id].node.position.distance_to(host.activities.SUPPLY_ALLEY) < 2)
+	client.network.rules.send_action("interact", {})
+	await wait_for(func(): return host.activities.supply_stage == 4)
 	host.network.rules.damage_peer(id, 200, 0, true)
 	assert(host.network.rules.sheets[id].get("prison_stage", -1) == 0, "Police death assigns prison on the host")
 	await wait_for(func(): return not host.network.rules.is_dead(id) and client.player.position.distance_to(client.PRISON_SPAWN) < 3, 8.0)

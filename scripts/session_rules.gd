@@ -372,6 +372,9 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 			return
 		last_actions[key] = now
 	match kind:
+		"supply_scene_complete":
+			if id == world.activities.supply_owner and world.activities.supply_stage == 2:
+				world.activities.complete_supply_scene()
 		"hover_mode":
 			var car_id: int = network.members.get(id, {}).get("car", -1)
 			var car: Node = world.car_by_id(car_id)
@@ -543,6 +546,10 @@ func receive_event(kind: String, data: Dictionary) -> void:
 			if sheets.has(local_id()): sheets[local_id()]["prison_stage"] = -1
 			world.life.apply_elevator_arrival(Vector3(1035, 0.3, 79))
 			world.notify("Você fugiu da cadeia!")
+		"supply_scene":
+			world.activities.menu = "cutscene"
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			world.cutscene.play("EMBOSCADA NO BECO", "")
 		"passenger_boarding":
 			world.activities.show_passenger_boarding(data.start, int(data.car))
 		"vehicle_fall":

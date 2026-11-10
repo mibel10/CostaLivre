@@ -43,11 +43,9 @@ func run() -> void:
 	world.player.position = world.activities.SUPPLY_ALLEY
 	world.activities.tick_supply()
 	assert(world.activities.supply_stage == 2 and world.cutscene.active)
+	assert(world.cutscene.duration_msec == 30000, "Delivery cutscene lasts 30 seconds")
 	world.cutscene.finish()
-	world.activities.supply_scene_until = 0
-	world.activities.tick_supply()
-	assert(world.activities.supply_stage == 3 and world.cutscene.active)
-	world.cutscene.finish()
+	assert(world.activities.supply_stage == 3 and not world.cutscene.active)
 	var cash_before: int = world.cash
 	assert(world.activities.interact_supply())
 	assert(world.activities.supply_stage == 4 and world.cash == cash_before+4500)

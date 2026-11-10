@@ -20,6 +20,8 @@ func run() -> void:
 	for index in range(world.PRISON_POINTS.size() - 1):
 		var path := PhysicsRayQueryParameters3D.create(world.PRISON_POINTS[index] + Vector3.UP, world.PRISON_POINTS[index + 1] + Vector3.UP, 1)
 		assert(space.intersect_ray(path).is_empty(), "Each prison objective is reachable")
+	var alley := PhysicsRayQueryParameters3D.create(Vector3(405,11,1), Vector3(405,11,29), 1)
+	assert(space.intersect_ray(alley).is_empty(), "The alley connects both streets")
 	assert(world.life.rooms.size() == 22 and world.life.people.size() == 148)
 	assert(world.cars.filter(func(car): return car.traffic and car.position.x > 200).size() == 16)
 	assert(world.life.people.filter(func(person): return person.position.x > 200 and not person.stationary and not person.shopper).size() == 36)

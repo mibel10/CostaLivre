@@ -37,7 +37,7 @@ const HILL_MEDICINE := Vector3(63,0,27)
 var hill_errand_stage := 0
 var hill_errand_owner := 0
 const SUPPLY_PICKUP := Vector3(368.5,9.9,31)
-const SUPPLY_ALLEY := Vector3(382.75,9.9,14)
+const SUPPLY_ALLEY := Vector3(405,9.9,14)
 var supply_stage := 0
 var supply_owner := 0
 var supply_scene_until := 0
@@ -1071,18 +1071,18 @@ func supply_prompt() -> String:
 		if supply_stage == 3 and pos.distance_to(SUPPLY_ALLEY) < 3:
 			return "F: entregar a carga ao contato"
 		if pos.distance_to(HEAVY_SHOP) < 10 or pos.distance_to(SUPPLY_ALLEY) < 12:
-			return "Carga ilegal: entre no beco entre as casas, atras do arsenal"
+			return "Carga ilegal: siga pelo beco que liga as ruas da favela"
 	return ""
 
 func interact_supply() -> bool:
 	if world.active_car != null: return false
 	var actor: int = world.network.rules.context_peer if world.network != null and world.network.active() else 0
 	if world.network != null and world.network.active() and actor == 0: actor = multiplayer.get_unique_id()
-	var pos: Vector3 = world.subject_position()
+	var pos: Vector3 = world.network.rules.position_of(actor) if world.network != null and world.network.active() else world.subject_position()
 	if supply_stage == 0 and pos.distance_to(SUPPLY_PICKUP) < 3:
 		supply_owner = actor
 		supply_stage = 1
-		world.notify("Carga de drogas recolhida. Leve-a ao contato no beco entre as casas da favela.")
+		world.notify("Carga de drogas recolhida. Leve-a ao contato no beco entre as ruas da favela.")
 		if game_mode == "campaign": save_campaign()
 		return true
 	if supply_stage == 3 and actor == supply_owner and pos.distance_to(SUPPLY_ALLEY) < 3:
@@ -1109,11 +1109,22 @@ func tick_supply() -> void:
 	var pos: Vector3 = world.network.rules.position_of(supply_owner) if supply_owner > 0 else world.subject_position()
 	if supply_stage == 1 and pos.distance_to(SUPPLY_ALLEY) < 3.5:
 		supply_stage = 2
-		supply_scene_until = Time.get_ticks_msec()+3500
-		world.play_cutscene("EMBOSCADA NO BECO", "Contato, apontando a arma: Parado! Quem e voce? / Jogador: Sou o entregador da carga.")
+		supply_scene_until = Time.get_ticks_msec() + 30000
+		if world.network != null and world.network.active():
+			world.network.rules.send_personal(supply_owner, "supply_scene", {})
+		else:
+			world.play_cutscene("EMBOSCADA NO BECO", "")
 	elif supply_stage == 2 and Time.get_ticks_msec() >= supply_scene_until:
-		supply_stage = 3
-		world.play_cutscene("CONTATO CONFIRMADO", "Contato, abaixando a arma: Foi mal. Estava esperando voce. Pode deixar a carga aqui.")
+		complete_supply_scene()
+
+func complete_supply_scene() -> void:
+	if supply_stage != 2:
+		return
+	supply_stage = 3
+	if world.network != null and world.network.active():
+		world.network.rules.private_notice(supply_owner, "Contato confirmado. Entregue a carga.")
+	else:
+		world.notify("Contato confirmado. Entregue a carga.")
 
 func _process(_delta: float) -> void:
 	var show_hack_pointer: bool = bank.local_hacking() or (world.network != null and world.network.active() and world.network.rules.local_mission_hacking())

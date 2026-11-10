@@ -12633,7 +12633,7 @@ font_size = 32
 pixel_size = 0.012
 
 [node name="ContatoBeco" type="Node3D" parent="."]
-position = Vector3(382.75, 9.9, 16.5)
+position = Vector3(405, 9.9, 16.5)
 
 [node name="Visual" type="Node3D" parent="ContatoBeco"]
 script = ExtResource("Script_contato")
@@ -18274,3 +18274,23 @@ position = Vector3(-23, 1.55, 5.8)
 size = Vector3(3, 0.3, 1.6)
 material = SubResource("StandardMaterial3D_6b1f1")
 use_collision = true
+
+[node name="BecoDasRuas" type="Node3D" parent="."]
+position = Vector3(405, 9.9, 15)
+
+[node name="MuroEsquerdo" type="CSGBox3D" parent="BecoDasRuas"]
+position = Vector3(-2.5, 1.7, 0)
+size = Vector3(0.3, 3.4, 26)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="MuroDireito" type="CSGBox3D" parent="BecoDasRuas"]
+position = Vector3(2.5, 1.7, 0)
+size = Vector3(0.3, 3.4, 26)
+material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
+
+[node name="Pavimento" type="CSGBox3D" parent="BecoDasRuas"]
+position = Vector3(0, 0.02, 0)
+size = Vector3(4.7, 0.04, 26)
+material = SubResource("Material_horizonte_rua")
