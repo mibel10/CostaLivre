@@ -18607,13 +18607,12 @@ material = SubResource("CadeiaMat_Ferro")
 use_collision = true
 
 [node name="ParqueDoMirante" type="Node3D" parent="."]
-position = Vector3(378, 0, 0)
+position = Vector3(378, -0.115, 0)
 
 [node name="Gramado" type="CSGBox3D" parent="ParqueDoMirante"]
 position = Vector3(0, -0.3, 0)
 size = Vector3(168, 0.66, 70)
 material = SubResource("Material_parque_grama")
-use_collision = true
 
 [node name="PasseioLesteOeste" type="CSGBox3D" parent="ParqueDoMirante"]
 position = Vector3(0, 0.055, 0)

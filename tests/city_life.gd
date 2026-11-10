@@ -70,7 +70,15 @@ func run() -> void:
 	await physics_frame
 	var former_hill := PhysicsRayQueryParameters3D.create(Vector3(378, 16, 25), Vector3(378, -1, 25), 1)
 	var park: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(former_hill)
-	assert(not park.is_empty() and park.collider.name == "Gramado" and park.position.y < 0.2, "The former favela is a flat park")
+	assert(not park.is_empty() and is_equal_approx(park.position.y, -0.1), "The park uses the same solid ground as the streets")
+	var park_car: CharacterBody3D = world.cars[0]
+	var parked_position := park_car.position
+	for side in [-1.0, 1.0]:
+		park_car.position = Vector3(378 + side * 90.0, -0.09, 0)
+		assert(park_car.move_and_collide(Vector3(-side * 14.0, 0, 0), true) == null, "A car can enter the park from either side of the central path")
+		park_car.position = Vector3(378, -0.09, side * 41.0)
+		assert(park_car.move_and_collide(Vector3(0, 0, -side * 14.0), true) == null, "A car can cross the lawn edge from north or south")
+	park_car.position = parked_position
 	for side in [-1, 1]:
 		for sample in 10:
 			var z := 18.2 + sample * 0.55
