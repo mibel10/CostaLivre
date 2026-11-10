@@ -78,7 +78,7 @@ func run() -> void:
 		bought.position = Vector3(0,0.2,-126)
 		world.cars.erase(bought)
 		bought.queue_free()
-	var ledge_car = world.spawn_car(Vector3(1202, 10.05, 32), Color.BLUE, false, 1)
+	var ledge_car = world.spawn_car(Vector3(1175, 7.4, 5), Color.BLUE, false, 1)
 	ledge_car.heading = PI
 	world.active_car = ledge_car
 	ledge_car.driving = true

@@ -48,12 +48,24 @@ func run() -> void:
 	var park: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(former_hill)
 	assert(not park.is_empty() and park.collider.name == "Gramado" and park.position.y < 0.2, "The former favela is a flat park")
 	for side in [-1, 1]:
-		for step in 5:
-			var x := 344.0 + step * 1.2
-			var ground := (x - 294.0) * 10.0 / 56.0 - 0.1
-			var from: Vector3 = Vector3(x, ground + 1, side * 31.0) + world.activities.FAVELA_OFFSET
-			var hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 2, 1))
-			assert(not hit.is_empty() and absf(hit.position.y - ground) < 0.02, "Favela steps must not block the walking ramp")
+		for sample in 10:
+			var z := 18.2 + sample * 0.55
+			var height := lerpf(9.88, 7.68, (z - 18.0) / 5.8)
+			var from := Vector3(1241, height + 0.5, z * side)
+			var hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN, 1))
+			assert(not hit.is_empty() and absf(hit.position.y - height) < 0.04, "Both stepped alleys connect their landings without gaps")
+	world.player.set_physics_process(false)
+	world.player.position = Vector3(1207, 9.91, 13.45)
+	assert(world.player.move_and_collide(Vector3(6, 0, 0), true) != null, "A house annex forces a turn in the alley")
+	world.player.position.z = 14.0
+	assert(world.player.move_and_collide(Vector3(6, 0, 0), true) == null, "The bend leaves room to walk past the house")
+	world.player.position = Vector3(1218, 9.91, 13.45)
+	assert(world.player.move_and_collide(Vector3(6, 0, 0), true) != null, "Standing cannot pass under the low roof")
+	world.player.set_crouched(true)
+	await physics_frame
+	assert(world.player.move_and_collide(Vector3(6, 0, 0), true) == null, "Crouching crosses the alley formed by the houses")
+	world.player.set_crouched(false)
+	world.player.set_physics_process(true)
 	world.player.position = Vector3(23, 0, 32.5)
 	var original_quality: int = world.settings.quality
 	world.settings.quality = 0

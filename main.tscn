@@ -36,19 +36,6 @@ fog_density = 0.0015
 albedo_color = Color(0.49411765, 0.59607846, 0.42352942, 1)
 roughness = 0.85
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_lik5p"]
-_surfaces = [{
-"aabb": AABB(294, -0.1, -35, 168, 10, 70),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 18,
-"vertex_data": PackedByteArray("AACTQ83MzL0AAAzCAACvQ2ZmHkEAAAzCAACTQ83MzL0AAAxCAACvQ2ZmHkEAAAzCAACvQ2ZmHkEAAAxCAACTQ83MzL0AAAxCAACvQ2ZmHkEAAAzCAADLQ2ZmHkEAAAzCAACvQ2ZmHkEAAAxCAADLQ2ZmHkEAAAzCAADLQ2ZmHkEAAAxCAACvQ2ZmHkEAAAxCAADLQ2ZmHkEAAAzCAADnQ83MzL0AAAzCAADLQ2ZmHkEAAAxCAADnQ83MzL0AAAzCAADnQ83MzL0AAAxCAADLQ2ZmHkEAAAxCmmya7EEWjrZxcnHy+A5NuZpsmuxBFo62cXJx8vgOTbngeOD4gwdyvJpsmuxBFo62cXJx8vgOTbkeh+D4gweLw+B44PiDB3K8Hofg+IMHi8ONjXHy+A6wxuB44PiDB3K8Hofg+IMHi8Nkk5rsQRZwyY2NcfL4DrDGZJOa7EEWcMlkk5rsQRZwyY2NcfL4DrDG")
-}]
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fumpn"]
-data = PackedVector3Array(294, -0.099999994, -35, 350, 9.9, -35, 294, -0.099999994, 35, 350, 9.9, -35, 350, 9.9, 35, 294, -0.099999994, 35, 350, 9.9, -35, 406, 9.9, -35, 350, 9.9, 35, 406, 9.9, -35, 406, 9.9, 35, 350, 9.9, 35, 406, 9.9, -35, 462, -0.099999994, -35, 406, 9.9, 35, 462, -0.099999994, -35, 462, -0.099999994, 35, 406, 9.9, 35)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ddevx"]
 albedo_color = Color(0.2901961, 0.3254902, 0.34901962, 1)
 roughness = 0.85
@@ -1759,66 +1746,6 @@ size = Vector3(1126, 1.2, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_u2c16"]
 size = Vector3(1126, 1.2, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_xlvws"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_75ods"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_jsofb"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_dqq1q"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_71i1j"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_c04s1"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_lmfq8"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_t4enp"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_krobn"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_041dl"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_cnrc2"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_iqbm0"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_8kqik"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_6wuh7"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_sjnm4"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_pi38t"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_kksn0"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_new6d"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_u0u7l"]
-size = Vector3(8, 3.2, 8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_k0u11"]
-size = Vector3(8, 3.2, 8)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_elx08"]
 size = Vector3(72, 14, 0.4)
 
@@ -2660,121 +2587,33 @@ buffer = PackedFloat32Array(41.41218, 0, 0, 70.48149, 0, 32.974693, 0, 6, 0, 0, 
 albedo_color = Color(0.85882354, 0.627451, 0.42745098, 1)
 roughness = 0.85
 
-[sub_resource type="BoxMesh" id="BoxMesh_3lqtt"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_ms5vr"]
-transform_format = 1
-instance_count = 5
-mesh = SubResource("BoxMesh_3lqtt")
-buffer = PackedFloat32Array(8, 0, 0, 359, 0, 3.2, 0, 11.5, 0, 0, 8, -13, 8, 0, 0, 397, 0, 3.2, 0, 11.5, 0, 0, 8, -13, 8, 0, 0, 387.5, 0, 3.2, 0, 11.5, 0, 0, 8, -23, 8, 0, 0, 387.5, 0, 3.2, 0, 11.5, 0, 0, 8, 13, 8, 0, 0, 378, 0, 3.2, 0, 11.5, 0, 0, 8, 23)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ehojr"]
 albedo_color = Color(0.60117644, 0.4392157, 0.29921567, 1)
 roughness = 0.85
-
-[sub_resource type="BoxMesh" id="BoxMesh_piqta"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_lr301"]
-transform_format = 1
-instance_count = 5
-mesh = SubResource("BoxMesh_piqta")
-buffer = PackedFloat32Array(8.4, 0, 0, 359, 0, 0.2, 0, 13.15, 0, 0, 8.4, -13, 8.4, 0, 0, 397, 0, 0.2, 0, 13.15, 0, 0, 8.4, -13, 8.4, 0, 0, 387.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, -23, 8.4, 0, 0, 387.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, 13, 8.4, 0, 0, 378, 0, 0.2, 0, 13.15, 0, 0, 8.4, 23)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h0rv7"]
-albedo_color = Color(0.25882354, 0.32941177, 0.3529412, 1)
-roughness = 0.85
-
-[sub_resource type="BoxMesh" id="BoxMesh_nmsu8"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_o36qy"]
-transform_format = 1
-instance_count = 20
-mesh = SubResource("BoxMesh_nmsu8")
-buffer = PackedFloat32Array(1.5, 0, 0, 359, 0, 2.2, 0, 11, 0, 0, 0.06, -8.98, 1.5, 0, 0, 368.5, 0, 2.2, 0, 11, 0, 0, 0.06, -8.98, 1.5, 0, 0, 378, 0, 2.2, 0, 11, 0, 0, 0.06, -8.98, 1.5, 0, 0, 387.5, 0, 2.2, 0, 11, 0, 0, 0.06, -8.98, 1.5, 0, 0, 397, 0, 2.2, 0, 11, 0, 0, 0.06, -8.98, 1.5, 0, 0, 359, 0, 2.2, 0, 11, 0, 0, 0.06, -18.98, 1.5, 0, 0, 368.5, 0, 2.2, 0, 11, 0, 0, 0.06, -18.98, 1.5, 0, 0, 378, 0, 2.2, 0, 11, 0, 0, 0.06, -18.98, 1.5, 0, 0, 387.5, 0, 2.2, 0, 11, 0, 0, 0.06, -18.98, 1.5, 0, 0, 397, 0, 2.2, 0, 11, 0, 0, 0.06, -18.98, 1.5, 0, 0, 359, 0, 2.2, 0, 11, 0, 0, 0.06, 8.98, 1.5, 0, 0, 368.5, 0, 2.2, 0, 11, 0, 0, 0.06, 8.98, 1.5, 0, 0, 378, 0, 2.2, 0, 11, 0, 0, 0.06, 8.98, 1.5, 0, 0, 387.5, 0, 2.2, 0, 11, 0, 0, 0.06, 8.98, 1.5, 0, 0, 397, 0, 2.2, 0, 11, 0, 0, 0.06, 8.98, 1.5, 0, 0, 359, 0, 2.2, 0, 11, 0, 0, 0.06, 18.98, 1.5, 0, 0, 368.5, 0, 2.2, 0, 11, 0, 0, 0.06, 18.98, 1.5, 0, 0, 378, 0, 2.2, 0, 11, 0, 0, 0.06, 18.98, 1.5, 0, 0, 387.5, 0, 2.2, 0, 11, 0, 0, 0.06, 18.98, 1.5, 0, 0, 397, 0, 2.2, 0, 11, 0, 0, 0.06, 18.98)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_87eoy"]
 albedo_color = Color(0.84705883, 0.75686276, 0.56078434, 1)
 roughness = 0.85
 
-[sub_resource type="BoxMesh" id="BoxMesh_w6hjm"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_kg61i"]
-transform_format = 1
-instance_count = 6
-mesh = SubResource("BoxMesh_w6hjm")
-buffer = PackedFloat32Array(8, 0, 0, 368.5, 0, 3.2, 0, 11.5, 0, 0, 8, -13, 8, 0, 0, 359, 0, 3.2, 0, 11.5, 0, 0, 8, -23, 8, 0, 0, 397, 0, 3.2, 0, 11.5, 0, 0, 8, -23, 8, 0, 0, 359, 0, 3.2, 0, 11.5, 0, 0, 8, 13, 8, 0, 0, 397, 0, 3.2, 0, 11.5, 0, 0, 8, 13, 8, 0, 0, 387.5, 0, 3.2, 0, 11.5, 0, 0, 8, 23)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vlm8s"]
 albedo_color = Color(0.59294116, 0.52980393, 0.39254904, 1)
 roughness = 0.85
-
-[sub_resource type="BoxMesh" id="BoxMesh_wliuq"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_exow2"]
-transform_format = 1
-instance_count = 6
-mesh = SubResource("BoxMesh_wliuq")
-buffer = PackedFloat32Array(8.4, 0, 0, 368.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, -13, 8.4, 0, 0, 359, 0, 0.2, 0, 13.15, 0, 0, 8.4, -23, 8.4, 0, 0, 397, 0, 0.2, 0, 13.15, 0, 0, 8.4, -23, 8.4, 0, 0, 359, 0, 0.2, 0, 13.15, 0, 0, 8.4, 13, 8.4, 0, 0, 397, 0, 0.2, 0, 13.15, 0, 0, 8.4, 13, 8.4, 0, 0, 387.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, 23)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_alib7"]
 albedo_color = Color(0.56078434, 0.6862745, 0.654902, 1)
 roughness = 0.85
 
-[sub_resource type="BoxMesh" id="BoxMesh_hmov3"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_7k24r"]
-transform_format = 1
-instance_count = 5
-mesh = SubResource("BoxMesh_hmov3")
-buffer = PackedFloat32Array(8, 0, 0, 378, 0, 3.2, 0, 11.5, 0, 0, 8, -13, 8, 0, 0, 368.5, 0, 3.2, 0, 11.5, 0, 0, 8, -23, 8, 0, 0, 368.5, 0, 3.2, 0, 11.5, 0, 0, 8, 13, 8, 0, 0, 359, 0, 3.2, 0, 11.5, 0, 0, 8, 23, 8, 0, 0, 397, 0, 3.2, 0, 11.5, 0, 0, 8, 23)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gcogi"]
 albedo_color = Color(0.39254904, 0.48039216, 0.4584314, 1)
 roughness = 0.85
-
-[sub_resource type="BoxMesh" id="BoxMesh_7iyjg"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_f63sn"]
-transform_format = 1
-instance_count = 5
-mesh = SubResource("BoxMesh_7iyjg")
-buffer = PackedFloat32Array(8.4, 0, 0, 378, 0, 0.2, 0, 13.15, 0, 0, 8.4, -13, 8.4, 0, 0, 368.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, -23, 8.4, 0, 0, 368.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, 13, 8.4, 0, 0, 359, 0, 0.2, 0, 13.15, 0, 0, 8.4, 23, 8.4, 0, 0, 397, 0, 0.2, 0, 13.15, 0, 0, 8.4, 23)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lu8or"]
 albedo_color = Color(0.78039217, 0.5254902, 0.4509804, 1)
 roughness = 0.85
 
-[sub_resource type="BoxMesh" id="BoxMesh_ucpyw"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_wqs51"]
-transform_format = 1
-instance_count = 4
-mesh = SubResource("BoxMesh_ucpyw")
-buffer = PackedFloat32Array(8, 0, 0, 387.5, 0, 3.2, 0, 11.5, 0, 0, 8, -13, 8, 0, 0, 378, 0, 3.2, 0, 11.5, 0, 0, 8, -23, 8, 0, 0, 378, 0, 3.2, 0, 11.5, 0, 0, 8, 13, 8, 0, 0, 368.5, 0, 3.2, 0, 11.5, 0, 0, 8, 23)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mgf5i"]
 albedo_color = Color(0.5462745, 0.36784315, 0.3156863, 1)
 roughness = 0.85
-
-[sub_resource type="BoxMesh" id="BoxMesh_mgsck"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_uo57d"]
-transform_format = 1
-instance_count = 4
-mesh = SubResource("BoxMesh_mgsck")
-buffer = PackedFloat32Array(8.4, 0, 0, 387.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, -13, 8.4, 0, 0, 378, 0, 0.2, 0, 13.15, 0, 0, 8.4, -23, 8.4, 0, 0, 378, 0, 0.2, 0, 13.15, 0, 0, 8.4, 13, 8.4, 0, 0, 368.5, 0, 0.2, 0, 13.15, 0, 0, 8.4, 23)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dldwe"]
-albedo_color = Color(0.72156864, 0.7058824, 0.63529414, 1)
-roughness = 0.85
-
-[sub_resource type="BoxMesh" id="BoxMesh_drsir"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_yr4d0"]
-transform_format = 1
-instance_count = 10
-mesh = SubResource("BoxMesh_drsir")
-buffer = PackedFloat32Array(1.3, 0, 0, 344, 0, 0.2, 0, 8.928572, 0, 0, 2, -31, 1.3, 0, 0, 345.2, 0, 0.2, 0, 9.142858, 0, 0, 2, -31, 1.3, 0, 0, 346.4, 0, 0.2, 0, 9.357142, 0, 0, 2, -31, 1.3, 0, 0, 347.6, 0, 0.2, 0, 9.571428, 0, 0, 2, -31, 1.3, 0, 0, 348.8, 0, 0.2, 0, 9.785714, 0, 0, 2, -31, 1.3, 0, 0, 344, 0, 0.2, 0, 8.928572, 0, 0, 2, 31, 1.3, 0, 0, 345.2, 0, 0.2, 0, 9.142858, 0, 0, 2, 31, 1.3, 0, 0, 346.4, 0, 0.2, 0, 9.357142, 0, 0, 2, 31, 1.3, 0, 0, 347.6, 0, 0.2, 0, 9.571428, 0, 0, 2, 31, 1.3, 0, 0, 348.8, 0, 0.2, 0, 9.785714, 0, 0, 2, 31)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3o06i"]
 albedo_color = Color(0.72156864, 0.7176471, 0.6784314, 1)
@@ -6617,13 +6456,14 @@ void vertex() {
 }
 void fragment() {
 	float u = abs(n.x) > abs(n.z) ? p.z : p.x;
-	vec2 q = vec2(u / 0.38, p.y / 0.17);
-	if (abs(n.y) > 0.75) { q = p.xz / vec2(0.38, 0.17); }
+	vec2 q = vec2(u / 0.30, p.y / 0.145);
+	if (abs(n.y) > 0.75) { q = p.xz / vec2(0.30, 0.145); }
 	q.x += mod(floor(q.y), 2.0) * 0.5;
 	vec2 edge = abs(fract(q) - 0.5);
 	float joint = max(smoothstep(0.455, 0.49, edge.x), smoothstep(0.434, 0.483, edge.y));
 	float variation = fract(sin(dot(floor(q), vec2(12.9898, 78.233))) * 43758.5453);
-	ALBEDO = mix(mix(vec3(0.38, 0.15, 0.085), vec3(0.65, 0.29, 0.16), variation), vec3(0.49, 0.43, 0.36), joint);
+	float grain = sin(u * 66.0 + sin(p.y * 37.0)) * sin(p.y * 54.0 - u * 41.0) * 0.018;
+	ALBEDO = mix(mix(vec3(0.32, 0.14, 0.085), vec3(0.58, 0.29, 0.17), variation) + grain, vec3(0.40, 0.35, 0.30), joint);
 	ROUGHNESS = 0.92;
 }"
 
@@ -6639,7 +6479,7 @@ code = "shader_type spatial;
 varying vec3 p;
 void vertex() { p = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
 void fragment() {
-	float rib = smoothstep(0.25, 0.9, sin(p.x * 36.0));
+	float rib = mix(smoothstep(0.25, 0.9, sin(p.x * 36.0)), 0.30, smoothstep(0.6, 1.4, fwidth(p.x * 36.0)));
 	float lot = fract(sin(dot(floor((p.xz + vec2(2.5)) * 0.1), vec2(12.9, 78.2))) * 5347.1);
 	ALBEDO = mix(vec3(0.28, 0.30, 0.30), vec3(0.35, 0.24, 0.17), lot * 0.6) + rib * 0.09;
 	ROUGHNESS = 0.84;
@@ -6648,14 +6488,351 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="Material_favela_telha"]
 shader = SubResource("Shader_favela_telha")
 
-[sub_resource type="BoxMesh" id="Mesh_favela_janela"]
-size = Vector3(1.0, 0.66, 0.055)
+[sub_resource type="BoxShape3D" id="Forma_favela_PatamarSul0"]
+size = Vector3(62, 10.13, 9.2)
 
-[sub_resource type="MultiMesh" id="MultiMesh_favela_janela"]
+[sub_resource type="BoxShape3D" id="Forma_favela_PatamarSul1"]
+size = Vector3(70, 7.93, 11)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_PatamarSul2"]
+size = Vector3(80, 5.73, 10)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_PatamarNorte0"]
+size = Vector3(62, 10.13, 9.2)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_PatamarNorte1"]
+size = Vector3(70, 7.93, 11)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_PatamarNorte2"]
+size = Vector3(80, 5.73, 10)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa00"]
+size = Vector3(8.5, 2.62, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa01"]
+size = Vector3(6.4, 3.12, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa02"]
+size = Vector3(7.55, 3.56, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa03"]
+size = Vector3(6.6, 4.85, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa04"]
+size = Vector3(7.9, 2.91, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa05"]
+size = Vector3(6.3, 3.38, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa06"]
+size = Vector3(5.65, 3.12, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa07"]
+size = Vector3(6.4, 3.56, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa08"]
+size = Vector3(7.6, 4.85, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa09"]
+size = Vector3(7.3, 2.91, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa10"]
+size = Vector3(6.75, 3.38, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa11"]
+size = Vector3(7.6, 3.12, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa12"]
+size = Vector3(7.3, 3.56, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa13"]
+size = Vector3(7.5, 4.85, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa14"]
+size = Vector3(7.45, 2.91, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa15"]
+size = Vector3(8.45, 3.38, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa16"]
+size = Vector3(6.8, 2.62, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa17"]
+size = Vector3(5.7, 3.12, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa18"]
+size = Vector3(3.8, 3.56, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa19"]
+size = Vector3(5.8, 2.91, 1.56)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa20"]
+size = Vector3(6.9, 3.38, 1.56)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa21"]
+size = Vector3(5.7, 2.62, 1.56)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa22"]
+size = Vector3(5.4, 3.12, 1.56)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa23"]
+size = Vector3(8.25, 4.85, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa24"]
+size = Vector3(8.2, 2.91, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa25"]
+size = Vector3(7.6, 3.38, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa26"]
+size = Vector3(7.7, 2.62, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa27"]
+size = Vector3(3.6, 3.12, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa28"]
+size = Vector3(8.6, 3.56, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa29"]
+size = Vector3(10.6, 4.85, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa30"]
+size = Vector3(6.4, 2.91, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa31"]
+size = Vector3(7.1, 2.62, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa32"]
+size = Vector3(6.4, 3.12, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa33"]
+size = Vector3(6.8, 3.56, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa34"]
+size = Vector3(8.3, 4.85, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa35"]
+size = Vector3(5.9, 2.91, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa36"]
+size = Vector3(6, 3.38, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa37"]
+size = Vector3(7.5, 3.12, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa38"]
+size = Vector3(6.1, 3.56, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa39"]
+size = Vector3(7.25, 4.85, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa40"]
+size = Vector3(5.6, 2.91, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa41"]
+size = Vector3(7.6, 3.38, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa42"]
+size = Vector3(6, 2.62, 3.25)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa43"]
+size = Vector3(6.1, 3.56, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa44"]
+size = Vector3(6.6, 4.85, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa45"]
+size = Vector3(7, 2.91, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa46"]
+size = Vector3(6.45, 3.38, 3.12)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa47"]
+size = Vector3(7.3, 3.12, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa48"]
+size = Vector3(6.3, 3.56, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa49"]
+size = Vector3(7.2, 4.85, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa50"]
+size = Vector3(7.15, 2.91, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa51"]
+size = Vector3(7.45, 3.38, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa52"]
+size = Vector3(6.5, 2.62, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa53"]
+size = Vector3(5.4, 3.12, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa54"]
+size = Vector3(2.8, 3.56, 4.4)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa55"]
+size = Vector3(4.8, 2.91, 1.56)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa56"]
+size = Vector3(6.6, 3.38, 1.56)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa57"]
+size = Vector3(4.4, 2.62, 1.56)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa58"]
+size = Vector3(7.95, 3.56, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa59"]
+size = Vector3(7.9, 4.85, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa60"]
+size = Vector3(6.6, 2.91, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa61"]
+size = Vector3(7.4, 3.38, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa62"]
+size = Vector3(3.3, 2.62, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa63"]
+size = Vector3(7.6, 3.12, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa64"]
+size = Vector3(10.3, 3.56, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa65"]
+size = Vector3(6.1, 4.85, 4.45)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa66"]
+size = Vector3(6.8, 3.38, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa67"]
+size = Vector3(5.4, 2.62, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa68"]
+size = Vector3(6.5, 3.12, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa69"]
+size = Vector3(8, 3.56, 2.43)
+
+[sub_resource type="BoxShape3D" id="Forma_favela_Casa70"]
+size = Vector3(5.7, 4.85, 2.43)
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_Patamar"]
+albedo_color = Color(0.31, 0.29, 0.25, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_Degrau"]
+albedo_color = Color(0.43, 0.4, 0.35, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_Reboco"]
+albedo_color = Color(0.63, 0.52, 0.38, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_RebocoVerde"]
+albedo_color = Color(0.32, 0.44, 0.41, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_PortaAzul"]
+albedo_color = Color(0.15, 0.3, 0.39, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_PortaMadeira"]
+albedo_color = Color(0.36, 0.24, 0.15, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_Janela"]
+albedo_color = Color(0.11, 0.15, 0.17, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_Moldura"]
+albedo_color = Color(0.39, 0.35, 0.27, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_Chapa"]
+albedo_color = Color(0.34, 0.38, 0.39, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="Material_vielas_Fio"]
+albedo_color = Color(0.12, 0.13, 0.14, 1)
+roughness = 0.88
+
+[sub_resource type="BoxMesh" id="Mesh_vielas_unidade"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Patamar"]
 transform_format = 1
-mesh = SubResource("Mesh_favela_janela")
-instance_count = 20
-buffer = PackedFloat32Array(1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, 27.045)
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 6
+buffer = PackedFloat32Array(62, 0, 0, 1220, 0, 10.13, 0, 4.815, 0, 0, 9.2, 13.4, 70, 0, 0, 1219, 0, 7.93, 0, 3.715, 0, 0, 11, 23.5, 80, 0, 0, 1218, 0, 5.73, 0, 2.615, 0, 0, 10, 34, 62, 0, 0, 1218, 0, 10.13, 0, 4.815, 0, 0, 9.2, -13.4, 70, 0, 0, 1217, 0, 7.93, 0, 3.715, 0, 0, 11, -23.5, 80, 0, 0, 1216, 0, 5.73, 0, 2.615, 0, 0, 10, -34)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Degrau"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 168
+buffer = PackedFloat32Array(2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.74238, 0, 0, 0.42815, 18.22308, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.57315, 0, 0, 0.42815, 18.66923, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.40392, 0, 0, 0.42815, 19.11538, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.23469, 0, 0, 0.42815, 19.56154, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.06546, 0, 0, 0.42815, 20.00769, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.89623, 0, 0, 0.42815, 20.45385, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.727, 0, 0, 0.42815, 20.9, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.55777, 0, 0, 0.42815, 21.34615, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.38854, 0, 0, 0.42815, 21.79231, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.21931, 0, 0, 0.42815, 22.23846, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.05008, 0, 0, 0.42815, 22.68462, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 7.88085, 0, 0, 0.42815, 23.13077, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 7.71162, 0, 0, 0.42815, 23.57692, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.74238, 0, 0, 0.42815, 18.22308, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.57315, 0, 0, 0.42815, 18.66923, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.40392, 0, 0, 0.42815, 19.11538, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.23469, 0, 0, 0.42815, 19.56154, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.06546, 0, 0, 0.42815, 20.00769, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.89623, 0, 0, 0.42815, 20.45385, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.727, 0, 0, 0.42815, 20.9, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.55777, 0, 0, 0.42815, 21.34615, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.38854, 0, 0, 0.42815, 21.79231, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.21931, 0, 0, 0.42815, 22.23846, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.05008, 0, 0, 0.42815, 22.68462, 2.66, 0, 0, 1241, 0, 0.13, 0, 7.88085, 0, 0, 0.42815, 23.13077, 2.66, 0, 0, 1241, 0, 0.13, 0, 7.71162, 0, 0, 0.42815, 23.57692, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.54238, 0, 0, 0.36662, 29.19231, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.37315, 0, 0, 0.36662, 29.57692, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.20392, 0, 0, 0.36662, 29.96154, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.03469, 0, 0, 0.36662, 30.34615, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.86546, 0, 0, 0.36662, 30.73077, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.69623, 0, 0, 0.36662, 31.11538, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.527, 0, 0, 0.36662, 31.5, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.35777, 0, 0, 0.36662, 31.88462, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.18854, 0, 0, 0.36662, 32.26923, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.01931, 0, 0, 0.36662, 32.65385, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 5.85008, 0, 0, 0.36662, 33.03846, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 5.68085, 0, 0, 0.36662, 33.42308, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 5.51162, 0, 0, 0.36662, 33.80769, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.54238, 0, 0, 0.36662, 29.19231, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.37315, 0, 0, 0.36662, 29.57692, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.20392, 0, 0, 0.36662, 29.96154, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.03469, 0, 0, 0.36662, 30.34615, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.86546, 0, 0, 0.36662, 30.73077, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.69623, 0, 0, 0.36662, 31.11538, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.527, 0, 0, 0.36662, 31.5, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.35777, 0, 0, 0.36662, 31.88462, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.18854, 0, 0, 0.36662, 32.26923, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.01931, 0, 0, 0.36662, 32.65385, 2.46, 0, 0, 1249, 0, 0.13, 0, 5.85008, 0, 0, 0.36662, 33.03846, 2.46, 0, 0, 1249, 0, 0.13, 0, 5.68085, 0, 0, 0.36662, 33.42308, 2.46, 0, 0, 1249, 0, 0.13, 0, 5.51162, 0, 0, 0.36662, 33.80769, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 5.342, 0, 0, 0.357, 39.1875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 5.172, 0, 0, 0.357, 39.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 5.002, 0, 0, 0.357, 39.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.832, 0, 0, 0.357, 40.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.662, 0, 0, 0.357, 40.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.492, 0, 0, 0.357, 41.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.322, 0, 0, 0.357, 41.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.152, 0, 0, 0.357, 41.8125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.982, 0, 0, 0.357, 42.1875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.812, 0, 0, 0.357, 42.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.642, 0, 0, 0.357, 42.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.472, 0, 0, 0.357, 43.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.302, 0, 0, 0.357, 43.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.132, 0, 0, 0.357, 44.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.962, 0, 0, 0.357, 44.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.792, 0, 0, 0.357, 44.8125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.622, 0, 0, 0.357, 45.1875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.452, 0, 0, 0.357, 45.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.282, 0, 0, 0.357, 45.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.112, 0, 0, 0.357, 46.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.942, 0, 0, 0.357, 46.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.772, 0, 0, 0.357, 47.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.602, 0, 0, 0.357, 47.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.432, 0, 0, 0.357, 47.8125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.262, 0, 0, 0.357, 48.1875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.092, 0, 0, 0.357, 48.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.922, 0, 0, 0.357, 48.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.752, 0, 0, 0.357, 49.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.582, 0, 0, 0.357, 49.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.412, 0, 0, 0.357, 50.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.242, 0, 0, 0.357, 50.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.072, 0, 0, 0.357, 50.8125, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 7.71162, 0, 0, 0.42815, -23.57692, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 7.88085, 0, 0, 0.42815, -23.13077, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.05008, 0, 0, 0.42815, -22.68462, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.21931, 0, 0, 0.42815, -22.23846, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.38854, 0, 0, 0.42815, -21.79231, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.55777, 0, 0, 0.42815, -21.34615, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.727, 0, 0, 0.42815, -20.9, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 8.89623, 0, 0, 0.42815, -20.45385, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.06546, 0, 0, 0.42815, -20.00769, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.23469, 0, 0, 0.42815, -19.56154, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.40392, 0, 0, 0.42815, -19.11538, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.57315, 0, 0, 0.42815, -18.66923, 2.66, 0, 0, 1202.5, 0, 0.13, 0, 9.74238, 0, 0, 0.42815, -18.22308, 2.66, 0, 0, 1241, 0, 0.13, 0, 7.71162, 0, 0, 0.42815, -23.57692, 2.66, 0, 0, 1241, 0, 0.13, 0, 7.88085, 0, 0, 0.42815, -23.13077, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.05008, 0, 0, 0.42815, -22.68462, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.21931, 0, 0, 0.42815, -22.23846, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.38854, 0, 0, 0.42815, -21.79231, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.55777, 0, 0, 0.42815, -21.34615, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.727, 0, 0, 0.42815, -20.9, 2.66, 0, 0, 1241, 0, 0.13, 0, 8.89623, 0, 0, 0.42815, -20.45385, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.06546, 0, 0, 0.42815, -20.00769, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.23469, 0, 0, 0.42815, -19.56154, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.40392, 0, 0, 0.42815, -19.11538, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.57315, 0, 0, 0.42815, -18.66923, 2.66, 0, 0, 1241, 0, 0.13, 0, 9.74238, 0, 0, 0.42815, -18.22308, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 5.51162, 0, 0, 0.36662, -33.80769, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 5.68085, 0, 0, 0.36662, -33.42308, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 5.85008, 0, 0, 0.36662, -33.03846, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.01931, 0, 0, 0.36662, -32.65385, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.18854, 0, 0, 0.36662, -32.26923, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.35777, 0, 0, 0.36662, -31.88462, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.527, 0, 0, 0.36662, -31.5, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.69623, 0, 0, 0.36662, -31.11538, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 6.86546, 0, 0, 0.36662, -30.73077, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.03469, 0, 0, 0.36662, -30.34615, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.20392, 0, 0, 0.36662, -29.96154, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.37315, 0, 0, 0.36662, -29.57692, 2.46, 0, 0, 1216.5, 0, 0.13, 0, 7.54238, 0, 0, 0.36662, -29.19231, 2.46, 0, 0, 1249, 0, 0.13, 0, 5.51162, 0, 0, 0.36662, -33.80769, 2.46, 0, 0, 1249, 0, 0.13, 0, 5.68085, 0, 0, 0.36662, -33.42308, 2.46, 0, 0, 1249, 0, 0.13, 0, 5.85008, 0, 0, 0.36662, -33.03846, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.01931, 0, 0, 0.36662, -32.65385, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.18854, 0, 0, 0.36662, -32.26923, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.35777, 0, 0, 0.36662, -31.88462, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.527, 0, 0, 0.36662, -31.5, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.69623, 0, 0, 0.36662, -31.11538, 2.46, 0, 0, 1249, 0, 0.13, 0, 6.86546, 0, 0, 0.36662, -30.73077, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.03469, 0, 0, 0.36662, -30.34615, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.20392, 0, 0, 0.36662, -29.96154, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.37315, 0, 0, 0.36662, -29.57692, 2.46, 0, 0, 1249, 0, 0.13, 0, 7.54238, 0, 0, 0.36662, -29.19231, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.072, 0, 0, 0.357, -50.8125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.242, 0, 0, 0.357, -50.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.412, 0, 0, 0.357, -50.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.582, 0, 0, 0.357, -49.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.752, 0, 0, 0.357, -49.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 0.922, 0, 0, 0.357, -48.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.092, 0, 0, 0.357, -48.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.262, 0, 0, 0.357, -48.1875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.432, 0, 0, 0.357, -47.8125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.602, 0, 0, 0.357, -47.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.772, 0, 0, 0.357, -47.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 1.942, 0, 0, 0.357, -46.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.112, 0, 0, 0.357, -46.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.282, 0, 0, 0.357, -45.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.452, 0, 0, 0.357, -45.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.622, 0, 0, 0.357, -45.1875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.792, 0, 0, 0.357, -44.8125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 2.962, 0, 0, 0.357, -44.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.132, 0, 0, 0.357, -44.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.302, 0, 0, 0.357, -43.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.472, 0, 0, 0.357, -43.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.642, 0, 0, 0.357, -42.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.812, 0, 0, 0.357, -42.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 3.982, 0, 0, 0.357, -42.1875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.152, 0, 0, 0.357, -41.8125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.322, 0, 0, 0.357, -41.4375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.492, 0, 0, 0.357, -41.0625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.662, 0, 0, 0.357, -40.6875, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 4.832, 0, 0, 0.357, -40.3125, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 5.002, 0, 0, 0.357, -39.9375, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 5.172, 0, 0, 0.357, -39.5625, 2.81, 0, 0, 1223.8, 0, 0.13, 0, 5.342, 0, 0, 0.357, -39.1875)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Fio"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 6
+buffer = PackedFloat32Array(0.035, 0, 0, 1212.1, 0, 0.04, 0, 13.2, 0, 0, 6, 13.5, 0.035, 0, 0, 1228.35, 0, 0.04, 0, 13.2, 0, 0, 6, 13.5, 0.035, 0, 0, 1243, 0, 0.04, 0, 13.2, 0, 0, 6, 14, 0.035, 0, 0, 1212.1, 0, 0.04, 0, 13.2, 0, 0, 6, -13.5, 0.035, 0, 0, 1228.35, 0, 0.04, 0, 13.2, 0, 0, 6, -13.5, 0.035, 0, 0, 1243, 0, 0.04, 0, 13.2, 0, 0, 6, -14)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Tijolo"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 46
+buffer = PackedFloat32Array(8.5, 0, 0, 1194.25, 0, 2.62, 0, 11.19, 0, 0, 3.25, 10.625, 6.4, 0, 0, 1209.2, 0, 3.12, 0, 11.44, 0, 0, 3.25, 10.625, 6.6, 0, 0, 1224.4, 0, 4.85, 0, 12.305, 0, 0, 3.25, 10.625, 6.3, 0, 0, 1246.65, 0, 3.38, 0, 11.57, 0, 0, 3.25, 10.625, 5.65, 0, 0, 1209.025, 0, 3.12, 0, 11.44, 0, 0, 3.12, 16.26, 7.6, 0, 0, 1223.85, 0, 4.85, 0, 12.305, 0, 0, 3.12, 16.26, 6.75, 0, 0, 1246.975, 0, 3.38, 0, 11.57, 0, 0, 3.12, 16.26, 7.6, 0, 0, 1188.8, 0, 3.12, 0, 9.24, 0, 0, 4.4, 22.35, 7.5, 0, 0, 1208.95, 0, 4.85, 0, 10.105, 0, 0, 4.4, 22.35, 8.45, 0, 0, 1226.275, 0, 3.38, 0, 9.37, 0, 0, 4.4, 22.35, 6.8, 0, 0, 1235, 0, 2.62, 0, 8.99, 0, 0, 4.4, 22.35, 5.7, 0, 0, 1246.25, 0, 3.12, 0, 9.24, 0, 0, 4.4, 22.35, 6.9, 0, 0, 1210.45, 0, 3.38, 0, 9.37, 0, 0, 1.56, 28.06, 5.7, 0, 0, 1224.85, 0, 2.62, 0, 8.99, 0, 0, 1.56, 28.06, 5.4, 0, 0, 1232.7, 0, 3.12, 0, 9.24, 0, 0, 1.56, 28.06, 8.25, 0, 0, 1183.125, 0, 4.85, 0, 7.905, 0, 0, 4.45, 32.425, 7.6, 0, 0, 1200.8, 0, 3.38, 0, 7.17, 0, 0, 4.45, 32.425, 7.7, 0, 0, 1209.05, 0, 2.62, 0, 6.79, 0, 0, 4.45, 32.425, 3.6, 0, 0, 1220.1, 0, 3.12, 0, 7.04, 0, 0, 4.45, 32.425, 10.6, 0, 0, 1240.6, 0, 4.85, 0, 7.905, 0, 0, 4.45, 32.425, 7.1, 0, 0, 1188.55, 0, 2.62, 0, 6.79, 0, 0, 2.43, 37.535, 6.4, 0, 0, 1197.2, 0, 3.12, 0, 7.04, 0, 0, 2.43, 37.535, 8.3, 0, 0, 1234.15, 0, 4.85, 0, 7.905, 0, 0, 2.43, 37.535, 6, 0, 0, 1252, 0, 3.38, 0, 7.17, 0, 0, 2.43, 37.535, 7.5, 0, 0, 1194.25, 0, 3.12, 0, 11.44, 0, 0, 3.25, -10.625, 7.25, 0, 0, 1216.825, 0, 4.85, 0, 12.305, 0, 0, 3.25, -10.625, 7.6, 0, 0, 1232.75, 0, 3.38, 0, 11.57, 0, 0, 3.25, -10.625, 6, 0, 0, 1246.65, 0, 2.62, 0, 11.19, 0, 0, 3.25, -10.625, 6.6, 0, 0, 1223.85, 0, 4.85, 0, 12.305, 0, 0, 3.12, -16.26, 6.45, 0, 0, 1246.975, 0, 3.38, 0, 11.57, 0, 0, 3.12, -16.26, 7.3, 0, 0, 1188.8, 0, 3.12, 0, 9.24, 0, 0, 4.4, -22.35, 7.2, 0, 0, 1208.95, 0, 4.85, 0, 10.105, 0, 0, 4.4, -22.35, 7.45, 0, 0, 1226.275, 0, 3.38, 0, 9.37, 0, 0, 4.4, -22.35, 6.5, 0, 0, 1235, 0, 2.62, 0, 8.99, 0, 0, 4.4, -22.35, 5.4, 0, 0, 1246.25, 0, 3.12, 0, 9.24, 0, 0, 4.4, -22.35, 6.6, 0, 0, 1210.45, 0, 3.38, 0, 9.37, 0, 0, 1.56, -28.06, 4.4, 0, 0, 1232.7, 0, 2.62, 0, 8.99, 0, 0, 1.56, -28.06, 7.9, 0, 0, 1192.3, 0, 4.85, 0, 7.905, 0, 0, 4.45, -32.425, 7.4, 0, 0, 1209.05, 0, 3.38, 0, 7.17, 0, 0, 4.45, -32.425, 3.3, 0, 0, 1220.1, 0, 2.62, 0, 6.79, 0, 0, 4.45, -32.425, 7.6, 0, 0, 1230, 0, 3.12, 0, 7.04, 0, 0, 4.45, -32.425, 6.1, 0, 0, 1254.2, 0, 4.85, 0, 7.905, 0, 0, 4.45, -32.425, 6.8, 0, 0, 1188.55, 0, 3.38, 0, 7.17, 0, 0, 2.43, -37.535, 5.4, 0, 0, 1197.2, 0, 2.62, 0, 6.79, 0, 0, 2.43, -37.535, 6.5, 0, 0, 1206.4, 0, 3.12, 0, 7.04, 0, 0, 2.43, -37.535, 5.7, 0, 0, 1252, 0, 4.85, 0, 7.905, 0, 0, 2.43, -37.535)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Telha"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 71
+buffer = PackedFloat32Array(8.77, 0, 0, 1194.33, 0, 0.15, 0, 12.57, 0, 0, 3.5, 10.625, 6.67, 0, 0, 1209.28, 0, 0.15, 0, 13.07, 0, 0, 3.5, 10.625, 7.82, 0, 0, 1216.905, 0, 0.15, 0, 13.51, 0, 0, 3.5, 10.625, 6.87, 0, 0, 1224.48, 0, 0.15, 0, 14.8, 0, 0, 3.5, 10.625, 8.17, 0, 0, 1232.83, 0, 0.15, 0, 12.86, 0, 0, 3.5, 10.625, 6.57, 0, 0, 1246.73, 0, 0.15, 0, 13.33, 0, 0, 3.5, 10.625, 5.92, 0, 0, 1209.105, 0, 0.15, 0, 13.07, 0, 0, 3.37, 16.26, 6.67, 0, 0, 1216.38, 0, 0.15, 0, 13.51, 0, 0, 3.37, 16.26, 7.87, 0, 0, 1223.93, 0, 0.15, 0, 14.8, 0, 0, 3.37, 16.26, 7.57, 0, 0, 1232.13, 0, 0.15, 0, 12.86, 0, 0, 3.37, 16.26, 7.02, 0, 0, 1247.055, 0, 0.15, 0, 13.33, 0, 0, 3.37, 16.26, 7.87, 0, 0, 1188.88, 0, 0.15, 0, 10.87, 0, 0, 4.65, 22.35, 7.57, 0, 0, 1196.88, 0, 0.15, 0, 11.31, 0, 0, 4.65, 22.35, 7.77, 0, 0, 1209.03, 0, 0.15, 0, 12.6, 0, 0, 4.65, 22.35, 7.72, 0, 0, 1217.255, 0, 0.15, 0, 10.66, 0, 0, 4.65, 22.35, 8.72, 0, 0, 1226.355, 0, 0.15, 0, 11.13, 0, 0, 4.65, 22.35, 7.07, 0, 0, 1235.08, 0, 0.15, 0, 10.37, 0, 0, 4.65, 22.35, 5.97, 0, 0, 1246.33, 0, 0.15, 0, 10.87, 0, 0, 4.65, 22.35, 4.07, 0, 0, 1251.98, 0, 0.15, 0, 11.31, 0, 0, 4.65, 22.35, 6.07, 0, 0, 1193.98, 0, 0.15, 0, 10.66, 0, 0, 1.81, 28.06, 7.17, 0, 0, 1210.53, 0, 0.15, 0, 11.13, 0, 0, 1.81, 28.06, 5.97, 0, 0, 1224.93, 0, 0.15, 0, 10.37, 0, 0, 1.81, 28.06, 5.67, 0, 0, 1232.78, 0, 0.15, 0, 10.87, 0, 0, 1.81, 28.06, 8.52, 0, 0, 1183.205, 0, 0.15, 0, 10.4, 0, 0, 4.7, 32.425, 8.47, 0, 0, 1192.38, 0, 0.15, 0, 8.46, 0, 0, 4.7, 32.425, 7.87, 0, 0, 1200.88, 0, 0.15, 0, 8.93, 0, 0, 4.7, 32.425, 7.97, 0, 0, 1209.13, 0, 0.15, 0, 8.17, 0, 0, 4.7, 32.425, 3.87, 0, 0, 1220.18, 0, 0.15, 0, 8.67, 0, 0, 4.7, 32.425, 8.87, 0, 0, 1230.08, 0, 0.15, 0, 9.11, 0, 0, 4.7, 32.425, 10.87, 0, 0, 1240.68, 0, 0.15, 0, 10.4, 0, 0, 4.7, 32.425, 6.67, 0, 0, 1254.28, 0, 0.15, 0, 8.46, 0, 0, 4.7, 32.425, 7.37, 0, 0, 1188.63, 0, 0.15, 0, 8.17, 0, 0, 2.68, 37.535, 6.67, 0, 0, 1197.28, 0, 0.15, 0, 8.67, 0, 0, 2.68, 37.535, 7.07, 0, 0, 1206.48, 0, 0.15, 0, 9.11, 0, 0, 2.68, 37.535, 8.57, 0, 0, 1234.23, 0, 0.15, 0, 10.4, 0, 0, 2.68, 37.535, 6.17, 0, 0, 1243.03, 0, 0.15, 0, 8.46, 0, 0, 2.68, 37.535, 6.27, 0, 0, 1252.08, 0, 0.15, 0, 8.93, 0, 0, 2.68, 37.535, 7.77, 0, 0, 1194.33, 0, 0.15, 0, 13.07, 0, 0, 3.5, -10.625, 6.37, 0, 0, 1209.28, 0, 0.15, 0, 13.51, 0, 0, 3.5, -10.625, 7.52, 0, 0, 1216.905, 0, 0.15, 0, 14.8, 0, 0, 3.5, -10.625, 5.87, 0, 0, 1224.48, 0, 0.15, 0, 12.86, 0, 0, 3.5, -10.625, 7.87, 0, 0, 1232.83, 0, 0.15, 0, 13.33, 0, 0, 3.5, -10.625, 6.27, 0, 0, 1246.73, 0, 0.15, 0, 12.57, 0, 0, 3.5, -10.625, 6.37, 0, 0, 1216.38, 0, 0.15, 0, 13.51, 0, 0, 3.37, -16.26, 6.87, 0, 0, 1223.93, 0, 0.15, 0, 14.8, 0, 0, 3.37, -16.26, 7.27, 0, 0, 1232.13, 0, 0.15, 0, 12.86, 0, 0, 3.37, -16.26, 6.72, 0, 0, 1247.055, 0, 0.15, 0, 13.33, 0, 0, 3.37, -16.26, 7.57, 0, 0, 1188.88, 0, 0.15, 0, 10.87, 0, 0, 4.65, -22.35, 6.57, 0, 0, 1196.88, 0, 0.15, 0, 11.31, 0, 0, 4.65, -22.35, 7.47, 0, 0, 1209.03, 0, 0.15, 0, 12.6, 0, 0, 4.65, -22.35, 7.42, 0, 0, 1217.255, 0, 0.15, 0, 10.66, 0, 0, 4.65, -22.35, 7.72, 0, 0, 1226.355, 0, 0.15, 0, 11.13, 0, 0, 4.65, -22.35, 6.77, 0, 0, 1235.08, 0, 0.15, 0, 10.37, 0, 0, 4.65, -22.35, 5.67, 0, 0, 1246.33, 0, 0.15, 0, 10.87, 0, 0, 4.65, -22.35, 3.07, 0, 0, 1251.98, 0, 0.15, 0, 11.31, 0, 0, 4.65, -22.35, 5.07, 0, 0, 1193.98, 0, 0.15, 0, 10.66, 0, 0, 1.81, -28.06, 6.87, 0, 0, 1210.53, 0, 0.15, 0, 11.13, 0, 0, 1.81, -28.06, 4.67, 0, 0, 1232.78, 0, 0.15, 0, 10.37, 0, 0, 1.81, -28.06, 8.22, 0, 0, 1183.205, 0, 0.15, 0, 9.11, 0, 0, 4.7, -32.425, 8.17, 0, 0, 1192.38, 0, 0.15, 0, 10.4, 0, 0, 4.7, -32.425, 6.87, 0, 0, 1200.88, 0, 0.15, 0, 8.46, 0, 0, 4.7, -32.425, 7.67, 0, 0, 1209.13, 0, 0.15, 0, 8.93, 0, 0, 4.7, -32.425, 3.57, 0, 0, 1220.18, 0, 0.15, 0, 8.17, 0, 0, 4.7, -32.425, 7.87, 0, 0, 1230.08, 0, 0.15, 0, 8.67, 0, 0, 4.7, -32.425, 10.57, 0, 0, 1240.68, 0, 0.15, 0, 9.11, 0, 0, 4.7, -32.425, 6.37, 0, 0, 1254.28, 0, 0.15, 0, 10.4, 0, 0, 4.7, -32.425, 7.07, 0, 0, 1188.63, 0, 0.15, 0, 8.93, 0, 0, 2.68, -37.535, 5.67, 0, 0, 1197.28, 0, 0.15, 0, 8.17, 0, 0, 2.68, -37.535, 6.77, 0, 0, 1206.48, 0, 0.15, 0, 8.67, 0, 0, 2.68, -37.535, 8.27, 0, 0, 1234.23, 0, 0.15, 0, 9.11, 0, 0, 2.68, -37.535, 5.97, 0, 0, 1252.08, 0, 0.15, 0, 10.4, 0, 0, 2.68, -37.535)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_PortaMadeira"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 26
+buffer = PackedFloat32Array(0.82, 0, 0, 1192.55, 0, 1.96, 0, 10.86, 0, 0, 0.065, 12.283, 0.82, 0, 0, 1223.08, 0, 1.96, 0, 10.86, 0, 0, 0.065, 12.283, 0.82, 0, 0, 1222.33, 0, 1.96, 0, 10.86, 0, 0, 0.065, 17.853, 0.82, 0, 0, 1207.45, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1233.64, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1223.71, 0, 1.96, 0, 8.66, 0, 0, 0.065, 28.873, 0.82, 0, 0, 1181.475, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1207.51, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1238.48, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1187.13, 0, 1.96, 0, 6.46, 0, 0, 0.065, 38.783, 0.82, 0, 0, 1232.49, 0, 1.96, 0, 6.46, 0, 0, 0.065, 38.783, 0.82, 0, 0, 1215.375, 0, 1.96, 0, 10.86, 0, 0, 0.065, -12.283, 0.82, 0, 0, 1245.45, 0, 1.96, 0, 10.86, 0, 0, 0.065, -12.283, 0.82, 0, 0, 1222.53, 0, 1.96, 0, 10.86, 0, 0, 0.065, -17.853, 0.82, 0, 0, 1207.51, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1233.7, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1231.82, 0, 1.96, 0, 8.66, 0, 0, 0.065, -28.873, 0.82, 0, 0, 1190.72, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1219.44, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1252.98, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1196.12, 0, 1.96, 0, 6.46, 0, 0, 0.065, -38.783, 0.82, 0, 0, 1250.86, 0, 1.96, 0, 6.46, 0, 0, 0.065, -38.783, 0.82, 0, 0, 1222.33, 0, 1.96, 0, 10.86, 0, 0, 0.065, 14.66700, 0.82, 0, 0, 1223.71, 0, 1.96, 0, 8.66, 0, 0, 0.065, 27.24700, 0.82, 0, 0, 1222.53, 0, 1.96, 0, 10.86, 0, 0, 0.065, -14.66700, 0.82, 0, 0, 1231.82, 0, 1.96, 0, 8.66, 0, 0, 0.065, -27.24700)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Janela"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 116
+buffer = PackedFloat32Array(0.85, 0, 0, 1195.95, 0, 0.58, 0, 11.42, 0, 0, 0.061, 12.283, 0.85, 0, 0, 1210.48, 0, 0.58, 0, 11.42, 0, 0, 0.061, 12.283, 0.85, 0, 0, 1218.335, 0, 0.58, 0, 11.42, 0, 0, 0.061, 12.283, 0.8, 0, 0, 1216.825, 0, 0.57, 0, 12.56, 0, 0, 0.062, 12.283, 0.85, 0, 0, 1225.72, 0, 0.58, 0, 11.42, 0, 0, 0.061, 12.283, 0.8, 0, 0, 1224.4, 0, 0.57, 0, 13.85, 0, 0, 0.062, 12.283, 0.85, 0, 0, 1234.33, 0, 0.58, 0, 11.42, 0, 0, 0.061, 12.283, 0.85, 0, 0, 1247.91, 0, 0.58, 0, 11.42, 0, 0, 0.061, 12.283, 0.85, 0, 0, 1210.155, 0, 0.58, 0, 11.42, 0, 0, 0.061, 17.853, 0.85, 0, 0, 1217.58, 0, 0.58, 0, 11.42, 0, 0, 0.061, 17.853, 0.8, 0, 0, 1216.3, 0, 0.57, 0, 12.56, 0, 0, 0.062, 17.853, 0.85, 0, 0, 1225.37, 0, 0.58, 0, 11.42, 0, 0, 0.061, 17.853, 0.8, 0, 0, 1223.85, 0, 0.57, 0, 13.85, 0, 0, 0.062, 17.853, 0.85, 0, 0, 1233.51, 0, 0.58, 0, 11.42, 0, 0, 0.061, 17.853, 0.85, 0, 0, 1248.325, 0, 0.58, 0, 11.42, 0, 0, 0.061, 17.853, 0.85, 0, 0, 1190.32, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.85, 0, 0, 1198.26, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.8, 0, 0, 1196.8, 0, 0.57, 0, 10.36, 0, 0, 0.062, 24.583, 0.85, 0, 0, 1210.45, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.8, 0, 0, 1208.95, 0, 0.57, 0, 11.65, 0, 0, 0.062, 24.583, 0.85, 0, 0, 1218.665, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.85, 0, 0, 1227.965, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.85, 0, 0, 1236.36, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.85, 0, 0, 1247.39, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.85, 0, 0, 1252.66, 0, 0.58, 0, 9.22, 0, 0, 0.061, 24.583, 0.8, 0, 0, 1251.9, 0, 0.57, 0, 10.36, 0, 0, 0.062, 24.583, 0.85, 0, 0, 1195.06, 0, 0.58, 0, 9.22, 0, 0, 0.061, 28.873, 0.85, 0, 0, 1211.83, 0, 0.58, 0, 9.22, 0, 0, 0.061, 28.873, 0.85, 0, 0, 1225.99, 0, 0.58, 0, 9.22, 0, 0, 0.061, 28.873, 0.85, 0, 0, 1233.78, 0, 0.58, 0, 9.22, 0, 0, 0.061, 28.873, 0.85, 0, 0, 1184.775, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.8, 0, 0, 1183.125, 0, 0.57, 0, 9.45, 0, 0, 0.062, 34.683, 0.85, 0, 0, 1193.94, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.85, 0, 0, 1202.32, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.85, 0, 0, 1210.59, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.85, 0, 0, 1220.82, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.85, 0, 0, 1231.72, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.8, 0, 0, 1230, 0, 0.57, 0, 8.16, 0, 0, 0.062, 34.683, 0.85, 0, 0, 1242.72, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.8, 0, 0, 1240.6, 0, 0.57, 0, 9.45, 0, 0, 0.062, 34.683, 0.85, 0, 0, 1255.48, 0, 0.58, 0, 7.02, 0, 0, 0.061, 34.683, 0.85, 0, 0, 1189.97, 0, 0.58, 0, 7.02, 0, 0, 0.061, 38.783, 0.85, 0, 0, 1198.48, 0, 0.58, 0, 7.02, 0, 0, 0.061, 38.783, 0.85, 0, 0, 1207.76, 0, 0.58, 0, 7.02, 0, 0, 0.061, 38.783, 0.8, 0, 0, 1206.4, 0, 0.57, 0, 8.16, 0, 0, 0.062, 38.783, 0.85, 0, 0, 1235.81, 0, 0.58, 0, 7.02, 0, 0, 0.061, 38.783, 0.8, 0, 0, 1234.15, 0, 0.57, 0, 9.45, 0, 0, 0.062, 38.783, 0.85, 0, 0, 1244.13, 0, 0.58, 0, 7.02, 0, 0, 0.061, 38.783, 0.85, 0, 0, 1253.2, 0, 0.58, 0, 7.02, 0, 0, 0.061, 38.783, 0.85, 0, 0, 1195.75, 0, 0.58, 0, 11.42, 0, 0, 0.061, -12.283, 0.85, 0, 0, 1210.42, 0, 0.58, 0, 11.42, 0, 0, 0.061, -12.283, 0.8, 0, 0, 1209.2, 0, 0.57, 0, 12.56, 0, 0, 0.062, -12.283, 0.85, 0, 0, 1218.275, 0, 0.58, 0, 11.42, 0, 0, 0.061, -12.283, 0.8, 0, 0, 1216.825, 0, 0.57, 0, 13.85, 0, 0, 0.062, -12.283, 0.85, 0, 0, 1225.52, 0, 0.58, 0, 11.42, 0, 0, 0.061, -12.283, 0.85, 0, 0, 1234.27, 0, 0.58, 0, 11.42, 0, 0, 0.061, -12.283, 0.85, 0, 0, 1247.85, 0, 0.58, 0, 11.42, 0, 0, 0.061, -12.283, 0.85, 0, 0, 1217.52, 0, 0.58, 0, 11.42, 0, 0, 0.061, -17.853, 0.8, 0, 0, 1216.3, 0, 0.57, 0, 12.56, 0, 0, 0.062, -17.853, 0.85, 0, 0, 1225.17, 0, 0.58, 0, 11.42, 0, 0, 0.061, -17.853, 0.8, 0, 0, 1223.85, 0, 0.57, 0, 13.85, 0, 0, 0.062, -17.853, 0.85, 0, 0, 1233.45, 0, 0.58, 0, 11.42, 0, 0, 0.061, -17.853, 0.85, 0, 0, 1248.265, 0, 0.58, 0, 11.42, 0, 0, 0.061, -17.853, 0.85, 0, 0, 1190.26, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.85, 0, 0, 1198.06, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.8, 0, 0, 1196.8, 0, 0.57, 0, 10.36, 0, 0, 0.062, -24.583, 0.85, 0, 0, 1210.39, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.8, 0, 0, 1208.95, 0, 0.57, 0, 11.65, 0, 0, 0.062, -24.583, 0.85, 0, 0, 1218.605, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.85, 0, 0, 1227.765, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.85, 0, 0, 1236.3, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.85, 0, 0, 1247.33, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.85, 0, 0, 1252.46, 0, 0.58, 0, 9.22, 0, 0, 0.061, -24.583, 0.8, 0, 0, 1251.9, 0, 0.57, 0, 10.36, 0, 0, 0.062, -24.583, 0.85, 0, 0, 1194.86, 0, 0.58, 0, 9.22, 0, 0, 0.061, -28.873, 0.85, 0, 0, 1211.77, 0, 0.58, 0, 9.22, 0, 0, 0.061, -28.873, 0.85, 0, 0, 1233.58, 0, 0.58, 0, 9.22, 0, 0, 0.061, -28.873, 0.85, 0, 0, 1184.715, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.8, 0, 0, 1183.125, 0, 0.57, 0, 8.16, 0, 0, 0.062, -34.683, 0.85, 0, 0, 1193.88, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.8, 0, 0, 1192.3, 0, 0.57, 0, 9.45, 0, 0, 0.062, -34.683, 0.85, 0, 0, 1202.12, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.85, 0, 0, 1210.53, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.85, 0, 0, 1220.76, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.85, 0, 0, 1231.52, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.85, 0, 0, 1242.66, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.8, 0, 0, 1240.6, 0, 0.57, 0, 8.16, 0, 0, 0.062, -34.683, 0.85, 0, 0, 1255.42, 0, 0.58, 0, 7.02, 0, 0, 0.061, -34.683, 0.8, 0, 0, 1254.2, 0, 0.57, 0, 9.45, 0, 0, 0.062, -34.683, 0.85, 0, 0, 1189.91, 0, 0.58, 0, 7.02, 0, 0, 0.061, -38.783, 0.85, 0, 0, 1198.28, 0, 0.58, 0, 7.02, 0, 0, 0.061, -38.783, 0.85, 0, 0, 1207.7, 0, 0.58, 0, 7.02, 0, 0, 0.061, -38.783, 0.85, 0, 0, 1235.75, 0, 0.58, 0, 7.02, 0, 0, 0.061, -38.783, 0.8, 0, 0, 1234.15, 0, 0.57, 0, 8.16, 0, 0, 0.062, -38.783, 0.85, 0, 0, 1253.14, 0, 0.58, 0, 7.02, 0, 0, 0.061, -38.783, 0.8, 0, 0, 1252, 0, 0.57, 0, 9.45, 0, 0, 0.062, -38.783, 0.85, 0, 0, 1210.155, 0, 0.58, 0, 11.42, 0, 0, 0.061, 14.66700, 0.85, 0, 0, 1217.58, 0, 0.58, 0, 11.42, 0, 0, 0.061, 14.66700, 0.8, 0, 0, 1216.3, 0, 0.57, 0, 12.56, 0, 0, 0.062, 14.66700, 0.85, 0, 0, 1225.37, 0, 0.58, 0, 11.42, 0, 0, 0.061, 14.66700, 0.8, 0, 0, 1223.85, 0, 0.57, 0, 13.85, 0, 0, 0.062, 14.66700, 0.85, 0, 0, 1233.51, 0, 0.58, 0, 11.42, 0, 0, 0.061, 14.66700, 0.85, 0, 0, 1248.325, 0, 0.58, 0, 11.42, 0, 0, 0.061, 14.66700, 0.85, 0, 0, 1195.06, 0, 0.58, 0, 9.22, 0, 0, 0.061, 27.24700, 0.85, 0, 0, 1211.83, 0, 0.58, 0, 9.22, 0, 0, 0.061, 27.24700, 0.85, 0, 0, 1225.99, 0, 0.58, 0, 9.22, 0, 0, 0.061, 27.24700, 0.85, 0, 0, 1233.78, 0, 0.58, 0, 9.22, 0, 0, 0.061, 27.24700, 0.85, 0, 0, 1217.52, 0, 0.58, 0, 11.42, 0, 0, 0.061, -14.66700, 0.8, 0, 0, 1216.3, 0, 0.57, 0, 12.56, 0, 0, 0.062, -14.66700, 0.85, 0, 0, 1225.17, 0, 0.58, 0, 11.42, 0, 0, 0.061, -14.66700, 0.8, 0, 0, 1223.85, 0, 0.57, 0, 13.85, 0, 0, 0.062, -14.66700, 0.85, 0, 0, 1233.45, 0, 0.58, 0, 11.42, 0, 0, 0.061, -14.66700, 0.85, 0, 0, 1248.265, 0, 0.58, 0, 11.42, 0, 0, 0.061, -14.66700, 0.85, 0, 0, 1194.86, 0, 0.58, 0, 9.22, 0, 0, 0.061, -27.24700, 0.85, 0, 0, 1211.77, 0, 0.58, 0, 9.22, 0, 0, 0.061, -27.24700, 0.85, 0, 0, 1233.58, 0, 0.58, 0, 9.22, 0, 0, 0.061, -27.24700)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Moldura"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 174
+buffer = PackedFloat32Array(0.99, 0, 0, 1195.95, 0, 0.085, 0, 11.12, 0, 0, 0.14, 12.328, 0.045, 0, 0, 1195.95, 0, 0.57, 0, 11.43, 0, 0, 0.08, 12.332, 0.99, 0, 0, 1210.48, 0, 0.085, 0, 11.12, 0, 0, 0.14, 12.328, 0.045, 0, 0, 1210.48, 0, 0.57, 0, 11.43, 0, 0, 0.08, 12.332, 0.99, 0, 0, 1218.335, 0, 0.085, 0, 11.12, 0, 0, 0.14, 12.328, 0.045, 0, 0, 1218.335, 0, 0.57, 0, 11.43, 0, 0, 0.08, 12.332, 0.99, 0, 0, 1225.72, 0, 0.085, 0, 11.12, 0, 0, 0.14, 12.328, 0.045, 0, 0, 1225.72, 0, 0.57, 0, 11.43, 0, 0, 0.08, 12.332, 0.99, 0, 0, 1234.33, 0, 0.085, 0, 11.12, 0, 0, 0.14, 12.328, 0.045, 0, 0, 1234.33, 0, 0.57, 0, 11.43, 0, 0, 0.08, 12.332, 0.99, 0, 0, 1247.91, 0, 0.085, 0, 11.12, 0, 0, 0.14, 12.328, 0.045, 0, 0, 1247.91, 0, 0.57, 0, 11.43, 0, 0, 0.08, 12.332, 0.99, 0, 0, 1210.155, 0, 0.085, 0, 11.12, 0, 0, 0.14, 17.898, 0.045, 0, 0, 1210.155, 0, 0.57, 0, 11.43, 0, 0, 0.08, 17.902, 0.99, 0, 0, 1217.58, 0, 0.085, 0, 11.12, 0, 0, 0.14, 17.898, 0.045, 0, 0, 1217.58, 0, 0.57, 0, 11.43, 0, 0, 0.08, 17.902, 0.99, 0, 0, 1225.37, 0, 0.085, 0, 11.12, 0, 0, 0.14, 17.898, 0.045, 0, 0, 1225.37, 0, 0.57, 0, 11.43, 0, 0, 0.08, 17.902, 0.99, 0, 0, 1233.51, 0, 0.085, 0, 11.12, 0, 0, 0.14, 17.898, 0.045, 0, 0, 1233.51, 0, 0.57, 0, 11.43, 0, 0, 0.08, 17.902, 0.99, 0, 0, 1248.325, 0, 0.085, 0, 11.12, 0, 0, 0.14, 17.898, 0.045, 0, 0, 1248.325, 0, 0.57, 0, 11.43, 0, 0, 0.08, 17.902, 0.99, 0, 0, 1190.32, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1190.32, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1198.26, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1198.26, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1210.45, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1210.45, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1218.665, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1218.665, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1227.965, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1227.965, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1236.36, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1236.36, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1247.39, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1247.39, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1252.66, 0, 0.085, 0, 8.92, 0, 0, 0.14, 24.628, 0.045, 0, 0, 1252.66, 0, 0.57, 0, 9.23, 0, 0, 0.08, 24.632, 0.99, 0, 0, 1195.06, 0, 0.085, 0, 8.92, 0, 0, 0.14, 28.918, 0.045, 0, 0, 1195.06, 0, 0.57, 0, 9.23, 0, 0, 0.08, 28.922, 0.99, 0, 0, 1211.83, 0, 0.085, 0, 8.92, 0, 0, 0.14, 28.918, 0.045, 0, 0, 1211.83, 0, 0.57, 0, 9.23, 0, 0, 0.08, 28.922, 0.99, 0, 0, 1225.99, 0, 0.085, 0, 8.92, 0, 0, 0.14, 28.918, 0.045, 0, 0, 1225.99, 0, 0.57, 0, 9.23, 0, 0, 0.08, 28.922, 0.99, 0, 0, 1233.78, 0, 0.085, 0, 8.92, 0, 0, 0.14, 28.918, 0.045, 0, 0, 1233.78, 0, 0.57, 0, 9.23, 0, 0, 0.08, 28.922, 0.99, 0, 0, 1184.775, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1184.775, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1193.94, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1193.94, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1202.32, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1202.32, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1210.59, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1210.59, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1220.82, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1220.82, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1231.72, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1231.72, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1242.72, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1242.72, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1255.48, 0, 0.085, 0, 6.72, 0, 0, 0.14, 34.728, 0.045, 0, 0, 1255.48, 0, 0.57, 0, 7.03, 0, 0, 0.08, 34.732, 0.99, 0, 0, 1189.97, 0, 0.085, 0, 6.72, 0, 0, 0.14, 38.828, 0.045, 0, 0, 1189.97, 0, 0.57, 0, 7.03, 0, 0, 0.08, 38.832, 0.99, 0, 0, 1198.48, 0, 0.085, 0, 6.72, 0, 0, 0.14, 38.828, 0.045, 0, 0, 1198.48, 0, 0.57, 0, 7.03, 0, 0, 0.08, 38.832, 0.99, 0, 0, 1207.76, 0, 0.085, 0, 6.72, 0, 0, 0.14, 38.828, 0.045, 0, 0, 1207.76, 0, 0.57, 0, 7.03, 0, 0, 0.08, 38.832, 0.99, 0, 0, 1235.81, 0, 0.085, 0, 6.72, 0, 0, 0.14, 38.828, 0.045, 0, 0, 1235.81, 0, 0.57, 0, 7.03, 0, 0, 0.08, 38.832, 0.99, 0, 0, 1244.13, 0, 0.085, 0, 6.72, 0, 0, 0.14, 38.828, 0.045, 0, 0, 1244.13, 0, 0.57, 0, 7.03, 0, 0, 0.08, 38.832, 0.99, 0, 0, 1253.2, 0, 0.085, 0, 6.72, 0, 0, 0.14, 38.828, 0.045, 0, 0, 1253.2, 0, 0.57, 0, 7.03, 0, 0, 0.08, 38.832, 0.99, 0, 0, 1195.75, 0, 0.085, 0, 11.12, 0, 0, 0.14, -12.328, 0.045, 0, 0, 1195.75, 0, 0.57, 0, 11.43, 0, 0, 0.08, -12.332, 0.99, 0, 0, 1210.42, 0, 0.085, 0, 11.12, 0, 0, 0.14, -12.328, 0.045, 0, 0, 1210.42, 0, 0.57, 0, 11.43, 0, 0, 0.08, -12.332, 0.99, 0, 0, 1218.275, 0, 0.085, 0, 11.12, 0, 0, 0.14, -12.328, 0.045, 0, 0, 1218.275, 0, 0.57, 0, 11.43, 0, 0, 0.08, -12.332, 0.99, 0, 0, 1225.52, 0, 0.085, 0, 11.12, 0, 0, 0.14, -12.328, 0.045, 0, 0, 1225.52, 0, 0.57, 0, 11.43, 0, 0, 0.08, -12.332, 0.99, 0, 0, 1234.27, 0, 0.085, 0, 11.12, 0, 0, 0.14, -12.328, 0.045, 0, 0, 1234.27, 0, 0.57, 0, 11.43, 0, 0, 0.08, -12.332, 0.99, 0, 0, 1247.85, 0, 0.085, 0, 11.12, 0, 0, 0.14, -12.328, 0.045, 0, 0, 1247.85, 0, 0.57, 0, 11.43, 0, 0, 0.08, -12.332, 0.99, 0, 0, 1217.52, 0, 0.085, 0, 11.12, 0, 0, 0.14, -17.898, 0.045, 0, 0, 1217.52, 0, 0.57, 0, 11.43, 0, 0, 0.08, -17.902, 0.99, 0, 0, 1225.17, 0, 0.085, 0, 11.12, 0, 0, 0.14, -17.898, 0.045, 0, 0, 1225.17, 0, 0.57, 0, 11.43, 0, 0, 0.08, -17.902, 0.99, 0, 0, 1233.45, 0, 0.085, 0, 11.12, 0, 0, 0.14, -17.898, 0.045, 0, 0, 1233.45, 0, 0.57, 0, 11.43, 0, 0, 0.08, -17.902, 0.99, 0, 0, 1248.265, 0, 0.085, 0, 11.12, 0, 0, 0.14, -17.898, 0.045, 0, 0, 1248.265, 0, 0.57, 0, 11.43, 0, 0, 0.08, -17.902, 0.99, 0, 0, 1190.26, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1190.26, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1198.06, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1198.06, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1210.39, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1210.39, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1218.605, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1218.605, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1227.765, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1227.765, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1236.3, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1236.3, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1247.33, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1247.33, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1252.46, 0, 0.085, 0, 8.92, 0, 0, 0.14, -24.628, 0.045, 0, 0, 1252.46, 0, 0.57, 0, 9.23, 0, 0, 0.08, -24.632, 0.99, 0, 0, 1194.86, 0, 0.085, 0, 8.92, 0, 0, 0.14, -28.918, 0.045, 0, 0, 1194.86, 0, 0.57, 0, 9.23, 0, 0, 0.08, -28.922, 0.99, 0, 0, 1211.77, 0, 0.085, 0, 8.92, 0, 0, 0.14, -28.918, 0.045, 0, 0, 1211.77, 0, 0.57, 0, 9.23, 0, 0, 0.08, -28.922, 0.99, 0, 0, 1233.58, 0, 0.085, 0, 8.92, 0, 0, 0.14, -28.918, 0.045, 0, 0, 1233.58, 0, 0.57, 0, 9.23, 0, 0, 0.08, -28.922, 0.99, 0, 0, 1184.715, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1184.715, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1193.88, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1193.88, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1202.12, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1202.12, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1210.53, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1210.53, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1220.76, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1220.76, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1231.52, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1231.52, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1242.66, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1242.66, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1255.42, 0, 0.085, 0, 6.72, 0, 0, 0.14, -34.728, 0.045, 0, 0, 1255.42, 0, 0.57, 0, 7.03, 0, 0, 0.08, -34.732, 0.99, 0, 0, 1189.91, 0, 0.085, 0, 6.72, 0, 0, 0.14, -38.828, 0.045, 0, 0, 1189.91, 0, 0.57, 0, 7.03, 0, 0, 0.08, -38.832, 0.99, 0, 0, 1198.28, 0, 0.085, 0, 6.72, 0, 0, 0.14, -38.828, 0.045, 0, 0, 1198.28, 0, 0.57, 0, 7.03, 0, 0, 0.08, -38.832, 0.99, 0, 0, 1207.7, 0, 0.085, 0, 6.72, 0, 0, 0.14, -38.828, 0.045, 0, 0, 1207.7, 0, 0.57, 0, 7.03, 0, 0, 0.08, -38.832, 0.99, 0, 0, 1235.75, 0, 0.085, 0, 6.72, 0, 0, 0.14, -38.828, 0.045, 0, 0, 1235.75, 0, 0.57, 0, 7.03, 0, 0, 0.08, -38.832, 0.99, 0, 0, 1253.14, 0, 0.085, 0, 6.72, 0, 0, 0.14, -38.828, 0.045, 0, 0, 1253.14, 0, 0.57, 0, 7.03, 0, 0, 0.08, -38.832, 0.99, 0, 0, 1210.155, 0, 0.085, 0, 11.12, 0, 0, 0.14, 14.62200, 0.045, 0, 0, 1210.155, 0, 0.57, 0, 11.43, 0, 0, 0.08, 14.61800, 0.99, 0, 0, 1217.58, 0, 0.085, 0, 11.12, 0, 0, 0.14, 14.62200, 0.045, 0, 0, 1217.58, 0, 0.57, 0, 11.43, 0, 0, 0.08, 14.61800, 0.99, 0, 0, 1225.37, 0, 0.085, 0, 11.12, 0, 0, 0.14, 14.62200, 0.045, 0, 0, 1225.37, 0, 0.57, 0, 11.43, 0, 0, 0.08, 14.61800, 0.99, 0, 0, 1233.51, 0, 0.085, 0, 11.12, 0, 0, 0.14, 14.62200, 0.045, 0, 0, 1233.51, 0, 0.57, 0, 11.43, 0, 0, 0.08, 14.61800, 0.99, 0, 0, 1248.325, 0, 0.085, 0, 11.12, 0, 0, 0.14, 14.62200, 0.045, 0, 0, 1248.325, 0, 0.57, 0, 11.43, 0, 0, 0.08, 14.61800, 0.99, 0, 0, 1195.06, 0, 0.085, 0, 8.92, 0, 0, 0.14, 27.20200, 0.045, 0, 0, 1195.06, 0, 0.57, 0, 9.23, 0, 0, 0.08, 27.19800, 0.99, 0, 0, 1211.83, 0, 0.085, 0, 8.92, 0, 0, 0.14, 27.20200, 0.045, 0, 0, 1211.83, 0, 0.57, 0, 9.23, 0, 0, 0.08, 27.19800, 0.99, 0, 0, 1225.99, 0, 0.085, 0, 8.92, 0, 0, 0.14, 27.20200, 0.045, 0, 0, 1225.99, 0, 0.57, 0, 9.23, 0, 0, 0.08, 27.19800, 0.99, 0, 0, 1233.78, 0, 0.085, 0, 8.92, 0, 0, 0.14, 27.20200, 0.045, 0, 0, 1233.78, 0, 0.57, 0, 9.23, 0, 0, 0.08, 27.19800, 0.99, 0, 0, 1217.52, 0, 0.085, 0, 11.12, 0, 0, 0.14, -14.62200, 0.045, 0, 0, 1217.52, 0, 0.57, 0, 11.43, 0, 0, 0.08, -14.61800, 0.99, 0, 0, 1225.17, 0, 0.085, 0, 11.12, 0, 0, 0.14, -14.62200, 0.045, 0, 0, 1225.17, 0, 0.57, 0, 11.43, 0, 0, 0.08, -14.61800, 0.99, 0, 0, 1233.45, 0, 0.085, 0, 11.12, 0, 0, 0.14, -14.62200, 0.045, 0, 0, 1233.45, 0, 0.57, 0, 11.43, 0, 0, 0.08, -14.61800, 0.99, 0, 0, 1248.265, 0, 0.085, 0, 11.12, 0, 0, 0.14, -14.62200, 0.045, 0, 0, 1248.265, 0, 0.57, 0, 11.43, 0, 0, 0.08, -14.61800, 0.99, 0, 0, 1194.86, 0, 0.085, 0, 8.92, 0, 0, 0.14, -27.20200, 0.045, 0, 0, 1194.86, 0, 0.57, 0, 9.23, 0, 0, 0.08, -27.19800, 0.99, 0, 0, 1211.77, 0, 0.085, 0, 8.92, 0, 0, 0.14, -27.20200, 0.045, 0, 0, 1211.77, 0, 0.57, 0, 9.23, 0, 0, 0.08, -27.19800, 0.99, 0, 0, 1233.58, 0, 0.085, 0, 8.92, 0, 0, 0.14, -27.20200, 0.045, 0, 0, 1233.58, 0, 0.57, 0, 9.23, 0, 0, 0.08, -27.19800)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Chapa"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 15
+buffer = PackedFloat32Array(1.27, 0, 0, 1192.55, 0, 0.075, 0, 12.01, 0, 0, 0.56, 12.523, 1.27, 0, 0, 1245.39, 0, 0.075, 0, 12.01, 0, 0, 0.56, 12.523, 1.27, 0, 0, 1230.59, 0, 0.075, 0, 12.01, 0, 0, 0.56, 18.093, 1.27, 0, 0, 1207.45, 0, 0.075, 0, 9.81, 0, 0, 0.56, 24.823, 1.27, 0, 0, 1251.14, 0, 0.075, 0, 9.81, 0, 0, 0.56, 24.823, 1.27, 0, 0, 1231.62, 0, 0.075, 0, 9.81, 0, 0, 0.56, 29.113, 1.27, 0, 0, 1207.51, 0, 0.075, 0, 7.61, 0, 0, 0.56, 34.923, 1.27, 0, 0, 1241.77, 0, 0.075, 0, 7.61, 0, 0, 0.56, 39.023, 1.27, 0, 0, 1223.28, 0, 0.075, 0, 12.01, 0, 0, 0.56, -12.523, 1.27, 0, 0, 1222.53, 0, 0.075, 0, 12.01, 0, 0, 0.56, -18.093, 1.27, 0, 0, 1195.54, 0, 0.075, 0, 9.81, 0, 0, 0.56, -24.823, 1.27, 0, 0, 1245.17, 0, 0.075, 0, 9.81, 0, 0, 0.56, -24.823, 1.27, 0, 0, 1231.82, 0, 0.075, 0, 9.81, 0, 0, 0.56, -29.113, 1.27, 0, 0, 1207.57, 0, 0.075, 0, 7.61, 0, 0, 0.56, -34.923, 1.27, 0, 0, 1250.86, 0, 0.075, 0, 7.61, 0, 0, 0.56, -39.023)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_PortaAzul"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 61
+buffer = PackedFloat32Array(0.82, 0, 0, 1207.92, 0, 1.96, 0, 10.86, 0, 0, 0.065, 12.283, 0.82, 0, 0, 1215.315, 0, 1.96, 0, 10.86, 0, 0, 0.065, 12.283, 0.82, 0, 0, 1231.17, 0, 1.96, 0, 10.86, 0, 0, 0.065, 12.283, 0.82, 0, 0, 1245.39, 0, 1.96, 0, 10.86, 0, 0, 0.065, 12.283, 0.82, 0, 0, 1207.895, 0, 1.96, 0, 10.86, 0, 0, 0.065, 17.853, 0.82, 0, 0, 1215.02, 0, 1.96, 0, 10.86, 0, 0, 0.065, 17.853, 0.82, 0, 0, 1230.59, 0, 1.96, 0, 10.86, 0, 0, 0.065, 17.853, 0.82, 0, 0, 1245.625, 0, 1.96, 0, 10.86, 0, 0, 0.065, 17.853, 0.82, 0, 0, 1187.28, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1195.34, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1215.685, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1224.585, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1245.11, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1251.14, 0, 1.96, 0, 8.66, 0, 0, 0.065, 24.583, 0.82, 0, 0, 1192.74, 0, 1.96, 0, 8.66, 0, 0, 0.065, 28.873, 0.82, 0, 0, 1209.07, 0, 1.96, 0, 8.66, 0, 0, 0.065, 28.873, 0.82, 0, 0, 1231.62, 0, 1.96, 0, 8.66, 0, 0, 0.065, 28.873, 0.82, 0, 0, 1190.66, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1199.28, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1219.38, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1228.28, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1252.92, 0, 1.96, 0, 6.46, 0, 0, 0.065, 34.683, 0.82, 0, 0, 1195.92, 0, 1.96, 0, 6.46, 0, 0, 0.065, 38.783, 0.82, 0, 0, 1205.04, 0, 1.96, 0, 6.46, 0, 0, 0.065, 38.783, 0.82, 0, 0, 1241.77, 0, 1.96, 0, 6.46, 0, 0, 0.065, 38.783, 0.82, 0, 0, 1250.8, 0, 1.96, 0, 6.46, 0, 0, 0.065, 38.783, 0.82, 0, 0, 1192.75, 0, 1.96, 0, 10.86, 0, 0, 0.065, -12.283, 0.82, 0, 0, 1207.98, 0, 1.96, 0, 10.86, 0, 0, 0.065, -12.283, 0.82, 0, 0, 1223.28, 0, 1.96, 0, 10.86, 0, 0, 0.065, -12.283, 0.82, 0, 0, 1231.23, 0, 1.96, 0, 10.86, 0, 0, 0.065, -12.283, 0.82, 0, 0, 1215.08, 0, 1.96, 0, 10.86, 0, 0, 0.065, -17.853, 0.82, 0, 0, 1230.65, 0, 1.96, 0, 10.86, 0, 0, 0.065, -17.853, 0.82, 0, 0, 1245.685, 0, 1.96, 0, 10.86, 0, 0, 0.065, -17.853, 0.82, 0, 0, 1187.34, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1195.54, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1215.745, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1224.785, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1245.17, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1251.34, 0, 1.96, 0, 8.66, 0, 0, 0.065, -24.583, 0.82, 0, 0, 1192.94, 0, 1.96, 0, 8.66, 0, 0, 0.065, -28.873, 0.82, 0, 0, 1209.13, 0, 1.96, 0, 8.66, 0, 0, 0.065, -28.873, 0.82, 0, 0, 1181.535, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1199.48, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1207.57, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1228.48, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1238.54, 0, 1.96, 0, 6.46, 0, 0, 0.065, -34.683, 0.82, 0, 0, 1187.19, 0, 1.96, 0, 6.46, 0, 0, 0.065, -38.783, 0.82, 0, 0, 1205.1, 0, 1.96, 0, 6.46, 0, 0, 0.065, -38.783, 0.82, 0, 0, 1232.55, 0, 1.96, 0, 6.46, 0, 0, 0.065, -38.783, 0.82, 0, 0, 1207.895, 0, 1.96, 0, 10.86, 0, 0, 0.065, 14.66700, 0.82, 0, 0, 1215.02, 0, 1.96, 0, 10.86, 0, 0, 0.065, 14.66700, 0.82, 0, 0, 1230.59, 0, 1.96, 0, 10.86, 0, 0, 0.065, 14.66700, 0.82, 0, 0, 1245.625, 0, 1.96, 0, 10.86, 0, 0, 0.065, 14.66700, 0.82, 0, 0, 1192.74, 0, 1.96, 0, 8.66, 0, 0, 0.065, 27.24700, 0.82, 0, 0, 1209.07, 0, 1.96, 0, 8.66, 0, 0, 0.065, 27.24700, 0.82, 0, 0, 1231.62, 0, 1.96, 0, 8.66, 0, 0, 0.065, 27.24700, 0.82, 0, 0, 1215.08, 0, 1.96, 0, 10.86, 0, 0, 0.065, -14.66700, 0.82, 0, 0, 1230.65, 0, 1.96, 0, 10.86, 0, 0, 0.065, -14.66700, 0.82, 0, 0, 1245.685, 0, 1.96, 0, 10.86, 0, 0, 0.065, -14.66700, 0.82, 0, 0, 1192.94, 0, 1.96, 0, 8.66, 0, 0, 0.065, -27.24700, 0.82, 0, 0, 1209.13, 0, 1.96, 0, 8.66, 0, 0, 0.065, -27.24700)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_Reboco"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 13
+buffer = PackedFloat32Array(7.55, 0, 0, 1216.825, 0, 3.56, 0, 11.66, 0, 0, 3.25, 10.625, 6.4, 0, 0, 1216.3, 0, 3.56, 0, 11.66, 0, 0, 3.12, 16.26, 7.3, 0, 0, 1196.8, 0, 3.56, 0, 9.46, 0, 0, 4.4, 22.35, 3.8, 0, 0, 1251.9, 0, 3.56, 0, 9.46, 0, 0, 4.4, 22.35, 8.6, 0, 0, 1230, 0, 3.56, 0, 7.26, 0, 0, 4.45, 32.425, 6.8, 0, 0, 1206.4, 0, 3.56, 0, 7.26, 0, 0, 2.43, 37.535, 6.1, 0, 0, 1209.2, 0, 3.56, 0, 11.66, 0, 0, 3.25, -10.625, 6.1, 0, 0, 1216.3, 0, 3.56, 0, 11.66, 0, 0, 3.12, -16.26, 6.3, 0, 0, 1196.8, 0, 3.56, 0, 9.46, 0, 0, 4.4, -22.35, 2.8, 0, 0, 1251.9, 0, 3.56, 0, 9.46, 0, 0, 4.4, -22.35, 7.95, 0, 0, 1183.125, 0, 3.56, 0, 7.26, 0, 0, 4.45, -32.425, 10.3, 0, 0, 1240.6, 0, 3.56, 0, 7.26, 0, 0, 4.45, -32.425, 8, 0, 0, 1234.15, 0, 3.56, 0, 7.26, 0, 0, 2.43, -37.535)
+
+[sub_resource type="MultiMesh" id="MultiMesh_vielas_RebocoVerde"]
+transform_format = 1
+mesh = SubResource("Mesh_vielas_unidade")
+instance_count = 12
+buffer = PackedFloat32Array(7.9, 0, 0, 1232.75, 0, 2.91, 0, 11.335, 0, 0, 3.25, 10.625, 7.3, 0, 0, 1232.05, 0, 2.91, 0, 11.335, 0, 0, 3.12, 16.26, 7.45, 0, 0, 1217.175, 0, 2.91, 0, 9.135, 0, 0, 4.4, 22.35, 5.8, 0, 0, 1193.9, 0, 2.91, 0, 9.135, 0, 0, 1.56, 28.06, 8.2, 0, 0, 1192.3, 0, 2.91, 0, 6.935, 0, 0, 4.45, 32.425, 6.4, 0, 0, 1254.2, 0, 2.91, 0, 6.935, 0, 0, 4.45, 32.425, 5.9, 0, 0, 1242.95, 0, 2.91, 0, 6.935, 0, 0, 2.43, 37.535, 5.6, 0, 0, 1224.4, 0, 2.91, 0, 11.335, 0, 0, 3.25, -10.625, 7, 0, 0, 1232.05, 0, 2.91, 0, 11.335, 0, 0, 3.12, -16.26, 7.15, 0, 0, 1217.175, 0, 2.91, 0, 9.135, 0, 0, 4.4, -22.35, 4.8, 0, 0, 1193.9, 0, 2.91, 0, 9.135, 0, 0, 1.56, -28.06, 6.6, 0, 0, 1200.8, 0, 2.91, 0, 6.935, 0, 0, 4.45, -32.425)
 
 [node name="CostaLivre" type="Node3D" unique_id=130586917]
 script = ExtResource("1_q1fcy")
@@ -6668,16 +6845,6 @@ transform = Transform3D(0.81915206, 0.3039492, -0.48642042, 0, 0.8480481, 0.5299
 light_color = Color(1, 0.94509804, 0.8509804, 1)
 light_energy = 0.85
 shadow_enabled = true
-
-[node name="@MeshInstance3D@70" type="MeshInstance3D" parent="." unique_id=342259015]
-position = Vector3(840, 0, 0)
-material_override = SubResource("StandardMaterial3D_wjjbu")
-mesh = SubResource("ArrayMesh_lik5p")
-
-[node name="@StaticBody3D@72" type="StaticBody3D" parent="@MeshInstance3D@70" unique_id=2112394726]
-
-[node name="@CollisionShape3D@71" type="CollisionShape3D" parent="@MeshInstance3D@70/@StaticBody3D@72" unique_id=965129632]
-shape = SubResource("ConcavePolygonShape3D_fumpn")
 
 [node name="@MeshInstance3D@73" type="MeshInstance3D" parent="." unique_id=12229070]
 position = Vector3(840, 0, 0)
@@ -8344,126 +8511,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 376, 0.4, 144)
 [node name="@CollisionShape3D@50" type="CollisionShape3D" parent="@StaticBody3D@51" unique_id=435675362]
 shape = SubResource("BoxShape3D_u2c16")
 
-[node name="@StaticBody3D@80" type="StaticBody3D" parent="." unique_id=990229293]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, -13)
-
-[node name="@CollisionShape3D@79" type="CollisionShape3D" parent="@StaticBody3D@80" unique_id=1703444459]
-shape = SubResource("BoxShape3D_xlvws")
-
-[node name="@StaticBody3D@85" type="StaticBody3D" parent="." unique_id=1592252498]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, -13)
-
-[node name="@CollisionShape3D@84" type="CollisionShape3D" parent="@StaticBody3D@85" unique_id=1305491086]
-shape = SubResource("BoxShape3D_75ods")
-
-[node name="@StaticBody3D@90" type="StaticBody3D" parent="." unique_id=1984899394]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, -13)
-
-[node name="@CollisionShape3D@89" type="CollisionShape3D" parent="@StaticBody3D@90" unique_id=1616580209]
-shape = SubResource("BoxShape3D_jsofb")
-
-[node name="@StaticBody3D@95" type="StaticBody3D" parent="." unique_id=2022842446]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, -13)
-
-[node name="@CollisionShape3D@94" type="CollisionShape3D" parent="@StaticBody3D@95" unique_id=588677490]
-shape = SubResource("BoxShape3D_dqq1q")
-
-[node name="@StaticBody3D@100" type="StaticBody3D" parent="." unique_id=81332410]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, -13)
-
-[node name="@CollisionShape3D@99" type="CollisionShape3D" parent="@StaticBody3D@100" unique_id=819198903]
-shape = SubResource("BoxShape3D_71i1j")
-
-[node name="@StaticBody3D@105" type="StaticBody3D" parent="." unique_id=955304761]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, -23)
-
-[node name="@CollisionShape3D@104" type="CollisionShape3D" parent="@StaticBody3D@105" unique_id=1186910022]
-shape = SubResource("BoxShape3D_c04s1")
-
-[node name="@StaticBody3D@110" type="StaticBody3D" parent="." unique_id=101707165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, -23)
-
-[node name="@CollisionShape3D@109" type="CollisionShape3D" parent="@StaticBody3D@110" unique_id=528884050]
-shape = SubResource("BoxShape3D_lmfq8")
-
-[node name="@StaticBody3D@115" type="StaticBody3D" parent="." unique_id=1064120698]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, -23)
-
-[node name="@CollisionShape3D@114" type="CollisionShape3D" parent="@StaticBody3D@115" unique_id=1467409805]
-shape = SubResource("BoxShape3D_t4enp")
-
-[node name="@StaticBody3D@120" type="StaticBody3D" parent="." unique_id=792401744]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, -23)
-
-[node name="@CollisionShape3D@119" type="CollisionShape3D" parent="@StaticBody3D@120" unique_id=2101158553]
-shape = SubResource("BoxShape3D_krobn")
-
-[node name="@StaticBody3D@125" type="StaticBody3D" parent="." unique_id=638347092]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, -23)
-
-[node name="@CollisionShape3D@124" type="CollisionShape3D" parent="@StaticBody3D@125" unique_id=544438772]
-shape = SubResource("BoxShape3D_041dl")
-
-[node name="@StaticBody3D@145" type="StaticBody3D" parent="." unique_id=125622008]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, 13)
-
-[node name="@CollisionShape3D@144" type="CollisionShape3D" parent="@StaticBody3D@145" unique_id=150850434]
-shape = SubResource("BoxShape3D_cnrc2")
-
-[node name="@StaticBody3D@150" type="StaticBody3D" parent="." unique_id=1248395849]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, 13)
-
-[node name="@CollisionShape3D@149" type="CollisionShape3D" parent="@StaticBody3D@150" unique_id=249509679]
-shape = SubResource("BoxShape3D_iqbm0")
-
-[node name="@StaticBody3D@155" type="StaticBody3D" parent="." unique_id=1996428404]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, 13)
-
-[node name="@CollisionShape3D@154" type="CollisionShape3D" parent="@StaticBody3D@155" unique_id=775141486]
-shape = SubResource("BoxShape3D_8kqik")
-
-[node name="@StaticBody3D@160" type="StaticBody3D" parent="." unique_id=1062717595]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, 13)
-
-[node name="@CollisionShape3D@159" type="CollisionShape3D" parent="@StaticBody3D@160" unique_id=1504117088]
-shape = SubResource("BoxShape3D_6wuh7")
-
-[node name="@StaticBody3D@165" type="StaticBody3D" parent="." unique_id=849237068]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, 13)
-
-[node name="@CollisionShape3D@164" type="CollisionShape3D" parent="@StaticBody3D@165" unique_id=1502442972]
-shape = SubResource("BoxShape3D_sjnm4")
-
-[node name="@StaticBody3D@170" type="StaticBody3D" parent="." unique_id=481861215]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, 23)
-
-[node name="@CollisionShape3D@169" type="CollisionShape3D" parent="@StaticBody3D@170" unique_id=254502855]
-shape = SubResource("BoxShape3D_pi38t")
-
-[node name="@StaticBody3D@175" type="StaticBody3D" parent="." unique_id=1406219787]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, 23)
-
-[node name="@CollisionShape3D@174" type="CollisionShape3D" parent="@StaticBody3D@175" unique_id=737389528]
-shape = SubResource("BoxShape3D_kksn0")
-
-[node name="@StaticBody3D@180" type="StaticBody3D" parent="." unique_id=10871990]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, 23)
-
-[node name="@CollisionShape3D@179" type="CollisionShape3D" parent="@StaticBody3D@180" unique_id=834522801]
-shape = SubResource("BoxShape3D_new6d")
-
-[node name="@StaticBody3D@185" type="StaticBody3D" parent="." unique_id=1186909269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, 23)
-
-[node name="@CollisionShape3D@184" type="CollisionShape3D" parent="@StaticBody3D@185" unique_id=1559126045]
-shape = SubResource("BoxShape3D_u0u7l")
-
-[node name="@StaticBody3D@190" type="StaticBody3D" parent="." unique_id=1475642586]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, 23)
-
-[node name="@CollisionShape3D@189" type="CollisionShape3D" parent="@StaticBody3D@190" unique_id=2123306507]
-shape = SubResource("BoxShape3D_k0u11")
-
 [node name="@StaticBody3D@211" type="StaticBody3D" parent="." unique_id=1787824752]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 294, 7, -117)
 
@@ -9987,56 +10034,6 @@ multimesh = SubResource("MultiMesh_jjmjw")
 [node name="@MultiMeshInstance3D@13101" type="MultiMeshInstance3D" parent="." unique_id=1001067400]
 material_override = SubResource("StandardMaterial3D_h2pis")
 multimesh = SubResource("MultiMesh_hbdej")
-
-[node name="@MultiMeshInstance3D@13102" type="MultiMeshInstance3D" parent="." unique_id=2129850392]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_tijolo")
-multimesh = SubResource("MultiMesh_ms5vr")
-
-[node name="@MultiMeshInstance3D@13103" type="MultiMeshInstance3D" parent="." unique_id=538081555]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_telha")
-multimesh = SubResource("MultiMesh_lr301")
-
-[node name="@MultiMeshInstance3D@13104" type="MultiMeshInstance3D" parent="." unique_id=1482088625]
-position = Vector3(840, 0, 0)
-material_override = SubResource("StandardMaterial3D_h0rv7")
-multimesh = SubResource("MultiMesh_o36qy")
-
-[node name="@MultiMeshInstance3D@13105" type="MultiMeshInstance3D" parent="." unique_id=711797143]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_tijolo")
-multimesh = SubResource("MultiMesh_kg61i")
-
-[node name="@MultiMeshInstance3D@13106" type="MultiMeshInstance3D" parent="." unique_id=1783479407]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_telha")
-multimesh = SubResource("MultiMesh_exow2")
-
-[node name="@MultiMeshInstance3D@13107" type="MultiMeshInstance3D" parent="." unique_id=99868597]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_tijolo")
-multimesh = SubResource("MultiMesh_7k24r")
-
-[node name="@MultiMeshInstance3D@13108" type="MultiMeshInstance3D" parent="." unique_id=1564999864]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_telha")
-multimesh = SubResource("MultiMesh_f63sn")
-
-[node name="@MultiMeshInstance3D@13109" type="MultiMeshInstance3D" parent="." unique_id=1584019435]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_tijolo")
-multimesh = SubResource("MultiMesh_wqs51")
-
-[node name="@MultiMeshInstance3D@13110" type="MultiMeshInstance3D" parent="." unique_id=433301401]
-position = Vector3(840, 0, 0)
-material_override = SubResource("Material_favela_telha")
-multimesh = SubResource("MultiMesh_uo57d")
-
-[node name="@MultiMeshInstance3D@13111" type="MultiMeshInstance3D" parent="." unique_id=1732638580]
-position = Vector3(840, 0, 0)
-material_override = SubResource("StandardMaterial3D_dldwe")
-multimesh = SubResource("MultiMesh_yr4d0")
 
 [node name="@MultiMeshInstance3D@13112" type="MultiMeshInstance3D" parent="." unique_id=2141500734]
 material_override = SubResource("StandardMaterial3D_3o06i")
@@ -12657,9 +12654,9 @@ material_override = SubResource("StandardMaterial3D_5rrs7")
 mesh = SubResource("BoxMesh_p6ykm")
 
 [node name="EstruturaMorroFavela" type="CSGPolygon3D" parent="."]
-position = Vector3(840, 0, 35)
+position = Vector3(840, 0, 9)
 polygon = PackedVector2Array(294, -0.6, 462, -0.6, 462, -0.12, 406, 9.88, 350, 9.88, 294, -0.12)
-depth = 70.0
+depth = 18.0
 material = SubResource("StandardMaterial3D_wjjbu")
 use_collision = true
 
@@ -12671,31 +12668,31 @@ material = SubResource("StandardMaterial3D_wjjbu")
 use_collision = true
 
 [node name="BalcaoArsenalFavela" type="CSGBox3D" parent="."]
-position = Vector3(1218, 10.5, 33)
+position = Vector3(1197.4, 10.48, 15.7)
 size = Vector3(4, 1.2, 1)
 material = SubResource("StandardMaterial3D_wjjbu")
 use_collision = true
 
 [node name="PlacaArsenalFavela" type="Label3D" parent="."]
-position = Vector3(1218, 12.5, 33)
+position = Vector3(1197.4, 12.24, 15.7)
 text = "ARSENAL DA FAVELA\nBAZUCA / SNIPER / CANHAO DE PULSO\nF: COMPRAR"
 font_size = 40
 pixel_size = 0.012
 no_depth_test = false
 
 [node name="CargaFavela" type="CSGBox3D" parent="."]
-position = Vector3(1208.5, 10.5, 33)
+position = Vector3(1202.4, 10.46, 15.9)
 size = Vector3(2, 1.2, 1.5)
 use_collision = true
 
 [node name="AvisoCargaFavela" type="Label3D" parent="."]
-position = Vector3(1208.5, 12, 33)
+position = Vector3(1202.4, 11.85, 15.9)
 text = "ENTREGA NO BECO / F\nCARGA ILEGAL / $4500"
 font_size = 32
 pixel_size = 0.012
 
 [node name="ContatoBeco" type="Node3D" parent="."]
-position = Vector3(1245, 9.9, 16.5)
+position = Vector3(1246.1, 7.68, 26.1)
 
 [node name="Visual" type="Node3D" parent="ContatoBeco"]
 script = ExtResource("Script_contato")
@@ -12704,12 +12701,6 @@ script = ExtResource("Script_contato")
 position = Vector3(0.28, 1.3, -0.35)
 mesh = SubResource("Box_contato_arma")
 material_override = SubResource("Material_contato_arma")
-
-[node name="CoberturaBeco" type="CSGBox3D" parent="."]
-position = Vector3(1222.75, 13.4, 14)
-size = Vector3(1.5, 0.2, 8)
-material = SubResource("Material_contato_arma")
-use_collision = true
 
 [node name="RecepcaoResidencial" type="Node3D" parent="."]
 position = Vector3(861, 0, -105)
@@ -17328,14 +17319,15 @@ metadata/contract_job = 22
 metadata/contract_stage = 2
 
 [node name="PassagemBaixaFavela" type="CSGBox3D" parent="."]
-position = Vector3(1222.75, 11.5, 18.5)
-size = Vector3(1.5, 0.18, 0.4)
+position = Vector3(1221, 11.42, 13.46)
+size = Vector3(2.4, 0.18, 2.55)
 material = SubResource("Material_contato_arma")
 use_collision = true
 
 [node name="Aviso" type="Label3D" parent="PassagemBaixaFavela"]
-position = Vector3(0, 0.7, 0.25)
-text = "AGACHE / Z"
+position = Vector3(-1.25, 0.13, 0)
+rotation = Vector3(0, -1.5707963, 0)
+text = "AGACHE"
 font_size = 20
 pixel_size = 0.008
 
@@ -18340,26 +18332,6 @@ size = Vector3(3, 0.3, 1.6)
 material = SubResource("StandardMaterial3D_6b1f1")
 use_collision = true
 
-[node name="BecoDasRuas" type="Node3D" parent="."]
-position = Vector3(1245, 9.9, 15)
-
-[node name="MuroEsquerdo" type="CSGBox3D" parent="BecoDasRuas"]
-position = Vector3(-2.5, 1.7, 0)
-size = Vector3(0.3, 3.4, 26)
-material = SubResource("StandardMaterial3D_6b1f1")
-use_collision = true
-
-[node name="MuroDireito" type="CSGBox3D" parent="BecoDasRuas"]
-position = Vector3(2.5, 1.7, 0)
-size = Vector3(0.3, 3.4, 26)
-material = SubResource("StandardMaterial3D_6b1f1")
-use_collision = true
-
-[node name="Pavimento" type="CSGBox3D" parent="BecoDasRuas"]
-position = Vector3(0, 0.02, 0)
-size = Vector3(4.7, 0.04, 26)
-material = SubResource("Material_horizonte_rua")
-
 [node name="ParqueDoMirante" type="Node3D" parent="."]
 position = Vector3(378, 0, 0)
 
@@ -18445,7 +18417,551 @@ size = Vector3(2.6, 0.38, 0.52)
 material = SubResource("StandardMaterial3D_ddevx")
 use_collision = true
 
-[node name="JanelasFavela" type="MultiMeshInstance3D" parent="."]
-material_override = SubResource("Material_contato_arma")
-multimesh = SubResource("MultiMesh_favela_janela")
+
+[node name="VielasFavela" type="Node3D" parent="."]
+
+[node name="EscadaAltaSul0" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1201.15, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(18, 9.71, 23.8, 7.51, 23.8, 7.68, 18, 9.88)
+depth = 2.7
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaAltaSul1" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1239.65, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(18, 9.71, 23.8, 7.51, 23.8, 7.68, 18, 9.88)
+depth = 2.7
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaMediaSul0" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1215.25, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(29, 7.51, 34, 5.31, 34, 5.48, 29, 7.68)
+depth = 2.5
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaMediaSul1" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1247.75, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(29, 7.51, 34, 5.31, 34, 5.48, 29, 7.68)
+depth = 2.5
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaBaixaSul" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1222.375, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(39, 5.31, 51, -0.13, 51, 0.04, 39, 5.48)
+depth = 2.85
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaAltaNorte0" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1201.15, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(-23.8, 7.51, -18, 9.71, -18, 9.88, -23.8, 7.68)
+depth = 2.7
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaAltaNorte1" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1239.65, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(-23.8, 7.51, -18, 9.71, -18, 9.88, -23.8, 7.68)
+depth = 2.7
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaMediaNorte0" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1215.25, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(-34, 5.31, -29, 7.51, -29, 7.68, -34, 5.48)
+depth = 2.5
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaMediaNorte1" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1247.75, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(-34, 5.31, -29, 7.51, -29, 7.68, -34, 5.48)
+depth = 2.5
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="EscadaBaixaNorte" type="CSGPolygon3D" parent="VielasFavela"]
+position = Vector3(1222.375, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+polygon = PackedVector2Array(-51, -0.13, -39, 5.31, -39, 5.48, -51, 0.04)
+depth = 2.85
+material = SubResource("Material_vielas_Patamar")
+use_collision = true
+
+[node name="CaixaDagua0" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1196.205, 12.95, 10.625)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="CaixaDagua6" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1210.3245, 13.45, 16.26)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="CaixaDagua12" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1198.479, 11.69, 22.35)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="CaixaDagua24" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1194.186, 8.84, 32.425)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="CaixaDagua42" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1248.03, 12.95, -10.625)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="CaixaDagua47" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1190.479, 11.25, -22.35)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="CaixaDagua54" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1252.544, 11.69, -22.35)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="CaixaDagua59" type="CSGCylinder3D" parent="VielasFavela"]
+position = Vector3(1194.117, 10.78, -32.425)
+radius = 0.43
+height = 0.64
+sides = 10
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="Patamar" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_Patamar")
+multimesh = SubResource("MultiMesh_vielas_Patamar")
+
+[node name="Degrau" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_Degrau")
+multimesh = SubResource("MultiMesh_vielas_Degrau")
+cast_shadow = 0
+
+[node name="Fio" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_Fio")
+multimesh = SubResource("MultiMesh_vielas_Fio")
+cast_shadow = 0
+
+[node name="Tijolo" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_favela_tijolo")
+multimesh = SubResource("MultiMesh_vielas_Tijolo")
+
+[node name="Telha" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_favela_telha")
+multimesh = SubResource("MultiMesh_vielas_Telha")
+
+[node name="PortaMadeira" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_PortaMadeira")
+multimesh = SubResource("MultiMesh_vielas_PortaMadeira")
+
+[node name="Janela" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_Janela")
+multimesh = SubResource("MultiMesh_vielas_Janela")
+cast_shadow = 0
+
+[node name="Moldura" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_Moldura")
+multimesh = SubResource("MultiMesh_vielas_Moldura")
+cast_shadow = 0
+
+[node name="Chapa" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_Chapa")
+multimesh = SubResource("MultiMesh_vielas_Chapa")
+
+[node name="PortaAzul" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_PortaAzul")
+multimesh = SubResource("MultiMesh_vielas_PortaAzul")
+
+[node name="Reboco" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_Reboco")
+multimesh = SubResource("MultiMesh_vielas_Reboco")
+
+[node name="RebocoVerde" type="MultiMeshInstance3D" parent="VielasFavela"]
+material_override = SubResource("Material_vielas_RebocoVerde")
+multimesh = SubResource("MultiMesh_vielas_RebocoVerde")
+
+[node name="Solidos" type="StaticBody3D" parent="VielasFavela"]
+
+[node name="PatamarSul0" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1220, 4.815, 13.4)
+shape = SubResource("Forma_favela_PatamarSul0")
+
+[node name="PatamarSul1" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1219, 3.715, 23.5)
+shape = SubResource("Forma_favela_PatamarSul1")
+
+[node name="PatamarSul2" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1218, 2.615, 34)
+shape = SubResource("Forma_favela_PatamarSul2")
+
+[node name="PatamarNorte0" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1218, 4.815, -13.4)
+shape = SubResource("Forma_favela_PatamarNorte0")
+
+[node name="PatamarNorte1" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1217, 3.715, -23.5)
+shape = SubResource("Forma_favela_PatamarNorte1")
+
+[node name="PatamarNorte2" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1216, 2.615, -34)
+shape = SubResource("Forma_favela_PatamarNorte2")
+
+[node name="Casa00" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1194.25, 11.19, 10.625)
+shape = SubResource("Forma_favela_Casa00")
+
+[node name="Casa01" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1209.2, 11.44, 10.625)
+shape = SubResource("Forma_favela_Casa01")
+
+[node name="Casa02" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1216.825, 11.66, 10.625)
+shape = SubResource("Forma_favela_Casa02")
+
+[node name="Casa03" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1224.4, 12.305, 10.625)
+shape = SubResource("Forma_favela_Casa03")
+
+[node name="Casa04" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1232.75, 11.335, 10.625)
+shape = SubResource("Forma_favela_Casa04")
+
+[node name="Casa05" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1246.65, 11.57, 10.625)
+shape = SubResource("Forma_favela_Casa05")
+
+[node name="Casa06" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1209.025, 11.44, 16.26)
+shape = SubResource("Forma_favela_Casa06")
+
+[node name="Casa07" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1216.3, 11.66, 16.26)
+shape = SubResource("Forma_favela_Casa07")
+
+[node name="Casa08" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1223.85, 12.305, 16.26)
+shape = SubResource("Forma_favela_Casa08")
+
+[node name="Casa09" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1232.05, 11.335, 16.26)
+shape = SubResource("Forma_favela_Casa09")
+
+[node name="Casa10" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1246.975, 11.57, 16.26)
+shape = SubResource("Forma_favela_Casa10")
+
+[node name="Casa11" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1188.8, 9.24, 22.35)
+shape = SubResource("Forma_favela_Casa11")
+
+[node name="Casa12" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1196.8, 9.46, 22.35)
+shape = SubResource("Forma_favela_Casa12")
+
+[node name="Casa13" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1208.95, 10.105, 22.35)
+shape = SubResource("Forma_favela_Casa13")
+
+[node name="Casa14" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1217.175, 9.135, 22.35)
+shape = SubResource("Forma_favela_Casa14")
+
+[node name="Casa15" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1226.275, 9.37, 22.35)
+shape = SubResource("Forma_favela_Casa15")
+
+[node name="Casa16" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1235, 8.99, 22.35)
+shape = SubResource("Forma_favela_Casa16")
+
+[node name="Casa17" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1246.25, 9.24, 22.35)
+shape = SubResource("Forma_favela_Casa17")
+
+[node name="Casa18" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1251.9, 9.46, 22.35)
+shape = SubResource("Forma_favela_Casa18")
+
+[node name="Casa19" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1193.9, 9.135, 28.06)
+shape = SubResource("Forma_favela_Casa19")
+
+[node name="Casa20" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1210.45, 9.37, 28.06)
+shape = SubResource("Forma_favela_Casa20")
+
+[node name="Casa21" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1224.85, 8.99, 28.06)
+shape = SubResource("Forma_favela_Casa21")
+
+[node name="Casa22" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1232.7, 9.24, 28.06)
+shape = SubResource("Forma_favela_Casa22")
+
+[node name="Casa23" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1183.125, 7.905, 32.425)
+shape = SubResource("Forma_favela_Casa23")
+
+[node name="Casa24" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1192.3, 6.935, 32.425)
+shape = SubResource("Forma_favela_Casa24")
+
+[node name="Casa25" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1200.8, 7.17, 32.425)
+shape = SubResource("Forma_favela_Casa25")
+
+[node name="Casa26" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1209.05, 6.79, 32.425)
+shape = SubResource("Forma_favela_Casa26")
+
+[node name="Casa27" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1220.1, 7.04, 32.425)
+shape = SubResource("Forma_favela_Casa27")
+
+[node name="Casa28" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1230, 7.26, 32.425)
+shape = SubResource("Forma_favela_Casa28")
+
+[node name="Casa29" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1240.6, 7.905, 32.425)
+shape = SubResource("Forma_favela_Casa29")
+
+[node name="Casa30" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1254.2, 6.935, 32.425)
+shape = SubResource("Forma_favela_Casa30")
+
+[node name="Casa31" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1188.55, 6.79, 37.535)
+shape = SubResource("Forma_favela_Casa31")
+
+[node name="Casa32" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1197.2, 7.04, 37.535)
+shape = SubResource("Forma_favela_Casa32")
+
+[node name="Casa33" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1206.4, 7.26, 37.535)
+shape = SubResource("Forma_favela_Casa33")
+
+[node name="Casa34" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1234.15, 7.905, 37.535)
+shape = SubResource("Forma_favela_Casa34")
+
+[node name="Casa35" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1242.95, 6.935, 37.535)
+shape = SubResource("Forma_favela_Casa35")
+
+[node name="Casa36" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1252, 7.17, 37.535)
+shape = SubResource("Forma_favela_Casa36")
+
+[node name="Casa37" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1194.25, 11.44, -10.625)
+shape = SubResource("Forma_favela_Casa37")
+
+[node name="Casa38" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1209.2, 11.66, -10.625)
+shape = SubResource("Forma_favela_Casa38")
+
+[node name="Casa39" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1216.825, 12.305, -10.625)
+shape = SubResource("Forma_favela_Casa39")
+
+[node name="Casa40" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1224.4, 11.335, -10.625)
+shape = SubResource("Forma_favela_Casa40")
+
+[node name="Casa41" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1232.75, 11.57, -10.625)
+shape = SubResource("Forma_favela_Casa41")
+
+[node name="Casa42" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1246.65, 11.19, -10.625)
+shape = SubResource("Forma_favela_Casa42")
+
+[node name="Casa43" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1216.3, 11.66, -16.26)
+shape = SubResource("Forma_favela_Casa43")
+
+[node name="Casa44" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1223.85, 12.305, -16.26)
+shape = SubResource("Forma_favela_Casa44")
+
+[node name="Casa45" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1232.05, 11.335, -16.26)
+shape = SubResource("Forma_favela_Casa45")
+
+[node name="Casa46" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1246.975, 11.57, -16.26)
+shape = SubResource("Forma_favela_Casa46")
+
+[node name="Casa47" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1188.8, 9.24, -22.35)
+shape = SubResource("Forma_favela_Casa47")
+
+[node name="Casa48" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1196.8, 9.46, -22.35)
+shape = SubResource("Forma_favela_Casa48")
+
+[node name="Casa49" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1208.95, 10.105, -22.35)
+shape = SubResource("Forma_favela_Casa49")
+
+[node name="Casa50" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1217.175, 9.135, -22.35)
+shape = SubResource("Forma_favela_Casa50")
+
+[node name="Casa51" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1226.275, 9.37, -22.35)
+shape = SubResource("Forma_favela_Casa51")
+
+[node name="Casa52" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1235, 8.99, -22.35)
+shape = SubResource("Forma_favela_Casa52")
+
+[node name="Casa53" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1246.25, 9.24, -22.35)
+shape = SubResource("Forma_favela_Casa53")
+
+[node name="Casa54" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1251.9, 9.46, -22.35)
+shape = SubResource("Forma_favela_Casa54")
+
+[node name="Casa55" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1193.9, 9.135, -28.06)
+shape = SubResource("Forma_favela_Casa55")
+
+[node name="Casa56" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1210.45, 9.37, -28.06)
+shape = SubResource("Forma_favela_Casa56")
+
+[node name="Casa57" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1232.7, 8.99, -28.06)
+shape = SubResource("Forma_favela_Casa57")
+
+[node name="Casa58" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1183.125, 7.26, -32.425)
+shape = SubResource("Forma_favela_Casa58")
+
+[node name="Casa59" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1192.3, 7.905, -32.425)
+shape = SubResource("Forma_favela_Casa59")
+
+[node name="Casa60" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1200.8, 6.935, -32.425)
+shape = SubResource("Forma_favela_Casa60")
+
+[node name="Casa61" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1209.05, 7.17, -32.425)
+shape = SubResource("Forma_favela_Casa61")
+
+[node name="Casa62" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1220.1, 6.79, -32.425)
+shape = SubResource("Forma_favela_Casa62")
+
+[node name="Casa63" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1230, 7.04, -32.425)
+shape = SubResource("Forma_favela_Casa63")
+
+[node name="Casa64" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1240.6, 7.26, -32.425)
+shape = SubResource("Forma_favela_Casa64")
+
+[node name="Casa65" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1254.2, 7.905, -32.425)
+shape = SubResource("Forma_favela_Casa65")
+
+[node name="Casa66" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1188.55, 7.17, -37.535)
+shape = SubResource("Forma_favela_Casa66")
+
+[node name="Casa67" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1197.2, 6.79, -37.535)
+shape = SubResource("Forma_favela_Casa67")
+
+[node name="Casa68" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1206.4, 7.04, -37.535)
+shape = SubResource("Forma_favela_Casa68")
+
+[node name="Casa69" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1234.15, 7.26, -37.535)
+shape = SubResource("Forma_favela_Casa69")
+
+[node name="Casa70" type="CollisionShape3D" parent="VielasFavela/Solidos"]
+position = Vector3(1252, 7.905, -37.535)
+shape = SubResource("Forma_favela_Casa70")
+
+[node name="AnexoVielaEntrada" type="CSGBox3D" parent="VielasFavela"]
+position = Vector3(1210.2, 10.94, 12.78)
+size = Vector3(3.12, 2.12, 1.10)
+material = SubResource("Material_vielas_Reboco")
+use_collision = true
+
+[node name="TelhaAnexoEntrada" type="CSGBox3D" parent="VielasFavela"]
+position = Vector3(1210.2, 12.04, 12.78)
+size = Vector3(3.33, 0.11, 1.27)
+material = SubResource("Material_favela_telha")
+
+[node name="AnexoVielaSaida" type="CSGBox3D" parent="VielasFavela"]
+position = Vector3(1231.5, 11.02, 14.16)
+size = Vector3(2.80, 2.28, 1.10)
+material = SubResource("Material_favela_tijolo")
+use_collision = true
+
+[node name="TelhaAnexoSaida" type="CSGBox3D" parent="VielasFavela"]
+position = Vector3(1231.5, 12.22, 14.16)
+size = Vector3(3.06, 0.12, 1.30)
+material = SubResource("Material_favela_telha")
+
+[node name="Varal" type="CSGBox3D" parent="VielasFavela"]
+position = Vector3(1215, 13.02, 13.47)
+size = Vector3(0.025, 0.025, 2.6)
+material = SubResource("Material_vielas_Fio")
+cast_shadow = 0
+
+[node name="PanoDoVaral" type="CSGBox3D" parent="VielasFavela"]
+position = Vector3(1215, 12.74, 13.09)
+size = Vector3(0.025, 0.56, 0.51)
+material = SubResource("Material_vielas_PortaAzul")
+cast_shadow = 0
+
+[node name="ToalhaDoVaral" type="CSGBox3D" parent="VielasFavela"]
+position = Vector3(1215, 12.77, 13.79)
+size = Vector3(0.025, 0.5, 0.43)
+material = SubResource("Material_vielas_Reboco")
 cast_shadow = 0

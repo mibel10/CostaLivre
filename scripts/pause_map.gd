@@ -133,7 +133,7 @@ func _draw() -> void:
 	var start := project(Vector3(-186, 0, -145))
 	var end := project(Vector3(world.MAP_EAST, 0, 145))
 	draw_rect(Rect2(start, end - start), Color("405453"))
-	var favela_x: float = world.activities.HEAVY_SHOP.x
+	var favela_x: float = world.activities.FAVELA_CENTER_X
 	for center_x in [378.0, 714.0, favela_x]:
 		var hill_start := project(Vector3(center_x - 84, 0, -35))
 		var hill_end := project(Vector3(center_x + 84, 0, 35))

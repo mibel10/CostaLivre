@@ -7,7 +7,7 @@ const CAMPAIGN_LENGTH := 25
 const SECRET_DATA_JOB := 29
 const DATA_VENT := Vector3(147, 0.8, 49)
 const DATA_TERMINAL := Vector3(147, 0, 63)
-const FAVELA_OFFSET := Vector3(840, 0, 0)
+const FAVELA_CENTER_X := 1218.0
 
 const ACTION_JOBS := {
 	7: {"name":"Fuga de teste","kind":"drive","story":"Teste o Aurora X no circuito e devolva-o inteiro a oficina.","reward":3000,"model":3,"spawn":Vector3(-105,0.3,-5),"points":[Vector3(-126,0,-84),Vector3(84,0,-84),Vector3(84,0,84),Vector3(-21,0,63)],"time":120.0,"min_hp":80},
@@ -22,7 +22,7 @@ const ACTION_JOBS := {
 	17: {"name":"Roubo de suprimentos","kind":"cargo","story":"Recolha tres caixas no supermercado, consiga um carro e leve a carga a oficina depois de despistar a policia.","reward":4200,"points":[Vector3(298,0,-88),Vector3(298,0,-99),Vector3(298,0,-110)],"drop":Vector3(-21,0,63),"time":220.0},
 	18: {"name":"Carga instável","kind":"drive","story":"Transporte a carga fragil entre os mercados. Colisoes e trancos destroem a mercadoria.","reward":4600,"model":8,"spawn":Vector3(798,0.3,-78.5),"points":[Vector3(882,0,-84),Vector3(882,0,84),Vector3(294,0,-78.5)],"fragile":true,"time":210.0},
 	19: {"name":"Comboio sob fogo","kind":"escort","story":"Aproxime-se do comboio e use F para partir. Siga o veiculo e proteja-o dos atiradores ate o destino.","reward":5200,"model":8,"spawn":Vector3(210,0.3,84),"track":[Vector3(210,0.3,84),Vector3(462,0.3,84),Vector3(462,0.3,126),Vector3(630,0.3,126)],"drop":Vector3(630,0,126),"guards":[Vector3(462,0.2,70),Vector3(462,0.2,110),Vector3(588,0.2,116)],"time":190.0},
-	20: {"name":"Passagem dos becos","kind":"foot_race","story":"Va ao inicio do percurso e use F. Corra, role e agache na passagem baixa para cruzar a favela a pe.","reward":3600,"points":[Vector3(344,8.83,31)+FAVELA_OFFSET,Vector3(359,9.9,31)+FAVELA_OFFSET,Vector3(382.75,9.9,20)+FAVELA_OFFSET,Vector3(382.75,9.9,16)+FAVELA_OFFSET,Vector3(397,9.9,31)+FAVELA_OFFSET,Vector3(420,7.4,31)+FAVELA_OFFSET],"race_time":45.0,"time":240.0},
+	20: {"name":"Passagem dos becos","kind":"foot_race","story":"Comece no acostamento. Entre nas vielas, agache sob a cobertura baixa e desça a escadaria até o próximo patamar.","reward":3600,"points":[Vector3(1196,9.9,7.1),Vector3(1202.5,9.9,7.1),Vector3(1202.5,9.9,13.45),Vector3(1210,9.9,14.0),Vector3(1217,9.9,13.45),Vector3(1225,9.9,13.45),Vector3(1231.5,9.9,13.0),Vector3(1241,9.9,13.45),Vector3(1241,9.9,18),Vector3(1241,7.7,24),Vector3(1245,7.7,26.1)],"race_time":45.0,"time":240.0},
 	21: {"name":"Carga quente","kind":"drive","story":"Leve a carga entre os mercados sob perseguicao. Passe pelos pontos e despiste antes da entrega final.","reward":5200,"model":8,"spawn":Vector3(294,0.3,-78.5),"points":[Vector3(294,0,126),Vector3(798,0,126),Vector3(798,0,-78.5)],"escape":true,"start_heat":80,"time":240.0},
 	22: {"name":"Cofres do leste","kind":"breach","story":"Atire nas fechaduras dos tres cofres, recolha os documentos e entregue-os na APEX depois de despistar.","reward":5400,"points":[Vector3(441,1.1,112),Vector3(483,1.1,112),Vector3(525,1.1,112)],"drop":Vector3(21,0,42),"time":200.0},
 	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e cruze a cidade sob cinco estrelas. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0},
@@ -37,12 +37,12 @@ const HILL_RESIDENT := Vector3(714,9.9,23)
 const HILL_MEDICINE := Vector3(63,0,27)
 var hill_errand_stage := 0
 var hill_errand_owner := 0
-const SUPPLY_PICKUP := Vector3(368.5,9.9,31) + FAVELA_OFFSET
-const SUPPLY_ALLEY := Vector3(405,9.9,14) + FAVELA_OFFSET
+const SUPPLY_PICKUP := Vector3(1202.4,9.9,14.2)
+const SUPPLY_ALLEY := Vector3(1244.65,7.7,26.1)
 var supply_stage := 0
 var supply_owner := 0
 var supply_scene_until := 0
-const HEAVY_SHOP := Vector3(378, 9.9, 31) + FAVELA_OFFSET
+const HEAVY_SHOP := Vector3(1197.4, 9.9, 14.5)
 const CAPACITIES := [0,12,30,8,32,1,5,20]
 const DAMAGE := [0,34,24,58,18,220,180,450]
 const FIRE_INTERVAL := [0.0,0.32,0.11,0.65,0.075,1.8,1.2,0.12]
@@ -66,7 +66,7 @@ var stage := 0
 var completed := 0
 var clock := 0.0
 var progress := 0.0
-const INFORMANT_PICKUP := Vector3(378,9.9,4.5) + FAVELA_OFFSET
+const INFORMANT_PICKUP := Vector3(FAVELA_CENTER_X, 9.9, 4.5)
 const INFORMANT_SAFEHOUSE := Vector3(189,0,126)
 var passenger_car := -1
 var shipment_integrity := 100.0
