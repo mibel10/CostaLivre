@@ -1,6 +1,6 @@
 extends Node3D
 
-const HUMAN = preload("res://assets/models/CesiumMan.glb")
+const HUMAN = preload("res://assets/models/HumanoCostaLivre.glb")
 const OUTFIT_SHIRTS := [Color("eeeade"),Color("9f4939"),Color("385b79"),Color("6d8052"),Color("b88c50"),Color("6f5271")]
 const OUTFIT_PANTS := [Color("264f84"),Color("383b43"),Color("566657"),Color("634c3d"),Color("374c68"),Color("4f5155")]
 var animation: AnimationPlayer
@@ -140,7 +140,7 @@ func start_driver_ragdoll(launch: Vector3) -> void:
 	queue_free()
 
 func apply_street_clothes(instance: MeshInstance3D) -> void:
-	# Color the rest-pose vertices, so clothes follow the existing skin and bones.
+	# The baked UVs encode wardrobe regions and tonal variation, independent of skinning.
 	var source: Mesh = instance.mesh
 	var dressed := ImporterMesh.new()
 	var index := posmod(outfit_index,6) if outfit_index >= 0 else 0
@@ -156,39 +156,21 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 		return
 	var shirt: Color = Color("293e56") if police else OUTFIT_SHIRTS[index]
 	var pants: Color = Color("252e39") if police else OUTFIT_PANTS[index]
-	var bounds := source.get_aabb()
-	var up := bounds.size.max_axis_index()
-	var side := 1 if up == 2 else 0
-	var forward := 0 if up == 2 else 2
+	var skin: Color = skins[skin_index]
+	var hair: Color = [Color("211814"), Color("312117"), Color("161516"), Color("3b271b"), Color("1b1715"), Color("2d211c")][skin_index]
+	var palette: Array[Color] = [
+		skin, shirt, pants, Color("a9a6a0"), Color("24262b"), hair,
+		Color("d3c6bb"), Color("251d19"), skin.darkened(0.22),
+		pants.darkened(0.22), shirt.darkened(0.25), skin.darkened(0.3),
+		hair.lightened(0.07), Color("78716b")
+	]
 	for surface in source.get_surface_count():
 		var arrays := source.surface_get_arrays(surface)
-		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX].duplicate()
+		var regions: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
 		var colors := PackedColorArray()
-		for i in vertices.size():
-			var point := vertices[i]
-			var height: float = (point[up]-bounds.position[up])/bounds.size[up]
-			var lateral: float = absf(point[side]-bounds.get_center()[side])
-			var color: Color = skins[skin_index]
-			if height < 0.055:
-				color = Color("202025") if height > 0.018 else Color("b5b2a7")
-			elif height < 0.49:
-				color = pants.darkened(0.14 * (1.0 - smoothstep(0.06, 0.18, height)))
-			elif height < 0.515:
-				color = Color("27241f")
-			elif height < 0.81 and lateral < 0.18:
-				color = shirt
-				if height > 0.765 and lateral < 0.075:
-					color = skins[skin_index]
-			elif height > 0.94:
-				color = Color("181612")
-			if height > 0.835:
-				var head_blend := smoothstep(0.835, 0.9, height)
-				var center := bounds.get_center()
-				point[side] = lerpf(point[side], center[side], 0.32 * head_blend)
-				point[forward] = lerpf(point[forward], center[forward], 0.28 * head_blend)
-				vertices[i] = point
-			colors.append(color)
-		arrays[Mesh.ARRAY_VERTEX] = vertices
+		for uv in regions:
+			var region := clampi(roundi(uv.x * 16.0), 0, palette.size() - 1)
+			colors.append(palette[region].darkened(1.0 - uv.y))
 		arrays[Mesh.ARRAY_COLOR] = colors
 		dressed.add_surface(source.surface_get_primitive_type(surface), arrays)
 	dressed.generate_lods(60.0, 0.0, [])

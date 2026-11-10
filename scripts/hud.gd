@@ -262,7 +262,7 @@ func draw_menu(a: Node) -> void:
 	backdrop()
 	if a.menu == "credits":
 		text("CRÉDITOS DOS ASSETS", Vector2(270, 150), 27, gold)
-		var lines := ["Car Concept · Eric Chadwick / Darmstadt Graphics Group GmbH, 2024", "Cesium Man · Cesium, 2017", "Modelos: CC BY 4.0 · creativecommons.org/licenses/by/4.0/", "Fonte: github.com/KhronosGroup/glTF-Sample-Assets", "Adaptados: escala, materiais, pintura, malhas agrupadas e animação.", "", "Texturas e céu HDR: Poly Haven · CC0 · polyhaven.com", "Asphalt 02 · Concrete Wall 006 · Kloppenheim 06 Pure Sky", "", "C / ESC · voltar"]
+		var lines := ["Car Concept · Eric Chadwick / Darmstadt Graphics Group GmbH, 2024", "Esqueleto e caminhada: Cesium Man · Cesium, 2017", "Modelos de origem: CC BY 4.0 · creativecommons.org/licenses/by/4.0/", "Fonte: github.com/KhronosGroup/glTF-Sample-Assets", "A malha humana do Costa Livre foi criada sobre o esqueleto adaptado.", "", "Texturas e céu HDR: Poly Haven · CC0 · polyhaven.com", "Asphalt 02 · Concrete Wall 006 · Kloppenheim 06 Pure Sky", "", "C / ESC · voltar"]
 		for i in lines.size():
 			text(lines[i], Vector2(270, 201 + i * 32), 16, gold if i == 9 else ink)
 		draw_choice(MENU_CLOSE, "Voltar")
