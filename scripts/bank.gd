@@ -36,7 +36,7 @@ func inside() -> bool:
 
 func contains_position(at: Vector3) -> bool:
 	var p := to_local(at)
-	return absf(p.x) < 13.6 and p.z > -13.5 and p.z < 13.7 and p.y < 7
+	return absf(p.x) < 13.6 and p.z > -13.5 and p.z < 13.7 and p.y >= -0.5 and p.y < 7
 
 func near(local_point: Vector3) -> bool:
 	return world.active_car == null and world.player.position.distance_to(to_global(local_point)) < 2.4

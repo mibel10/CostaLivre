@@ -803,8 +803,8 @@ func update_avatars(states: Dictionary) -> void:
 		avatar.node.collision_layer=2 if on_foot and float(state.get("hp",100))>0 else 0
 		avatar.node.model.rotation.z=PI/2 if float(state.get("hp",100))<=0 else 0
 		avatar.tag.visible=close and not state.has("bus") and not world.vehicle_falls.has(id)
-		avatar.node.model.process_mode=Node.PROCESS_MODE_INHERIT if close else Node.PROCESS_MODE_DISABLED
-		if close and on_foot:
+		avatar.node.model.process_mode = Node.PROCESS_MODE_INHERIT if avatar.node.visible else Node.PROCESS_MODE_DISABLED
+		if avatar.node.visible and float(state.get("hp", 100)) > 0.0:
 			avatar.node.animate(3.0 if avatar.at.distance_squared_to(state.position)>0.0064 else 0.0)
 		avatar.at=state.position
 		if world.vehicle_entries.has(id):

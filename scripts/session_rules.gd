@@ -19,7 +19,7 @@ var mission_offer_from := 0
 var mission_offer_started := false
 var mission_invites := {}
 var police_sight_clock := 0.0
-var visible_police: Array = []
+var visible_police := {}
 var mission_hacking_peer := 0
 var mission_pattern: Array[int] = []
 var mission_entered := 0
@@ -92,6 +92,7 @@ func refresh_wanted_heat() -> void:
 func clear_wanted() -> void:
 	for sheet in sheets.values():
 		sheet.erase("wanted_heat")
+		sheet.erase("wanted_grace")
 	world.heat = 0.0
 
 func position_of(id: int) -> Vector3:
@@ -178,7 +179,9 @@ func tick_mission_hack(delta: float) -> void:
 		if mission_round_time<=0:
 			fail_mission_hack()
 
-func police_target_actor(at: Vector3) -> Array:
+func police_target_actor(at: Vector3, assigned := 0) -> Array:
+	if assigned > 0 and network.members.has(assigned) and not is_dead(assigned):
+		return [assigned, position_of(assigned)]
 	var selected: Array=[]
 	var closest:=INF
 	for id in wanted_participants():
@@ -190,9 +193,6 @@ func police_target_actor(at: Vector3) -> Array:
 			selected=[id,candidate]
 			closest=distance
 	return selected if not selected.is_empty() else nearest_player(at)
-
-func police_target(at: Vector3) -> Vector3:
-	return police_target_actor(at)[1]
 
 func held(id: int) -> bool:
 	return (Input.is_action_pressed("activity") and world.activities.menu=="") if id==local_id() else bool(network.members.get(id,{}).get("held",false))
@@ -462,7 +462,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"refuel":
 			var car_id: int = int(network.members.get(id, {}).get("car", -1))
 			var car: Node = world.car_by_id(car_id)
-			if car != null and not bus_riders.has(id) and network.owners.get(car_id, 0) == id and car.hp > 0 and car.fuel < 1.0 and absf(car.speed) <= 0.25 and world.near_fuel_station(car.position):
+			if car != null and not bus_riders.has(id) and network.owners.get(car_id, 0) == id and car.hp > 0 and car.fuel < 1.0 and car.refuel_time <= 0.0 and absf(car.speed) <= 0.25 and world.near_fuel_station(car.position):
 				car.refuel_time = 5.0
 				car.refuel_peer = id
 				private_notice(id, "Abastecendo...")
@@ -554,8 +554,10 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 	if sheets[id].health<=0:
 		if by_police or int(sheets[id].get("prison_stage", -1)) >= 0:
 			sheets[id]["prison_stage"] = 0
+			sheets[id]["prison_progress"] = 0.0
 		sheets[id].dead_until=Time.get_ticks_msec()+3000
 		sheets[id].erase("wanted_heat")
+		sheets[id].erase("wanted_grace")
 		refresh_wanted_heat()
 		if world.heat <= 0.0:
 			world.crime_grace = 0.0
@@ -763,7 +765,7 @@ func physics(delta: float) -> void:
 				car.hovering = false
 		if car.refuel_time > 0.0:
 			var peer_id: int = car.refuel_peer
-			if not network.members.has(peer_id) or int(network.members[peer_id].get("car", -1)) != car.net_id or absf(car.speed) > 0.25 or not world.near_fuel_station(car.position):
+			if car.hp <= 0 or int(network.owners.get(car.net_id, 0)) != peer_id or int(network.members.get(peer_id, {}).get("car", -1)) != car.net_id or absf(car.speed) > 0.25 or not world.near_fuel_station(car.position):
 				car.refuel_time = 0.0
 				car.refuel_peer = 0
 				private_notice(peer_id, "Abastecimento cancelado.")
@@ -853,35 +855,39 @@ func physics(delta: float) -> void:
 	if police_sight_clock<=0:
 		police_sight_clock=0.2
 		visible_police.clear()
-		for observer in world.cops+a.officers:
-			if is_instance_valid(observer) and observer.hp>0 and world.police_can_see(observer):
-				visible_police.append(observer)
+		for observer in world.cops + a.officers:
+			if not is_instance_valid(observer) or observer.hp <= 0:
+				continue
+			var target := police_target_actor(observer.position, int(observer.get_meta("police_target_peer", 0)))
+			if world.police_can_see(observer, target[1]):
+				visible_police[observer] = target[0]
 	var seen := {}
 	var pressured := {}
 	var arresting := {}
 	for observer in visible_police:
 		if not is_instance_valid(observer) or observer.is_queued_for_deletion() or observer.hp <= 0:
 			continue
-		var target: Array=police_target_actor(observer.position)
-		if not network.members.has(target[0]) or is_dead(target[0]):
+		var target_id: int = visible_police[observer]
+		if not network.members.has(target_id) or is_dead(target_id):
 			continue
-		if wanted_heat(target[0]) <= 0 and not observer.has_meta("mission_contract"):
+		if wanted_heat(target_id) <= 0 and not observer.has_meta("mission_contract"):
 			continue
-		seen[target[0]] = true
-		var distance:float=observer.position.distance_to(target[1])
-		if target_crouched(target[1]) and distance>8:
+		var target_position := position_of(target_id)
+		var distance_squared: float = observer.position.distance_squared_to(target_position)
+		if distance_squared > 42.0 * 42.0 or (distance_squared >= 64.0 and bool(network.members[target_id].get("crouch", false))):
 			continue
-		if distance<8:
-			var cover := PhysicsRayQueryParameters3D.create(observer.position + Vector3.UP * 1.5, target[1] + Vector3.UP, 1)
+		if distance_squared < 64.0:
+			var cover := PhysicsRayQueryParameters3D.create(observer.position + Vector3.UP * 1.5, target_position + Vector3.UP, 1)
 			cover.hit_from_inside = true
 			if not world.get_world_3d().direct_space_state.intersect_ray(cover).is_empty():
 				continue
-			if not pressured.has(target[0]):
-				pressured[target[0]]=true
-				damage_peer(target[0],delta*(2.25 if distance>4 else 7.5),0,true)
-			var in_car:bool=int(network.members[target[0]].get("car",-1))>=0
-			if distance<3.5 and (not in_car or absf(float(network.members[target[0]].get("speed",0)))<2):
-				arresting[target[0]]=true
+			if not pressured.has(target_id):
+				pressured[target_id] = true
+				damage_peer(target_id, delta * (2.25 if distance_squared > 16.0 else 7.5), 0, true)
+			var in_car := int(network.members[target_id].get("car", -1)) >= 0
+			if distance_squared < 3.5 * 3.5 and (not in_car or absf(float(network.members[target_id].get("speed", 0))) < 2):
+				arresting[target_id] = true
+		seen[target_id] = true
 	for id in network.members:
 		if arresting.has(id) and not is_dead(id):
 			network.members[id]["arrest_progress"]=float(network.members[id].get("arrest_progress",0.0))+delta
@@ -892,10 +898,14 @@ func physics(delta: float) -> void:
 				private_notice(id,"Preso pela policia / multa de $500")
 		elif not arresting.has(id) or is_dead(id):
 			network.members[id]["arrest_progress"]=0.0
-	if world.crime_grace <= 0:
-		for id in wanted_participants():
-			if not seen.has(id):
-				sheets[id]["wanted_heat"] = maxf(0.0, wanted_heat(id) - delta * world.HEAT_DECAY_RATE)
+	var wanted_changed := false
+	for id in wanted_participants():
+		var grace := maxf(0.0, float(sheets[id].get("wanted_grace", 0.0)) - delta)
+		sheets[id]["wanted_grace"] = grace
+		if grace <= 0.0 and not seen.has(id):
+			sheets[id]["wanted_heat"] = maxf(0.0, wanted_heat(id) - delta * world.HEAT_DECAY_RATE)
+			wanted_changed = true
+	if wanted_changed:
 		refresh_wanted_heat()
 	update_marker()
 
@@ -912,7 +922,7 @@ func export_state() -> Dictionary:
 		sheets[1].inventory=inventory()
 	var a: Node=world.activities
 	var bank: Node=a.bank
-	return {"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
+	return {"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"bank_door_angle":bank.door.rotation.y,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
 
 func apply_state(data: Dictionary) -> void:
 	sheets=data.get("sheets",{})
@@ -939,7 +949,7 @@ func apply_state(data: Dictionary) -> void:
 		a.bank.set(key,data.bank[key])
 	for i in a.bank.bag_models.size():
 		a.bank.bag_models[i].visible=not a.bank.taken[i]
-	a.bank.door.rotation.y=PI/2 if a.bank.phase>=3 else 0
+	a.bank.door.rotation.y = float(data.get("bank_door_angle", PI / 2 if a.bank.phase >= 3 else 0.0))
 	a.bank.security_light.material_override=world.material(Color("6acbaa") if a.bank.phase>0 else Color("ef9d6b"),true)
 	a.bank.screen.material_override=world.material(Color("66cba3") if a.bank.phase>=2 else Color("66bbcc"),true)
 	world.life.task_progress=float(data.task_progress)

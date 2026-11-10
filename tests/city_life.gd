@@ -17,9 +17,17 @@ func run() -> void:
 	assert(not space.intersect_ray(extension_ground).is_empty(), "The new road has solid ground")
 	var gate := PhysicsRayQueryParameters3D.create(Vector3(1035,1,80), Vector3(1035,1,70), 1)
 	assert(space.intersect_ray(gate).is_empty(), "The prison entrance is accessible")
-	for index in range(world.PRISON_POINTS.size() - 1):
-		var path := PhysicsRayQueryParameters3D.create(world.PRISON_POINTS[index] + Vector3.UP, world.PRISON_POINTS[index + 1] + Vector3.UP, 1)
-		assert(space.intersect_ray(path).is_empty(), "Each prison objective is reachable")
+	world.player.set_physics_process(false)
+	var prison_route := [
+		Vector3(1012, 0.08, 40), Vector3(1012, 0.08, 59.3), Vector3(1012, 0.08, 63.8),
+		Vector3(1035, 0.08, 63.8), Vector3(1035, 0.08, 60), Vector3(1035, 0.08, 65),
+		Vector3(1052, 0.08, 65), Vector3(1035, 0.08, 65), Vector3(1035, 0.08, 48), Vector3(1035, 0.08, 73),
+	]
+	for index in range(prison_route.size() - 1):
+		world.player.position = prison_route[index]
+		world.player.set_crouched(index == 1)
+		await physics_frame
+		assert(world.player.move_and_collide(prison_route[index + 1] - prison_route[index], true) == null, "The player can take the actual route between prison objectives")
 	var alley := PhysicsRayQueryParameters3D.create(Vector3(405,11,1), Vector3(405,11,29), 1)
 	assert(space.intersect_ray(alley).is_empty(), "The alley connects both streets")
 	world.player.set_physics_process(false)
@@ -75,6 +83,17 @@ func run() -> void:
 	world.life._process(1)
 	assert(simulated.size() > 10 and simulated == world.life.people.filter(func(person): return person.is_physics_processing()), "Graphics quality cannot change which pedestrians the game simulates")
 	world.settings.quality = original_quality
+	var contact: CharacterBody3D = world.life.people[world.life.building_contacts.keys()[0]]
+	world.player.position = contact.position + Vector3(0, 0, 45)
+	var crowd: Array = world.life.people.filter(func(person): return not person.stationary).slice(0, 24)
+	var original_positions := []
+	for person in crowd:
+		original_positions.append(person.position)
+		person.position = world.player.position + Vector3.RIGHT * 5.0
+	world.life._process(1)
+	assert(contact.visible and not contact.is_physics_processing(), "Nearby contacts stay visible even with all walking slots full")
+	for i in crowd.size():
+		crowd[i].position = original_positions[i]
 	var ped = world.life.people[3]
 	world.player.position = ped.position + Vector3(2,0,0)
 	world.life._process(1)

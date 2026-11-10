@@ -515,7 +515,7 @@ func inside_room(at: Vector3) -> bool:
 	return false
 
 func inside_public_interior(at: Vector3) -> bool:
-	if inside_room(at) or (at.y >= -0.5 and world.activities.bank.contains_position(at)):
+	if inside_room(at) or world.activities.bank.contains_position(at):
 		return true
 	# Inner faces of the two supermarket shells in main.tscn.
 	return at.y >= -0.5 and at.y < 14.0 and at.z > -116.8 and at.z < -83.2 and (absf(at.x - 294.0) < 35.8 or absf(at.x - 798.0) < 35.8)
@@ -896,21 +896,28 @@ func _process(delta: float) -> void:
 			if id != multiplayer.get_unique_id():
 				observers.append(world.network.rules.position_of(id))
 	var distances := {}
+	var nearby_walkers: Array = []
 	for ped in people:
-		var nearest := INF
+		if ped.hp <= 0 or ped.stationary:
+			ped.visible = ped.hp > 0 and ped.position.distance_squared_to(subject) < 3600.0
+			ped.model.process_mode = Node.PROCESS_MODE_INHERIT if ped.visible else Node.PROCESS_MODE_DISABLED
+			ped.set_physics_process(false)
+			continue
+		var nearest := 3600.0
 		for observer in observers:
-			nearest=minf(nearest,ped.position.distance_squared_to(observer))
-		distances[ped]=nearest
-	var sorted := people.duplicate()
-	sorted.sort_custom(func(a,b): return distances[a]<distances[b])
-	var active_count := 0
-	for ped in sorted:
-		var cashier: bool = ped.has_meta("supermarket_cashier")
-		var simulate: bool = ped.hp > 0 and distances[ped] < 3600 and (cashier or active_count < 24)
-		if simulate and not cashier:
-			active_count += 1
-		var near: bool = ped.position.distance_squared_to(subject) < 3600 and ped.hp > 0
-		ped.visible = near and simulate
-		ped.model.process_mode=Node.PROCESS_MODE_INHERIT if ped.visible else Node.PROCESS_MODE_DISABLED
-		ped.set_physics_process(simulate and not ped.stationary)
+			nearest = minf(nearest, ped.position.distance_squared_to(observer))
+		if nearest < 3600.0:
+			distances[ped] = nearest
+			nearby_walkers.append(ped)
+		else:
+			ped.hide()
+			ped.model.process_mode = Node.PROCESS_MODE_DISABLED
+			ped.set_physics_process(false)
+	nearby_walkers.sort_custom(func(a, b): return distances[a] < distances[b])
+	for i in nearby_walkers.size():
+		var ped = nearby_walkers[i]
+		var simulate := i < 24
+		ped.visible = ped.position.distance_squared_to(subject) < 3600.0
+		ped.model.process_mode = Node.PROCESS_MODE_INHERIT if ped.visible and simulate else Node.PROCESS_MODE_DISABLED
+		ped.set_physics_process(simulate)
 	refresh_room_visibility(subject)

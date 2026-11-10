@@ -86,7 +86,7 @@ func gameplay_actions() -> Array[String]:
 	if not a.bank.inside() and a.bank.phase != 4:
 		result.append("reset")
 	var prompt: String = a.prompt()
-	var use_here := prompt.begins_with("F ") or prompt.begins_with("F:") or prompt.to_lower().contains("segure f")
+	var use_here := prompt.begins_with("F ") or prompt.begins_with("F:") or prompt.begins_with("USAR ") or prompt.to_lower().contains("segure f")
 	if a.nearby_place() == "robbery" and (car != null or a.weapon == 0):
 		use_here = false
 	if car == null and a.job in [27, 28] and world.subject_position().distance_to(a.destination()) <= 4.0:

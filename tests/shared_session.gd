@@ -111,10 +111,19 @@ func run() -> void:
 	assert(not walker.scared and host.activities.pedestrian_target == null)
 	walker.position = walker_position
 	var observer := Node3D.new()
-	rules.visible_police.append(observer)
+	rules.visible_police[observer] = id
 	observer.free()
 	rules.police_sight_clock = 0.2
 	rules.physics(0.0)
+	rules.clear_wanted()
+	host.raise_heat(50, 1)
+	rules.sheets[1]["wanted_grace"] = 0.0
+	host.raise_heat(50, id)
+	assert(rules.police_target_actor(host.player.position, id)[0] == id, "A dispatched patrol keeps its assigned target")
+	host.response_delay = 60.0
+	rules.physics(0.1)
+	assert(rules.wanted_heat(1) < 50.0 and rules.wanted_heat(id) == 50.0, "A second player's crime cannot stop the first player's wanted decay")
+	rules.clear_wanted()
 	host.raise_heat(100, 1)
 	host.raise_heat(100, id)
 	host.response_delay = 0
@@ -260,6 +269,8 @@ func run() -> void:
 	await create_timer(0.3).timeout
 	client.network.rules.send_action("interact",{})
 	await wait_for(func(): return host.activities.bank.phase==3)
+	assert(is_equal_approx(rules.export_state().bank_door_angle, host.activities.bank.door.rotation.y), "Snapshots carry the actual vault door angle")
+	await wait_for(func(): return is_equal_approx(client.activities.bank.door.rotation.y, PI / 2))
 	for bag in client.activities.bank.BAGS:
 		client.player.position=client.activities.bank.to_global(bag)+Vector3(1,0.2,0)
 		await create_timer(0.3).timeout

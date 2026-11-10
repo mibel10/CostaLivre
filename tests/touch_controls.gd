@@ -57,6 +57,26 @@ func run() -> void:
 	world.active_car = car
 	assert("interact" in touch.gameplay_actions() and "weapon" not in touch.gameplay_actions(), "Driving shows exit and hides the weapon wheel")
 	assert("flip" not in touch.gameplay_actions(), "An upright car does not show the recovery button")
+	car.position = world.FUEL_STATIONS[0] + Vector3.RIGHT * 6.0
+	car.fuel = 0.5
+	assert("activity" not in touch.gameplay_actions(), "The fuel action uses the same radius as the pump")
+	car.position = world.FUEL_STATIONS[0]
+	car.speed = -1.0
+	touch.action("activity", true)
+	touch.action("activity", false)
+	assert(car.refuel_time == 0.0, "Reversing at the pump cannot start refueling")
+	car.speed = 0.0
+	assert("activity" in touch.gameplay_actions(), "A parked car with a low tank can use the pump")
+	touch.action("activity", true)
+	touch.action("activity", false)
+	world._physics_process(1.0)
+	assert(is_equal_approx(car.refuel_time, 4.0))
+	touch.action("activity", true)
+	touch.action("activity", false)
+	assert(is_equal_approx(car.refuel_time, 4.0), "Repeated taps do not reset the timer")
+	car.speed = -1.0
+	world._physics_process(0.1)
+	assert(car.refuel_time == 0.0 and car.fuel == 0.5, "Reversing cancels refueling")
 	car.tumbling = true
 	car.rotation.z = PI
 	assert("flip" in touch.gameplay_actions(), "The Android recovery button appears when the car is overturned")

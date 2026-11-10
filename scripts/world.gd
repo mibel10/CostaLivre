@@ -410,15 +410,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if extra != null and extra.handle_input(event):
 		return
-	if event.is_action_pressed("activity") and active_car != null and not bus_passenger and near_fuel_station(active_car.position):
-		if active_car.speed <= 0.25 and active_car.fuel < 1.0:
-			if network != null and network.active():
-				network.rules.send_action("refuel")
-			else:
-				active_car.refuel_time = 5.0
-			notify("Abastecendo...")
+	if event.is_action_pressed("activity") and not finished and activities.menu == "" and active_car != null and not bus_passenger and near_fuel_station(active_car.position):
+		if active_car.refuel_time > 0.0 or active_car.hp <= 0:
+			return
+		if absf(active_car.speed) > 0.25:
+			notify("Pare o carro junto à bomba.")
+		elif active_car.fuel >= 1.0:
+			notify("O tanque já está cheio.")
+		elif network != null and network.active():
+			network.rules.send_action("refuel")
 		else:
-			notify("Pare o carro junto à bomba." if active_car.speed > 0.25 else "O tanque já está cheio.")
+			active_car.refuel_time = 5.0
+			notify("Abastecendo...")
 		return
 	if activities != null and activities.handle_input(event):
 		return
@@ -743,6 +746,7 @@ func raise_heat(amount: float, actor := 0) -> void:
 		if not rules.sheets.has(id) or rules.is_dead(id):
 			return
 		rules.sheets[id]["wanted_heat"] = minf(100.0, rules.wanted_heat(id) + amount)
+		rules.sheets[id]["wanted_grace"] = CRIME_GRACE_SECONDS
 	if heat <= 0:
 		response_delay = 6
 	if network != null and network.active():
@@ -774,20 +778,19 @@ func police_target(observer: Node3D) -> Vector3:
 	var mission_vehicle: Node = car_by_id(int(observer.get_meta("mission_vehicle",-1)))
 	if mission_vehicle != null and mission_vehicle.hp > 0: return mission_vehicle.position
 	if network!=null and network.active():
-		var assigned: int = int(observer.get_meta("police_target_peer",0))
-		if assigned > 0 and network.members.has(assigned) and not network.rules.is_dead(assigned):
-			return network.rules.position_of(assigned)
-		return network.rules.police_target(observer.position)
+		return network.rules.police_target_actor(observer.position, int(observer.get_meta("police_target_peer", 0)))[1]
 	return subject_position()
 
-func police_can_see(observer: Node3D) -> bool:
-	var target := police_target(observer) + Vector3(0, 1, 0)
+func police_can_see(observer: Node3D, at := Vector3.INF) -> bool:
+	var target := (at if at.is_finite() else police_target(observer)) + Vector3.UP
 	var origin := observer.position + Vector3(0, 1.5, 0)
-	if origin.distance_to(target) > 42:
+	var distance_squared := origin.distance_squared_to(target)
+	if distance_squared > 42.0 * 42.0:
 		return false
-	if network!=null and network.active() and origin.distance_to(target)>12 and network.rules.target_crouched(target-Vector3(0,1,0)):
+	if network!=null and network.active() and distance_squared > 12.0 * 12.0 and network.rules.target_crouched(target-Vector3(0,1,0)):
 		return false
 	var query := PhysicsRayQueryParameters3D.create(origin, target, 1)
+	query.hit_from_inside = true
 	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 
 func safe_camera_position(focus: Vector3, desired: Vector3) -> Vector3:
@@ -936,7 +939,7 @@ func _physics_process(delta: float) -> void:
 		engine_audio.volume_db = -28 if active_car != null else -55
 		engine_audio.pitch_scale = 0.7 + absf(active_car.speed) / 24 if active_car != null else 0.7
 	if active_car != null and active_car.refuel_time > 0.0 and (network == null or not network.active()):
-		if active_car.speed > 0.25 or not near_fuel_station(active_car.position):
+		if active_car.hp <= 0 or absf(active_car.speed) > 0.25 or not near_fuel_station(active_car.position):
 			active_car.refuel_time = 0.0
 			notify("Abastecimento cancelado.")
 		else:
@@ -972,26 +975,25 @@ func _physics_process(delta: float) -> void:
 	var pos := subject_position()
 	activities.tick(delta)
 	update_dispatch(delta)
-	var nearest_cop := 1000.0
-	sight_timer -= delta
-	if sight_timer <= 0:
-		sight_timer = 0.14
-		last_seen = false
-	for cop in cops:
-		if cop.hp > 0:
-			nearest_cop = minf(nearest_cop, pos.distance_to(cop.position))
-			if sight_timer >= 0.14 and not last_seen:
-				last_seen = police_can_see(cop)
-	for officer in activities.officers:
-		if officer.hp > 0:
-			nearest_cop = minf(nearest_cop, pos.distance_to(officer.position))
-			if sight_timer >= 0.14 and not last_seen:
-				last_seen = police_can_see(officer)
-	var seen := last_seen
 	if heat > 0:
-		if not seen and crime_grace <= 0:
+		sight_timer -= delta
+		var check_sight := sight_timer <= 0.0
+		if check_sight:
+			sight_timer = 0.14
+			last_seen = false
+		var can_arrest := false
+		var on_foot_or_stopped := active_car == null or absf(active_car.speed) < 2.0
+		for group in [cops, activities.officers]:
+			for observer in group:
+				if observer.hp <= 0:
+					continue
+				var close := on_foot_or_stopped and not can_arrest and pos.distance_squared_to(observer.position) < 4.5 * 4.5
+				if (close or (check_sight and not last_seen)) and police_can_see(observer, pos):
+					last_seen = true
+					can_arrest = can_arrest or close
+		if not last_seen and crime_grace <= 0:
 			heat = maxf(0, heat - delta * HEAT_DECAY_RATE)
-		if seen and nearest_cop < 4.5 and (active_car == null or absf(active_car.speed) < 2):
+		if can_arrest:
 			bust_progress += delta
 			if bust_progress > 9:
 				prison_after_death = true
@@ -1000,6 +1002,9 @@ func _physics_process(delta: float) -> void:
 			bust_progress = maxf(0, bust_progress - delta * 2)
 	else:
 		bust_progress = 0
+		sight_timer = 0.0
+		last_seen = false
+
 func _process(delta: float) -> void:
 	var escape_marker: Label3D = get_node_or_null("MarcadorFuga")
 	if escape_marker != null:
@@ -1069,6 +1074,8 @@ func finish(success: bool) -> void:
 	if finished:
 		return
 	finished = true
+	if active_car != null:
+		active_car.refuel_time = 0.0
 	retry_after_death = game_mode == "campaign" and activities.job >= 0
 	activities.job = -1
 	activities.progress = 0
@@ -1105,6 +1112,10 @@ func respawn_local() -> void:
 	player.model.position = Vector3.ZERO
 	player.model.rotation = Vector3.ZERO
 	player.roll_time = 0
+	prison_progress = 0.0
+	bust_progress = 0.0
+	last_seen = false
+	sight_timer = 0.0
 	health = 100
 	heat = 0
 	finished = false
@@ -1124,7 +1135,6 @@ func respawn_local() -> void:
 		for bag in activities.bank.bag_models: bag.visible = true
 	if prison_stage >= 0:
 		retry_after_death = false
-		bust_progress = 0
 		notify("Você está preso. " + PRISON_TEXT[prison_stage])
 		if game_mode == "campaign": activities.save_campaign()
 		return

@@ -11,6 +11,7 @@ func run() -> void:
 	world.set_process(false)
 	world.set_physics_process(false)
 	var bank = world.activities.bank
+	assert(not bank.contains_position(bank.to_global(Vector3(0, -8.3, 0))), "The underground parking floor is outside the bank")
 	await physics_frame
 	await physics_frame
 	var entrance := PhysicsRayQueryParameters3D.create(bank.to_global(Vector3(0, 1, 17)), bank.to_global(Vector3(0, 1, 12)), 1)

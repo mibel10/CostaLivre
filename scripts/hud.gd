@@ -311,71 +311,74 @@ func star(center: Vector2, color: Color) -> void:
 func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	panel(Rect2(origin - Vector2(4, 4), map_size + Vector2(8, 8)))
 	draw_rect(Rect2(origin, map_size), Color("33474e"))
-	var left := clampf(world.subject_position().x - 186.0, -186.0, world.MAP_EAST - 372.0)
+	var subject: Vector3 = world.subject_position()
+	var left := clampf(subject.x - 186.0, -186.0, world.MAP_EAST - 372.0)
+	var pos := map_point(subject, origin, map_size, left)
 	if left <= -168.0:
-		var coast := map_point(Vector3(-168,0,0), origin, map_size).x
+		var coast := map_point(Vector3(-168,0,0), origin, map_size, left).x
 		draw_rect(Rect2(origin, Vector2(coast - origin.x, map_size.y)), Color("488592"))
 	var favela_x: float = world.activities.FAVELA_CENTER_X
 	for center in [378.0, 714.0, favela_x]:
 		if center + 84 < left or center - 84 > left + 372: continue
-		var corner := map_point(Vector3(center - 84,0,-35), origin, map_size)
-		var other := map_point(Vector3(center + 84,0,35), origin, map_size)
+		var corner := map_point(Vector3(center - 84,0,-35), origin, map_size, left)
+		var other := map_point(Vector3(center + 84,0,35), origin, map_size, left)
 		draw_rect(Rect2(corner, other - corner), Color("607d5f"))
 	for x in range(-147, 904, 42):
 		if x < left - 12 or x > left + 384: continue
 		for z in range(-105, 106, 42):
 			if absi(z) < 35 and (absf(x - 378) < 84 or absf(x - 714) < 84): continue
 			if z in [-105, -63] and x in [273, 315, 777, 819]: continue
-			var corner := map_point(Vector3(x - 12, 0, z - 11), origin, map_size)
-			var other := map_point(Vector3(x + 12, 0, z + 11), origin, map_size)
+			var corner := map_point(Vector3(x - 12, 0, z - 11), origin, map_size, left)
+			var other := map_point(Vector3(x + 12, 0, z + 11), origin, map_size, left)
 			draw_rect(Rect2(corner, other - corner), Color("66766f"))
 	for road in range(-126, 883, 42):
 		if road < left or road > left + 372: continue
-		var px := map_point(Vector3(road, 0, 0), origin, map_size).x
+		var px := map_point(Vector3(road, 0, 0), origin, map_size, left).x
 		if (road > 294 and road < 462) or (road > 630 and road < 798):
-			var upper := map_point(Vector3(road,0,-35), origin, map_size).y
-			var lower := map_point(Vector3(road,0,35), origin, map_size).y
+			var upper := map_point(Vector3(road,0,-35), origin, map_size, left).y
+			var lower := map_point(Vector3(road,0,35), origin, map_size, left).y
 			draw_line(Vector2(px, origin.y), Vector2(px, upper), Color("728081"), 3)
 			draw_line(Vector2(px, lower), Vector2(px, origin.y + map_size.y), Color("728081"), 3)
 		else:
 			draw_line(Vector2(px, origin.y), Vector2(px, origin.y + map_size.y), Color("728081"), 3)
 	for x in [-168, 924]:
 		if x < left or x > left + 372: continue
-		var px := map_point(Vector3(x, 0, 0), origin, map_size).x
+		var px := map_point(Vector3(x, 0, 0), origin, map_size, left).x
 		draw_line(Vector2(px, origin.y), Vector2(px, origin.y + map_size.y), Color("728081"), 3)
 	for road in range(-126, 127, 42):
-		var py := map_point(Vector3(0, 0, road), origin, map_size).y
+		var py := map_point(Vector3(0, 0, road), origin, map_size, left).y
 		var road_end: float = world.MAP_EAST if road == 0 else 938.0
 		if left < road_end:
-			var end_x := map_point(Vector3(road_end, 0, road), origin, map_size).x
+			var end_x := map_point(Vector3(road_end, 0, road), origin, map_size, left).x
 			draw_line(Vector2(origin.x, py), Vector2(end_x, py), Color("728081"), 3)
 	for center in [294.0, 798.0]:
 		if center + 36 < left or center - 36 > left + 372: continue
-		var corner := map_point(Vector3(center - 36,0,-117), origin, map_size)
-		var other := map_point(Vector3(center + 36,0,-83), origin, map_size)
+		var corner := map_point(Vector3(center - 36,0,-117), origin, map_size, left)
+		var other := map_point(Vector3(center + 36,0,-83), origin, map_size, left)
 		draw_rect(Rect2(corner, other - corner), Color("aa997a"))
 	if left < favela_x + 29.0 and left + 372 > favela_x - 24.0:
 		for offset in [-27.0, -17.0, -7.0, 3.0, 13.0, 23.0, 33.0]:
 			var x: float = favela_x + offset
 			for z in [-34.0, -23.0, -11.0, 11.0, 23.0, 34.0]:
-				var corner := map_point(Vector3(x - 3,0,z - 2), origin, map_size)
-				var other := map_point(Vector3(x + 3,0,z + 2), origin, map_size)
+				var corner := map_point(Vector3(x - 3,0,z - 2), origin, map_size, left)
+				var other := map_point(Vector3(x + 3,0,z + 2), origin, map_size, left)
 				draw_rect(Rect2(corner, other - corner), Color("c78f72"))
 	var a: Node = world.activities
 	var prison_stage: int = world.prison_stage_for()
 	if prison_stage >= 0 and prison_stage < world.PRISON_POINTS.size():
 		var target: Vector3 = world.PRISON_POINTS[prison_stage]
-		draw_circle(map_point(target, origin, map_size), 5, gold)
+		draw_circle(map_point(target, origin, map_size, left), 5, gold)
 	if a.supply_stage in [1, 2, 3] and (world.network == null or not world.network.active() or a.supply_owner == multiplayer.get_unique_id()):
-		var delivery_target: Vector2 = map_point(a.SUPPLY_ALLEY, origin, map_size)
-		draw_line(map_point(world.subject_position(), origin, map_size), delivery_target, Color(1, 0.8, 0.4, 0.6), 1)
+		var delivery_target: Vector2 = map_point(a.SUPPLY_ALLEY, origin, map_size, left)
+		draw_line(pos, delivery_target, Color(1, 0.8, 0.4, 0.6), 1)
 		draw_circle(delivery_target, 5, gold)
 	if world.marker.visible:
-		draw_line(map_point(world.subject_position(), origin, map_size), map_point(a.destination(), origin, map_size), Color(1, 0.8, 0.4, 0.6), 1)
-		draw_circle(map_point(a.destination(), origin, map_size), 5, gold)
+		var target := map_point(a.destination(), origin, map_size, left)
+		draw_line(pos, target, Color(1, 0.8, 0.4, 0.6), 1)
+		draw_circle(target, 5, gold)
 	for entry in [[a.GUN_SHOP, "A"], [a.DEALER, "C"], [a.GARAGE, "+"], [Vector3(1035, 0, 55), "P"]]:
 		if entry[0].x < left or entry[0].x > left + 372: continue
-		var p := map_point(entry[0], origin, map_size)
+		var p := map_point(entry[0], origin, map_size, left)
 		if full:
 			text(entry[1], p + Vector2(-4, 4), 16, Color("9ed8ff"))
 		else:
@@ -383,23 +386,22 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	if world.life != null:
 		for point in world.life.PLACES:
 			if point.x >= left and point.x <= left + 372:
-				draw_circle(map_point(point+Vector3(0,0,14),origin,map_size),3,Color("9fd4b5"))
+				draw_circle(map_point(point+Vector3(0,0,14), origin, map_size, left),3,Color("9fd4b5"))
 	for ix in range(8, 18):
 		var x := -147.0 + ix * 42
 		if x < left or x > left + 372: continue
 		var z := -105.0 if ix == 12 else 105.0
-		draw_circle(map_point(Vector3(x,0,z + 14), origin, map_size), 2, Color("9fd4b5"))
+		draw_circle(map_point(Vector3(x,0,z + 14), origin, map_size, left), 2, Color("9fd4b5"))
 	if 861 >= left and 861 <= left + 372:
-		draw_circle(map_point(Vector3(861,0,-93), origin, map_size), 3, Color("b6d9d4"))
+		draw_circle(map_point(Vector3(861,0,-93), origin, map_size, left), 3, Color("b6d9d4"))
 	for point in a.ROBBERIES:
 		if point.x >= left and point.x <= left + 372:
-			text("$", map_point(point, origin, map_size) + Vector2(-3, 3), 12, Color("fda487"))
+			text("$", map_point(point, origin, map_size, left) + Vector2(-3, 3), 12, Color("fda487"))
 	for cop in world.cops:
 		if cop.hp > 0 and world.heat > 0 and cop.position.x >= left and cop.position.x <= left + 372:
-			draw_circle(map_point(cop.position, origin, map_size), 3, Color("ed8277"))
-	var pos := map_point(world.subject_position(), origin, map_size)
+			draw_circle(map_point(cop.position, origin, map_size, left), 3, Color("ed8277"))
 	for station_at: Vector3 in world.FUEL_STATIONS:
-		var pump := map_point(station_at, origin, map_size)
+		var pump := map_point(station_at, origin, map_size, left)
 		if pump.x >= origin.x and pump.x <= origin.x + map_size.x:
 			draw_circle(pump, 4, Color("f0c56d"))
 			draw_circle(pump, 2, Color("53636a"))
@@ -411,5 +413,7 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	points.append(points[0])
 	draw_polyline(points,Color("10252e"),1.5,true)
 
-func map_point(pos: Vector3, origin: Vector2, map_size: Vector2) -> Vector2:
-	return origin + Vector2(clampf((pos.x - clampf(world.subject_position().x - 186.0, -186.0, world.MAP_EAST - 372.0)) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size
+func map_point(pos: Vector3, origin: Vector2, map_size: Vector2, left := INF) -> Vector2:
+	if not is_finite(left):
+		left = clampf(world.subject_position().x - 186.0, -186.0, world.MAP_EAST - 372.0)
+	return origin + Vector2(clampf((pos.x - left) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size

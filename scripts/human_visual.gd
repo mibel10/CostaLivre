@@ -142,11 +142,9 @@ func start_driver_ragdoll(launch: Vector3) -> void:
 func apply_street_clothes(instance: MeshInstance3D) -> void:
 	# The baked UVs encode wardrobe regions and tonal variation, independent of skinning.
 	var source: Mesh = instance.mesh
-	var dressed := ImporterMesh.new()
 	var index := posmod(outfit_index,6) if outfit_index >= 0 else 0
 	var skin_index := 0 if cj_style else index
 	var cache_key := "%d:%d:%s" % [index, skin_index, police]
-	var skins := [Color("75482f"),Color("bd8461"),Color("4e3026"),Color("d4a683"),Color("8a593c"),Color("a66d50")]
 	var clothes := StandardMaterial3D.new()
 	clothes.vertex_color_use_as_albedo = true
 	clothes.roughness = 0.85
@@ -154,6 +152,8 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 	if outfit_cache.has(cache_key):
 		instance.mesh = outfit_cache[cache_key]
 		return
+	var dressed := ImporterMesh.new()
+	var skins := [Color("75482f"),Color("bd8461"),Color("4e3026"),Color("d4a683"),Color("8a593c"),Color("a66d50")]
 	var shirt: Color = Color("293e56") if police else OUTFIT_SHIRTS[index]
 	var pants: Color = Color("252e39") if police else OUTFIT_PANTS[index]
 	var skin: Color = skins[skin_index]

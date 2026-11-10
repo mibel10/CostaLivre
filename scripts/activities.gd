@@ -445,10 +445,10 @@ func nearby_place() -> String:
 func prompt() -> String:
 	if world.prison_stage_for() >= 0:
 		return world.prison_prompt()
-	if world.active_car != null and not world.bus_passenger and world.near_fuel_station(world.active_car.position, 7.0):
+	if world.active_car != null and not world.bus_passenger and world.near_fuel_station(world.active_car.position):
 		if world.active_car.refuel_time > 0.0:
 			return "Abastecendo…"
-		if world.active_car.fuel < 1.0:
+		if world.active_car.hp > 0 and world.active_car.fuel < 1.0:
 			return ("USAR" if OS.has_feature("android") else "F") + " · Abastecer grátis"
 	var contract := action_prompt()
 	if contract != "": return contract
