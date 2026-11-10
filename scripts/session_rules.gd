@@ -690,7 +690,7 @@ func fire_peer(id: int,data: Dictionary) -> void:
 		attacker=id
 		a.weapon_impact(hit,end,selected)
 		attacker=0
-		network.shot_effect.rpc(muzzle,end,selected)
+		network.shot_effect.rpc(muzzle, end, selected, id)
 	)
 
 func punch_peer(id: int, yaw: float) -> void:

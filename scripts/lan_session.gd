@@ -794,12 +794,12 @@ func update_avatars(states: Dictionary) -> void:
 		avatar.tag_at=(state.car_position if int(state.car)>=0 else state.position)+Vector3(0,3.0 if int(state.car)>=0 else 2.5,0)
 		var close: bool = avatar.tag_at.distance_to(world.subject_position())<80
 		avatar.node.visible=on_foot and close and not world.vehicle_falls.has(id)
-		avatar.node.set_weapon(int(state.get("weapon",1)))
+		avatar.node.set_weapon(clampi(int(state.get("weapon", 1)), 0, 7), rules.sheets.get(id, {}).get("inventory", {}))
 		avatar.node.set_crouched(bool(state.get("crouch",false)))
 		var remaining: float = float(state.get("roll",0))
 		avatar.node.model.rotation.x = (1.0-remaining)*TAU if remaining > 0 else 0.0
 		var pivot := Vector3(0,0.92,0)
-		avatar.node.model.position = pivot-Basis.from_euler(avatar.node.model.rotation)*pivot if remaining > 0 else Vector3(0,-0.28,0) if avatar.node.is_crouching else Vector3.ZERO
+		avatar.node.model.position = pivot-Basis.from_euler(avatar.node.model.rotation)*pivot if remaining > 0 else Vector3.ZERO
 		avatar.node.collision_layer=2 if on_foot and float(state.get("hp",100))>0 else 0
 		avatar.node.model.rotation.z=PI/2 if float(state.get("hp",100))<=0 else 0
 		avatar.tag.visible=close and not state.has("bus") and not world.vehicle_falls.has(id)
@@ -841,8 +841,11 @@ func personal(kind: String, data: Dictionary) -> void:
 	rules.receive_event(kind,data)
 
 @rpc("authority","call_local","unreliable",3)
-func shot_effect(from: Vector3,to: Vector3,weapon: int) -> void:
-	world.activities.shot_effect(from,to,weapon)
+func shot_effect(from: Vector3, to: Vector3, weapon: int, shooter: int) -> void:
+	world.activities.shot_effect(from, to, weapon)
+	var actor: Node3D = rules.local_body if shooter == multiplayer.get_unique_id() else avatars.get(shooter, {}).get("node")
+	if is_instance_valid(actor):
+		actor.model.kick_weapon(weapon)
 
 func authenticating(id: int) -> void:
 	multiplayer.send_auth(id,var_to_bytes({"version":announced_version,"code":code,"platform":OS.get_name()}))

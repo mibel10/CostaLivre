@@ -84,6 +84,7 @@ var heavy_owned := [false,false,false]
 var clips := [0, 12, 30, 8, 32, 0, 0, 0]
 var reserves := [0, 36, 0, 24, 96, 0, 0, 0]
 var fire_cooldown := 0.0
+const RELOAD_DURATIONS := [0.0, 1.2, 1.8, 2.0, 2.0, 2.0, 2.0, 2.0]
 var reload_time := 0.0
 var reload_weapon := 0
 var hit_flash := 0.0
@@ -915,7 +916,7 @@ func reload() -> void:
 	if clips[weapon] >= capacity:
 		return
 	reload_weapon = weapon
-	reload_time = 1.2 if weapon == 1 else (1.8 if weapon == 2 else 2.0)
+	reload_time = RELOAD_DURATIONS[weapon]
 
 func shoot() -> void:
 	if world.vehicle_falls.has(world.vehicle_local_id()):
@@ -953,6 +954,7 @@ func shoot() -> void:
 		hit = obstruction
 		end = obstruction.position
 	weapon_impact(hit, end, weapon)
+	world.player.model.kick_weapon(weapon)
 	shot_effect(muzzle, end, weapon)
 
 func owns_weapon(index: int) -> bool:

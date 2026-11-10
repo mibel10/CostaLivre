@@ -83,7 +83,18 @@ func run() -> void:
 	assert(not paused and world.cash == money + 600)
 	a.clips[2] = 4
 	a.reload()
+	world.player.model.show_weapon(a.weapon)
+	world.player.model.update_weapon_pose(0.0, 0.5)
+	assert(world.player.model.weapon_magazine.position.y < -0.2 and world.player.gun.rotation.z > 0.25)
 	a.tick(2)
+	world.player.model.update_weapon_pose(0.0, 0.0)
+	assert(is_equal_approx(world.player.model.weapon_magazine.position.y, -0.1))
+	world.player.model.kick_weapon(a.weapon)
+	world.player.model.update_weapon_pose(0.01, 0.0)
+	assert(world.player.gun.rotation.x < -0.1)
+	world.player.model.update_weapon_pose(0.2, 0.0)
+	world.player.model.update_weapon_pose(0.0, 0.0)
+	assert(world.player.gun.rotation.is_zero_approx())
 	assert(a.clips[2] == 30 and a.reserves[2] == 64, "Reload transfers actual reserve ammo")
 	world.cash = 0
 	a.set_menu("guns")

@@ -5,6 +5,8 @@ var model: Node3D
 var roll_time := 0.0
 var gun: MeshInstance3D
 var is_crouching := false
+var weapon_reload_remaining := 0.0
+var weapon_reload_duration := 0.0
 
 func _ready() -> void:
 	collision_layer=2
@@ -20,12 +22,7 @@ func _ready() -> void:
 	model=preload("res://scripts/human_visual.gd").new()
 	model.cj_style=true
 	add_child(model)
-	var skeleton: Skeleton3D=model.find_children("*","Skeleton3D",true,false)[0]
-	var hand := BoneAttachment3D.new()
-	hand.bone_name="Skeleton_arm_joint_R__3_"
-	skeleton.add_child(hand)
-	gun=world.box(hand,Vector3.ZERO,Vector3(0.07,0.09,0.24),Color("25313a"))
-	world.box(gun,Vector3(0,-0.1,0.06),Vector3(0.06,0.16,0.08),Color("25313a"))
+	gun = model.build_weapon(world)
 
 func animate(speed: float) -> void:
 	model.animate(speed)
@@ -39,9 +36,15 @@ func take_hit(amount: float) -> void:
 	else:
 		world.network.rules.damage_peer(peer_id,amount,world.network.rules.attacker)
 
-func set_weapon(selected: int) -> void:
-	gun.visible=selected>0
-	gun.scale=Vector3(1,1,[1.0,1.0,1.8,1.35,1.6,3.5,3.0,4.0][clampi(selected,0,7)])
+func set_weapon(selected: int, inventory: Dictionary) -> void:
+	model.show_weapon(selected)
+	weapon_reload_duration = world.activities.RELOAD_DURATIONS[selected]
+	weapon_reload_remaining = float(inventory.get("reload_time", 0.0)) if int(inventory.get("reload_weapon", 0)) == selected else 0.0
+
+func _process(delta: float) -> void:
+	weapon_reload_remaining = maxf(0.0, weapon_reload_remaining - delta)
+	if visible:
+		model.update_weapon_pose(delta, weapon_reload_remaining / weapon_reload_duration if weapon_reload_duration > 0.0 else 0.0)
 
 func set_crouched(value: bool) -> void:
 	if is_crouching==value:
@@ -51,5 +54,4 @@ func set_crouched(value: bool) -> void:
 	var capsule: CapsuleShape3D=collider.shape
 	capsule.height=1.15 if value else 1.8
 	collider.position.y=0.58 if value else 0.9
-	model.scale.y=0.66 if value else 1.0
-	model.position.y=-0.28 if value else 0.0
+	model.show_crouch(value)

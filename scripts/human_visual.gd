@@ -9,12 +9,20 @@ var police := false
 var cj_style := false
 var outfit_index := -1
 static var outfit_cache := {}
+var weapon_mesh: MeshInstance3D
+var weapon_magazine: MeshInstance3D
+var weapon_tween: Tween
+var displayed_weapon := -1
+var weapon_recoil := 0.0
+var rig: Node3D
+var crouch_tween: Tween
 
 func _ready() -> void:
 	var actor: Node3D = HUMAN.instantiate()
 	actor.scale = Vector3.ONE * 1.22
 	actor.rotation.y = PI
 	add_child(actor)
+	rig = actor
 	for mesh in actor.find_children("*", "MeshInstance3D", true, false):
 		original_meshes[mesh]=mesh.mesh
 		apply_street_clothes(mesh)
@@ -78,6 +86,54 @@ func animate(speed: float) -> void:
 		animation.speed_scale = clampf(speed / 3.0, 0.55, 2.5)
 		if animation.current_animation != "Animation":
 			animation.play("Animation",0.18)
+
+func show_crouch(crouched: bool) -> void:
+	if crouch_tween != null:
+		crouch_tween.kill()
+	crouch_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE)
+	crouch_tween.tween_property(rig, "scale:y", 1.22 * (0.66 if crouched else 1.0), 0.16)
+	crouch_tween.tween_property(rig, "position:y", -0.28 if crouched else 0.0, 0.16)
+
+func build_weapon(world: Node3D) -> MeshInstance3D:
+	var skeleton: Skeleton3D = find_children("*", "Skeleton3D", true, false)[0]
+	var hand := BoneAttachment3D.new()
+	hand.bone_name = "Skeleton_arm_joint_R__3_"
+	skeleton.add_child(hand)
+	weapon_mesh = world.box(hand, Vector3.ZERO, Vector3(0.07, 0.09, 0.24), Color("25313a"))
+	weapon_magazine = world.box(weapon_mesh, Vector3(0, -0.1, 0.06), Vector3(0.06, 0.16, 0.08), Color("25313a"))
+	weapon_mesh.hide()
+	return weapon_mesh
+
+func show_weapon(selected: int) -> void:
+	if selected == displayed_weapon:
+		return
+	displayed_weapon = selected
+	if weapon_tween != null:
+		weapon_tween.kill()
+	weapon_recoil = 0.0
+	if selected == 0 and not weapon_mesh.visible:
+		return
+	weapon_mesh.show()
+	weapon_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	weapon_tween.tween_property(weapon_mesh, "position:y", -0.13, 0.1)
+	weapon_tween.parallel().tween_property(weapon_mesh, "scale:z", 0.2, 0.1)
+	if selected > 0:
+		var length: float = [1.0, 1.8, 1.35, 1.6, 3.5, 3.0, 4.0][selected - 1]
+		weapon_tween.tween_property(weapon_mesh, "position:y", 0.0, 0.14)
+		weapon_tween.parallel().tween_property(weapon_mesh, "scale:z", length, 0.14)
+	else:
+		weapon_tween.tween_callback(weapon_mesh.hide)
+
+func kick_weapon(selected: int) -> void:
+	show_weapon(selected)
+	weapon_recoil = 0.36 if selected >= 5 else 0.20
+
+func update_weapon_pose(delta: float, reload_fraction: float) -> void:
+	var handling := sin(clampf(reload_fraction, 0.0, 1.0) * PI)
+	var magazine_drop := smoothstep(0.15, 0.33, reload_fraction) * (1.0 - smoothstep(0.57, 0.82, reload_fraction))
+	weapon_mesh.rotation = Vector3(-0.5 * handling - weapon_recoil, 0.18 * handling, 0.34 * handling)
+	weapon_magazine.position.y = -0.1 - 0.14 * magazine_drop
+	weapon_recoil = move_toward(weapon_recoil, 0.0, delta * 2.8)
 
 func pose_vehicle_entry(actor: Node3D, car: Node3D, side: float, elapsed: float) -> void:
 	var width: float = car.Catalog.SIZES[car.tier].x

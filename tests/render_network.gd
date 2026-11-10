@@ -68,6 +68,22 @@ func run() -> void:
 	assert(host.network.avatars[remote_id].tag.text=="Amigo")
 	assert(host.network.avatars[remote_id].outfit==4)
 	assert(client.network.avatars[1].tag.text=="Anfitriao")
+	var remote: Node3D = host.network.avatars[remote_id].node
+	client.player.position = host.player.position + Vector3(5.0, 0.3, 0.0)
+	await create_timer(0.3).timeout
+	assert(remote.visible)
+	client.activities.clips[1] = 4
+	host.network.rules.sheets[remote_id].inventory.clips[1] = 4
+	client.network.rules.send_action("reload")
+	await create_timer(0.68).timeout
+	assert(remote.gun.rotation.z > 0.15 and remote.model.weapon_magazine.position.y < -0.16, "The remote reload follows the host timer")
+	await create_timer(0.8).timeout
+	assert(remote.gun.rotation.is_zero_approx(), "The weapon returns to its resting pose")
+	client.player.set_crouched(true)
+	assert(is_equal_approx(client.player.body_collider.shape.height, 1.15), "Crouch collision changes immediately")
+	assert(client.player.model.rig.scale.y > 1.0, "Crouch starts a visual transition")
+	await create_timer(0.23).timeout
+	client.player.set_crouched(false)
 	assert(client.profile.save_profile("Novo Nome",5))
 	await create_timer(0.4).timeout
 	assert(host.network.avatars[remote_id].tag.text=="Novo Nome" and host.network.avatars[remote_id].outfit==5)

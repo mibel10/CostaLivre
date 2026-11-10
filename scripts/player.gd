@@ -9,8 +9,6 @@ var gun: MeshInstance3D
 var roll_time := 0.0
 var roll_cooldown := 0.0
 var roll_direction := Vector3.FORWARD
-var last_weapon := -1
-var weapon_tween: Tween
 var is_crouching := false
 var crouch_latched := false
 var sprint_latched := false
@@ -31,12 +29,7 @@ func _ready() -> void:
 	model = preload("res://scripts/human_visual.gd").new()
 	model.cj_style = true
 	add_child(model)
-	var skeleton: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
-	var hand := BoneAttachment3D.new()
-	hand.bone_name = "Skeleton_arm_joint_R__3_"
-	skeleton.add_child(hand)
-	gun = world.box(hand, Vector3.ZERO, Vector3(0.07, 0.09, 0.24), Color("25313a"))
-	world.box(gun, Vector3(0,-0.1,0.06), Vector3(0.06,0.16,0.08), Color("25313a"))
+	gun = model.build_weapon(world)
 
 func _physics_process(delta: float) -> void:
 	if world.life != null:
@@ -72,8 +65,11 @@ func _physics_process(delta: float) -> void:
 			model.rotation.x = 0
 			model.position = Vector3.ZERO
 		return
-	if world.activities.weapon != last_weapon:
-		animate_weapon(world.activities.weapon)
+	var selected: int = world.activities.weapon
+	model.show_weapon(selected)
+	var remaining: float = world.activities.reload_time if world.activities.reload_weapon == selected else 0.0
+	var duration: float = world.activities.RELOAD_DURATIONS[selected]
+	model.update_weapon_pose(delta, remaining / duration if duration > 0.0 else 0.0)
 	var input := Input.get_vector("left", "right", "forward", "back")
 	var direction := Vector3(input.x, 0, input.y).rotated(Vector3.UP, world.camera_yaw)
 	var sprinting: bool = sprint_latched if world.settings.toggle_sprint else Input.is_action_pressed("sprint")
@@ -111,25 +107,7 @@ func set_crouched(value: bool) -> void:
 	var capsule: CapsuleShape3D=body_collider.shape
 	capsule.height=1.15 if value else 1.8
 	body_collider.position.y=0.58 if value else 0.9
-	model.scale.y=0.66 if value else 1.0
-	model.position.y=-0.28 if value else 0.0
-
-func animate_weapon(weapon: int) -> void:
-	last_weapon = weapon
-	if weapon_tween != null and weapon_tween.is_running():
-		weapon_tween.kill()
-	gun.visible = true
-	var target := Vector3.ZERO
-	weapon_tween = create_tween()
-	weapon_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	weapon_tween.tween_property(gun, "position", Vector3(0,-0.05,0), 0.1)
-	weapon_tween.parallel().tween_property(gun, "scale", Vector3(1,1,0.2), 0.1)
-	if weapon > 0:
-		weapon_tween.tween_property(gun, "position", target, 0.14)
-		var size: float = [1.0, 1.8, 1.35, 1.6, 3.5, 3.0, 4.0][clampi(weapon - 1, 0, 6)]
-		weapon_tween.parallel().tween_property(gun, "scale", Vector3(1,1,size), 0.14)
-	else:
-		weapon_tween.tween_callback(func(): gun.visible = false)
+	model.show_crouch(value)
 
 func take_hit(amount: float) -> void:
 	if world.network!=null and world.network.active():
