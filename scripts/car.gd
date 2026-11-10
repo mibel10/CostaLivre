@@ -19,6 +19,7 @@ var refuel_peer := 0
 var heading := 0.0
 var driving := false
 var hovering := false
+var crush_until := 0
 var wheels: Array[Node3D] = []
 var lights: Array[MeshInstance3D] = []
 var route: Array[Vector3] = []
@@ -44,6 +45,43 @@ var exploded := false
 var despawn_timer := -1.0
 var fire_particles: GPUParticles3D
 var smoke_particles: GPUParticles3D
+
+func set_hover_mode(enabled: bool) -> void:
+	if hovering and not enabled:
+		crush_until = Time.get_ticks_msec() + 5000
+	hovering = enabled
+	if not enabled:
+		crush_underneath()
+
+func can_crush(at: Vector3) -> bool:
+	var local := to_local(at)
+	var size: Vector3 = Catalog.SIZES[tier]
+	if absf(local.x) > size.x * 0.5 + 0.3 or absf(local.z) > size.z * 0.5 + 0.3:
+		return false
+	var height := global_position.y - at.y
+	if height < 0.2 or height > 2.2:
+		return false
+	var query := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 0.1, at + Vector3.UP, 1)
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+func crush_underneath() -> void:
+	if tier != Catalog.SUPERCAR or hovering or Time.get_ticks_msec() >= crush_until:
+		return
+	var online: bool = world.network != null and world.network.active()
+	if online and not multiplayer.is_server():
+		return
+	for victim in world.life.people + world.activities.officers:
+		if is_instance_valid(victim) and victim.hp > 0 and can_crush(victim.global_position):
+			victim.take_hit(10000)
+	if online:
+		var driver: int = int(world.network.owners.get(net_id, 0))
+		for id in world.network.rules.participants():
+			if id == driver or int(world.network.members[id].get("car", -1)) >= 0 or world.network.rules.bus_riders.has(id):
+				continue
+			if can_crush(world.network.rules.position_of(id)):
+				world.network.rules.damage_peer(id, 200.0)
+	elif world.active_car != self and can_crush(world.player.global_position):
+		world.damage(200.0)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -200,6 +238,7 @@ func _physics_process(delta: float) -> void:
 			velocity.y = clampf((height - global_position.y) * 5.0, -8.0, 8.0)
 	var previous := position
 	move_and_slide()
+	crush_underneath()
 	update_ramp_tilt(delta)
 	if driving and not world.finished and (world.network == null or not world.network.is_client()):
 		world.check_vehicle_entry(previous, position)

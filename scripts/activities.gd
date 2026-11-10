@@ -258,7 +258,7 @@ func handle_input(event: InputEvent) -> bool:
 			if world.network != null and world.network.active():
 				world.network.rules.send_action("hover_mode")
 			else:
-				world.active_car.hovering = not world.active_car.hovering
+				world.active_car.set_hover_mode(not world.active_car.hovering)
 			return true
 		if world.network!=null and world.network.active():
 			if world.life.interact_building():

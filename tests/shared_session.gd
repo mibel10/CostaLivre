@@ -283,6 +283,18 @@ func run() -> void:
 		if step == 1: Input.action_release("crouch")
 	await wait_for(func(): return client.player.position.z > 76)
 	assert(client.player.position.z > 76, "Escape releases the correct player")
+	host.active_car = null
+	host.player.position = Vector3(0, 0.3, 84)
+	host.health = 100
+	host.network.rules.sheets[1].health = 100
+	var hover_car = host.spawn_car(Vector3(0, 4, 84), Color.WHITE, false, 11)
+	hover_car.hovering = true
+	host.network.owners[hover_car.net_id] = id
+	host.network.members[id].car = hover_car.net_id
+	host.network.rules.action(id, "hover_mode", {})
+	assert(host.health == 100 and not hover_car.hovering, "The victim is safe until the car descends")
+	host.network.apply_car(id, {"car": hover_car.net_id, "car_position": Vector3(0, 2, 84), "car_heading": 0.0, "speed": 0.0})
+	assert(host.health == 0 and not host.network.rules.is_dead(id), "The host detects the remote driver's descending car and spares the driver")
 	client.network.disconnect_room()
 	await wait_for(func(): return host.network.members.size()==1)
 	client.network.announced_version="old-build"

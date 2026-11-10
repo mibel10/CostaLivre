@@ -41,7 +41,15 @@ func run() -> void:
 			for frame in 65:
 				await physics_frame
 			assert(car.position.y > a.Catalog.SIZES[a.Catalog.BUS].y, "Hover clears the bus roof")
+			var victim: Node3D = world.life.people[0]
+			var bystander: Node3D = world.life.people[1]
+			victim.set_physics_process(false)
+			bystander.set_physics_process(false)
+			victim.position = Vector3(car.position.x, 0.3, car.position.z)
+			bystander.position = victim.position + Vector3(8, 0, 0)
+			car.position.y = 2.0
 			assert(a.handle_input(toggle) and not car.hovering)
+			assert(victim.hp == 0 and bystander.hp > 0, "Landing crushes only a person underneath")
 		if tier == 9:
 			assert(car.rider.visible)
 			assert(car.rider_outfit == 2 and car.rider.get_child(0).material_override.albedo_color.is_equal_approx(Color("385b79")))
