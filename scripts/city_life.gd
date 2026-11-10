@@ -231,10 +231,18 @@ func elevator_collision(parent: CollisionObject3D, at: Vector3, size: Vector3) -
 	return collision
 
 func build_elevators() -> void:
-	var wall := StandardMaterial3D.new()
-	wall.albedo_color = Color("#637887")
+	var wall: StandardMaterial3D = world.visuals.surface("concrete_wall_006", Color("b4bfc6"), 1.15).duplicate()
+	wall.uv1_world_triplanar = false
+	wall.metallic = 0.32
+	wall.roughness = 0.48
+	var floor_finish: StandardMaterial3D = world.visuals.surface("concrete_wall_006", Color("48515a"), 2.0).duplicate()
+	floor_finish.uv1_world_triplanar = false
 	var door := StandardMaterial3D.new()
-	door.albedo_color = Color("#adbcc8")
+	door.albedo_color = Color("adbcc8")
+	door.metallic = 0.45
+	door.roughness = 0.42
+	var trim: Material = world.material(Color("26343f"))
+	var lamp: Material = world.material(Color("fff2da"), true)
 	for building: String in ELEVATOR_FLOORS:
 		var front := elevator_front(building)
 		var cabin := AnimatableBody3D.new()
@@ -245,8 +253,28 @@ func build_elevators() -> void:
 			[Vector3(0,1.32,-front*1.32),Vector3(2.72,2.64,0.08)],
 			[Vector3(-1.32,1.32,0),Vector3(0.08,2.64,2.72)],
 			[Vector3(1.32,1.32,0),Vector3(0.08,2.64,2.72)]]:
-			elevator_box(cabin, part[0], part[1], wall)
+			elevator_box(cabin, part[0], part[1], floor_finish if part[0].y < 0.0 else wall)
 			elevator_collision(cabin, part[0], part[1])
+		for detail in [
+			[Vector3(0, 0.11, -front * 1.27), Vector3(2.56, 0.22, 0.03), trim],
+			[Vector3(0, 0.94, -front * 1.20), Vector3(2.45, 0.06, 0.10), door],
+			[Vector3(-1.20, 0.94, 0), Vector3(0.10, 0.06, 2.40), door],
+			[Vector3(1.20, 0.94, 0), Vector3(0.10, 0.06, 2.40), door],
+			[Vector3(-0.68, 2.60, 0), Vector3(0.19, 0.05, 2.16), lamp],
+			[Vector3(0.68, 2.60, 0), Vector3(0.19, 0.05, 2.16), lamp],
+			[Vector3(1.265, 1.43, front * 0.48), Vector3(0.045, 0.55, 0.25), trim],
+			[Vector3(1.235, 1.58, front * 0.48), Vector3(0.026, 0.10, 0.16), lamp],
+		]:
+			elevator_box(cabin, detail[0], detail[1], detail[2]).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		for row in 2:
+			for column in 2:
+				elevator_box(cabin, Vector3(1.23, 1.34 + row * 0.085, front * 0.48 + (column - 0.5) * 0.10), Vector3(0.03, 0.05, 0.055), door).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var light := OmniLight3D.new()
+		light.position = Vector3(0, 2.43, 0)
+		light.light_color = Color("fff2df")
+		light.light_energy = 0.75
+		light.omni_range = 3.2
+		cabin.add_child(light)
 		var leaves := []
 		for side in [-1,1]:
 			leaves.append(elevator_box(cabin, Vector3(side*0.64,1.32,front*1.32), Vector3(1.28,2.64,0.07), door))
