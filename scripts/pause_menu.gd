@@ -2,6 +2,7 @@ extends Control
 
 var world: Node3D
 var canvas: Control
+var pause_sidebar: Control
 var pages := {}
 var page := "home"
 var map_view: Control
@@ -58,17 +59,20 @@ func _ready() -> void:
 		theme_resource.set_stylebox("hover", type, hover)
 		theme_resource.set_stylebox("focus", type, hover)
 	canvas.theme = theme_resource
-	label(canvas, "COSTA LIVRE", Vector2(45, 60), 29, Color("ffd18a"))
-	label(canvas, "PAUSADO", Vector2(47, 103), 14, Color("a7b9bf"))
-	button(canvas, "Continuar", Rect2(45, 165, 265, 48), resume)
-	button(canvas, "Mapa", Rect2(45, 225, 265, 48), func(): show_page("map"))
-	button(canvas, "Gráficos e FPS", Rect2(45, 285, 265, 48), func(): show_page("graphics"))
-	button(canvas, "Controles", Rect2(45, 345, 265, 48), func(): show_page("controls"))
-	button(canvas, "Personagem", Rect2(45, 405, 265, 48), func(): show_page("character"))
-	button(canvas, "Trocar modo de jogo", Rect2(45, 465, 265, 48), func(): show_page("mode"))
-	campaign_save_button = button(canvas, "Salvar campanha", Rect2(45, 525, 265, 48), world.activities.save_campaign_now)
-	button(canvas,"Multiplayer / sala",Rect2(45,585,265,44),func(): world.network.open_menu())
-	label(canvas, "ESC · voltar / continuar", Vector2(46, 642), 15, Color("a7b9bf"))
+	pause_sidebar = Control.new()
+	pause_sidebar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	canvas.add_child(pause_sidebar)
+	label(pause_sidebar, "COSTA LIVRE", Vector2(45, 60), 29, Color("ffd18a"))
+	label(pause_sidebar, "PAUSADO", Vector2(47, 103), 14, Color("a7b9bf"))
+	button(pause_sidebar, "Continuar", Rect2(45, 165, 265, 48), resume)
+	button(pause_sidebar, "Mapa", Rect2(45, 225, 265, 48), func(): show_page("map"))
+	button(pause_sidebar, "Gráficos e FPS", Rect2(45, 285, 265, 48), func(): show_page("graphics"))
+	button(pause_sidebar, "Controles", Rect2(45, 345, 265, 48), func(): show_page("controls"))
+	button(pause_sidebar, "Personagem", Rect2(45, 405, 265, 48), func(): show_page("character"))
+	button(pause_sidebar, "Trocar modo de jogo", Rect2(45, 465, 265, 48), func(): show_page("mode"))
+	campaign_save_button = button(pause_sidebar, "Salvar campanha", Rect2(45, 525, 265, 48), world.activities.save_campaign_now)
+	button(pause_sidebar,"Multiplayer / sala",Rect2(45,585,265,44),func(): world.network.open_menu())
+	label(pause_sidebar, "ESC · voltar / continuar", Vector2(46, 642), 15, Color("a7b9bf"))
 	for name in ["home", "map", "graphics", "controls", "mode", "ending", "character", "admin"]:
 		var control := Control.new()
 		control.position = Vector2(360, 60)
@@ -402,6 +406,7 @@ func show_page(value: String) -> void:
 		profile_status.text="Suas escolhas ficam salvas neste dispositivo."
 	for name in pages:
 		pages[name].visible = name == value
+	pause_sidebar.visible = value not in ["mode", "ending"] and world.activities.menu in ["pause", "map"]
 	refresh()
 	if value == "map":
 		map_view.inspect_at = Vector2.INF

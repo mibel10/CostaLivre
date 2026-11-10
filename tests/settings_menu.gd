@@ -13,6 +13,13 @@ func run() -> void:
 	create_timer(25).timeout.connect(func(): quit(1))
 	var world = load("res://main.tscn").instantiate()
 	root.add_child(world)
+	var ui = world.pause_menu
+	assert(ui.pages.mode.is_visible_in_tree() and not ui.pause_sidebar.is_visible_in_tree(), "The title does not expose the pause sidebar")
+	ui.show_page("character")
+	assert(not ui.pause_sidebar.is_visible_in_tree(), "The title's profile page also hides pause controls")
+	ui.show_page("mode")
+	world.pause_menu.show_campaign_complete()
+	assert(ui.pages.ending.is_visible_in_tree() and not ui.pause_sidebar.is_visible_in_tree())
 	world.start_mode("sandbox")
 	await physics_frame
 	var original_position: Vector3 = world.player.position
@@ -25,9 +32,12 @@ func run() -> void:
 	world.player.position = original_position
 	var settings = world.settings
 	settings.config_path = "user://settings_test.cfg"
-	var ui = world.pause_menu
 	world._unhandled_input(action("pause"))
-	assert(paused and ui.visible and world.activities.menu == "pause")
+	assert(paused and ui.pause_sidebar.is_visible_in_tree() and world.activities.menu == "pause")
+	ui.show_page("mode")
+	assert(ui.pages.mode.is_visible_in_tree() and not ui.pause_sidebar.is_visible_in_tree(), "Switching modes hides pause controls too")
+	world._unhandled_input(action("pause"))
+	assert(ui.page == "home" and ui.pause_sidebar.is_visible_in_tree() and not ui.pages.mode.is_visible_in_tree())
 	var time_before: float = world.elapsed
 	world._physics_process(2)
 	assert(world.elapsed == time_before)
