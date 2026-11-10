@@ -169,6 +169,7 @@ func register_visuals(node: Node) -> void:
 func apply_range(node: GeometryInstance3D) -> void:
 	node.lod_bias = LOD_BIAS[draw_distance]
 	if node.is_in_group("car_simple"):
+		node.lod_bias = 1000.0
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_detail"):
 		node.visibility_range_end = minf(NEAR[draw_distance], 14.0) if node.has_meta("police_lod") else NEAR[draw_distance]

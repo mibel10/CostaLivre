@@ -224,10 +224,8 @@ func build_car(car: CharacterBody3D) -> void:
 	car.add_child(root)
 	var body := MeshInstance3D.new()
 	body.mesh = car_body
-	body.add_to_group("car_detail")
-	if car.police:
-		body.set_meta("police_lod", true)
-	body.visibility_range_end = 27
+	body.add_to_group("car_simple")
+	body.visibility_range_end = 170
 	body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(body)
 	for i in car_body.get_surface_count():
@@ -256,32 +254,11 @@ func build_car(car: CharacterBody3D) -> void:
 		pivot.add_child(spin)
 		var wheel := MeshInstance3D.new()
 		wheel.mesh = car_wheels[key].mesh
-		wheel.add_to_group("car_detail")
-		if car.police:
-			wheel.set_meta("police_lod", true)
-		wheel.visibility_range_end = 27
+		wheel.add_to_group("car_simple")
+		wheel.visibility_range_end = 170
 		wheel.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		spin.add_child(wheel)
 		car.wheels.append(spin)
-	var far_body := MeshInstance3D.new()
-	far_body.name = "FarBody"
-	far_body.mesh = preload("res://assets/models/vehicle_far.res")
-	far_body.add_to_group("car_far")
-	if car.police:
-		far_body.set_meta("police_lod", true)
-	far_body.visibility_range_begin = 27
-	far_body.visibility_range_end = 170
-	far_body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var far_key: String = "far" + car.paint.to_html()
-	if not paint_cache.has(far_key):
-		var paint := StandardMaterial3D.new()
-		paint.albedo_color = car.paint
-		paint.metallic = 0.35
-		paint.roughness = 0.45
-		paint.cull_mode = BaseMaterial3D.CULL_DISABLED
-		paint_cache[far_key] = paint
-	far_body.set_surface_override_material(0, paint_cache[far_key])
-	root.add_child(far_body)
 	if car.tier == 1:
 		var rack := BoxMesh.new()
 		rack.size = Vector3(1.35,0.12,2.6)
