@@ -194,11 +194,11 @@ func _physics_process(delta: float) -> void:
 			acceleration = (55.0 if hovering else Catalog.ACCEL[tier]) + engine_upgrade
 			speed = clampf(speed, -12.0, top_speed)
 		if throttle != 0:
-			speed = move_toward(speed, throttle * (top_speed if throttle > 0 else (5.0 if tier == 9 else 12.0)), delta * (22 if speed * throttle < 0 else acceleration))
+			speed = move_toward(speed, throttle * (top_speed if throttle > 0 else (5.0 if tier == 9 else 12.0)), delta * (27 if speed * throttle < 0 else acceleration))
 		else:
 			speed = move_toward(speed, 0, delta * 3.5)
 		if Input.is_action_pressed("jump"):
-			speed = move_toward(speed, 0, delta * 23)
+			speed = move_toward(speed, 0, delta * 28)
 		steer = Input.get_action_strength("left") - Input.get_action_strength("right")
 	elif police and police_phase=="parked":
 		speed=0
