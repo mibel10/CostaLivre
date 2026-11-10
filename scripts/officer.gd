@@ -24,7 +24,8 @@ func _ready() -> void:
 	model = preload("res://scripts/human_visual.gd").new()
 	model.police = true
 	add_child(model)
-	world.box(model, Vector3(0.32, 1.15, -0.4), Vector3(0.1, 0.12, 0.5), Color("161e28"))
+	model.build_weapon(world)
+	model.show_weapon(1)
 
 func _physics_process(delta: float) -> void:
 	if world.network!=null and world.network.is_client():

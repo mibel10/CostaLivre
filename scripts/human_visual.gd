@@ -104,6 +104,50 @@ func _ready() -> void:
 		library.add_animation("DoorWork",work)
 	animation.play("Idle")
 	animation.advance(0)
+	if police:
+		var skeleton: Skeleton3D = actor.find_children("*", "Skeleton3D", true, false)[0]
+		var world: Node3D = get_parent().world
+		var chest := uniform_attachment(skeleton, "torso_joint_3")
+		world.box(chest, Vector3(0, -0.08, 0), Vector3(0.30, 0.33, 0.21), Color("111d30"))
+		for side in [-1.0, 1.0]:
+			world.box(chest, Vector3(side * 0.15, 0.065, 0), Vector3(0.045, 0.018, 0.19), Color("b8c9d5"))
+		world.box(chest, Vector3(-0.09, 0.02, -0.13), Vector3(0.05, 0.065, 0.012), Color("e4bc55"))
+		world.box(chest, Vector3(0.11, -0.01, -0.14), Vector3(0.045, 0.1, 0.04), Color("22282d"))
+		for back in [false, true]:
+			var label := Label3D.new()
+			label.text = "POLÍCIA"
+			label.font_size = 32
+			label.pixel_size = 0.0014
+			label.outline_size = 0
+			label.double_sided = false
+			label.modulate = Color("e1e8ec")
+			label.position = Vector3(0, -0.08, 0.114 if back else -0.114)
+			label.rotation.y = PI if not back else 0.0
+			chest.add_child(label)
+		var head := uniform_attachment(skeleton, "Skeleton_neck_joint_2")
+		var cap := MeshInstance3D.new()
+		var shape := CylinderMesh.new()
+		shape.top_radius = 0.094
+		shape.bottom_radius = 0.106
+		shape.height = 0.065
+		shape.radial_segments = 12
+		cap.mesh = shape
+		cap.material_override = world.material(Color("183659"))
+		cap.position = Vector3(0, 0.24, -0.015)
+		head.add_child(cap)
+		world.box(head, Vector3(0, 0.205, -0.09), Vector3(0.18, 0.018, 0.14), Color("101e32"))
+		world.box(head, Vector3(0, 0.24, -0.115), Vector3(0.035, 0.038, 0.008), Color("e4bc55"))
+
+func uniform_attachment(skeleton: Skeleton3D, bone_name: String) -> Node3D:
+	var attachment := BoneAttachment3D.new()
+	attachment.bone_name = bone_name
+	skeleton.add_child(attachment)
+	var pivot := Node3D.new()
+	var pose := skeleton.get_bone_global_pose(skeleton.find_bone(bone_name))
+	var world_pose := skeleton.global_transform * pose
+	pivot.transform = world_pose.affine_inverse() * Transform3D(global_basis.orthonormalized(), world_pose.origin)
+	attachment.add_child(pivot)
+	return pivot
 
 func animate(speed: float) -> void:
 	if animation == null:
@@ -255,8 +299,8 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 		return
 	var dressed := ImporterMesh.new()
 	var skins := [Color("75482f"),Color("bd8461"),Color("4e3026"),Color("d4a683"),Color("8a593c"),Color("a66d50")]
-	var shirt: Color = Color("293e56") if police else OUTFIT_SHIRTS[index]
-	var pants: Color = Color("252e39") if police else OUTFIT_PANTS[index]
+	var shirt: Color = Color("345778") if police else OUTFIT_SHIRTS[index]
+	var pants: Color = Color("142339") if police else OUTFIT_PANTS[index]
 	var skin: Color = skins[skin_index]
 	var hair: Color = [Color("211814"), Color("312117"), Color("161516"), Color("3b271b"), Color("1b1715"), Color("2d211c")][skin_index]
 	var palette: Array[Color] = [
