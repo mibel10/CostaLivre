@@ -42,7 +42,17 @@ func run() -> void:
 	world.player.position = Vector3(0, 0.2, 12)
 	world.player.set_physics_process(true)
 	assert(world.life.rooms.size() == 22 and world.life.people.size() == 148)
-	assert(world.cars.filter(func(car): return car.traffic and car.position.x > 200).size() == 16)
+	var traffic: Array = world.cars.filter(func(car): return car.traffic)
+	assert(traffic.size() == 33 and traffic.filter(func(car): return car.position.x > 200).size() == 20)
+	var local_car: Node3D = traffic[traffic.size() - 12]
+	var eastern_car: Node3D = traffic.back()
+	world.player.position = local_car.position + Vector3(-10, 0.3, 0)
+	world._physics_process(0.25)
+	assert(local_car.traffic_nearby and not eastern_car.traffic_nearby, "Extra traffic reuses distance-based simulation")
+	var before_traffic := local_car.position
+	for i in 90:
+		await physics_frame
+	assert(local_car.position.distance_squared_to(before_traffic) > 4.0, "The additional cars drive on their routes")
 	assert(world.life.people.filter(func(person): return person.position.x > 200 and not person.stationary and not person.shopper).size() == 36)
 	var lobby_counts := {}
 	for person in world.life.people:

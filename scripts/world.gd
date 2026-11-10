@@ -176,6 +176,21 @@ func _ready() -> void:
 	station=preload("res://scripts/police_station.gd").new()
 	station.world=self
 	add_child(station)
+	# Separate blocks spread the extra traffic without queuing cars on the existing circuits.
+	var extra_blocks := [
+		Vector2i(-126, -42), Vector2i(-84, -42), Vector2i(0, -42), Vector2i(42, -42),
+		Vector2i(84, 0), Vector2i(42, 42), Vector2i(-84, 84), Vector2i(0, 84),
+		Vector2i(210, 0), Vector2i(252, 0), Vector2i(546, 0), Vector2i(840, 0),
+	]
+	for i in extra_blocks.size():
+		var block: Vector2i = extra_blocks[i]
+		var base := Vector3(block.x, 0.2, block.y)
+		var car := spawn_car(base + Vector3(39, 0, 21), Color.from_hsv(fposmod(0.11 + i * 0.17, 1.0), 0.45, 0.82), false, 1 + i % 8)
+		car.traffic = true
+		car.route.assign([base + Vector3(3, 0, 3), base + Vector3(39, 0, 3), base + Vector3(39, 0, 39), base + Vector3(3, 0, 39)])
+		car.route_index = 2
+		car.heading = PI
+		car.rotation.y = PI
 	network = preload("res://scripts/lan_session.gd").new()
 	network.name = "LanSession"
 	network.world = self
