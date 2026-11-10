@@ -10,6 +10,7 @@ var world: Node3D
 var people: Array[CharacterBody3D] = []
 var rooms: Array[Node3D] = []
 var refresh := 0.0
+var room_refresh := 0.0
 var task_progress := 0.0
 const BUILDING_OFFERS := {
 	"cafe": ["Café Maré", "Comprar café (+15 de vida) · $20", "Saiu café fresco. Quer um?"],
@@ -877,6 +878,10 @@ func _process(delta: float) -> void:
 		var label := "Entrega %d/3 · %ds" % [service.step+1,ceili(service.remaining)]
 		if building_marker.text != label:
 			building_marker.text = label
+	room_refresh += delta
+	if room_refresh >= 0.125:
+		room_refresh = 0.0
+		refresh_room_visibility(world.subject_position())
 	refresh += delta
 	if refresh < 0.5:
 		return
@@ -888,7 +893,6 @@ func _process(delta: float) -> void:
 			ped.visible=ped.hp>0 and ped.position.distance_squared_to(subject)<3600
 			ped.model.process_mode=Node.PROCESS_MODE_INHERIT if ped.visible else Node.PROCESS_MODE_DISABLED
 			ped.set_physics_process(false)
-		refresh_room_visibility(subject)
 		return
 	var observers: Array[Vector3] = [subject]
 	if online and multiplayer.is_server():
@@ -920,4 +924,3 @@ func _process(delta: float) -> void:
 		ped.visible = ped.position.distance_squared_to(subject) < 3600.0
 		ped.model.process_mode = Node.PROCESS_MODE_INHERIT if ped.visible and simulate else Node.PROCESS_MODE_DISABLED
 		ped.set_physics_process(simulate)
-	refresh_room_visibility(subject)
