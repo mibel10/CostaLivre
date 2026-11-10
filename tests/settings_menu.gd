@@ -103,6 +103,13 @@ func run() -> void:
 	assert(settings.texture_quality == 0 and settings.shadow_quality == 3 and settings.antialiasing == 3)
 	assert(settings.detail_maps and settings.draw_distance == 5 and settings.upscaling == 0 and settings.fps_limit == 0)
 	assert(world.camera.far == settings.FAR[5] and root.msaa_3d == Viewport.MSAA_4X)
+	var environment: Environment = world.find_children("*", "WorldEnvironment", false, false)[0].environment
+	var sea: ShaderMaterial = world.get_node("MarCosta").material_override
+	assert(environment.glow_enabled and environment.fog_mode == Environment.FOG_MODE_DEPTH)
+	assert(sea.get_shader_parameter("extreme_surface") == true)
+	settings.set_quality(0, false)
+	assert(not environment.glow_enabled and environment.fog_mode == Environment.FOG_MODE_EXPONENTIAL)
+	assert(sea.get_shader_parameter("extreme_surface") == false)
 	var old_extreme := ConfigFile.new()
 	assert(old_extreme.load(settings.config_path) == OK)
 	old_extreme.set_value("video", "textures", 3)

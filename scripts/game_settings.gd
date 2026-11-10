@@ -8,7 +8,7 @@ const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplaySe
 const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const NEAR := [60.0, 46.0, 34.0, 22.0, 14.0, 80.0]
 const FAR := [420.0, 350.0, 280.0, 220.0, 165.0, 1450.0]
-const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65, 1.8]
+const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65, 2.35]
 var world: Node3D
 var quality := 3
 var customized := false
@@ -176,11 +176,13 @@ func apply_range(node: GeometryInstance3D) -> void:
 		node.visibility_range_begin = minf(NEAR[draw_distance], 14.0) if node.has_meta("police_lod") else NEAR[draw_distance]
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_shadow"):
-		node.visibility_range_end = 70.0 if quality == 5 else [0.1, 22.0, 34.0, 50.0][shadow_quality]
+		node.visibility_range_end = 70.0 if quality == 5 and shadow_quality == 3 else [0.1, 22.0, 34.0, 50.0][shadow_quality]
 	elif node is Label3D:
 		node.visibility_range_end = 110.0 if quality < 3 else 65.0
 
 func apply() -> void:
+	var extreme := quality == 5
+	var long_shadows := extreme and shadow_quality == 3
 	set_fps_limit(fps_limit, false)
 	apply_upscaling()
 	world.camera.far = FAR[draw_distance]
@@ -197,11 +199,30 @@ func apply() -> void:
 	for child in world.get_children():
 		if child is DirectionalLight3D:
 			child.shadow_enabled = shadow_quality > 0
-			child.directional_shadow_max_distance = 60.0 if quality == 5 else [0.0, 22.0, 29.0, 35.0][shadow_quality]
-			child.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
-		if child is WorldEnvironment:
-			child.environment.fog_enabled = quality < 3
-			child.environment.fog_density = 0.0015 if quality < 2 else 0.003
+			child.directional_shadow_max_distance = (74.0 if OS.has_feature("android") else 105.0) if long_shadows else [0.0, 22.0, 29.0, 35.0][shadow_quality]
+			child.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if long_shadows else DirectionalLight3D.SHADOW_ORTHOGONAL
+			child.directional_shadow_split_1 = 0.28
+			child.directional_shadow_blend_splits = long_shadows
+			child.light_color = Color(1, 0.923, 0.815) if extreme else Color(1, 0.94509804, 0.8509804)
+			child.light_energy = 1.08 if extreme else 0.85
+		elif child is WorldEnvironment:
+			var environment: Environment = child.environment
+			environment.ambient_light_energy = 0.52 if extreme else 0.4
+			environment.tonemap_mode = Environment.TONE_MAPPER_ACES if extreme else Environment.TONE_MAPPER_FILMIC
+			environment.tonemap_exposure = 0.89 if extreme else 0.8
+			environment.fog_enabled = extreme or quality < 3
+			environment.fog_mode = Environment.FOG_MODE_DEPTH if extreme else Environment.FOG_MODE_EXPONENTIAL
+			environment.fog_depth_begin = 95.0
+			environment.fog_depth_end = 900.0
+			environment.fog_density = 0.63 if extreme else (0.0015 if quality < 2 else 0.003)
+			environment.fog_sky_affect = 0.08 if extreme else 1.0
+			environment.glow_enabled = extreme
+			environment.glow_intensity = 0.26
+			environment.glow_hdr_threshold = 1.13
+			environment.adjustment_enabled = extreme
+			environment.adjustment_saturation = 1.07
+		elif child.name == &"MarCosta":
+			child.material_override.set_shader_parameter(&"extreme_surface", extreme and detail_maps)
 	for light in world.find_children("*", "OmniLight3D", true, false):
 		light.visible = quality != 4
 
