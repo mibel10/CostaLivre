@@ -16626,12 +16626,14 @@ material = SubResource("OficinaMat_Grafite")
 use_collision = true
 
 [node name="Oficina" type="Label3D" parent="GaragemCosta"]
-position = Vector3(0, 5.05, 12.35)
+position = Vector3(0, 5.07, 12.35)
 text = "OFICINA COSTA"
 font = ExtResource("5_l6mbj")
 font_size = 56
 pixel_size = 0.024
 modulate = Color(0.95, 0.83, 0.53, 1)
+outline_size = 0
+double_sided = false
 
 [node name="RetiradaVeiculos0" type="CSGBox3D" parent="."]
 position = Vector3(-8.5, 0.8, 19)
@@ -19947,12 +19949,14 @@ material = SubResource("OficinaMat_Vermelho")
 use_collision = true
 
 [node name="PlacaBox1" type="Label3D" parent="GaragemCosta"]
-position = Vector3(-4.55, 4, -11.54)
+position = Vector3(-5.55, 3.97, -11.55)
 text = "BOX 01"
 font = ExtResource("5_l6mbj")
 font_size = 40
 pixel_size = 0.014
 modulate = Color(0.95, 0.89, 0.72, 1)
+outline_size = 0
+double_sided = false
 
 [node name="Luminaria1_-2_7" type="OmniLight3D" parent="GaragemCosta"]
 position = Vector3(-4.55, 5.46, -2.7)
@@ -19979,12 +19983,14 @@ material = SubResource("OficinaMat_Vermelho")
 use_collision = true
 
 [node name="PlacaBox2" type="Label3D" parent="GaragemCosta"]
-position = Vector3(4.55, 4, -11.54)
+position = Vector3(5.55, 3.97, -11.55)
 text = "BOX 02"
 font = ExtResource("5_l6mbj")
 font_size = 40
 pixel_size = 0.014
 modulate = Color(0.95, 0.89, 0.72, 1)
+outline_size = 0
+double_sided = false
 
 [node name="Luminaria2_-2_7" type="OmniLight3D" parent="GaragemCosta"]
 position = Vector3(4.55, 5.46, -2.7)
@@ -20063,12 +20069,14 @@ material = SubResource("OficinaMat_Aco")
 rotation = Vector3(1.5708, 0, 0)
 
 [node name="ServicoOficina" type="Label3D" parent="GaragemCosta"]
-position = Vector3(0, 3.94, -11.66)
+position = Vector3(0, 3.94, -11.79)
 text = "MECÂNICA  /  PINTURA  /  SUSPENSÃO"
 font = ExtResource("5_l6mbj")
 font_size = 31
 pixel_size = 0.012
 modulate = Color(0.95, 0.89, 0.72, 1)
+outline_size = 0
+double_sided = false
 
 [node name="DetalhesOficinaGrafite0" type="MultiMeshInstance3D" parent="GaragemCosta"]
 material_override = SubResource("OficinaMat_Grafite")

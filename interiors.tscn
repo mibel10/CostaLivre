@@ -11568,7 +11568,7 @@ mesh = SubResource("BoxMesh_ilqhq")
 shape = SubResource("BoxShape3D_ib5ii")
 
 [node name="_Label3D_456" type="Label3D" parent="Bank" unique_id=1313770099]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.25, 14.29)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.25, 14.264)
 visibility_range_end = 65.0
 pixel_size = 0.012
 double_sided = false
@@ -11576,29 +11576,32 @@ text = "BANCO COSTA"
 font_size = 52
 font = ExtResource("3_drprt")
 modulate = Color(1, 0.88, 0.65, 1)
+outline_size = 0
 
 [node name="_Label3D_457" type="Label3D" parent="Bank" unique_id=181463257]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2.5, 6.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1.34, 6.733)
 visibility_range_end = 65.0
-pixel_size = 0.012
+pixel_size = 0.0055
 double_sided = false
 text = "SEGURANÇA"
 font_size = 30
 font = ExtResource("3_drprt")
 modulate = Color(1, 0.88, 0.65, 1)
+outline_size = 0
 
 [node name="_Label3D_458" type="Label3D" parent="Bank" unique_id=1538377862]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2.5, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.9, 1.675)
 visibility_range_end = 65.0
-pixel_size = 0.012
+pixel_size = 0.008
 double_sided = false
 text = "TERMINAL"
 font_size = 30
 font = ExtResource("3_drprt")
 modulate = Color(1, 0.88, 0.65, 1)
+outline_size = 0
 
 [node name="_Label3D_459" type="Label3D" parent="Bank" unique_id=1516267821]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, -2.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, -2.638)
 visibility_range_end = 65.0
 pixel_size = 0.012
 double_sided = false
@@ -11606,14 +11609,16 @@ text = "COFRE"
 font_size = 30
 font = ExtResource("3_drprt")
 modulate = Color(1, 0.88, 0.65, 1)
+outline_size = 0
 
 [node name="_Label3D_460" type="Label3D" parent="Bank" unique_id=147524556]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.2, 13.5)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 4.12, 13.508)
 visibility_range_end = 65.0
 pixel_size = 0.012
 double_sided = false
 text = "SAÍDA"
 font_size = 28
+outline_size = 0
 
 [node name="_MeshInstance3D_461" type="MeshInstance3D" parent="Bank" unique_id=784165686]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1.2, 6.5)
@@ -11887,50 +11892,37 @@ material_override = SubResource("BancoCostaMat_Bronze")
 multimesh = SubResource("MultiMesh_gbxxf")
 
 [node name="_Label3D_527" type="Label3D" parent="Bank" unique_id=1735214143]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.2, 3.1, 0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.68, 0.692)
 visibility_range_end = 65.0
-pixel_size = 0.012
+pixel_size = 0.018
 double_sided = false
 text = "CAIXA 01"
 font_size = 20
 font = ExtResource("3_drprt")
 modulate = Color(1, 0.88, 0.65, 1)
+outline_size = 0
 
 [node name="_Label3D_531" type="Label3D" parent="Bank" unique_id=700588613]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 3.1, 0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.68, 0.692)
 visibility_range_end = 65.0
-pixel_size = 0.012
+pixel_size = 0.018
 double_sided = false
 text = "CAIXA 02"
 font_size = 20
 font = ExtResource("3_drprt")
 modulate = Color(1, 0.88, 0.65, 1)
+outline_size = 0
 
 [node name="_Label3D_535" type="Label3D" parent="Bank" unique_id=1262398434]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 3.1, 0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.68, 0.692)
 visibility_range_end = 65.0
-pixel_size = 0.012
+pixel_size = 0.018
 double_sided = false
 text = "CAIXA 03"
 font_size = 20
 font = ExtResource("3_drprt")
 modulate = Color(1, 0.88, 0.65, 1)
-
-[node name="_Label3D_538" type="Label3D" parent="Bank" unique_id=1915270378]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3.8, 3.5)
-visibility_range_end = 65.0
-pixel_size = 0.012
-double_sided = false
-text = "SALA DE SEGURANÇA"
-font_size = 22
-
-[node name="_Label3D_653" type="Label3D" parent="Bank" unique_id=480531462]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 13.99)
-visibility_range_end = 65.0
-pixel_size = 0.012
-double_sided = false
-text = "COSTA • PRIVATE BANKING"
-font_size = 30
+outline_size = 0
 
 [node name="Station" type="Node3D" parent="." unique_id=85995987]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 105, 0, 21)
@@ -14158,6 +14150,18 @@ material = SubResource("StandardMaterial3D_bbgv6")
 position = Vector3(5, 5.6, 0)
 size = Vector3(2.8, 0.08, 0.35)
 material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="PlacaTerminal" type="MeshInstance3D" parent="Bank"]
+position = Vector3(8, 0.9, 1.61)
+scale = Vector3(1.55, 0.26, 0.11)
+material_override = SubResource("BancoCostaMat_Verde")
+mesh = SubResource("BancoCostaBoxUnit")
+
+[node name="PlacaSaida" type="MeshInstance3D" parent="Bank"]
+position = Vector3(0, 4.12, 13.57)
+scale = Vector3(1.25, 0.42, 0.11)
+material_override = SubResource("BancoCostaMat_Verde")
+mesh = SubResource("BancoCostaBoxUnit")
 
 [node name="DetalhesBancoCostaVerde0" type="MultiMeshInstance3D" parent="Bank"]
 material_override = SubResource("BancoCostaMat_Verde")
