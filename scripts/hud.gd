@@ -105,6 +105,8 @@ func _draw() -> void:
 	minimap(Vector2(24, 210 if OS.has_feature("android") else 520), Vector2(164, 164))
 	bar(Vector2(24, 385 if OS.has_feature("android") else 692), 164, world.health / 100, Color("8ddbb5"))
 	if world.active_car != null:
+		if not OS.has_feature("android") and not world.bus_passenger and world.active_car.can_right_vehicle():
+			center_note("V · Desvirar carro", 560, gold)
 		text("%03d" % roundi(absf(world.active_car.speed) * 3.6), Vector2(1120, 659), 36)
 		text("km/h", Vector2(1200, 657), 13, muted)
 		text(world.active_car.model_name, Vector2(1120, 684), 14, muted)

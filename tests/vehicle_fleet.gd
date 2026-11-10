@@ -78,6 +78,33 @@ func run() -> void:
 		bought.position = Vector3(0,0.2,-126)
 		world.cars.erase(bought)
 		bought.queue_free()
+	var ledge_car = world.spawn_car(Vector3(1202, 10.05, 32), Color.BLUE, false, 1)
+	ledge_car.heading = PI
+	world.active_car = ledge_car
+	ledge_car.driving = true
+	await create_timer(0.35).timeout
+	ledge_car.speed = 16.0
+	Input.action_press("forward")
+	for frame in 75:
+		await physics_frame
+		if ledge_car.tumbling:
+			break
+	Input.action_release("forward")
+	assert(ledge_car.tumbling, "Driving off the new favela cliff starts a rigid-body fall")
+	await create_timer(0.22).timeout
+	assert(ledge_car.global_basis.y.dot(Vector3.UP) < 0.95, "The falling car rotates instead of staying flat")
+	var body: RigidBody3D = ledge_car.tumble_body
+	body.global_transform = Transform3D(Basis(Vector3.FORWARD, PI), Vector3(1280, 0.7, 80))
+	body.linear_velocity = Vector3.ZERO
+	body.angular_velocity = Vector3.ZERO
+	body.sleeping = true
+	ledge_car.tick_tumble()
+	assert(ledge_car.can_right_vehicle(), "A stopped overturned car can be recovered")
+	var flip := InputEventKey.new()
+	flip.physical_keycode = KEY_V
+	flip.pressed = true
+	world._unhandled_input(flip)
+	assert(not ledge_car.tumbling and ledge_car.global_basis.y.dot(Vector3.UP) > 0.99, "V restores the car upright in place")
 	world.queue_free()
 	await process_frame
 	print("PASS: fleet models including bus, motorcycle rider/exit, acceleration, repaint and dealer pagination")

@@ -16,7 +16,7 @@ var button_sizes := {}
 var saved_button_sizes := {}
 var selected_button := "shoot"
 var saved_button_scale := 1.0
-const CONTROLS := ["pause","map","shoot","aim","interact","activity","jump","sprint","jobs","weapon","reload","roll","crouch","reset","stick"]
+const CONTROLS := ["pause","map","shoot","aim","interact","activity","jump","sprint","jobs","weapon","reload","roll","crouch","reset","flip","stick"]
 var edit_message := ""
 var visible_actions: Array[String] = []
 var visibility_clock := 0.0
@@ -29,6 +29,7 @@ func _ready() -> void:
 	for name in ["pause","map","shoot","aim","interact","activity","jump","sprint","jobs","weapon","reload","roll","reset","previous","next","restart"]:
 		icons[name] = load("res://assets/ui/touch/"+name+".svg")
 	icons["crouch"]=load("res://assets/ui/touch/crouch.svg")
+	icons["flip"] = icons["reset"]
 	load_layout()
 	get_viewport().size_changed.connect(queue_redraw)
 	visible = OS.has_feature("android")
@@ -63,6 +64,7 @@ func base_buttons() -> Array:
 	if state != "":
 		return [] # Native pause/menu controls use Android touch-to-mouse input.
 	var rows := [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
+	rows.append([Rect2(1085,320,165,80),"DESVIRAR","flip"])
 	return rows if editing else rows.filter(func(entry): return entry[2] in visible_actions)
 
 func gameplay_actions() -> Array[String]:
@@ -92,6 +94,8 @@ func gameplay_actions() -> Array[String]:
 	if use_here or (car != null and car.tier == a.Catalog.SUPERCAR):
 		result.append("activity")
 	if car != null:
+		if car.can_right_vehicle():
+			result.append("flip")
 		result.append("jump")
 		return result
 	result.append_array(["weapon", "sprint", "crouch"])

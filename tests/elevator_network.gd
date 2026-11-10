@@ -155,6 +155,22 @@ func run() -> void:
 	host.network.rules.punch_peer(id,0.0)
 	assert(not host.network.rules.last_actions.has(str(id)+"punch_hit"),"Host rejects punches from vehicles")
 	var host_car: Node=host.car_by_id(1)
+	host_car.position = Vector3(1280, 9, 80)
+	host.network.apply_car(id, {"car":1, "car_position":Vector3(1280, 8, 80), "car_heading":0.0, "speed":12.0})
+	assert(host_car.tumbling, "The host starts the fall for a remote driver's car")
+	assert(await wait_until(func(): return remote_car.tumbling))
+	var rolling: RigidBody3D = host_car.tumble_body
+	rolling.global_transform = Transform3D(Basis(Vector3.FORWARD, PI), Vector3(1280, 0.7, 80))
+	rolling.linear_velocity = Vector3.ZERO
+	rolling.angular_velocity = Vector3.ZERO
+	rolling.sleeping = true
+	assert(await wait_until(func(): return remote_car.can_right_vehicle()))
+	var flip := InputEventKey.new()
+	flip.physical_keycode = KEY_V
+	flip.pressed = true
+	client._unhandled_input(flip)
+	assert(await wait_until(func(): return not host_car.tumbling and not remote_car.tumbling))
+	assert(remote_car.global_basis.y.dot(Vector3.UP) > 0.99 and remote_car.position.distance_to(host_car.position) < 1.0)
 	host_car.take_hit(10000)
 	host_car.wreck_timer=0.15
 	if not await wait_until(func(): return is_instance_valid(host_car) and host_car.exploded, 3.0):

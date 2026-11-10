@@ -539,6 +539,9 @@ func accept_state(id: int, state: Dictionary) -> void:
 	var selected_car: Node=world.car_by_id(car_id)
 	if selected_car!=null and not selected_car.police and selected_car.hp>0 and int(owners.get(car_id,0)) == id and not rules.is_dead(id):
 		owners[car_id]=id
+		if selected_car.tumbling or Time.get_ticks_msec() < selected_car.tumble_lock_until:
+			state.car_position = selected_car.position
+			state.speed = selected_car.speed
 		if not selected_car.owned:
 			selected_car.owned=true
 			world.raise_heat(12, id)
@@ -612,7 +615,10 @@ func _process(delta: float) -> void:
 				members[id]["car_position"] = bus.position
 		var cars: Array = []
 		for car in world.cars:
-			cars.append({"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer,"fuel":car.fuel,"refuel_time":car.refuel_time})
+			var car_state := {"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer,"fuel":car.fuel,"refuel_time":car.refuel_time}
+			if car.tumbling:
+				car_state["tumble_rotation"] = car.rotation
+			cars.append(car_state)
 		var people: Array = []
 		for person in world.life.people:
 			people.append([person.position,person.model.rotation.y,person.hp,person.robbed])
@@ -632,6 +638,10 @@ func apply_car(id: int,state: Dictionary) -> void:
 	var index := int(state.get("car",-1))
 	var car: Node3D=world.car_by_id(index)
 	if car!=null and car.hp>0 and owners.get(index,0)==id and not world.vehicle_held_for_entry(index):
+		if car.tumbling or Time.get_ticks_msec() < car.tumble_lock_until:
+			state.car_position = car.position
+			state.speed = car.speed
+			return
 		var at: Vector3=state.car_position
 		var heading_value = state.get("car_heading", 0.0)
 		var speed_value = state.get("speed", 0.0)
@@ -641,6 +651,7 @@ func apply_car(id: int,state: Dictionary) -> void:
 			return
 		# Match the vehicle recovery bounds so the favela ramp works for remote drivers.
 		if at.is_finite() and at.x>=-195 and at.x<=world.MAP_EAST + 5.0 and absf(at.z)<143 and at.y>=-6.0 and at.y<=20.0:
+			var fall_speed: float = (at.y - car.position.y) * 10.0
 			world.check_vehicle_entry(car.position, at, id)
 			car.position=at
 			car.heading=wrapf(float(heading_value), -PI, PI)
@@ -650,6 +661,8 @@ func apply_car(id: int,state: Dictionary) -> void:
 			if car.tier == car.Catalog.SUPERCAR:
 				limit = car.Catalog.HOVER_SPEED if car.hovering else car.Catalog.SPEEDS[car.tier]
 			car.speed=0.0 if car.fuel <= 0.0 else clampf(float(speed_value),-20,limit)
+			if fall_speed < -3.5 and car.has_tumble_clearance():
+				car.begin_tumble(-car.global_basis.z * car.speed + Vector3.UP * maxf(-28.0, fall_speed))
 
 @rpc("authority","call_remote","reliable",2)
 func packed_snapshot(packet: PackedByteArray) -> void:
@@ -678,13 +691,17 @@ func snapshot(data: Dictionary) -> void:
 			car=world.spawn_car(state.position,state.paint,state.police,int(state.tier))
 			car.net_id=id
 			world.vehicle_sequence=maxi(world.vehicle_sequence,id+1)
-		if car!=world.active_car or world.bus_passenger:
+		var tumbling: bool = state.has("tumble_rotation")
+		if car!=world.active_car or world.bus_passenger or tumbling or car.tumbling:
 			car.position=state.position
 			car.heading=state.heading
-			car.rotation.y=car.heading
+			car.rotation = state.get("tumble_rotation", Vector3(0, car.heading, 0))
 			car.speed=state.speed
+			if tumbling or car.tumbling:
+				car.velocity = Vector3.ZERO
 		elif owners.get(id,multiplayer.get_unique_id())!=multiplayer.get_unique_id():
 			rules.receive_event("spawn",{"position":car.position+Vector3(3,0.5,0),"health":world.health})
+		car.tumbling = tumbling
 		if car.paint!=state.paint:
 			car.repaint(state.paint)
 		if car.hp<=0 and state.hp>0:

@@ -56,6 +56,12 @@ func run() -> void:
 	assert("interact" in touch.gameplay_actions(), "Entry button appears near a vehicle")
 	world.active_car = car
 	assert("interact" in touch.gameplay_actions() and "weapon" not in touch.gameplay_actions(), "Driving shows exit and hides the weapon wheel")
+	assert("flip" not in touch.gameplay_actions(), "An upright car does not show the recovery button")
+	car.tumbling = true
+	car.rotation.z = PI
+	assert("flip" in touch.gameplay_actions(), "The Android recovery button appears when the car is overturned")
+	car.tumbling = false
+	car.rotation.z = 0
 	world.active_car = null
 	world.activities.weapon = 6
 	Input.action_press("aim")

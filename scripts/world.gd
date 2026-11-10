@@ -252,7 +252,7 @@ func play_cutscene(title: String, subtitle: String, callback: Callable = Callabl
 	cutscene.play(title, subtitle, callback)
 
 func setup_input() -> void:
-	var bindings := {"forward": KEY_W, "back": KEY_S, "left": KEY_A, "right": KEY_D, "jump": KEY_SPACE, "sprint": KEY_SHIFT, "crouch": KEY_Z, "interact": KEY_E, "reset": KEY_T, "reload": KEY_R, "activity": KEY_F, "jobs": KEY_M, "map": KEY_TAB, "pause": KEY_ESCAPE, "restart": KEY_ENTER, "credits": KEY_C}
+	var bindings := {"forward": KEY_W, "back": KEY_S, "left": KEY_A, "right": KEY_D, "jump": KEY_SPACE, "sprint": KEY_SHIFT, "crouch": KEY_Z, "interact": KEY_E, "reset": KEY_T, "flip": KEY_V, "reload": KEY_R, "activity": KEY_F, "jobs": KEY_M, "map": KEY_TAB, "pause": KEY_ESCAPE, "restart": KEY_ENTER, "credits": KEY_C}
 	var config := ConfigFile.new()
 	config.load("user://settings.cfg")
 	for action in bindings:
@@ -434,6 +434,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("interact") and not finished:
 		interact()
+	if event.is_action_pressed("flip") and not finished and not bus_passenger and active_car != null:
+		if active_car.can_right_vehicle():
+			if network.active():
+				network.rules.send_action("right_vehicle")
+			elif not active_car.right_vehicle():
+				notify("Sem espaço para desvirar o carro.")
+		return
 	if event.is_action_pressed("reset") and not finished:
 		if bus_passenger:
 			return
@@ -441,6 +448,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			notify("Saia do banco pela porta da frente.")
 			return
 		if active_car != null:
+			if active_car.tumbling:
+				return
 			active_car.position = Vector3(clampf(roundf(active_car.position.x / 42) * 42, -126, 882), 1, clampf(active_car.position.z, -130, 130))
 			active_car.speed = 0
 			active_car.heading = 0
@@ -472,6 +481,8 @@ func interact() -> void:
 		network.rules.send_action("bus_exit")
 		return
 	if active_car != null:
+		if active_car.tumbling and absf(active_car.speed) >= 2.0:
+			return
 		# Test both doors, then front/rear: never place the character inside a wall.
 		var offset := vehicle_exit_offset(active_car)
 		if offset != Vector3.ZERO:

@@ -402,6 +402,12 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				car.set_hover_mode(not car.hovering)
 		"bus_board": board_bus(id, int(data.get("car", -1)))
 		"bus_exit": leave_bus(id)
+		"right_vehicle":
+			var car_id: int = network.members.get(id, {}).get("car", -1)
+			var car: Node = world.car_by_id(car_id)
+			if car != null and network.owners.get(car_id, 0) == id and car.can_right_vehicle():
+				if not car.right_vehicle():
+					private_notice(id, "Sem espaço para desvirar o carro.")
 		"fire": fire_peer(id,data)
 		"punch": punch_peer(id,float(data.get("yaw",0)))
 		"reload": with_actor(id,world.activities.reload)

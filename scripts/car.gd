@@ -8,6 +8,9 @@ var net_id := -1
 var police_home := Vector3.ZERO
 var police_phase := "pursuit"
 var last_grounded := Vector3.ZERO
+var tumbling := false
+var tumble_body: RigidBody3D
+var tumble_lock_until := 0
 var paint := Color("dd7542")
 var police := false
 var traffic := false
@@ -112,6 +115,18 @@ func _process(delta: float) -> void:
 	body.rotation.z = lerpf(body.rotation.z, roll, minf(1.0, delta * 5.0))
 
 func _physics_process(delta: float) -> void:
+	if tumbling:
+		if world.network.is_client():
+			return
+		if is_instance_valid(tumble_body):
+			tick_tumble()
+		else:
+			# A disconnected client has a replicated pose but no simulated rigid body.
+			tumbling = false
+			rotation = Vector3(0, heading, 0)
+			speed = 0.0
+		if tumbling and hp > 0:
+			return
 	if world.network != null and world.network.active():
 		var owner_id: int = world.network.owners.get(net_id,0)
 		if (world.network.is_client() and (self != world.active_car or world.bus_passenger or hp <= 0)) or (not world.network.is_client() and hp > 0 and owner_id > 0 and owner_id != multiplayer.get_unique_id()):
@@ -155,6 +170,8 @@ func _physics_process(delta: float) -> void:
 			wreck_timer=maxf(0,wreck_timer-delta)
 			if wreck_timer<=0:
 				explode()
+		if tumbling:
+			return
 		speed = 0
 		velocity.x = move_toward(velocity.x,0,delta*12)
 		velocity.z = move_toward(velocity.z,0,delta*12)
@@ -249,6 +266,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	crush_underneath()
 	update_ramp_tilt(delta)
+	if driving and not world.finished and not world.network.is_client() and not is_on_floor() and last_grounded != Vector3.ZERO and position.y < last_grounded.y - 0.25 and velocity.y < -3.5 and has_tumble_clearance():
+		begin_tumble(velocity)
+		return
 	if driving and not world.finished and (world.network == null or not world.network.is_client()):
 		world.check_vehicle_entry(previous, position)
 	if is_on_floor():
@@ -560,6 +580,96 @@ func set_suspension(value: float) -> void:
 	var collider: CollisionShape3D = get_child(0)
 	collider.shape.size.y = Catalog.SIZES[tier].y+value
 	collider.position.y = collider.shape.size.y/2
+
+func has_tumble_clearance() -> bool:
+	if hovering or hp <= 0.0 or tumbling or Time.get_ticks_msec() < tumble_lock_until:
+		return false
+	var query := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 0.35, global_position - Vector3.UP * 2.4, 1)
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+func begin_tumble(momentum: Vector3) -> void:
+	tumble_body = RigidBody3D.new()
+	tumble_body.top_level = true
+	# The original collider remains a target for shots. Only the rigid body drives world contact during a fall.
+	tumble_body.collision_layer = 0
+	tumble_body.collision_mask = 1
+	tumble_body.continuous_cd = true
+	tumble_body.mass = 950.0
+	tumble_body.gravity_scale = 1.8
+	var contact := PhysicsMaterial.new()
+	contact.friction = 0.85
+	contact.bounce = 0.18
+	tumble_body.physics_material_override = contact
+	var collider := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Catalog.SIZES[tier] + Vector3.UP * suspension_height
+	collider.shape = shape
+	tumble_body.add_child(collider)
+	add_child(tumble_body)
+	tumble_body.global_transform = Transform3D(global_basis, to_global(Vector3.UP * shape.size.y * 0.5))
+	tumble_body.linear_velocity = momentum
+	var forward_speed := momentum.dot(-global_basis.z)
+	tumble_body.angular_velocity = global_basis.x * clampf(-forward_speed * 0.10, -2.1, 2.1) + global_basis.z * 1.9
+	tumbling = true
+	refuel_time = 0.0
+	refuel_peer = 0
+
+func tick_tumble() -> void:
+	if not is_instance_valid(tumble_body):
+		return
+	var half_height: float = (Catalog.SIZES[tier].y + suspension_height) * 0.5
+	global_basis = tumble_body.global_basis
+	global_position = tumble_body.global_position - global_basis.y * half_height
+	speed = tumble_body.linear_velocity.length()
+	if position.y < -6.0:
+		end_tumble(last_grounded if last_grounded != Vector3.ZERO else Vector3(0, 0.3, 0))
+	elif hp > 0.0 and tumble_body.sleeping and global_basis.y.dot(Vector3.UP) > 0.68:
+		try_end_tumble()
+
+func can_right_vehicle() -> bool:
+	return tumbling and hp > 0.0 and absf(speed) < 2.0 and global_basis.y.dot(Vector3.UP) <= 0.68
+
+func right_vehicle() -> bool:
+	return can_right_vehicle() and try_end_tumble(true)
+
+func try_end_tumble(nearby := false) -> bool:
+	if not is_instance_valid(tumble_body):
+		return false
+	var center := tumble_body.global_position
+	var collider: CollisionShape3D = get_child(0)
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = collider.shape
+	query.collision_mask = 7
+	query.exclude = [get_rid(), tumble_body.get_rid()]
+	var candidates: Array[Vector3] = [center]
+	if nearby:
+		var radius: float = maxf(Catalog.SIZES[tier].x, Catalog.SIZES[tier].z * 0.5) + 0.4
+		for direction in [Vector3.RIGHT, Vector3.LEFT, Vector3.FORWARD, Vector3.BACK]:
+			candidates.append(center + direction * radius)
+	var upright := Basis(Vector3.UP, heading)
+	var space := get_world_3d().direct_space_state
+	for candidate in candidates:
+		var floor_query := PhysicsRayQueryParameters3D.create(candidate + Vector3.UP * 0.2, candidate - Vector3.UP * 4.0, 1)
+		var floor_hit := space.intersect_ray(floor_query)
+		if floor_hit.is_empty() or floor_hit.normal.y < 0.55:
+			continue
+		for clearance in [0.12, 0.45, 0.85]:
+			var landing: Vector3 = floor_hit.position + Vector3.UP * clearance
+			query.transform = Transform3D(upright, landing + upright * collider.position)
+			if space.intersect_shape(query, 1).is_empty():
+				end_tumble(landing)
+				return true
+	return false
+
+func end_tumble(at: Vector3) -> void:
+	tumble_body.queue_free()
+	tumble_body = null
+	tumbling = false
+	tumble_lock_until = Time.get_ticks_msec() + 500
+	position = at
+	rotation = Vector3(0, heading, 0)
+	velocity = Vector3.ZERO
+	speed = 0.0
 
 func update_ramp_tilt(delta: float) -> void:
 	var pitch := 0.0
