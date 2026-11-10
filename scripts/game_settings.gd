@@ -8,7 +8,7 @@ const WINDOW_MODES := [DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN, DisplaySe
 const WINDOW_RESOLUTIONS := [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1366, 768), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const NEAR := [60.0, 46.0, 34.0, 22.0, 14.0, 80.0]
 const FAR := [420.0, 350.0, 280.0, 220.0, 165.0, 1450.0]
-const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65, 1.2]
+const LOD_BIAS := [1.8, 1.35, 1.0, 0.8, 0.65, 1.8]
 var world: Node3D
 var quality := 3
 var customized := false
@@ -52,13 +52,15 @@ func load_settings() -> void:
 	fps_limit = value if typeof(value) == TYPE_INT and value in FPS_LIMITS else 30
 	value = config.get_value("video","fps_corner",1)
 	fps_corner = value if typeof(value) == TYPE_INT and value >= -1 and value <= 3 else 1
-	texture_quality = video_int(config, "textures", mini(quality, 3), 0, 3)
-	shadow_quality = video_int(config, "shadows", [3,2,1,0,0,3][quality], 0, 3)
-	antialiasing = video_int(config, "aa", 0, 0, 3) if customized else 0
-	if antialiasing == 1:
-		antialiasing = 0 # Legacy FXAA setting; Compatibility cannot apply it.
-	draw_distance = video_int(config, "distance", quality, 0, 5)
-	detail_maps = config.get_value("video", "details", quality < 3 or quality == 5) == true
+	apply_preset_values()
+	if customized:
+		texture_quality = video_int(config, "textures", texture_quality, 0, 3)
+		shadow_quality = video_int(config, "shadows", shadow_quality, 0, 3)
+		antialiasing = video_int(config, "aa", antialiasing, 0, 3)
+		if antialiasing == 1:
+			antialiasing = 0 # Legacy FXAA setting; Compatibility cannot apply it.
+		draw_distance = video_int(config, "distance", draw_distance, 0, 5)
+		detail_maps = config.get_value("video", "details", detail_maps) == true
 	upscaling = video_int(config, "upscaling", 2, 0, 4)
 	window_mode = video_int(config, "window_mode", 2, 0, 2)
 	window_resolution = Vector2i(video_int(config, "window_width", 1280, 1, 7680), video_int(config, "window_height", 720, 1, 4320))
@@ -104,15 +106,20 @@ func set_quality(index: int, persist := true) -> void:
 	if index < 0 or index >= QUALITIES.size():
 		return
 	quality = index
-	customized=false
-	texture_quality=mini(index,3)
-	shadow_quality=[3,2,1,0,0,3][index]
-	antialiasing=3 if index == 5 else 0
-	draw_distance=index
-	detail_maps=index<3 or index==5
+	customized = false
+	apply_preset_values()
+	if quality == 5:
+		upscaling = 0
 	apply()
 	if persist:
 		save_settings()
+
+func apply_preset_values() -> void:
+	texture_quality = 0 if quality == 5 else mini(quality, 3)
+	shadow_quality = [3, 2, 1, 0, 0, 3][quality]
+	antialiasing = 3 if quality == 5 else 0
+	draw_distance = quality
+	detail_maps = quality < 3 or quality == 5
 
 func set_fps_limit(value: int, persist := true) -> void:
 	if value not in FPS_LIMITS:

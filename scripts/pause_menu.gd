@@ -442,7 +442,7 @@ func refresh() -> void:
 	for key in advanced_options:
 		var value: int = {"textures":world.settings.texture_quality,"shadows":world.settings.shadow_quality,"aa":world.settings.antialiasing,"distance":world.settings.draw_distance,"details":int(world.settings.detail_maps)}[key]
 		advanced_options[key].select(value)
-	quality_select.select(5 if world.settings.customized else world.settings.quality)
+	quality_select.select(world.settings.QUALITIES.size() if world.settings.customized else world.settings.quality)
 	upscaling_select.select(world.settings.upscaling)
 	if window_mode_select != null:
 		window_mode_select.select(world.settings.window_mode)
