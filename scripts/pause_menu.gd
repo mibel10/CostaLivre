@@ -14,6 +14,7 @@ var resolution_select: OptionButton
 var window_resolutions: Array[Vector2i] = []
 var status: Label
 var campaign_save_button: Button
+var current_mode_label: Label
 var admin_entry: Button
 var admin_status: Label
 var advanced_options := {}
@@ -100,7 +101,7 @@ func _ready() -> void:
 	ending_shade.size = Vector2(1280,720)
 	pages.ending.add_child(ending_shade)
 	label(pages.ending,"CAMPANHA CONCLUÍDA",Vector2(390,190),38,Color("ffd18a"))
-	label(pages.ending,"Os 24 capítulos foram concluídos. A cidade está livre.",Vector2(392,260),20)
+	label(pages.ending,"Os %d capítulos foram concluídos. A cidade está livre." % world.activities.CAMPAIGN_LENGTH,Vector2(392,260),20)
 	button(pages.ending,"CONTINUAR NO JOGO LIVRE",Rect2(392,340,440,58),func(): world.start_mode("sandbox"))
 	button(pages.ending,"VOLTAR À ESCOLHA DE MODO",Rect2(392,420,440,58),show_mode_select)
 	button(pages.mode,"NOME E ROUPA",Rect2(70,567,440,48),func(): show_page("character"))
@@ -132,7 +133,7 @@ func _ready() -> void:
 	label(pages.home, "Mapa, opções e mudança de modo ficam aqui.", Vector2(0, 105), 18)
 	button(pages.home,"Creditos",Rect2(0,345,240,48),func(): world.activities.set_menu("credits"))
 	label(pages.home, "MODO ATUAL", Vector2(0, 180), 14, Color("a7b9bf"))
-	label(pages.home, "HISTÓRIA" if world.game_mode == "campaign" else "JOGO LIVRE", Vector2(0, 207), 24, Color("ffd18a"))
+	current_mode_label = label(pages.home, "", Vector2(0, 207), 24, Color("ffd18a"))
 	label(pages.home, "No modo história, o progresso fica salvo neste aparelho.", Vector2(0, 265), 17, Color("a7b9bf"))
 	admin_entry = button(pages.home, "·", Rect2(806, 8, 52, 48), func(): show_page("admin"))
 	admin_entry.flat = true
@@ -382,6 +383,11 @@ func show_page(value: String) -> void:
 	if value == "mode" and world.restart_after_admin():
 		return
 	admin_entry.visible = admin_allowed()
+	if value == "home":
+		if world.network.active():
+			current_mode_label.text = "MULTIPLAYER"
+		else:
+			current_mode_label.text = "HISTÓRIA" if world.game_mode == "campaign" else "JOGO LIVRE"
 	if value == "admin":
 		if not admin_allowed():
 			return
