@@ -102,6 +102,15 @@ func _ready() -> void:
 	heading = rotation.y
 	model_name = Catalog.NAMES[tier]
 
+func _process(delta: float) -> void:
+	if tier != Catalog.SUPERCAR:
+		return
+	var body := get_node_or_null("CustomVehicle") as Node3D
+	if body == null:
+		return
+	var roll := sin(Time.get_ticks_msec() * 0.0018) * 0.025 if hovering else 0.0
+	body.rotation.z = lerpf(body.rotation.z, roll, minf(1.0, delta * 5.0))
+
 func _physics_process(delta: float) -> void:
 	if world.network != null and world.network.active():
 		var owner_id: int = world.network.owners.get(net_id,0)
@@ -234,7 +243,7 @@ func _physics_process(delta: float) -> void:
 		var ground := get_world_3d().direct_space_state.intersect_ray(
 			PhysicsRayQueryParameters3D.create(origin, origin + Vector3.DOWN * 9.0, 1))
 		if not ground.is_empty():
-			var height: float = ground.position.y + Catalog.HOVER_HEIGHT
+			var height: float = ground.position.y + Catalog.HOVER_HEIGHT + sin(Time.get_ticks_msec() * 0.0018) * 0.22
 			velocity.y = clampf((height - global_position.y) * 5.0, -8.0, 8.0)
 	var previous := position
 	move_and_slide()

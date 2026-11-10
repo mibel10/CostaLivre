@@ -41,6 +41,13 @@ func run() -> void:
 			for frame in 65:
 				await physics_frame
 			assert(car.position.y > a.Catalog.SIZES[a.Catalog.BUS].y, "Hover clears the bus roof")
+			var low: float = car.position.y
+			var high: float = low
+			for frame in 100:
+				await physics_frame
+				low = minf(low, car.position.y)
+				high = maxf(high, car.position.y)
+			assert(high - low > 0.08, "Hover height gently oscillates")
 			var victim: Node3D = world.life.people[0]
 			var bystander: Node3D = world.life.people[1]
 			victim.set_physics_process(false)
