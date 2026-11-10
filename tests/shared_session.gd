@@ -62,6 +62,12 @@ func run() -> void:
 	rules.punch_peer(1, 0.0)
 	assert(punch_car.hp == punch_car_hp - 25, "Host applies punch damage to vehicles")
 	assert(farther_car.hp == farther_hp, "Host hits the closest target first")
+	host.camera_yaw = 0.42
+	host.extra.punch()
+	assert(is_equal_approx(host.player.model.rotation.y, host.camera_yaw), "Multiplayer punch faces the camera")
+	assert(host.extra.audio.stream == host.extra.sounds.punch, "Multiplayer punch plays its sound")
+	host.extra.punch_time = 0
+	host.camera_yaw = 0
 	await wait_for(func(): return client.car_by_id(punch_car.net_id).hp == punch_car.hp)
 	punch_car.position = punch_car_position
 	farther_car.position = farther_position

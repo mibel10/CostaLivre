@@ -101,15 +101,13 @@ func handle_input(event: InputEvent) -> bool:
 func punch() -> void:
 	if punch_time > 0 or world.active_car != null or world.car_transition or world.activities.menu != "" or world.activities.bank.local_hacking() or world.player.roll_time > 0 or (world.network!=null and world.network.active() and world.network.rules.local_mission_hacking()):
 		return
-	if world.network!=null and world.network.active():
-		punch_time=0.45
-		world.activities.weapon=0
-		world.network.rules.send_action("punch",{"yaw":world.camera_yaw})
-		return
 	punch_time = 0.45
 	world.activities.weapon = 0
 	world.player.model.rotation.y = world.camera_yaw
 	play("punch")
+	if world.network!=null and world.network.active():
+		world.network.rules.send_action("punch",{"yaw":world.camera_yaw})
+		return
 	var origin: Vector3 = world.player.position + Vector3(0, 1.1, 0)
 	var forward := Vector3.FORWARD.rotated(Vector3.UP, world.camera_yaw)
 	var targets: Array = world.cars + world.activities.officers + (world.life.people if world.life != null else [])
