@@ -10,8 +10,8 @@ var panel_styles := {}
 const CHOICE_MENUS := ["jobs", "guns", "heavy_guns", "cars", "garage_cars", "owned_cars", "garage", "credits"]
 const PAGE_MENUS := ["jobs", "cars", "garage_cars", "owned_cars"]
 const MENU_CLOSE := Rect2(762, 590, 156, 52)
-const MENU_PREVIOUS := Rect2(362, 590, 96, 52)
-const MENU_NEXT := Rect2(475, 590, 96, 52)
+const MENU_PREVIOUS := Rect2(362, 590, 130, 56)
+const MENU_NEXT := Rect2(506, 590, 130, 56)
 const HACK_CLOSE := Rect2(778, 595, 136, 50)
 
 func choice_rect(index: int) -> Rect2:
@@ -291,10 +291,10 @@ func draw_menu(a: Node) -> void:
 	for i in rows.size():
 		draw_choice(choice_rect(i), rows[i], 20 if OS.has_feature("android") else 17)
 	if a.menu in PAGE_MENUS:
-		draw_choice(MENU_PREVIOUS, "‹  Anterior", 14)
-		draw_choice(MENU_NEXT, "Próxima  ›", 14)
+		draw_choice(MENU_PREVIOUS, "‹  Anterior", 17)
+		draw_choice(MENU_NEXT, "Próxima  ›", 17)
 		var page: int = a.job_page if a.menu == "jobs" else a.car_page
-		text("Página %d" % (page + 1), Vector2(597, 622), 15, muted)
+		text("%d / %d" % [page + 1, a.menu_page_count()], Vector2(660, 624), 17, muted)
 	if world.toast_time > 0 and (world.toast.begins_with("Dinheiro") or world.toast.begins_with("Libere")):
 		text(world.toast, Vector2(366, 575), 14, gold)
 	draw_choice(MENU_CLOSE, "Voltar")

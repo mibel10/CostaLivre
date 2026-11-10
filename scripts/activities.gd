@@ -138,6 +138,8 @@ func job_id_at(slot: int) -> int:
 
 func set_menu(value: String) -> void:
 	menu = value
+	if menu in ["cars", "garage_cars", "owned_cars"]:
+		car_page = clampi(car_page, 0, menu_page_count() - 1)
 	if world.network!=null and world.network.rules.context_peer>1:
 		world.network.personal.rpc_id(world.network.rules.context_peer,"menu",{"value":value})
 		menu=value
@@ -149,12 +151,17 @@ func set_menu(value: String) -> void:
 	if world.pause_menu != null:
 		world.pause_menu.open_for(value)
 
+func menu_page_count() -> int:
+	if menu == "jobs":
+		return maxi(1, ceili(job_count() / 7.0))
+	var count := purchased_cars.size() if menu == "owned_cars" else CAR_PRICES.size()
+	return maxi(1, ceili(count / 3.0))
+
 func turn_menu_page(step: int) -> void:
 	if menu == "jobs":
-		job_page = posmod(job_page + step, maxi(1, ceili(job_count() / 7.0)))
+		job_page = posmod(job_page + step, menu_page_count())
 	else:
-		var count := purchased_cars.size() if menu == "owned_cars" else CAR_PRICES.size()
-		car_page = posmod(car_page + step, maxi(1, ceili(count / 3.0)))
+		car_page = posmod(car_page + step, menu_page_count())
 	world.hud.queue_redraw()
 
 func pointer_select(point: Vector2) -> bool:

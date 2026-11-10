@@ -424,7 +424,11 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if world.activities.nearby_place() != ("garage" if menu == "garage_cars" else menu):
 					return
 				world.activities.menu=menu
-				world.activities.car_page=clampi(int(data.get("page",0)),0,maxi(0,ceili(world.activities.purchased_cars.size()/3.0)-1) if menu == "owned_cars" else 2)
+				if menu in ["cars", "garage_cars", "owned_cars"]:
+					var page = data.get("page", 0)
+					if not page is int or page < 0 or page >= world.activities.menu_page_count():
+						return
+					world.activities.car_page = page
 				world.activities.buy(int(data.get("choice",-1)))
 			)
 			if str(data.get("menu","")) in ["guns","heavy_guns"]:

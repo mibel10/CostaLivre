@@ -197,16 +197,20 @@ func run() -> void:
 	host.network.rules.sheets[id].dead_until=Time.get_ticks_msec()-1
 	await wait_for(func(): return client.health>0)
 	assert(host.SPAWNS.any(func(at): return at.distance_to(client.player.position)<2))
-	host.network.rules.sheets[id].cash+=6000
+	host.network.rules.sheets[id].cash+=85000
 	await create_timer(0.2).timeout
 	client.player.position=client.activities.DEALER+Vector3(0,0.3,0)
 	await create_timer(0.3).timeout
 	var count: int=host.cars.size()
 	client.activities.set_menu("cars")
-	client.activities.buy(0)
+	for page in 3:
+		client.activities.turn_menu_page(1)
+	var dealer_cash: int = client.cash
+	client.activities.buy(1)
 	await wait_for(func(): return host.cars.size()==count+1 and client.cars.size()==host.cars.size())
 	var purchase: Node=client.car_by_id(host.cars[-1].net_id)
-	assert(purchase!=null and purchase.owned)
+	assert(purchase!=null and purchase.owned and purchase.tier == client.activities.Catalog.SUPERCAR, "The host buys the model chosen on the fourth page")
+	assert(host.network.rules.sheets[id].cash == dealer_cash - client.activities.CAR_PRICES.back())
 	client.activities.set_menu("")
 	client.player.position=purchase.position+Vector3(2.6,0.3,0)
 	await create_timer(0.25).timeout

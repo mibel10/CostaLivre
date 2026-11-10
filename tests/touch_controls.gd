@@ -29,6 +29,12 @@ func run() -> void:
 	page_tap.position = world.hud.MENU_NEXT.get_center() * root.get_visible_rect().size / Vector2(1280, 720)
 	touch._input(page_tap)
 	assert(world.activities.job_page == 1, "Touching the next button changes the contracts page")
+	world.activities.set_menu("cars")
+	for i in 3:
+		touch._input(page_tap)
+	assert(world.activities.car_page == 3 and world.activities.menu_page_count() == 4, "Touch reaches the last dealer page")
+	world.activities.set_menu("owned_cars")
+	assert(world.activities.car_page == 0, "A short inventory cannot inherit an invalid dealer page")
 	world.activities.set_menu("")
 	world.activities.weapon = 0
 	touch.action("weapon", true)
