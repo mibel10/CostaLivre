@@ -21,7 +21,7 @@ func run() -> void:
 	await physics_frame
 	await physics_frame
 	var a = world.activities
-	assert(world.cars.size() == 86 and world.station.fleet.size() == 27, "Expanded city traffic, parked cars and police fleet")
+	assert(world.cars.size() == 87 and world.station.fleet.size() == 27, "Expanded city traffic, parked cars and police fleet")
 	world.player.position = Vector3(-5, 0.3, 7)
 	world.interact()
 	assert(world.active_car == null and world.car_transition)

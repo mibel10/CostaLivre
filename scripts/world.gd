@@ -191,6 +191,9 @@ func _ready() -> void:
 		car.route_index = 2
 		car.heading = PI
 		car.rotation.y = PI
+	var escape_car := spawn_car(Vector3(1048, 0.2, 84), Color("567b8a"), false, 7)
+	escape_car.heading = PI / 2
+	escape_car.rotation.y = escape_car.heading
 	network = preload("res://scripts/lan_session.gd").new()
 	network.name = "LanSession"
 	network.world = self
