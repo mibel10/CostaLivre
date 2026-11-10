@@ -675,6 +675,7 @@ func punch_peer(id: int, yaw: float) -> void:
 			targets.append(local_body if other==local_id() else network.avatars.get(other,{}).get("node"))
 	targets.append_array(world.life.people)
 	targets.append_array(world.activities.officers)
+	targets.append_array(world.cars)
 	for target in targets:
 		if target==null:
 			continue
