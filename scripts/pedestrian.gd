@@ -49,14 +49,15 @@ func _physics_process(delta: float) -> void:
 	model.rotation.y = lerp_angle(model.rotation.y, atan2(-direction.x, -direction.z), delta * 6)
 	model.animate(speed)
 
-func take_hit(amount: float) -> void:
+func take_hit(amount: float, actor := 0) -> void:
 	if world.network != null and world.network.is_client():
-		world.network.request_hit.rpc_id(1,world.life.people.find(self),amount,false)
+		if actor >= 0:
+			world.network.request_hit.rpc_id(1,world.life.people.find(self),amount,false)
 		return
 	if hp <= 0:
 		return
 	hp = maxf(0, hp - amount)
-	world.raise_heat(20)
+	world.raise_heat(20, actor)
 	if hp <= 0:
 		model.rotation.z = PI / 2
 		model.animate(0)

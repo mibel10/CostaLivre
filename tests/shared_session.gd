@@ -71,6 +71,7 @@ func run() -> void:
 	host.player.position = punch_car.position + Vector3(0, 0, 2)
 	rules.punch_peer(1, 0.0)
 	assert(punch_car.hp == punch_car_hp - 25, "Host applies punch damage to vehicles")
+	assert(rules.wanted_heat(1) > 0.0 and rules.wanted_heat(id) == 0.0, "The innocent client does not inherit the host's wanted level")
 	assert(farther_car.hp == farther_hp, "Host hits the closest target first")
 	host.camera_yaw = 0.42
 	host.extra.punch()
@@ -82,7 +83,7 @@ func run() -> void:
 	punch_car.position = punch_car_position
 	farther_car.position = farther_position
 	host.player.position = punch_player_position
-	host.heat = 0
+	rules.clear_wanted()
 	var inventory: Dictionary = rules.sheets[id].inventory
 	var saved_inventory := inventory.duplicate(true)
 	var host_ammo: int = host.activities.clips[1]
@@ -114,13 +115,14 @@ func run() -> void:
 	observer.free()
 	rules.police_sight_clock = 0.2
 	rules.physics(0.0)
-	host.heat = 100
+	host.raise_heat(100, 1)
+	host.raise_heat(100, id)
 	host.response_delay = 0
 	host.station.dispatch(0)
 	assert(host.cops.size() == 14, "Two five-star targets use fourteen cars")
 	for peer in [1,id]:
 		assert(host.cops.filter(func(car): return car.get_meta("police_target_peer") == peer).size() == 7)
-	host.heat = 0
+	rules.clear_wanted()
 	host.station.dispatch(0)
 	assert(host.cops.is_empty())
 	for car in host.station.fleet:
@@ -133,7 +135,7 @@ func run() -> void:
 	var resident_index: int = host.life.people.size()-1
 	host.life.people[resident_index].take_hit(10)
 	await wait_for(func(): return client.life.people[resident_index].hp == 50)
-	host.heat = 0
+	rules.clear_wanted()
 	host.update_dispatch(0)
 	var theft: Dictionary=host.network.members[id].duplicate()
 	theft.car=1
@@ -153,13 +155,16 @@ func run() -> void:
 	await create_timer(0.4).timeout
 	client.raise_heat(50)
 	await wait_for(func(): return client.heat>40 and host.heat>40)
+	assert(rules.wanted_heat(id) > 40 and rules.wanted_heat(1) == 0, "The innocent host does not inherit the client's crimes")
+	assert(client.network.rules.wanted_heat(id) > 40 and client.network.rules.wanted_heat(1) == 0, "Personal wanted levels replicate")
 	host.update_dispatch(6)
 	assert(host.cops.size()>=2 and host.cars.size()==initial_cars)
+	assert(host.cops.all(func(car): return car.get_meta("police_target_peer") == id), "Police cars pursue only the player who committed the crime")
 	await create_timer(2.8).timeout
 	assert(host.station.fleet.any(func(car): return car.position.z>car.police_home.z+4))
 	for car in host.station.fleet:
 		assert(car.position.y<4,"Police stays on the ground")
-	host.heat=0
+	rules.clear_wanted()
 	host.update_dispatch(0)
 	await create_timer(0.3).timeout
 	const RESCUE_JOB := 13
@@ -214,7 +219,7 @@ func run() -> void:
 	client.activities.set_menu("garage")
 	client.activities.buy(1)
 	await wait_for(func(): return purchase.paint!=paint and host.car_by_id(purchase.net_id).paint==purchase.paint)
-	host.heat=0
+	rules.clear_wanted()
 	host.update_dispatch(0)
 	client.network.rules.receive_event("spawn",{"position":Vector3(0,0.3,-5)})
 	host.player.position=Vector3(0,0.3,0)
@@ -230,7 +235,7 @@ func run() -> void:
 	assert(host.network.rules.sheets[id].cash==client_cash+1500,"Remote killer receives reward")
 	host.network.rules.sheets[1].dead_until=Time.get_ticks_msec()-1
 	await wait_for(func(): return host.health>0)
-	host.heat=0
+	rules.clear_wanted()
 	host.update_dispatch(0)
 	host.network.rules.sheets[id].health=100.0
 	client.activities.set_menu("")
@@ -261,7 +266,7 @@ func run() -> void:
 	await wait_for(func(): return client.activities.bank.phase==5)
 	host.cutscene.finish()
 	client.cutscene.finish()
-	host.heat = 0
+	rules.clear_wanted()
 	host.update_dispatch(0)
 	host.network.rules.sheets[id].protected_until = Time.get_ticks_msec()+15000
 	host.network.rules.sheets[id].cash = 50000

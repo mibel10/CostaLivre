@@ -393,6 +393,8 @@ func server_left() -> void:
 func peer_left(id: int) -> void:
 	members.erase(id)
 	rules.sheets.erase(id)
+	if multiplayer.is_server():
+		rules.refresh_wanted_heat()
 	rules.bus_riders.erase(id)
 	if avatars.has(id):
 		avatars[id].node.queue_free()
@@ -423,6 +425,7 @@ func disconnect_room() -> void:
 	if discovery.bind(0)==OK:
 		discovery.set_broadcast_enabled(true)
 	if peer != null:
+		rules.clear_wanted()
 		peer.close()
 	peer = null
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()

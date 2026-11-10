@@ -178,13 +178,13 @@ func apartment_stair_route() -> Array[Vector3]:
 		route.append_array([base+Vector3(-8,1.5,-9),base+Vector3(-6,3,-9),base+Vector3(-6,3,-8),base+Vector3(-8,4.5,-7),base+Vector3(-10,6,-7)])
 	return route
 
-func apartment_tenth_floor_occupied() -> bool:
+func apartment_tenth_floor_actor() -> int:
 	if world.network!=null and world.network.active():
 		for id in world.network.rules.participants():
 			if on_apartment_tenth_floor(world.network.rules.position_of(id)):
-				return true
-		return false
-	return on_apartment_tenth_floor(world.player.position)
+				return id
+		return -1
+	return 0 if on_apartment_tenth_floor(world.player.position) else -1
 
 func on_apartment_tenth_floor(at: Vector3) -> bool:
 	var local:=at-PLACES[2]
@@ -805,11 +805,18 @@ func tick_tasks(delta: float) -> void:
 		else:
 			world.notify("Servico concluido. Proxima tarefa marcada no predio.")
 
-func begin_apartment_stair_chase() -> void:
+func begin_apartment_stair_chase(actor := 0) -> void:
 	if stair_chase_started:
 		return
 	stair_chase_started=true
-	world.heat=maxf(world.heat,65.0)
+	var wanted: float = world.heat
+	if world.network.active():
+		if actor == 0:
+			actor = world.network.rules.context_peer
+		if actor == 0:
+			actor = multiplayer.get_unique_id()
+		wanted = world.network.rules.wanted_heat(actor)
+	world.raise_heat(maxf(0.0, 65.0 - wanted), actor)
 	var route:=apartment_stair_route()
 	for i in 3:
 		var officer:=preload("res://scripts/officer.gd").new()

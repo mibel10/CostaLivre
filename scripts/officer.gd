@@ -82,7 +82,7 @@ func _physics_process(delta: float) -> void:
 		var target_peer := int(victim.get_meta("peer_id", 0))
 		if target_peer == 0 and victim.get_script() == preload("res://scripts/car.gd"):
 			target_peer = int(world.network.owners.get(victim.net_id, 0))
-		if target_peer <= 0:
+		if target_peer <= 0 or (not contract and not mission_stair and world.network.rules.wanted_heat(target_peer) <= 0.0):
 			return
 		world.network.rules.damage_peer(target_peer, damage, 0, true)
 	elif victim == world.player or victim == world.active_car:
@@ -94,16 +94,17 @@ func _physics_process(delta: float) -> void:
 	else:
 		world.activities.trace(from, hit.position, Color("ff8264"))
 
-func take_hit(amount: float) -> void:
+func take_hit(amount: float, actor := 0) -> void:
 	if world.network!=null and world.network.is_client():
-		world.network.rules.send_action("ram_officer",{"index":world.activities.officers.find(self)})
+		if actor >= 0:
+			world.network.rules.send_action("ram_officer",{"index":world.activities.officers.find(self)})
 		return
 	if hp <= 0:
 		return
-	if bool(get_meta("mission_sentinel",false)) and world.activities.job == 29 and world.activities.stage in [0,1]:
+	if actor >= 0 and bool(get_meta("mission_sentinel",false)) and world.activities.job == 29 and world.activities.stage in [0,1]:
 		world.activities.trigger_infiltration_alarm()
 	hp = maxf(0, hp - amount)
-	world.raise_heat(8)
+	world.raise_heat(8, actor)
 	if hp <= 0:
 		model.rotation.z = PI / 2
 		collision_layer = 0

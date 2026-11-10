@@ -473,7 +473,7 @@ func prompt() -> String:
 		return "E  ·  Entrar no carro"
 	return ""
 
-func start_job(index: int, coop_accepted := false) -> void:
+func start_job(index: int, coop_accepted := false, actor := 0) -> void:
 	if world.network!=null and world.network.is_client():
 		world.network.rules.send_action("job",{"index":index})
 		return
@@ -505,7 +505,7 @@ func start_job(index: int, coop_accepted := false) -> void:
 	stage = 0
 	clock = (360.0 if job >= 24 else ((180.0 if job == 8 else 100.0) if job >= 7 else (95.0 if job == 3 else 0.0)))
 	progress = 0
-	if ACTION_JOBS.has(job) and not setup_action_job(): return
+	if ACTION_JOBS.has(job) and not setup_action_job(actor): return
 	if job == 2:
 		target_car = world.spawn_car(Vector3(-84, 0.2, 42), CAR_COLORS[1], false, 2)
 	elif job == 4:
@@ -514,9 +514,9 @@ func start_job(index: int, coop_accepted := false) -> void:
 			car.hp = 60
 			targets.append(car)
 	elif job == 6:
-		world.raise_heat(80)
+		world.raise_heat(80, actor)
 	elif job in range(24,29):
-		world.raise_heat(42)
+		world.raise_heat(42, actor)
 	world.notify("Contrato: %s. Recompensa $%d." % [JOBS[job], REWARDS[job]])
 	if world.cutscene != null:
 		var chapter := CAMPAIGN_LENGTH if index == SECRET_DATA_JOB else (campaign_index + 1 if game_mode == "campaign" and campaign_job_id(campaign_index) == index else index + 1)
@@ -1005,12 +1005,14 @@ func trace(from: Vector3, to: Vector3, color: Color) -> void:
 
 func tick_police(delta: float) -> void:
 	dispatch_time -= delta
-	if job==12 and stage==1 and world.life.apartment_tenth_floor_occupied():
-		world.life.begin_apartment_stair_chase()
+	if job == 12 and stage == 1 and not world.life.stair_chase_started:
+		var occupant: int = world.life.apartment_tenth_floor_actor()
+		if occupant >= 0:
+			world.life.begin_apartment_stair_chase(occupant)
 	if world.life.stair_chase_started:
-		if job==12:
+		if job==12 and not world.network.active():
 			world.heat=maxf(world.heat,40.0)
-		else:
+		elif job != 12:
 			world.life.stair_chase_started=false
 	var response_threshold:=12 if world.network!=null and world.network.active() else 20
 	if world.heat >= response_threshold and dispatch_time <= 0:
@@ -1375,7 +1377,7 @@ func interact_campaign() -> bool:
 		return true
 	return false
 
-func setup_action_job() -> bool:
+func setup_action_job(actor := 0) -> bool:
 	var spec: Dictionary = ACTION_JOBS[job]
 	clock = float(spec.time)
 	shipment_integrity = 100.0
@@ -1383,11 +1385,11 @@ func setup_action_job() -> bool:
 	if ACTION_JOBS[job].kind == "assault":
 		spawn_action_guards()
 	if ACTION_JOBS[job].kind == "infiltration":
-		world.heat = 0
+		world.network.rules.clear_wanted()
 		world.response_delay = 0
 		world.crime_grace = 0
 		spawn_infiltration_sentinels()
-	if float(spec.get("start_heat",0)) > 0: world.raise_heat(float(spec.start_heat))
+	if float(spec.get("start_heat",0)) > 0: world.raise_heat(float(spec.start_heat), actor)
 	if spec.has("model"):
 		var at := free_mission_car_spawn(spec.spawn,int(spec.model))
 		if not at.is_finite():

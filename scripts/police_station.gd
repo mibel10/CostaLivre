@@ -27,23 +27,27 @@ func _ready() -> void:
 func dispatch(delta: float) -> void:
 	world.response_delay = maxf(0,world.response_delay-delta)
 	world.crime_grace = maxf(0,world.crime_grace-delta)
-	var quota: int = (7 if world.heat > 80 else ceili(world.heat/20.0)) if world.response_delay <= 0 else 0
-	var actors: Array = []
-	if quota > 0:
-		actors = world.network.rules.wanted_participants() if world.network != null and world.network.active() else [0]
+	var quotas := {}
+	if world.response_delay <= 0 and world.heat > 0:
+		var online: bool = world.network != null and world.network.active()
+		var actors: Array = world.network.rules.wanted_participants() if online else [0]
+		for actor in actors:
+			var wanted: float = world.network.rules.wanted_heat(actor) if online else world.heat
+			quotas[actor] = 7 if wanted > 80 else ceili(wanted / 20.0)
 	var assigned := {}
 	for car in world.cops.duplicate():
 		if not is_instance_valid(car):
 			world.cops.erase(car)
 			continue
 		var actor: int = int(car.get_meta("police_target_peer",0))
-		if car.hp <= 0 or actor not in actors or int(assigned.get(actor,0)) >= quota:
+		if car.hp <= 0 or int(assigned.get(actor,0)) >= int(quotas.get(actor, 0)):
 			world.cops.erase(car)
 			car.police_phase = "return" if car.hp > 0 else "parked"
 			car.remove_meta("police_target_peer")
 		else:
 			assigned[actor] = int(assigned.get(actor,0))+1
-	for actor in actors:
+	for actor in quotas:
+		var quota: int = quotas[actor]
 		if int(assigned.get(actor, 0)) >= quota:
 			continue
 		var target: Vector3 = world.network.rules.position_of(actor) if actor > 0 else world.subject_position()

@@ -70,11 +70,11 @@ func crush_underneath() -> void:
 	var online: bool = world.network != null and world.network.active()
 	if online and not multiplayer.is_server():
 		return
+	var driver: int = int(world.network.owners.get(net_id, -1)) if online else (0 if driving else -1)
 	for victim in world.life.people + world.activities.officers:
 		if is_instance_valid(victim) and victim.hp > 0 and can_crush(victim.global_position):
-			victim.take_hit(10000)
+			victim.take_hit(10000, driver)
 	if online:
-		var driver: int = int(world.network.owners.get(net_id, 0))
 		for id in world.network.rules.participants():
 			if id == driver or int(world.network.members[id].get("car", -1)) >= 0 or world.network.rules.bus_riders.has(id):
 				continue
@@ -269,6 +269,9 @@ func _physics_process(delta: float) -> void:
 		if victim is CharacterBody3D and world.life != null and (victim in world.life.people or victim in world.activities.officers or victim.has_meta("peer_id")) and absf(speed) > 3:
 			if world.network!=null and world.network.active() and victim.has_meta("peer_id"):
 				world.network.rules.send_action("ram",{"target":int(victim.get_meta("peer_id"))})
+			elif victim in world.life.people or victim in world.activities.officers:
+				var driver: int = int(world.network.owners.get(net_id, -1)) if world.network.active() else (0 if driving else -1)
+				victim.take_hit(absf(speed)*5.0, driver)
 			else:
 				victim.take_hit(absf(speed)*5.0)
 			speed *= 0.85
@@ -401,7 +404,10 @@ func explode() -> void:
 			elif victim==world.player or victim==world.active_car: world.damage(damage)
 		elif victim.has_method("take_hit") and not struck.has(victim.get_instance_id()):
 			struck[victim.get_instance_id()]=true
-			victim.take_hit(200)
+			if victim in world.life.people or victim in world.activities.officers:
+				victim.take_hit(200, -1)
+			else:
+				victim.take_hit(200)
 	if world.network!=null and world.network.active() and multiplayer.is_server():
 		for id in world.network.members:
 			if struck.has(id):

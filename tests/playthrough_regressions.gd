@@ -9,6 +9,14 @@ func run() -> void:
 	root.add_child(world)
 	world.start_mode("sandbox")
 	assert(world.life.PLACES.size() == world.life.TITLES.size(),"Every interior needs a map label")
+	var bystander = world.life.people[0]
+	bystander.stationary = true
+	bystander.position = Vector3(900, 12, 0)
+	var wreck = world.spawn_car(bystander.position + Vector3(2, 0, 0), Color.RED)
+	await physics_frame
+	await physics_frame
+	wreck.explode()
+	assert(bystander.hp == 0 and world.heat == 0.0, "An unoccupied car explosion does not blame the player")
 	var car = world.cars[0]
 	var body = car.get_node("Fusquinha/Body")
 	assert(body.mesh.get_surface_count() <= 6)

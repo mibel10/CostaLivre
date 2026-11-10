@@ -717,6 +717,8 @@ func subject_position() -> Vector3:
 	return active_car.position if active_car != null else player.position
 
 func raise_heat(amount: float, actor := 0) -> void:
+	if amount <= 0.0 or not is_finite(amount) or actor < 0:
+		return
 	if network!=null and network.is_client():
 		network.rules.send_action("crime",{"amount":clampf(amount,0,80)})
 		return
@@ -725,11 +727,15 @@ func raise_heat(amount: float, actor := 0) -> void:
 		var id: int = actor if actor > 0 else rules.context_peer
 		if id <= 0:
 			id = rules.attacker if rules.attacker > 0 else multiplayer.get_unique_id()
-		if rules.sheets.has(id) and not rules.is_dead(id):
-			rules.sheets[id].erase("wanted_reset")
+		if not rules.sheets.has(id) or rules.is_dead(id):
+			return
+		rules.sheets[id]["wanted_heat"] = minf(100.0, rules.wanted_heat(id) + amount)
 	if heat <= 0:
 		response_delay = 6
-	heat = minf(100, heat + amount)
+	if network != null and network.active():
+		network.rules.refresh_wanted_heat()
+	else:
+		heat = minf(100, heat + amount)
 	crime_grace = CRIME_GRACE_SECONDS
 
 func check_vehicle_entry(previous: Vector3, current: Vector3, actor := 0) -> void:
@@ -737,7 +743,7 @@ func check_vehicle_entry(previous: Vector3, current: Vector3, actor := 0) -> voi
 	if wanted >= 60.0 or previous.is_equal_approx(current):
 		return
 	if life.inside_public_interior(current) and not life.inside_public_interior(previous):
-		raise_heat(maxf(0.0, 60.0 - heat), actor)
+		raise_heat(60.0 - wanted, actor)
 
 func car_by_id(id: int) -> CharacterBody3D:
 	if id < 0:

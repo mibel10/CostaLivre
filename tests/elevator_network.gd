@@ -58,7 +58,10 @@ func run() -> void:
 	host.network.members[1]["crouch"]=false
 	host.network.members[id]["car_position"]=Vector3(10,0.3,0)
 	host.network.members[id]["crouch"]=true
+	host.raise_heat(40, 1)
+	host.raise_heat(40, id)
 	assert(host.network.rules.police_target_actor(Vector3.ZERO)[0]==1,"Police can target a visible player instead of a hidden crouching player")
+	host.network.rules.clear_wanted()
 	var contact := -1
 	for index: int in client.life.building_contacts:
 		if client.life.building_contacts[index][0] == "office":

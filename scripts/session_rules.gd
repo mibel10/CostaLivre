@@ -79,10 +79,20 @@ func participants() -> Array:
 	return result
 
 func wanted_participants() -> Array:
-	return participants().filter(func(id): return not bool(sheets.get(id, {}).get("wanted_reset", false)))
+	return participants().filter(func(id): return wanted_heat(id) > 0.0)
 
 func wanted_heat(id: int) -> float:
-	return 0.0 if bool(sheets.get(id, {}).get("wanted_reset", false)) else world.heat
+	return float(sheets.get(id, {}).get("wanted_heat", 0.0))
+
+func refresh_wanted_heat() -> void:
+	world.heat = 0.0
+	for id in wanted_participants():
+		world.heat = maxf(world.heat, wanted_heat(id))
+
+func clear_wanted() -> void:
+	for sheet in sheets.values():
+		sheet.erase("wanted_heat")
+	world.heat = 0.0
 
 func position_of(id: int) -> Vector3:
 	if id==local_id():
@@ -337,7 +347,8 @@ func respond_to_mission(id: int,accept: bool) -> void:
 		teleport_to_contract(id, entrance + Vector3.RIGHT * offset)
 		if not mission_offer_started:
 			mission_offer_started = true
-			world.activities.start_job(pending_mission, true)
+			world.activities.start_job(pending_mission, true, mission_offer_from)
+		world.raise_heat(42.0, id)
 		private_notice(id, "Convite aceito. Você chegou à entrada da missão.")
 	if mission_invites.is_empty():
 		pending_mission = -1
@@ -401,7 +412,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 			elif world.activities.job>=0:
 				private_notice(id,"Conclua o contrato atual da sala primeiro.")
 			else:
-				world.activities.start_job(requested_job)
+				world.activities.start_job(requested_job, false, id)
 		"mission_response": respond_to_mission(id,bool(data.get("accept",false)))
 		"mission_digit": enter_mission_digit(id,clampi(int(data.get("digit",0)),1,4))
 		"mission_cancel":
@@ -424,7 +435,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 			if car!=null and index>=0 and index<world.activities.officers.size():
 				var officer: Node=world.activities.officers[index]
 				if car.position.distance_to(officer.position)<5:
-					officer.take_hit(absf(car.speed)*5)
+					officer.take_hit(absf(car.speed)*5, id)
 		"interact":
 			var floor_number: int = world.life.home_floor_at(position_of(id))
 			if floor_number >= 0:
@@ -534,9 +545,9 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 		if by_police or int(sheets[id].get("prison_stage", -1)) >= 0:
 			sheets[id]["prison_stage"] = 0
 		sheets[id].dead_until=Time.get_ticks_msec()+3000
-		sheets[id]["wanted_reset"] = true
-		if wanted_participants().is_empty():
-			world.heat = 0.0
+		sheets[id].erase("wanted_heat")
+		refresh_wanted_heat()
+		if world.heat <= 0.0:
 			world.crime_grace = 0.0
 			world.response_delay = 0.0
 		leave_bus(id, true)
@@ -835,7 +846,7 @@ func physics(delta: float) -> void:
 		for observer in world.cops+a.officers:
 			if is_instance_valid(observer) and observer.hp>0 and world.police_can_see(observer):
 				visible_police.append(observer)
-	var seen := false
+	var seen := {}
 	var pressured := {}
 	var arresting := {}
 	for observer in visible_police:
@@ -846,7 +857,7 @@ func physics(delta: float) -> void:
 			continue
 		if wanted_heat(target[0]) <= 0 and not observer.has_meta("mission_contract"):
 			continue
-		seen = true
+		seen[target[0]] = true
 		var distance:float=observer.position.distance_to(target[1])
 		if target_crouched(target[1]) and distance>8:
 			continue
@@ -871,8 +882,11 @@ func physics(delta: float) -> void:
 				private_notice(id,"Preso pela policia / multa de $500")
 		elif not arresting.has(id) or is_dead(id):
 			network.members[id]["arrest_progress"]=0.0
-	if not seen and world.crime_grace<=0:
-		world.heat=maxf(0,world.heat-delta*world.HEAT_DECAY_RATE)
+	if world.crime_grace <= 0:
+		for id in wanted_participants():
+			if not seen.has(id):
+				sheets[id]["wanted_heat"] = maxf(0.0, wanted_heat(id) - delta * world.HEAT_DECAY_RATE)
+		refresh_wanted_heat()
 	update_marker()
 
 func update_marker() -> void:
