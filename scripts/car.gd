@@ -263,6 +263,12 @@ func _physics_process(delta: float) -> void:
 			var height: float = ground.position.y + Catalog.HOVER_HEIGHT + sin(Time.get_ticks_msec() * 0.0018) * 0.22
 			velocity.y = clampf((height - global_position.y) * 5.0, -8.0, 8.0)
 	var previous := position
+	if driving and suspension_height > 0.0 and is_on_floor() and not hovering:
+		var horizontal := Vector3(velocity.x, 0, velocity.z) * delta
+		var lift := Vector3.UP * suspension_height
+		var raised := global_transform.translated(lift)
+		if horizontal.length_squared() > 0.000001 and test_move(global_transform, horizontal) and not test_move(global_transform, lift) and not test_move(raised, horizontal):
+			global_position += lift
 	move_and_slide()
 	crush_underneath()
 	update_ramp_tilt(delta)
