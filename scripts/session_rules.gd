@@ -891,7 +891,7 @@ func physics(delta: float) -> void:
 	for id in network.members:
 		if arresting.has(id) and not is_dead(id):
 			network.members[id]["arrest_progress"]=float(network.members[id].get("arrest_progress",0.0))+delta
-			if float(network.members[id]["arrest_progress"])>=5.0:
+			if float(network.members[id]["arrest_progress"])>=3.5:
 				network.members[id]["arrest_progress"]=0.0
 				damage_peer(id,200.0,0,true)
 				award(id,-500)

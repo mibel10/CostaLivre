@@ -1013,7 +1013,7 @@ func _physics_process(delta: float) -> void:
 			heat = maxf(0, heat - delta * HEAT_DECAY_RATE)
 		if can_arrest:
 			bust_progress += delta
-			if bust_progress > 9:
+			if bust_progress >= 3.5:
 				prison_after_death = true
 				finish(false)
 		else:
