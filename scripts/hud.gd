@@ -309,11 +309,12 @@ func star(center: Vector2, color: Color) -> void:
 func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	panel(Rect2(origin - Vector2(4, 4), map_size + Vector2(8, 8)))
 	draw_rect(Rect2(origin, map_size), Color("33474e"))
-	var left := clampf(world.subject_position().x - 186.0, -186.0, 748.0)
+	var left := clampf(world.subject_position().x - 186.0, -186.0, world.MAP_EAST - 372.0)
 	if left <= -168.0:
 		var coast := map_point(Vector3(-168,0,0), origin, map_size).x
 		draw_rect(Rect2(origin, Vector2(coast - origin.x, map_size.y)), Color("488592"))
-	for center in [378.0, 714.0]:
+	var favela_x: float = world.activities.HEAVY_SHOP.x
+	for center in [378.0, 714.0, favela_x]:
 		if center + 84 < left or center - 84 > left + 372: continue
 		var corner := map_point(Vector3(center - 84,0,-35), origin, map_size)
 		var other := map_point(Vector3(center + 84,0,35), origin, map_size)
@@ -342,14 +343,18 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 		draw_line(Vector2(px, origin.y), Vector2(px, origin.y + map_size.y), Color("728081"), 3)
 	for road in range(-126, 127, 42):
 		var py := map_point(Vector3(0, 0, road), origin, map_size).y
-		draw_line(Vector2(origin.x, py), Vector2(origin.x + map_size.x, py), Color("728081"), 3)
+		var road_end: float = world.MAP_EAST if road == 0 else 938.0
+		if left < road_end:
+			var end_x := map_point(Vector3(road_end, 0, road), origin, map_size).x
+			draw_line(Vector2(origin.x, py), Vector2(end_x, py), Color("728081"), 3)
 	for center in [294.0, 798.0]:
 		if center + 36 < left or center - 36 > left + 372: continue
 		var corner := map_point(Vector3(center - 36,0,-117), origin, map_size)
 		var other := map_point(Vector3(center + 36,0,-83), origin, map_size)
 		draw_rect(Rect2(corner, other - corner), Color("aa997a"))
-	if left < 407 and left + 372 > 354:
-		for x in [359.0, 368.5, 378.0, 387.5, 397.0]:
+	if left < favela_x + 29.0 and left + 372 > favela_x - 24.0:
+		for offset in [-19.0, -9.5, 0.0, 9.5, 19.0]:
+			var x: float = favela_x + offset
 			for z in [-23.0, -13.0, 13.0, 23.0]:
 				var corner := map_point(Vector3(x - 4,0,z - 4), origin, map_size)
 				var other := map_point(Vector3(x + 4,0,z + 4), origin, map_size)
@@ -405,4 +410,4 @@ func minimap(origin: Vector2, map_size: Vector2, full := false) -> void:
 	draw_polyline(points,Color("10252e"),1.5,true)
 
 func map_point(pos: Vector3, origin: Vector2, map_size: Vector2) -> Vector2:
-	return origin + Vector2(clampf((pos.x - clampf(world.subject_position().x - 186.0, -186.0, 748.0)) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size
+	return origin + Vector2(clampf((pos.x - clampf(world.subject_position().x - 186.0, -186.0, world.MAP_EAST - 372.0)) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size

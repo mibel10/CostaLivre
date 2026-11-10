@@ -473,7 +473,7 @@ func accept_state(id: int, state: Dictionary) -> void:
 	if not state.get("position") is Vector3 or not state.get("car_position") is Vector3:
 		return
 	var at: Vector3 = state.position
-	if not at.is_finite() or at.x < -195 or at.x > 1125 or absf(at.z)>153 or at.y < -10 or at.y>75:
+	if not at.is_finite() or at.x < -195 or at.x > world.MAP_EAST + 5.0 or absf(at.z)>153 or at.y < -10 or at.y>75:
 		return
 	var riding = world.life.elevator_rider_position(id)
 	if riding is Vector3:
@@ -640,7 +640,7 @@ func apply_car(id: int,state: Dictionary) -> void:
 		if not is_finite(heading_value) or not is_finite(speed_value):
 			return
 		# Match the vehicle recovery bounds so the favela ramp works for remote drivers.
-		if at.is_finite() and at.x>=-195 and at.x<=1125 and absf(at.z)<143 and at.y>=-6.0 and at.y<=20.0:
+		if at.is_finite() and at.x>=-195 and at.x<=world.MAP_EAST + 5.0 and absf(at.z)<143 and at.y>=-6.0 and at.y<=20.0:
 			world.check_vehicle_entry(car.position, at, id)
 			car.position=at
 			car.heading=wrapf(float(heading_value), -PI, PI)

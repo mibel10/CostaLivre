@@ -20,7 +20,7 @@ func run() -> void:
 	var midpoint_on_minimap: Vector2 = world.hud.map_point(world.player.position, Vector2.ZERO, Vector2(164,164))
 	assert(is_equal_approx(midpoint_on_minimap.x, 82.0), "Minimap follows the player in the expanded city")
 	assert(world.hud.map_point(Vector3(900,0,0), Vector2.ZERO, Vector2(164,164)).x > midpoint_on_minimap.x)
-	world.player.position = Vector3(1090, 0.3, 0)
+	world.player.position = Vector3(world.MAP_EAST - 30, 0.3, 0)
 	assert(world.hud.map_point(world.player.position, Vector2.ZERO, Vector2(164,164)).x > midpoint_on_minimap.x)
 	world.player.position = original_position
 	var settings = world.settings
@@ -54,7 +54,8 @@ func run() -> void:
 	map.zoom_at(100, midpoint)
 	assert(map.zoom == 6)
 	map.zoom_at(0.001, midpoint)
-	assert(map.zoom == 1 and map.center == Vector2(376, 0))
+	var map_center := Vector2((world.MAP_EAST - 186.0) * 0.5, 0)
+	assert(map.zoom == 1 and map.center == map_center)
 	map.zoom_at(2, midpoint)
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
@@ -63,7 +64,7 @@ func run() -> void:
 	var drag := InputEventMouseMotion.new()
 	drag.relative = Vector2(100, 50)
 	map._gui_input(drag)
-	assert(map.center != Vector2(376, 0) and map.clip_contents)
+	assert(map.center != map_center and map.clip_contents)
 	press.pressed = false
 	map._gui_input(press)
 	assert(not map.dragging)

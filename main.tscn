@@ -6607,6 +6607,56 @@ instance_count = 60
 mesh = SubResource("SubsoloFaixa")
 buffer = PackedFloat32Array(0.09, 0, 0, -67.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -64.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -61.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -58.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -51.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -48.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -45.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 0.09, 0, 0, -42.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 43.74, 25.7, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 0.09, 41.04, 0.09, 0, 0, -67.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -64.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -61.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -58.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -51.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -48.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -45.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 0.09, 0, 0, -42.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 63.74, 25.7, 0, 0, -55, 0, 0.012, 0, -8.287, 0, 0, 0.09, 66.44, 0.09, 0, 0, 142.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 145.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 148.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 151.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 158.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 161.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 164.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 0.09, 0, 0, 167.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 62, 25.7, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 0.09, 59.3, 0.09, 0, 0, 142.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 145.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 148.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 151.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 158.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 161.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 164.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 0.09, 0, 0, 167.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, 82, 25.7, 0, 0, 155, 0, 0.012, 0, -8.287, 0, 0, 0.09, 84.7, 0.09, 0, 0, 856.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 859.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 862.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 865.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 872.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 875.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 878.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 0.09, 0, 0, 881.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -121.5, 25.7, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 0.09, -124.2, 0.09, 0, 0, 856.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 859.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 862.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 865.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 872.2, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 875.4, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 878.6, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 0.09, 0, 0, 881.8, 0, 0.012, 0, -8.287, 0, 0, 5.4, -101.5, 25.7, 0, 0, 869, 0, 0.012, 0, -8.287, 0, 0, 0.09, -98.8)
 
+[sub_resource type="Shader" id="Shader_favela_tijolo"]
+code = "shader_type spatial;
+varying vec3 p;
+varying vec3 n;
+void vertex() {
+	p = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	n = MODEL_NORMAL_MATRIX * NORMAL;
+}
+void fragment() {
+	float u = abs(n.x) > abs(n.z) ? p.z : p.x;
+	vec2 q = vec2(u / 0.38, p.y / 0.17);
+	if (abs(n.y) > 0.75) { q = p.xz / vec2(0.38, 0.17); }
+	q.x += mod(floor(q.y), 2.0) * 0.5;
+	vec2 edge = abs(fract(q) - 0.5);
+	float joint = max(smoothstep(0.455, 0.49, edge.x), smoothstep(0.434, 0.483, edge.y));
+	float variation = fract(sin(dot(floor(q), vec2(12.9898, 78.233))) * 43758.5453);
+	ALBEDO = mix(mix(vec3(0.38, 0.15, 0.085), vec3(0.65, 0.29, 0.16), variation), vec3(0.49, 0.43, 0.36), joint);
+	ROUGHNESS = 0.92;
+}"
+
+[sub_resource type="ShaderMaterial" id="Material_favela_tijolo"]
+shader = SubResource("Shader_favela_tijolo")
+
+[sub_resource type="StandardMaterial3D" id="Material_parque_grama"]
+albedo_color = Color(0.25, 0.37, 0.23, 1)
+roughness = 0.95
+
+[sub_resource type="Shader" id="Shader_favela_telha"]
+code = "shader_type spatial;
+varying vec3 p;
+void vertex() { p = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
+void fragment() {
+	float rib = smoothstep(0.25, 0.9, sin(p.x * 36.0));
+	float lot = fract(sin(dot(floor((p.xz + vec2(2.5)) * 0.1), vec2(12.9, 78.2))) * 5347.1);
+	ALBEDO = mix(vec3(0.28, 0.30, 0.30), vec3(0.35, 0.24, 0.17), lot * 0.6) + rib * 0.09;
+	ROUGHNESS = 0.84;
+}"
+
+[sub_resource type="ShaderMaterial" id="Material_favela_telha"]
+shader = SubResource("Shader_favela_telha")
+
+[sub_resource type="BoxMesh" id="Mesh_favela_janela"]
+size = Vector3(1.0, 0.66, 0.055)
+
+[sub_resource type="MultiMesh" id="MultiMesh_favela_janela"]
+transform_format = 1
+mesh = SubResource("Mesh_favela_janela")
+instance_count = 20
+buffer = PackedFloat32Array(1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, -18.955, 1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, -8.955, 1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, 17.045, 1, 0, 0, 1201, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1210.5, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1220, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1229.5, 0, 1, 0, 11.65, 0, 0, 1, 27.045, 1, 0, 0, 1239, 0, 1, 0, 11.65, 0, 0, 1, 27.045)
+
 [node name="CostaLivre" type="Node3D" unique_id=130586917]
 script = ExtResource("1_q1fcy")
 
@@ -6620,6 +6670,7 @@ light_energy = 0.85
 shadow_enabled = true
 
 [node name="@MeshInstance3D@70" type="MeshInstance3D" parent="." unique_id=342259015]
+position = Vector3(840, 0, 0)
 material_override = SubResource("StandardMaterial3D_wjjbu")
 mesh = SubResource("ArrayMesh_lik5p")
 
@@ -6629,6 +6680,7 @@ mesh = SubResource("ArrayMesh_lik5p")
 shape = SubResource("ConcavePolygonShape3D_fumpn")
 
 [node name="@MeshInstance3D@73" type="MeshInstance3D" parent="." unique_id=12229070]
+position = Vector3(840, 0, 0)
 material_override = SubResource("StandardMaterial3D_ddevx")
 mesh = SubResource("ArrayMesh_i2735")
 
@@ -6707,7 +6759,7 @@ mesh = SubResource("BoxMesh_o472y")
 shape = SubResource("BoxShape3D_f4e07")
 
 [node name="@MeshInstance3D@549" type="MeshInstance3D" parent="." unique_id=494350934]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1120, 6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1344, 6, 0)
 visible = false
 material_override = SubResource("StandardMaterial3D_rcfhl")
 mesh = SubResource("BoxMesh_7cso3")
@@ -8275,7 +8327,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -186, 0.4, 0)
 shape = SubResource("BoxShape3D_ctb7y")
 
 [node name="@StaticBody3D@45" type="StaticBody3D" parent="." unique_id=422758018]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1120, 0.4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1344, 0.4, 0)
 
 [node name="@CollisionShape3D@44" type="CollisionShape3D" parent="@StaticBody3D@45" unique_id=1363184208]
 shape = SubResource("BoxShape3D_8ogf0")
@@ -8293,121 +8345,121 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 376, 0.4, 144)
 shape = SubResource("BoxShape3D_u2c16")
 
 [node name="@StaticBody3D@80" type="StaticBody3D" parent="." unique_id=990229293]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 359, 11.5, -13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, -13)
 
 [node name="@CollisionShape3D@79" type="CollisionShape3D" parent="@StaticBody3D@80" unique_id=1703444459]
 shape = SubResource("BoxShape3D_xlvws")
 
 [node name="@StaticBody3D@85" type="StaticBody3D" parent="." unique_id=1592252498]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 368.5, 11.5, -13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, -13)
 
 [node name="@CollisionShape3D@84" type="CollisionShape3D" parent="@StaticBody3D@85" unique_id=1305491086]
 shape = SubResource("BoxShape3D_75ods")
 
 [node name="@StaticBody3D@90" type="StaticBody3D" parent="." unique_id=1984899394]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 378, 11.5, -13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, -13)
 
 [node name="@CollisionShape3D@89" type="CollisionShape3D" parent="@StaticBody3D@90" unique_id=1616580209]
 shape = SubResource("BoxShape3D_jsofb")
 
 [node name="@StaticBody3D@95" type="StaticBody3D" parent="." unique_id=2022842446]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 387.5, 11.5, -13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, -13)
 
 [node name="@CollisionShape3D@94" type="CollisionShape3D" parent="@StaticBody3D@95" unique_id=588677490]
 shape = SubResource("BoxShape3D_dqq1q")
 
 [node name="@StaticBody3D@100" type="StaticBody3D" parent="." unique_id=81332410]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 397, 11.5, -13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, -13)
 
 [node name="@CollisionShape3D@99" type="CollisionShape3D" parent="@StaticBody3D@100" unique_id=819198903]
 shape = SubResource("BoxShape3D_71i1j")
 
 [node name="@StaticBody3D@105" type="StaticBody3D" parent="." unique_id=955304761]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 359, 11.5, -23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, -23)
 
 [node name="@CollisionShape3D@104" type="CollisionShape3D" parent="@StaticBody3D@105" unique_id=1186910022]
 shape = SubResource("BoxShape3D_c04s1")
 
 [node name="@StaticBody3D@110" type="StaticBody3D" parent="." unique_id=101707165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 368.5, 11.5, -23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, -23)
 
 [node name="@CollisionShape3D@109" type="CollisionShape3D" parent="@StaticBody3D@110" unique_id=528884050]
 shape = SubResource("BoxShape3D_lmfq8")
 
 [node name="@StaticBody3D@115" type="StaticBody3D" parent="." unique_id=1064120698]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 378, 11.5, -23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, -23)
 
 [node name="@CollisionShape3D@114" type="CollisionShape3D" parent="@StaticBody3D@115" unique_id=1467409805]
 shape = SubResource("BoxShape3D_t4enp")
 
 [node name="@StaticBody3D@120" type="StaticBody3D" parent="." unique_id=792401744]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 387.5, 11.5, -23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, -23)
 
 [node name="@CollisionShape3D@119" type="CollisionShape3D" parent="@StaticBody3D@120" unique_id=2101158553]
 shape = SubResource("BoxShape3D_krobn")
 
 [node name="@StaticBody3D@125" type="StaticBody3D" parent="." unique_id=638347092]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 397, 11.5, -23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, -23)
 
 [node name="@CollisionShape3D@124" type="CollisionShape3D" parent="@StaticBody3D@125" unique_id=544438772]
 shape = SubResource("BoxShape3D_041dl")
 
 [node name="@StaticBody3D@145" type="StaticBody3D" parent="." unique_id=125622008]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 359, 11.5, 13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, 13)
 
 [node name="@CollisionShape3D@144" type="CollisionShape3D" parent="@StaticBody3D@145" unique_id=150850434]
 shape = SubResource("BoxShape3D_cnrc2")
 
 [node name="@StaticBody3D@150" type="StaticBody3D" parent="." unique_id=1248395849]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 368.5, 11.5, 13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, 13)
 
 [node name="@CollisionShape3D@149" type="CollisionShape3D" parent="@StaticBody3D@150" unique_id=249509679]
 shape = SubResource("BoxShape3D_iqbm0")
 
 [node name="@StaticBody3D@155" type="StaticBody3D" parent="." unique_id=1996428404]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 378, 11.5, 13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, 13)
 
 [node name="@CollisionShape3D@154" type="CollisionShape3D" parent="@StaticBody3D@155" unique_id=775141486]
 shape = SubResource("BoxShape3D_8kqik")
 
 [node name="@StaticBody3D@160" type="StaticBody3D" parent="." unique_id=1062717595]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 387.5, 11.5, 13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, 13)
 
 [node name="@CollisionShape3D@159" type="CollisionShape3D" parent="@StaticBody3D@160" unique_id=1504117088]
 shape = SubResource("BoxShape3D_6wuh7")
 
 [node name="@StaticBody3D@165" type="StaticBody3D" parent="." unique_id=849237068]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 397, 11.5, 13)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, 13)
 
 [node name="@CollisionShape3D@164" type="CollisionShape3D" parent="@StaticBody3D@165" unique_id=1502442972]
 shape = SubResource("BoxShape3D_sjnm4")
 
 [node name="@StaticBody3D@170" type="StaticBody3D" parent="." unique_id=481861215]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 359, 11.5, 23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1199, 11.5, 23)
 
 [node name="@CollisionShape3D@169" type="CollisionShape3D" parent="@StaticBody3D@170" unique_id=254502855]
 shape = SubResource("BoxShape3D_pi38t")
 
 [node name="@StaticBody3D@175" type="StaticBody3D" parent="." unique_id=1406219787]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 368.5, 11.5, 23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1208.5, 11.5, 23)
 
 [node name="@CollisionShape3D@174" type="CollisionShape3D" parent="@StaticBody3D@175" unique_id=737389528]
 shape = SubResource("BoxShape3D_kksn0")
 
 [node name="@StaticBody3D@180" type="StaticBody3D" parent="." unique_id=10871990]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 378, 11.5, 23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1218, 11.5, 23)
 
 [node name="@CollisionShape3D@179" type="CollisionShape3D" parent="@StaticBody3D@180" unique_id=834522801]
 shape = SubResource("BoxShape3D_new6d")
 
 [node name="@StaticBody3D@185" type="StaticBody3D" parent="." unique_id=1186909269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 387.5, 11.5, 23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1227.5, 11.5, 23)
 
 [node name="@CollisionShape3D@184" type="CollisionShape3D" parent="@StaticBody3D@185" unique_id=1559126045]
 shape = SubResource("BoxShape3D_u0u7l")
 
 [node name="@StaticBody3D@190" type="StaticBody3D" parent="." unique_id=1475642586]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 397, 11.5, 23)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1237, 11.5, 23)
 
 [node name="@CollisionShape3D@189" type="CollisionShape3D" parent="@StaticBody3D@190" unique_id=2123306507]
 shape = SubResource("BoxShape3D_k0u11")
@@ -9937,42 +9989,52 @@ material_override = SubResource("StandardMaterial3D_h2pis")
 multimesh = SubResource("MultiMesh_hbdej")
 
 [node name="@MultiMeshInstance3D@13102" type="MultiMeshInstance3D" parent="." unique_id=2129850392]
-material_override = SubResource("StandardMaterial3D_18a8s")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_tijolo")
 multimesh = SubResource("MultiMesh_ms5vr")
 
 [node name="@MultiMeshInstance3D@13103" type="MultiMeshInstance3D" parent="." unique_id=538081555]
-material_override = SubResource("StandardMaterial3D_ehojr")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_telha")
 multimesh = SubResource("MultiMesh_lr301")
 
 [node name="@MultiMeshInstance3D@13104" type="MultiMeshInstance3D" parent="." unique_id=1482088625]
+position = Vector3(840, 0, 0)
 material_override = SubResource("StandardMaterial3D_h0rv7")
 multimesh = SubResource("MultiMesh_o36qy")
 
 [node name="@MultiMeshInstance3D@13105" type="MultiMeshInstance3D" parent="." unique_id=711797143]
-material_override = SubResource("StandardMaterial3D_87eoy")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_tijolo")
 multimesh = SubResource("MultiMesh_kg61i")
 
 [node name="@MultiMeshInstance3D@13106" type="MultiMeshInstance3D" parent="." unique_id=1783479407]
-material_override = SubResource("StandardMaterial3D_vlm8s")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_telha")
 multimesh = SubResource("MultiMesh_exow2")
 
 [node name="@MultiMeshInstance3D@13107" type="MultiMeshInstance3D" parent="." unique_id=99868597]
-material_override = SubResource("StandardMaterial3D_alib7")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_tijolo")
 multimesh = SubResource("MultiMesh_7k24r")
 
 [node name="@MultiMeshInstance3D@13108" type="MultiMeshInstance3D" parent="." unique_id=1564999864]
-material_override = SubResource("StandardMaterial3D_gcogi")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_telha")
 multimesh = SubResource("MultiMesh_f63sn")
 
 [node name="@MultiMeshInstance3D@13109" type="MultiMeshInstance3D" parent="." unique_id=1584019435]
-material_override = SubResource("StandardMaterial3D_lu8or")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_tijolo")
 multimesh = SubResource("MultiMesh_wqs51")
 
 [node name="@MultiMeshInstance3D@13110" type="MultiMeshInstance3D" parent="." unique_id=433301401]
-material_override = SubResource("StandardMaterial3D_mgf5i")
+position = Vector3(840, 0, 0)
+material_override = SubResource("Material_favela_telha")
 multimesh = SubResource("MultiMesh_uo57d")
 
 [node name="@MultiMeshInstance3D@13111" type="MultiMeshInstance3D" parent="." unique_id=1732638580]
+position = Vector3(840, 0, 0)
 material_override = SubResource("StandardMaterial3D_dldwe")
 multimesh = SubResource("MultiMesh_yr4d0")
 
@@ -12595,7 +12657,7 @@ material_override = SubResource("StandardMaterial3D_5rrs7")
 mesh = SubResource("BoxMesh_p6ykm")
 
 [node name="EstruturaMorroFavela" type="CSGPolygon3D" parent="."]
-position = Vector3(0, 0, 35)
+position = Vector3(840, 0, 35)
 polygon = PackedVector2Array(294, -0.6, 462, -0.6, 462, -0.12, 406, 9.88, 350, 9.88, 294, -0.12)
 depth = 70.0
 material = SubResource("StandardMaterial3D_wjjbu")
@@ -12609,31 +12671,31 @@ material = SubResource("StandardMaterial3D_wjjbu")
 use_collision = true
 
 [node name="BalcaoArsenalFavela" type="CSGBox3D" parent="."]
-position = Vector3(378, 10.5, 33)
+position = Vector3(1218, 10.5, 33)
 size = Vector3(4, 1.2, 1)
 material = SubResource("StandardMaterial3D_wjjbu")
 use_collision = true
 
 [node name="PlacaArsenalFavela" type="Label3D" parent="."]
-position = Vector3(378, 12.5, 33)
+position = Vector3(1218, 12.5, 33)
 text = "ARSENAL DA FAVELA\nBAZUCA / SNIPER / CANHAO DE PULSO\nF: COMPRAR"
 font_size = 40
 pixel_size = 0.012
 no_depth_test = false
 
 [node name="CargaFavela" type="CSGBox3D" parent="."]
-position = Vector3(368.5, 10.5, 33)
+position = Vector3(1208.5, 10.5, 33)
 size = Vector3(2, 1.2, 1.5)
 use_collision = true
 
 [node name="AvisoCargaFavela" type="Label3D" parent="."]
-position = Vector3(368.5, 12, 33)
+position = Vector3(1208.5, 12, 33)
 text = "ENTREGA NO BECO / F\nCARGA ILEGAL / $4500"
 font_size = 32
 pixel_size = 0.012
 
 [node name="ContatoBeco" type="Node3D" parent="."]
-position = Vector3(405, 9.9, 16.5)
+position = Vector3(1245, 9.9, 16.5)
 
 [node name="Visual" type="Node3D" parent="ContatoBeco"]
 script = ExtResource("Script_contato")
@@ -12644,7 +12706,7 @@ mesh = SubResource("Box_contato_arma")
 material_override = SubResource("Material_contato_arma")
 
 [node name="CoberturaBeco" type="CSGBox3D" parent="."]
-position = Vector3(382.75, 13.4, 14)
+position = Vector3(1222.75, 13.4, 14)
 size = Vector3(1.5, 0.2, 8)
 material = SubResource("Material_contato_arma")
 use_collision = true
@@ -16663,7 +16725,7 @@ material = SubResource("StandardMaterial3D_wjjbu")
 cast_shadow = 0
 
 [node name="Leste" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1228, -2, 0)
+position = Vector3(1452, -2, 0)
 size = Vector3(580, 2, 1400)
 material = SubResource("StandardMaterial3D_wjjbu")
 cast_shadow = 0
@@ -16753,7 +16815,7 @@ material = SubResource("Material_horizonte_rua")
 cast_shadow = 0
 
 [node name="EstradaLeste1" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1130, -0.94, 0)
+position = Vector3(1354, -0.94, 0)
 size = Vector3(385, 0.1, 8)
 material = SubResource("Material_horizonte_rua")
 cast_shadow = 0
@@ -17053,55 +17115,55 @@ material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste0" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1200, 9.0, -120)
+position = Vector3(1424, 9.0, -120)
 size = Vector3(24, 20, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste1" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1268, 13.5, -88)
+position = Vector3(1492, 13.5, -88)
 size = Vector3(24, 29, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste2" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1336, 18.0, -56)
+position = Vector3(1560, 18.0, -56)
 size = Vector3(24, 38, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste3" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1200, 22.5, -24)
+position = Vector3(1424, 22.5, -24)
 size = Vector3(24, 47, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste4" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1268, 9.5, 8)
+position = Vector3(1492, 9.5, 8)
 size = Vector3(24, 21, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste5" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1336, 14.0, 40)
+position = Vector3(1560, 14.0, 40)
 size = Vector3(24, 30, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste6" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1200, 18.5, 72)
+position = Vector3(1424, 18.5, 72)
 size = Vector3(24, 39, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste7" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1268, 23.0, 104)
+position = Vector3(1492, 23.0, 104)
 size = Vector3(24, 48, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
 
 [node name="BairroLeste8" type="CSGBox3D" parent="HorizonteContinuo"]
-position = Vector3(1336, 10.0, 136)
+position = Vector3(1560, 10.0, 136)
 size = Vector3(24, 22, 24)
 material = SubResource("Material_horizonte_predio")
 cast_shadow = 0
@@ -17173,7 +17235,7 @@ font_size = 34
 pixel_size = 0.014
 
 [node name="InformanteCampanha" type="Node3D" parent="."]
-position = Vector3(378, 9.9, 6.5)
+position = Vector3(1218, 9.9, 6.5)
 visible = false
 script = ExtResource("Script_contato")
 
@@ -17266,7 +17328,7 @@ metadata/contract_job = 22
 metadata/contract_stage = 2
 
 [node name="PassagemBaixaFavela" type="CSGBox3D" parent="."]
-position = Vector3(382.75, 11.5, 18.5)
+position = Vector3(1222.75, 11.5, 18.5)
 size = Vector3(1.5, 0.18, 0.4)
 material = SubResource("Material_contato_arma")
 use_collision = true
@@ -18088,25 +18150,25 @@ material = SubResource("Material_contato_arma")
 [node name="ExtensaoLeste" type="Node3D" parent="."]
 
 [node name="Terreno" type="CSGBox3D" parent="ExtensaoLeste"]
-position = Vector3(1029, -0.5, 0)
-size = Vector3(182, 1, 288)
+position = Vector3(1141, -0.5, 0)
+size = Vector3(406, 1, 288)
 material = SubResource("StandardMaterial3D_wjjbu")
 use_collision = true
 
 [node name="EstradaCentral" type="CSGBox3D" parent="ExtensaoLeste"]
-position = Vector3(1029, 0.01, 0)
-size = Vector3(182, 0.02, 12)
+position = Vector3(1141, 0.01, 0)
+size = Vector3(406, 0.02, 12)
 material = SubResource("Material_horizonte_rua")
 
 [node name="LimiteNorte" type="CSGBox3D" parent="ExtensaoLeste"]
-position = Vector3(1029, 4, -144)
-size = Vector3(182, 8, 1)
+position = Vector3(1141, 4, -144)
+size = Vector3(406, 8, 1)
 visible = false
 use_collision = true
 
 [node name="LimiteSul" type="CSGBox3D" parent="ExtensaoLeste"]
-position = Vector3(1029, 4, 144)
-size = Vector3(182, 8, 1)
+position = Vector3(1141, 4, 144)
+size = Vector3(406, 8, 1)
 visible = false
 use_collision = true
 
@@ -18279,7 +18341,7 @@ material = SubResource("StandardMaterial3D_6b1f1")
 use_collision = true
 
 [node name="BecoDasRuas" type="Node3D" parent="."]
-position = Vector3(405, 9.9, 15)
+position = Vector3(1245, 9.9, 15)
 
 [node name="MuroEsquerdo" type="CSGBox3D" parent="BecoDasRuas"]
 position = Vector3(-2.5, 1.7, 0)
@@ -18297,3 +18359,93 @@ use_collision = true
 position = Vector3(0, 0.02, 0)
 size = Vector3(4.7, 0.04, 26)
 material = SubResource("Material_horizonte_rua")
+
+[node name="ParqueDoMirante" type="Node3D" parent="."]
+position = Vector3(378, 0, 0)
+
+[node name="Gramado" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(0, -0.3, 0)
+size = Vector3(168, 0.66, 70)
+material = SubResource("Material_parque_grama")
+use_collision = true
+
+[node name="PasseioLesteOeste" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(0, 0.055, 0)
+size = Vector3(168, 0.05, 7)
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="PasseioNorteSul" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(0, 0.085, 0)
+size = Vector3(6, 0.05, 70)
+material = SubResource("StandardMaterial3D_6b1f1")
+
+[node name="Placa" type="Label3D" parent="ParqueDoMirante"]
+position = Vector3(0, 2.3, 9)
+text = "PARQUE DO MIRANTE"
+font_size = 40
+pixel_size = 0.015
+
+[node name="Jardim0" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(-58, 0.2, -14)
+size = Vector3(10, 0.4, 5)
+material = SubResource("Material_parque_grama")
+use_collision = true
+
+[node name="Banco0" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(-58, 0.43, -11)
+size = Vector3(2.6, 0.38, 0.52)
+material = SubResource("StandardMaterial3D_ddevx")
+use_collision = true
+
+[node name="Jardim1" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(-34, 0.2, 14)
+size = Vector3(10, 0.4, 5)
+material = SubResource("Material_parque_grama")
+use_collision = true
+
+[node name="Banco1" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(-34, 0.43, 11)
+size = Vector3(2.6, 0.38, 0.52)
+material = SubResource("StandardMaterial3D_ddevx")
+use_collision = true
+
+[node name="Jardim2" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(17, 0.2, -14)
+size = Vector3(10, 0.4, 5)
+material = SubResource("Material_parque_grama")
+use_collision = true
+
+[node name="Banco2" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(17, 0.43, -11)
+size = Vector3(2.6, 0.38, 0.52)
+material = SubResource("StandardMaterial3D_ddevx")
+use_collision = true
+
+[node name="Jardim3" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(47, 0.2, 14)
+size = Vector3(10, 0.4, 5)
+material = SubResource("Material_parque_grama")
+use_collision = true
+
+[node name="Banco3" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(47, 0.43, 11)
+size = Vector3(2.6, 0.38, 0.52)
+material = SubResource("StandardMaterial3D_ddevx")
+use_collision = true
+
+[node name="Jardim4" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(66, 0.2, -14)
+size = Vector3(10, 0.4, 5)
+material = SubResource("Material_parque_grama")
+use_collision = true
+
+[node name="Banco4" type="CSGBox3D" parent="ParqueDoMirante"]
+position = Vector3(66, 0.43, -11)
+size = Vector3(2.6, 0.38, 0.52)
+material = SubResource("StandardMaterial3D_ddevx")
+use_collision = true
+
+[node name="JanelasFavela" type="MultiMeshInstance3D" parent="."]
+material_override = SubResource("Material_contato_arma")
+multimesh = SubResource("MultiMesh_favela_janela")
+cast_shadow = 0

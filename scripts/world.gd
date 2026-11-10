@@ -75,6 +75,7 @@ var network: Node
 var profile: Node
 var station: Node3D
 const FUEL_STATIONS := [Vector3(134, 0, 134), Vector3(-134, 0, -134)]
+const MAP_EAST := 1344.0
 var vehicle_sequence := 0
 const SPAWNS := [Vector3(-8,0.3,12),Vector3(76,0.3,84),Vector3(134,0.3,42),Vector3(-134,0.3,-42),Vector3(42,0.3,-134),Vector3(-42,0.3,134),Vector3(8,0.3,-84),Vector3(84,0.3,8),Vector3(-84,0.3,-8),Vector3(126,0.3,-76),Vector3(-126,0.3,76),Vector3(0,0.3,50)]
 var camera_shape := SphereShape3D.new()

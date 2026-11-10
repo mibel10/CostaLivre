@@ -44,11 +44,14 @@ func run() -> void:
 	assert(lobby_counts.size() == 17)
 	for count in lobby_counts.values(): assert(count == 3, "Three NPCs per large enterable building")
 	await physics_frame
+	var former_hill := PhysicsRayQueryParameters3D.create(Vector3(378, 16, 25), Vector3(378, -1, 25), 1)
+	var park: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(former_hill)
+	assert(not park.is_empty() and park.collider.name == "Gramado" and park.position.y < 0.2, "The former favela is a flat park")
 	for side in [-1, 1]:
 		for step in 5:
 			var x := 344.0 + step * 1.2
 			var ground := (x - 294.0) * 10.0 / 56.0 - 0.1
-			var from := Vector3(x, ground + 1, side * 31.0)
+			var from: Vector3 = Vector3(x, ground + 1, side * 31.0) + world.activities.FAVELA_OFFSET
 			var hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 2, 1))
 			assert(not hit.is_empty() and absf(hit.position.y - ground) < 0.02, "Favela steps must not block the walking ramp")
 	world.player.position = Vector3(23, 0, 32.5)

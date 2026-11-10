@@ -2,7 +2,7 @@ extends Control
 
 var world: Node3D
 var zoom := 1.0
-var center := Vector2(376, 0)
+var center := Vector2.ZERO
 var dragging := false
 var font: Font
 var points: Array = []
@@ -13,6 +13,7 @@ var touch_inspection := false
 var tooltip := StyleBoxFlat.new()
 
 func _ready() -> void:
+	clamp_center()
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
@@ -28,7 +29,7 @@ func _ready() -> void:
 	)
 
 func factor() -> float:
-	return minf(size.x/1160.0, size.y/340.0) * zoom
+	return minf(size.x/(world.MAP_EAST + 186.0), size.y/340.0) * zoom
 
 func project(pos: Vector3) -> Vector2:
 	return size / 2 + (Vector2(pos.x, pos.z) - center) * factor()
@@ -41,10 +42,10 @@ func zoom_at(multiplier: float, anchor: Vector2) -> void:
 	queue_redraw()
 
 func clamp_center() -> void:
-	center.x = clampf(center.x, -186, 1120)
+	center.x = clampf(center.x, -186, world.MAP_EAST)
 	center.y = clampf(center.y, -144, 144)
 	if zoom == 1:
-		center = Vector2(376, 0)
+		center = Vector2((world.MAP_EAST - 186.0) * 0.5, 0)
 
 func recenter() -> void:
 	var pos: Vector3 = world.subject_position()
@@ -130,9 +131,10 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("1f343f"))
 	points.clear()
 	var start := project(Vector3(-186, 0, -145))
-	var end := project(Vector3(1120, 0, 145))
+	var end := project(Vector3(world.MAP_EAST, 0, 145))
 	draw_rect(Rect2(start, end - start), Color("405453"))
-	for center_x in [378.0, 714.0]:
+	var favela_x: float = world.activities.HEAVY_SHOP.x
+	for center_x in [378.0, 714.0, favela_x]:
 		var hill_start := project(Vector3(center_x - 84, 0, -35))
 		var hill_end := project(Vector3(center_x + 84, 0, 35))
 		draw_rect(Rect2(hill_start, hill_end - hill_start), Color("607d5f"))
@@ -147,13 +149,14 @@ func _draw() -> void:
 			draw_line(project(Vector3(road, 0, -144)), project(Vector3(road, 0, 144)), Color("929f9d"), 4 * sqrt(zoom))
 
 	for road in range(-126, 127, 42):
-		draw_line(project(Vector3(-186, 0, road)), project(Vector3(1120 if road == 0 else 938, 0, road)), Color("929f9d"), 4 * sqrt(zoom))
+		draw_line(project(Vector3(-186, 0, road)), project(Vector3(world.MAP_EAST if road == 0 else 938, 0, road)), Color("929f9d"), 4 * sqrt(zoom))
 	for center_x in [294.0, 798.0]:
 		var store_start := project(Vector3(center_x - 36, 0, -117))
 		var store_end := project(Vector3(center_x + 36, 0, -83))
 		draw_rect(Rect2(store_start, store_end - store_start), Color("aa997a"))
 		dot(Vector3(center_x, 0, -100), Color("ffdd99"), "Supermercado")
-	dot(Vector3(378, 0, 15), Color("b7d8a7"), "Favela")
+	dot(Vector3(378, 0, 15), Color("b7d8a7"), "Parque do Mirante")
+	dot(Vector3(favela_x, 0, 15), Color("b7d8a7"), "Favela")
 	dot(Vector3(714, 0, 0), Color("b7d8a7"), "Morro")
 	var a: Node = world.activities
 	if world.life != null:
