@@ -766,6 +766,24 @@ func tick(delta: float) -> void:
 	tick_mission(delta)
 
 func tick_mission(delta: float) -> void:
+	var rescue_point := Vector3.INF
+	if job == 8 and stage == 0:
+		rescue_point = INFORMANT_PICKUP + Vector3(0, 0, 2)
+	elif ACTION_JOBS.has(job):
+		var spec: Dictionary = ACTION_JOBS[job]
+		if spec.kind == "clinic_evacuation" and stage < spec.points.size():
+			rescue_point = spec.points[stage] + Vector3(0, 0, 2)
+		elif spec.kind == "rescue" and stage == 0:
+			rescue_point = spec.pickup + Vector3(0, 0, 2)
+	if rescue_point != Vector3.INF:
+		for car in world.cars:
+			if not is_instance_valid(car) or car.hp <= 0 or absf(car.speed) <= 3.0:
+				continue
+			var offset: Vector3 = car.to_local(rescue_point)
+			var size: Vector3 = preload("res://scripts/vehicle_catalog.gd").SIZES[car.tier]
+			if absf(offset.x) < size.x * 0.5 + 0.4 and absf(offset.z) < size.z * 0.5 + 0.4 and absf(offset.y) < 1.8:
+				fail_job("A pessoa que você precisava resgatar foi atropelada.")
+				return
 	if ACTION_JOBS.has(job):
 		tick_action_job(delta)
 		return
