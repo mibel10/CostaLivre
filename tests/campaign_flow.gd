@@ -8,6 +8,9 @@ func run() -> void:
 	root.add_child(world)
 	await process_frame
 	assert(paused and world.activities.menu == "mode", "Launch asks for a game mode")
+	assert(world.pause_menu.early_access_notice.visible, "The early access warning appears on launch")
+	world.pause_menu.early_access_button.emit_signal("pressed")
+	assert(not world.pause_menu.early_access_notice.visible, "The warning can be dismissed")
 	world.start_mode("sandbox")
 	assert(not paused and world.activities.job == -1, "Sandbox starts free roam")
 	world.activities.start_job(0)

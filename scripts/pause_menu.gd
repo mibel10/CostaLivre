@@ -22,6 +22,8 @@ var name_edit: LineEdit
 var outfit_select: OptionButton
 var profile_status: Label
 var menu_music: AudioStreamPlayer
+var early_access_notice: ColorRect
+var early_access_button: Button
 const REBIND_ACTIONS := ["forward","back","left","right","jump","sprint","crouch","interact","activity","reload","jobs","map","pause","reset"]
 const REBIND_LABELS := ["Frente","Ré","Esquerda","Direita","Pular","Correr / acelerar","Agachar","Entrar / sair","Interagir / assaltar","Recarregar","Missões","Mapa","Pausar","Reposicionar"]
 
@@ -266,6 +268,15 @@ func _ready() -> void:
 		sensitivity_label.text = "Sensibilidade da câmera · %d%%" % roundi(value * 100)
 		world.settings.save_settings()
 	)
+	early_access_notice = ColorRect.new()
+	early_access_notice.name = "AvisoVersaoAntecipada"
+	early_access_notice.color = Color(0.015, 0.035, 0.05, 0.96)
+	early_access_notice.size = Vector2(1280, 720)
+	early_access_notice.mouse_filter = Control.MOUSE_FILTER_STOP
+	pages.mode.add_child(early_access_notice)
+	label(early_access_notice, "VERSÃO EXTREMAMENTE ANTECIPADA", Vector2(285, 205), 34, Color("ffd18a"))
+	label(early_access_notice, "Você está jogando uma versão extremamente antecipada.\nO jogo ainda está em desenvolvimento e possui vários bugs.", Vector2(290, 294), 23)
+	early_access_button = button(early_access_notice, "ENTENDI", Rect2(440, 450, 400, 64), func(): early_access_notice.hide())
 	get_viewport().size_changed.connect(resize_canvas)
 	resize_canvas()
 	visible = false
@@ -299,6 +310,8 @@ func open_for(value: String) -> void:
 
 func show_mode_select() -> void:
 	world.activities.set_menu("mode")
+	if early_access_notice.visible:
+		early_access_button.grab_focus.call_deferred()
 	if is_instance_valid(menu_music) and not menu_music.playing:
 		menu_music.play()
 
