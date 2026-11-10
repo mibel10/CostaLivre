@@ -1,4 +1,4 @@
 extends RefCounted
 const VERSION := "1.5.2"
-const PROTOCOL := 27
-const TOKEN := "CostaLivre/1.5.2/protocol-27"
+const PROTOCOL := 28
+const TOKEN := "CostaLivre/1.5.2/protocol-28"

@@ -17300,16 +17300,19 @@ position = Vector3(147, 0, 54.5)
 position = Vector3(-1.15, 0.75, 0)
 size = Vector3(0.15, 1.5, 11)
 material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
 
 [node name="ParedeDireita" type="CSGBox3D" parent="TubulacaoDataCenter"]
 position = Vector3(1.15, 0.75, 0)
 size = Vector3(0.15, 1.5, 11)
 material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
 
 [node name="Teto" type="CSGBox3D" parent="TubulacaoDataCenter"]
 position = Vector3(0, 1.5, 0)
 size = Vector3(2.3, 0.15, 11)
 material = SubResource("StandardMaterial3D_6b1f1")
+use_collision = true
 
 [node name="Computador29" type="Node3D" parent="."]
 position = Vector3(147, 0, 63)

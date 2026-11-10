@@ -84,6 +84,17 @@ func run() -> void:
 	world.activities.campaign_index = world.activities.CAMPAIGN_LENGTH - 1
 	world.activities.start_job(world.activities.SECRET_DATA_JOB)
 	world.cutscene.finish()
+	world.activities._process(0.0)
+	await physics_frame
+	await physics_frame
+	var hatch = world.get_node("ObjetivosCampanha/TampaTubulacao29")
+	var vent_ray := PhysicsRayQueryParameters3D.create(Vector3(147, 0.8, 47), Vector3(147, 0.8, 50), 1)
+	var vent_hit: Dictionary = world.get_world_3d().direct_space_state.intersect_ray(vent_ray)
+	assert(not vent_hit.is_empty() and vent_hit.collider == hatch, "The closed duct hatch can be shot")
+	world.player.set_crouched(true)
+	assert(world.activities.campaign_target_hit(hatch))
+	assert(not hatch.visible and not hatch.use_collision, "Shooting opens the duct")
+	world.player.set_crouched(false)
 	world.finish(false)
 	world.respawn_local()
 	assert(world.activities.job == world.activities.SECRET_DATA_JOB, "Death retries the final campaign mission instead of a co-op mission")
