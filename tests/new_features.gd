@@ -10,7 +10,7 @@ func run() -> void:
 	world.start_mode("sandbox")
 	await physics_frame
 	var extra = world.extra
-	assert(world.activities.JOBS.size() == 30)
+	assert(world.activities.JOBS.size() == 32)
 	var car = world.cars[0]
 	world.player.position = car.position + Vector3(-2,0,0)
 	world.interact()
@@ -34,13 +34,15 @@ func run() -> void:
 	assert(bones.size() >= 10 and bones.all(func(bone): return bone.get_bone_id() >= 0))
 	await create_timer(0.5).timeout
 	assert(world.active_car == moving and not moving.traffic)
+	moving.speed = 0
+	moving.position = Vector3(900, 50, 900)
 	world.interact()
 	await create_timer(0.4).timeout
 	await create_timer(1.1).timeout
 	assert(get_nodes_in_group("ejected_driver").is_empty())
-	world.player.position = Vector3(126,0,12)
+	world.player.position = Vector3(900,50,900)
 	world.camera_yaw = 0
-	var target = world.spawn_car(Vector3(126,0,10), Color.RED)
+	var target = world.spawn_car(Vector3(900,50,898), Color.RED)
 	extra.punch()
 	assert(target.hp == target.MAX_HP-25 and extra.punch_time > 0)
 	extra._process(0.1)

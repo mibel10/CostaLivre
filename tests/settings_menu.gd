@@ -20,7 +20,7 @@ func run() -> void:
 	var midpoint_on_minimap: Vector2 = world.hud.map_point(world.player.position, Vector2.ZERO, Vector2(164,164))
 	assert(is_equal_approx(midpoint_on_minimap.x, 82.0), "Minimap follows the player in the expanded city")
 	assert(world.hud.map_point(Vector3(900,0,0), Vector2.ZERO, Vector2(164,164)).x > midpoint_on_minimap.x)
-	world.player.position = Vector3(920, 0.3, 0)
+	world.player.position = Vector3(1090, 0.3, 0)
 	assert(world.hud.map_point(world.player.position, Vector2.ZERO, Vector2(164,164)).x > midpoint_on_minimap.x)
 	world.player.position = original_position
 	var settings = world.settings
