@@ -4402,24 +4402,11 @@ size = Vector3(28, 0.2, 28)
 [sub_resource type="BoxShape3D" id="BoxShape3D_bm1l1"]
 size = Vector3(28, 0.2, 28)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e48sb"]
-shading_mode = 0
-albedo_color = Color(0.8235294, 0.79607844, 0.7372549, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_a88jp"]
 size = Vector3(28, 0.3, 28)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6k1jp"]
 size = Vector3(28, 0.3, 28)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rwi41"]
-shading_mode = 0
-albedo_color = Color(0.8235294, 0.79607844, 0.7372549, 1)
-albedo_texture = SubResource("ImageTexture_e6qn8")
-uv1_scale = Vector3(0.28, 0.28, 0.28)
-uv1_triplanar = true
-uv1_world_triplanar = true
-texture_filter = 5
 
 [sub_resource type="BoxMesh" id="BoxMesh_86h30"]
 size = Vector3(0.4, 7, 28)
@@ -4433,24 +4420,11 @@ size = Vector3(10.8, 7, 0.4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_6hrix"]
 size = Vector3(10.8, 7, 0.4)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vv2pu"]
-shading_mode = 0
-albedo_color = Color(0.4, 0.49019608, 0.5137255, 1)
-albedo_texture = SubResource("ImageTexture_e6qn8")
-uv1_scale = Vector3(0.28, 0.28, 0.28)
-uv1_triplanar = true
-uv1_world_triplanar = true
-texture_filter = 5
-
 [sub_resource type="BoxMesh" id="BoxMesh_nsbih"]
 size = Vector3(11.3, 7, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r3wvt"]
 size = Vector3(11.3, 7, 0.5)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gkv8q"]
-shading_mode = 0
-albedo_color = Color(0.23529412, 0.4117647, 0.46666667, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_26pho"]
 size = Vector3(8, 2.5, 0.06)
@@ -4488,10 +4462,6 @@ size = Vector3(6, 3.4, 0.4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ib5ii"]
 size = Vector3(6, 3.4, 0.4)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b5mm1"]
-shading_mode = 0
-albedo_color = Color(0.2627451, 0.3529412, 0.40392157, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_0lp6y"]
 size = Vector3(0.8, 1.3, 0.45)
 
@@ -4504,10 +4474,6 @@ albedo_color = Color(0.9372549, 0.6156863, 0.41960785, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_aleju"]
 size = Vector3(0.4, 0.2, 0.05)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jlayg"]
-shading_mode = 0
-albedo_color = Color(0.3882353, 0.29411766, 0.21176471, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_uwbd4"]
 size = Vector3(3, 0.12, 1.2)
@@ -4539,16 +4505,8 @@ albedo_color = Color(0.4, 0.73333335, 0.8, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_x2eyu"]
 size = Vector3(1.2, 0.8, 0.15)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yssma"]
-shading_mode = 0
-albedo_color = Color(0.8666667, 0.7294118, 0.42745098, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_6nvwp"]
 size = Vector3(0.6, 0.8, 0.25)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6u7me"]
-shading_mode = 0
-albedo_color = Color(0.20784314, 0.29411766, 0.34117648, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_1y363"]
 size = Vector3(5, 3.8, 0.7)
@@ -4556,27 +4514,15 @@ size = Vector3(5, 3.8, 0.7)
 [sub_resource type="BoxShape3D" id="BoxShape3D_5qejg"]
 size = Vector3(5, 3.8, 0.7)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4wane"]
-shading_mode = 0
-albedo_color = Color(0.70980394, 0.7294118, 0.7019608, 1)
-
 [sub_resource type="TorusMesh" id="TorusMesh_6mt1m"]
 inner_radius = 0.47
 outer_radius = 0.56
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mriqc"]
-shading_mode = 0
-albedo_color = Color(0.68235296, 0.70980394, 0.6784314, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wls5p"]
 size = Vector3(1, 0.08, 0.08)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8kv3e"]
 size = Vector3(1, 0.08, 0.08)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q71s7"]
-shading_mode = 0
-albedo_color = Color(0.4, 0.49019608, 0.5137255, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_n6k5h"]
 size = Vector3(5, 3.2, 0.5)
@@ -4596,10 +4542,6 @@ size = Vector3(1.2, 1, 0.7)
 
 [sub_resource type="BoxMesh" id="BoxMesh_kqn38"]
 size = Vector3(1.2, 1, 0.7)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a35nj"]
-shading_mode = 0
-albedo_color = Color(0.6431373, 0.6666667, 0.6156863, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_42nef"]
 top_radius = 0.32
@@ -4722,11 +4664,7 @@ shader = ExtResource("1_k3myk")
 transform_format = 1
 instance_count = 1
 mesh = SubResource("BoxMesh_5t0tl")
-buffer = PackedFloat32Array(27, 0, 0, 0, 0, 0.015, 0, -0.085, 0, 0, 27, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sjf2o"]
-shading_mode = 0
-albedo_color = Color(0.24705882, 0.34117648, 0.30980393, 1)
+buffer = PackedFloat32Array(27, 0, 0, 0, 0, 0.015, 0, 0.013, 0, 0, 27, 0)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6tiio"]
 
@@ -4735,10 +4673,6 @@ transform_format = 1
 instance_count = 2
 mesh = SubResource("BoxMesh_6tiio")
 buffer = PackedFloat32Array(0.12, 0, 0, -13.5, 0, 2.2, 0, 1.1, 0, 0, 26, 0, 0.12, 0, 0, 13.5, 0, 2.2, 0, 1.1, 0, 0, 26, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j3h0x"]
-shading_mode = 0
-albedo_color = Color(0.7058824, 0.60784316, 0.38431373, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vy414"]
 
@@ -4756,10 +4690,6 @@ instance_count = 12
 mesh = SubResource("BoxMesh_yjxyt")
 buffer = PackedFloat32Array(0.7, 0, 0, -7, 0, 0.16, 0, 0.5, 0, 0, 0.65, 5, 0.7, 0, 0, -7, 0, 0.7, 0, 0.9, 0, 0, 0.12, 5.28, 0.7, 0, 0, -7, 0, 0.16, 0, 0.5, 0, 0, 0.65, 7, 0.7, 0, 0, -7, 0, 0.7, 0, 0.9, 0, 0, 0.12, 7.28, 0.7, 0, 0, -7, 0, 0.16, 0, 0.5, 0, 0, 0.65, 9, 0.7, 0, 0, -7, 0, 0.7, 0, 0.9, 0, 0, 0.12, 9.28, 0.7, 0, 0, 7, 0, 0.16, 0, 0.5, 0, 0, 0.65, 5, 0.7, 0, 0, 7, 0, 0.7, 0, 0.9, 0, 0, 0.12, 5.28, 0.7, 0, 0, 7, 0, 0.16, 0, 0.5, 0, 0, 0.65, 7, 0.7, 0, 0, 7, 0, 0.7, 0, 0.9, 0, 0, 0.12, 7.28, 0.7, 0, 0, 7, 0, 0.16, 0, 0.5, 0, 0, 0.65, 9, 0.7, 0, 0, 7, 0, 0.7, 0, 0.9, 0, 0, 0.12, 9.28)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r10sj"]
-shading_mode = 0
-albedo_color = Color(0.45490196, 0.31764707, 0.23137255, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_ylp8x"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_4ag11"]
@@ -4767,10 +4697,6 @@ transform_format = 1
 instance_count = 1
 mesh = SubResource("BoxMesh_ylp8x")
 buffer = PackedFloat32Array(8, 0, 0, -7, 0, 1.3, 0, 0.65, 0, 0, 1.3, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1iqfh"]
-shading_mode = 0
-albedo_color = Color(0.14509805, 0.24705882, 0.24313726, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_3n72b"]
 
@@ -4780,10 +4706,6 @@ instance_count = 1
 mesh = SubResource("BoxMesh_3n72b")
 buffer = PackedFloat32Array(8.3, 0, 0, -7, 0, 0.13, 0, 1.35, 0, 0, 1.6, 0)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g286p"]
-shading_mode = 0
-albedo_color = Color(0.7176471, 0.65882355, 0.47058824, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_w3k7n"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_e0317"]
@@ -4791,10 +4713,6 @@ transform_format = 1
 instance_count = 3
 mesh = SubResource("BoxMesh_w3k7n")
 buffer = PackedFloat32Array(0.07, 0, 0, -10, 0, 1.4, 0, 2.1, 0, 0, 0.12, -0.4, 0.07, 0, 0, -7, 0, 1.4, 0, 2.1, 0, 0, 0.12, -0.4, 0.07, 0, 0, -4, 0, 1.4, 0, 2.1, 0, 0, 0.12, -0.4)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3flqx"]
-shading_mode = 0
-albedo_color = Color(0.15686275, 0.28627452, 0.34117648, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wfg6l"]
 
@@ -4816,10 +4734,6 @@ instance_count = 3
 mesh = SubResource("BoxMesh_au86j")
 buffer = PackedFloat32Array(0.6, 0, 0, -9.3, 0, 0.03, 0, 1.42, 0, 0, 0.3, 0.2, 0.6, 0, 0, -6.3, 0, 0.03, 0, 1.42, 0, 0, 0.3, 0.2, 0.6, 0, 0, -3.3, 0, 0.03, 0, 1.42, 0, 0, 0.3, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_13jfg"]
-shading_mode = 0
-albedo_color = Color(0.29803923, 0.4, 0.4392157, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_n8fnv"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_guxe7"]
@@ -4827,10 +4741,6 @@ transform_format = 1
 instance_count = 1
 mesh = SubResource("BoxMesh_n8fnv")
 buffer = PackedFloat32Array(0.12, 0, 0, 5, 0, 3, 0, 1.5, 0, 0, 5, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nt4al"]
-shading_mode = 0
-albedo_color = Color(0.09803922, 0.19607843, 0.21960784, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_jqr54"]
 
@@ -4852,10 +4762,6 @@ instance_count = 6
 mesh = SubResource("BoxMesh_slquu")
 buffer = PackedFloat32Array(0.85, 0, 0, 7, 0, 0.04, 0, 2.8, 0, 0, 0.02, -1.22, 0.85, 0, 0, 8.5, 0, 0.04, 0, 2.8, 0, 0, 0.02, -1.22, 0.85, 0, 0, 10, 0, 0.04, 0, 2.8, 0, 0, 0.02, -1.22, 0.85, 0, 0, 7, 0, 0.04, 0, 2.8, 0, 0, 0.02, -0.22, 0.85, 0, 0, 8.5, 0, 0.04, 0, 2.8, 0, 0, 0.02, -0.22, 0.85, 0, 0, 10, 0, 0.04, 0, 2.8, 0, 0, 0.02, -0.22)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qtu5d"]
-shading_mode = 0
-albedo_color = Color(0.44313726, 0.52156866, 0.5411765, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_5kf0d"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_s57nc"]
@@ -4864,10 +4770,6 @@ instance_count = 48
 mesh = SubResource("BoxMesh_5kf0d")
 buffer = PackedFloat32Array(0.88, 0, 0, -6, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, -7, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, -8, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, -9, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, -10, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, -11, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, -6, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, -7, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, -8, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, -9, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, -10, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, -11, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, -6, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, -7, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, -8, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, -9, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, -10, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, -11, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, -6, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, -7, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, -8, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, -9, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, -10, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, -11, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, 6, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, 7, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, 8, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, 9, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, 10, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, 11, 0, 0.55, 0, 0.6, 0, 0, 0.12, -13.05, 0.88, 0, 0, 6, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, 7, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, 8, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, 9, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, 10, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, 11, 0, 0.55, 0, 1.25, 0, 0, 0.12, -13.05, 0.88, 0, 0, 6, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, 7, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, 8, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, 9, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, 10, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, 11, 0, 0.55, 0, 1.9, 0, 0, 0.12, -13.05, 0.88, 0, 0, 6, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, 7, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, 8, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, 9, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, 10, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05, 0.88, 0, 0, 11, 0, 0.55, 0, 2.55, 0, 0, 0.12, -13.05)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_okowx"]
-shading_mode = 0
-albedo_color = Color(0.72156864, 0.7019608, 0.59607846, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_jo2cc"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_gbxxf"]
@@ -4875,10 +4777,6 @@ transform_format = 1
 instance_count = 48
 mesh = SubResource("BoxMesh_jo2cc")
 buffer = PackedFloat32Array(0.22, 0, 0, -6, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, -7, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, -8, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, -9, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, -10, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, -11, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, -6, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, -7, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, -8, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, -9, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, -10, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, -11, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, -6, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, -7, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, -8, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, -9, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, -10, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, -11, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, -6, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, -7, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, -8, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, -9, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, -10, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, -11, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, 6, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, 7, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, 8, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, 9, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, 10, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, 11, 0, 0.06, 0, 0.6, 0, 0, 0.08, -12.96, 0.22, 0, 0, 6, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, 7, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, 8, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, 9, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, 10, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, 11, 0, 0.06, 0, 1.25, 0, 0, 0.08, -12.96, 0.22, 0, 0, 6, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, 7, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, 8, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, 9, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, 10, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, 11, 0, 0.06, 0, 1.9, 0, 0, 0.08, -12.96, 0.22, 0, 0, 6, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, 7, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, 8, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, 9, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, 10, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96, 0.22, 0, 0, 11, 0, 0.06, 0, 2.55, 0, 0, 0.08, -12.96)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wo03o"]
-shading_mode = 0
-albedo_color = Color(0.9607843, 0.9098039, 0.78431374, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_bungk"]
 
@@ -6829,6 +6727,122 @@ size = Vector3(2.8, 0.2, 19.6)
 
 [sub_resource type="BoxShape3D" id="TerreoPoco5_3"]
 size = Vector3(2.8, 0.2, 1.6)
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Pedra"]
+albedo_color = Color(0.81, 0.74, 0.61, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Friso"]
+albedo_color = Color(0.96, 0.87, 0.71, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Verde"]
+albedo_color = Color(0.11, 0.23, 0.2, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Bronze"]
+albedo_color = Color(0.64, 0.43, 0.19, 1)
+roughness = 0.39
+metallic = 0.36
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Madeira"]
+albedo_color = Color(0.29, 0.13, 0.075, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Aco"]
+albedo_color = Color(0.22, 0.28, 0.28, 1)
+roughness = 0.39
+metallic = 0.45
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Vidro"]
+albedo_color = Color(0.16, 0.31, 0.34, 1)
+roughness = 0.39
+metallic = 0.18
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_Luz"]
+albedo_color = Color(1, 0.84, 0.56, 1)
+roughness = 0.82
+emission_enabled = true
+emission = Color(1, 0.84, 0.56, 1)
+emission_energy_multiplier = 0.75
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_VitralVerde"]
+albedo_color = Color(0.34, 0.68, 0.55, 1)
+roughness = 0.82
+emission_enabled = true
+emission = Color(0.34, 0.68, 0.55, 1)
+emission_energy_multiplier = 0.36
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_VitralAzul"]
+albedo_color = Color(0.35, 0.57, 0.76, 1)
+roughness = 0.82
+emission_enabled = true
+emission = Color(0.35, 0.57, 0.76, 1)
+emission_energy_multiplier = 0.36
+
+[sub_resource type="StandardMaterial3D" id="BancoCostaMat_VitralMel"]
+albedo_color = Color(0.9, 0.62, 0.32, 1)
+roughness = 0.82
+emission_enabled = true
+emission = Color(0.9, 0.62, 0.32, 1)
+emission_energy_multiplier = 0.44
+
+[sub_resource type="BoxMesh" id="BancoCostaBoxUnit"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti0"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 9
+buffer = PackedFloat32Array(8.6, 0, 0, 0, 0, 1.16, 0, 5.25, 0, 0, 0.25, 14.13, 0.34, 0, 0, -4.43, 0, 0.014, 0, 0.027, 0, 0, 14.8, 5.75, 0.72, 0, 0, -3.05, 0, 3.5, 0, 1.75, 0, 0, 0.28, -2.7, 0.34, 0, 0, 4.43, 0, 0.014, 0, 0.027, 0, 0, 14.8, 5.75, 0.72, 0, 0, 3.05, 0, 3.5, 0, 1.75, 0, 0, 0.28, -2.7, 4.8, 0, 0, 0, 0, 0.63, 0, 4.8, 0, 0, 0.07, -2.68, 2.23, 0, 0, -10, 0, 0.65, 0, 0.68, 0, 0, 0.045, 0.66, 2.23, 0, 0, -7, 0, 0.65, 0, 0.68, 0, 0, 0.045, 0.66, 2.23, 0, 0, -4, 0, 0.65, 0, 0.68, 0, 0, 0.045, 0.66)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti1"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 54
+buffer = PackedFloat32Array(28.55, 0, 0, 0, 0, 0.25, 0, 6.22, 0, 0, 0.51, 14.13, 28.55, 0, 0, 0, 0, 0.39, 0, 6.55, 0, 0, 0.69, 14.13, 28.55, 0, 0, 0, 0, 0.16, 0, 6.83, 0, 0, 0.83, 14.13, 0.53, 0, 0, -12.9, 0, 5.5, 0, 3.05, 0, 0, 0.55, 14.03, 0.53, 0, 0, -3.35, 0, 5.5, 0, 3.05, 0, 0, 0.55, 14.03, 0.53, 0, 0, 3.35, 0, 5.5, 0, 3.05, 0, 0, 0.55, 14.03, 0.53, 0, 0, 12.9, 0, 5.5, 0, 3.05, 0, 0, 0.55, 14.03, 8.38, 0, 0, -8.4, 0, 0.2, 0, 1.07, 0, 0, 0.32, 14.08, 8.38, 0, 0, -8.4, 0, 0.24, 0, 3.99, 0, 0, 0.32, 14.08, 8.38, 0, 0, 8.4, 0, 0.2, 0, 1.07, 0, 0, 0.32, 14.08, 8.38, 0, 0, 8.4, 0, 0.24, 0, 3.99, 0, 0, 0.32, 14.08, 1.06, 0, 0, -12, 0, 0.24, 0, 0.12, 0, 0, 1.06, -10, 0.86, 0, 0, -12, 0, 0.12, 0, 0.28, 0, 0, 0.86, -10, 0.85, 0, 0, -12, 0, 0.22, 0, 5.1, 0, 0, 0.85, -10, 1.14, 0, 0, -12, 0, 0.24, 0, 5.33, 0, 0, 1.14, -10, 1.06, 0, 0, -12, 0, 0.24, 0, 0.12, 0, 0, 1.06, -1, 0.86, 0, 0, -12, 0, 0.12, 0, 0.28, 0, 0, 0.86, -1, 0.85, 0, 0, -12, 0, 0.22, 0, 5.1, 0, 0, 0.85, -1, 1.14, 0, 0, -12, 0, 0.24, 0, 5.33, 0, 0, 1.14, -1, 1.06, 0, 0, -12, 0, 0.24, 0, 0.12, 0, 0, 1.06, 9, 0.86, 0, 0, -12, 0, 0.12, 0, 0.28, 0, 0, 0.86, 9, 0.85, 0, 0, -12, 0, 0.22, 0, 5.1, 0, 0, 0.85, 9, 1.14, 0, 0, -12, 0, 0.24, 0, 5.33, 0, 0, 1.14, 9, 0.65, 0, 0, -13.27, 0, 0.28, 0, 6.43, 0, 0, 27.1, 0, 0.19, 0, 0, -13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 0.4, 0.19, 0, 0, -13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 3.8, 0.19, 0, 0, -13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 7.2, 0.19, 0, 0, -13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 10.6, 1.06, 0, 0, 12, 0, 0.24, 0, 0.12, 0, 0, 1.06, -10, 0.86, 0, 0, 12, 0, 0.12, 0, 0.28, 0, 0, 0.86, -10, 0.85, 0, 0, 12, 0, 0.22, 0, 5.1, 0, 0, 0.85, -10, 1.14, 0, 0, 12, 0, 0.24, 0, 5.33, 0, 0, 1.14, -10, 1.06, 0, 0, 12, 0, 0.24, 0, 0.12, 0, 0, 1.06, -1, 0.86, 0, 0, 12, 0, 0.12, 0, 0.28, 0, 0, 0.86, -1, 0.85, 0, 0, 12, 0, 0.22, 0, 5.1, 0, 0, 0.85, -1, 1.14, 0, 0, 12, 0, 0.24, 0, 5.33, 0, 0, 1.14, -1, 1.06, 0, 0, 12, 0, 0.24, 0, 0.12, 0, 0, 1.06, 9, 0.86, 0, 0, 12, 0, 0.12, 0, 0.28, 0, 0, 0.86, 9, 0.85, 0, 0, 12, 0, 0.22, 0, 5.1, 0, 0, 0.85, 9, 1.14, 0, 0, 12, 0, 0.24, 0, 5.33, 0, 0, 1.14, 9, 0.65, 0, 0, 13.27, 0, 0.28, 0, 6.43, 0, 0, 27.1, 0, 0.19, 0, 0, 13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 0.4, 0.19, 0, 0, 13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 3.8, 0.19, 0, 0, 13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 7.2, 0.19, 0, 0, 13.53, 0, 3.1, 0, 4.26, 0, 0, 2.85, 10.6, 0.32, 0, 0, -9.5, 0, 0.29, 0, 6.62, 0, 0, 16.4, 5.5, 0.32, 0, 0, -5, 0, 0.29, 0, 6.62, 0, 0, 16.4, 5.5, 0.32, 0, 0, 5, 0, 0.29, 0, 6.62, 0, 0, 16.4, 5.5, 0.32, 0, 0, 9.5, 0, 0.29, 0, 6.62, 0, 0, 16.4, 5.5, 27.05, 0, 0, 0, 0, 0.34, 0, 6.58, 0, 0, 0.3, -2.6, 27.05, 0, 0, 0, 0, 0.34, 0, 6.58, 0, 0, 0.3, 1.1, 27.05, 0, 0, 0, 0, 0.34, 0, 6.58, 0, 0, 0.3, 5.5, 27.05, 0, 0, 0, 0, 0.34, 0, 6.58, 0, 0, 0.3, 9.9, 27.05, 0, 0, 0, 0, 0.34, 0, 6.58, 0, 0, 0.3, 13.5)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti2"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 22
+buffer = PackedFloat32Array(0.83, 0, 0, -12.9, 0, 0.46, 0, 0.23, 0, 0, 0.61, 14.1, 0.83, 0, 0, -12.9, 0, 0.22, 0, 5.72, 0, 0, 0.61, 14.1, 0.83, 0, 0, -3.35, 0, 0.46, 0, 0.23, 0, 0, 0.61, 14.1, 0.83, 0, 0, -3.35, 0, 0.22, 0, 5.72, 0, 0, 0.61, 14.1, 0.83, 0, 0, 3.35, 0, 0.46, 0, 0.23, 0, 0, 0.61, 14.1, 0.83, 0, 0, 3.35, 0, 0.22, 0, 5.72, 0, 0, 0.61, 14.1, 0.83, 0, 0, 12.9, 0, 0.46, 0, 0.23, 0, 0, 0.61, 14.1, 0.83, 0, 0, 12.9, 0, 0.22, 0, 5.72, 0, 0, 0.61, 14.1, 0.52, 0, 0, -12, 0, 1.05, 0, 5.98, 0, 0, 0.52, -10, 0.52, 0, 0, -12, 0, 1.05, 0, 5.98, 0, 0, 0.52, -1, 0.52, 0, 0, -12, 0, 1.05, 0, 5.98, 0, 0, 0.52, 9, 0.1, 0, 0, -13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 0.4, 0.1, 0, 0, -13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 3.8, 0.1, 0, 0, -13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 7.2, 0.1, 0, 0, -13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 10.6, 0.52, 0, 0, 12, 0, 1.05, 0, 5.98, 0, 0, 0.52, -10, 0.52, 0, 0, 12, 0, 1.05, 0, 5.98, 0, 0, 0.52, -1, 0.52, 0, 0, 12, 0, 1.05, 0, 5.98, 0, 0, 0.52, 9, 0.1, 0, 0, 13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 0.4, 0.1, 0, 0, 13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 3.8, 0.1, 0, 0, 13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 7.2, 0.1, 0, 0, 13.42, 0, 2.82, 0, 4.26, 0, 0, 2.57, 10.6)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti3"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 56
+buffer = PackedFloat32Array(0.1, 0, 0, -12.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, -10.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, -8.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, -6.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, -4.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 8.12, 0, 0, -8.4, 0, 0.1, 0, 1.22, 0, 0, 0.11, 14.08, 8.12, 0, 0, -8.4, 0, 0.1, 0, 2.95, 0, 0, 0.11, 14.08, 8.12, 0, 0, -8.4, 0, 0.1, 0, 3.78, 0, 0, 0.11, 14.08, 0.1, 0, 0, 4.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, 6.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, 8.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, 10.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 0.1, 0, 0, 12.4, 0, 2.64, 0, 2.5, 0, 0, 0.11, 14.08, 8.12, 0, 0, 8.4, 0, 0.1, 0, 1.22, 0, 0, 0.11, 14.08, 8.12, 0, 0, 8.4, 0, 0.1, 0, 2.95, 0, 0, 0.11, 14.08, 8.12, 0, 0, 8.4, 0, 0.1, 0, 3.78, 0, 0, 0.11, 14.08, 0.36, 0, 0, -13.42, 0, 0.07, 0, 6.18, 0, 0, 27, 0, 0.075, 0, 0, -4.2, 0, 0.015, 0, 0.03, 0, 0, 14.8, 5.75, 0.095, 0, 0, -2.66, 0, 3.78, 0, 1.89, 0, 0, 0.12, -2.51, 0.36, 0, 0, 13.42, 0, 0.07, 0, 6.18, 0, 0, 27, 0, 0.075, 0, 0, 4.2, 0, 0.015, 0, 0.03, 0, 0, 14.8, 5.75, 0.095, 0, 0, 2.66, 0, 3.78, 0, 1.89, 0, 0, 0.12, -2.51, 5.36, 0, 0, 0, 0, 0.115, 0, 3.86, 0, 0, 0.16, -2.66, 1.93, 0, 0, -2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 2.3, 1.93, 0, 0, -2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 4.42, 1.93, 0, 0, -2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 6.58, 1.93, 0, 0, -2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 8.7, 1.93, 0, 0, -0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 2.3, 1.93, 0, 0, -0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 4.42, 1.93, 0, 0, -0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 6.58, 1.93, 0, 0, -0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 8.7, 1.93, 0, 0, 0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 2.3, 1.93, 0, 0, 0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 4.42, 1.93, 0, 0, 0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 6.58, 1.93, 0, 0, 0.97, 0, 0.18, 0, 6.71, 0, 0, 2.11, 8.7, 1.93, 0, 0, 2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 2.3, 1.93, 0, 0, 2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 4.42, 1.93, 0, 0, 2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 6.58, 1.93, 0, 0, 2.9, 0, 0.18, 0, 6.71, 0, 0, 2.11, 8.7, 0.08, 0, 0, -7.3, 0, 1.03, 0, 6.01, 0, 0, 0.08, 2.9, 1.53, 0, 0, -7.3, 0, 0.16, 0, 5.5, 0, 0, 0.53, 2.9, 0.08, 0, 0, -7.3, 0, 1.03, 0, 6.01, 0, 0, 0.08, 8.1, 1.53, 0, 0, -7.3, 0, 0.16, 0, 5.5, 0, 0, 0.53, 8.1, 0.08, 0, 0, 7.3, 0, 1.03, 0, 6.01, 0, 0, 0.08, 2.9, 1.53, 0, 0, 7.3, 0, 0.16, 0, 5.5, 0, 0, 0.53, 2.9, 0.08, 0, 0, 7.3, 0, 1.03, 0, 6.01, 0, 0, 0.08, 8.1, 1.53, 0, 0, 7.3, 0, 0.16, 0, 5.5, 0, 0, 0.53, 8.1, 2.49, 0, 0, -10, 0, 0.065, 0, 1.85, 0, 0, 0.09, 0.7, 0.064, 0, 0, -11.21, 0, 1.06, 0, 1.95, 0, 0, 0.09, 0.7, 0.064, 0, 0, -8.79, 0, 1.06, 0, 1.95, 0, 0, 0.09, 0.7, 2.49, 0, 0, -7, 0, 0.065, 0, 1.85, 0, 0, 0.09, 0.7, 0.064, 0, 0, -8.21, 0, 1.06, 0, 1.95, 0, 0, 0.09, 0.7, 0.064, 0, 0, -5.79, 0, 1.06, 0, 1.95, 0, 0, 0.09, 0.7, 2.49, 0, 0, -4, 0, 0.065, 0, 1.85, 0, 0, 0.09, 0.7, 0.064, 0, 0, -5.21, 0, 1.06, 0, 1.95, 0, 0, 0.09, 0.7, 0.064, 0, 0, -2.79, 0, 1.06, 0, 1.95, 0, 0, 0.09, 0.7)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti4"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 8
+buffer = PackedFloat32Array(0.13, 0, 0, 3.98, 0, 0.13, 0, 1.9, 0, 0, 0.11, 0.5, 0.13, 0, 0, 3.54652, 0, 0.13, 0, 2.94652, 0, 0, 0.11, 0.5, 0.13, 0, 0, 2.5, 0, 0.13, 0, 3.38, 0, 0, 0.11, 0.5, 0.13, 0, 0, 1.45348, 0, 0.13, 0, 2.94652, 0, 0, 0.11, 0.5, 0.13, 0, 0, 1.02, 0, 0.13, 0, 1.9, 0, 0, 0.11, 0.5, 0.13, 0, 0, 1.45348, 0, 0.13, 0, 0.85348, 0, 0, 0.11, 0.5, 0.13, 0, 0, 2.5, 0, 0.13, 0, 0.42, 0, 0, 0.11, 0.5, 0.13, 0, 0, 3.54652, 0, 0.13, 0, 0.85348, 0, 0, 0.11, 0.5)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti5"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 6
+buffer = PackedFloat32Array(1.78, 0, 0, -2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 2.3, 1.78, 0, 0, -2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 8.7, 1.78, 0, 0, -0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 4.42, 1.78, 0, 0, 0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 4.42, 1.78, 0, 0, 2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 2.3, 1.78, 0, 0, 2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 8.7)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti6"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 4
+buffer = PackedFloat32Array(1.78, 0, 0, -2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 4.42, 1.78, 0, 0, -0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 6.58, 1.78, 0, 0, 0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 6.58, 1.78, 0, 0, 2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 4.42)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti7"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 6
+buffer = PackedFloat32Array(1.78, 0, 0, -2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 6.58, 1.78, 0, 0, -0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 2.3, 1.78, 0, 0, -0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 8.7, 1.78, 0, 0, 0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 2.3, 1.78, 0, 0, 0.97, 0, 0.07, 0, 6.6, 0, 0, 1.95, 8.7, 1.78, 0, 0, 2.9, 0, 0.07, 0, 6.6, 0, 0, 1.95, 6.58)
+
+[sub_resource type="MultiMesh" id="BancoCostaMulti8"]
+transform_format = 1
+mesh = SubResource("BancoCostaBoxUnit")
+instance_count = 4
+buffer = PackedFloat32Array(1.32, 0, 0, -7.3, 0, 0.19, 0, 5.36, 0, 0, 0.36, 2.9, 1.32, 0, 0, -7.3, 0, 0.19, 0, 5.36, 0, 0, 0.36, 8.1, 1.32, 0, 0, 7.3, 0, 0.19, 0, 5.36, 0, 0, 0.36, 2.9, 1.32, 0, 0, 7.3, 0, 0.19, 0, 5.36, 0, 0, 0.36, 8.1)
 
 [node name="FixedInteriors" type="Node3D" unique_id=1077341304]
 
@@ -11445,7 +11459,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, -105)
 
 [node name="_MeshInstance3D_424" type="MeshInstance3D" parent="Bank" unique_id=737835469]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
-material_override = SubResource("StandardMaterial3D_bbgv6")
+material_override = SubResource("BancoCostaMat_Verde")
 mesh = SubResource("BoxMesh_m0e0s")
 
 [node name="_StaticBody3D_426" type="StaticBody3D" parent="Bank/_MeshInstance3D_424" unique_id=862001123]
@@ -11455,7 +11469,7 @@ shape = SubResource("BoxShape3D_bm1l1")
 
 [node name="_MeshInstance3D_427" type="MeshInstance3D" parent="Bank" unique_id=1926323805]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
-material_override = SubResource("StandardMaterial3D_e48sb")
+material_override = SubResource("BancoCostaMat_Friso")
 mesh = SubResource("BoxMesh_a88jp")
 
 [node name="_StaticBody3D_429" type="StaticBody3D" parent="Bank/_MeshInstance3D_427" unique_id=451994259]
@@ -11465,7 +11479,7 @@ shape = SubResource("BoxShape3D_6k1jp")
 
 [node name="_MeshInstance3D_430" type="MeshInstance3D" parent="Bank" unique_id=1353378222]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8, 3.5, 0)
-material_override = SubResource("StandardMaterial3D_rwi41")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_86h30")
 
 [node name="_StaticBody3D_432" type="StaticBody3D" parent="Bank/_MeshInstance3D_430" unique_id=1270832463]
@@ -11475,7 +11489,7 @@ shape = SubResource("BoxShape3D_li22d")
 
 [node name="_MeshInstance3D_433" type="MeshInstance3D" parent="Bank" unique_id=1234155085]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.4, 3.5, 13.8)
-material_override = SubResource("StandardMaterial3D_rwi41")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_rps6g")
 
 [node name="_StaticBody3D_435" type="StaticBody3D" parent="Bank/_MeshInstance3D_433" unique_id=147079059]
@@ -11485,7 +11499,7 @@ shape = SubResource("BoxShape3D_6hrix")
 
 [node name="_MeshInstance3D_436" type="MeshInstance3D" parent="Bank" unique_id=1430522186]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.15, 3.5, -3)
-material_override = SubResource("StandardMaterial3D_vv2pu")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_nsbih")
 
 [node name="_StaticBody3D_438" type="StaticBody3D" parent="Bank/_MeshInstance3D_436" unique_id=1071573496]
@@ -11495,12 +11509,12 @@ shape = SubResource("BoxShape3D_r3wvt")
 
 [node name="_MeshInstance3D_439" type="MeshInstance3D" parent="Bank" unique_id=1816922208]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.4, 2.5, 14.03)
-material_override = SubResource("StandardMaterial3D_gkv8q")
+material_override = SubResource("BancoCostaMat_Vidro")
 mesh = SubResource("BoxMesh_26pho")
 
 [node name="_MeshInstance3D_440" type="MeshInstance3D" parent="Bank" unique_id=929334589]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.8, 3.5, 0)
-material_override = SubResource("StandardMaterial3D_rwi41")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_jscdd")
 
 [node name="_StaticBody3D_442" type="StaticBody3D" parent="Bank/_MeshInstance3D_440" unique_id=776890248]
@@ -11510,7 +11524,7 @@ shape = SubResource("BoxShape3D_3pq4m")
 
 [node name="_MeshInstance3D_443" type="MeshInstance3D" parent="Bank" unique_id=2071453061]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.4, 3.5, 13.8)
-material_override = SubResource("StandardMaterial3D_rwi41")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_5jv7i")
 
 [node name="_StaticBody3D_445" type="StaticBody3D" parent="Bank/_MeshInstance3D_443" unique_id=723670919]
@@ -11520,7 +11534,7 @@ shape = SubResource("BoxShape3D_swue8")
 
 [node name="_MeshInstance3D_446" type="MeshInstance3D" parent="Bank" unique_id=2049357895]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15, 3.5, -3)
-material_override = SubResource("StandardMaterial3D_vv2pu")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_hsuw5")
 
 [node name="_StaticBody3D_448" type="StaticBody3D" parent="Bank/_MeshInstance3D_446" unique_id=2067516703]
@@ -11530,12 +11544,12 @@ shape = SubResource("BoxShape3D_cyw3u")
 
 [node name="_MeshInstance3D_449" type="MeshInstance3D" parent="Bank" unique_id=482205331]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.4, 2.5, 14.03)
-material_override = SubResource("StandardMaterial3D_gkv8q")
+material_override = SubResource("BancoCostaMat_Vidro")
 mesh = SubResource("BoxMesh_t76dw")
 
 [node name="_MeshInstance3D_450" type="MeshInstance3D" parent="Bank" unique_id=1886650279]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -13.8)
-material_override = SubResource("StandardMaterial3D_rwi41")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_4lsvl")
 
 [node name="_StaticBody3D_452" type="StaticBody3D" parent="Bank/_MeshInstance3D_450" unique_id=707800718]
@@ -11545,7 +11559,7 @@ shape = SubResource("BoxShape3D_gl6fe")
 
 [node name="_MeshInstance3D_453" type="MeshInstance3D" parent="Bank" unique_id=5459205]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.3, 13.8)
-material_override = SubResource("StandardMaterial3D_e48sb")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_ilqhq")
 
 [node name="_StaticBody3D_455" type="StaticBody3D" parent="Bank/_MeshInstance3D_453" unique_id=1586888732]
@@ -11554,12 +11568,14 @@ mesh = SubResource("BoxMesh_ilqhq")
 shape = SubResource("BoxShape3D_ib5ii")
 
 [node name="_Label3D_456" type="Label3D" parent="Bank" unique_id=1313770099]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 14.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.25, 14.29)
 visibility_range_end = 65.0
 pixel_size = 0.012
 double_sided = false
 text = "BANCO COSTA"
 font_size = 52
+font = ExtResource("3_drprt")
+modulate = Color(1, 0.88, 0.65, 1)
 
 [node name="_Label3D_457" type="Label3D" parent="Bank" unique_id=181463257]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2.5, 6.5)
@@ -11568,6 +11584,8 @@ pixel_size = 0.012
 double_sided = false
 text = "SEGURANÇA"
 font_size = 30
+font = ExtResource("3_drprt")
+modulate = Color(1, 0.88, 0.65, 1)
 
 [node name="_Label3D_458" type="Label3D" parent="Bank" unique_id=1538377862]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2.5, 1)
@@ -11576,14 +11594,18 @@ pixel_size = 0.012
 double_sided = false
 text = "TERMINAL"
 font_size = 30
+font = ExtResource("3_drprt")
+modulate = Color(1, 0.88, 0.65, 1)
 
 [node name="_Label3D_459" type="Label3D" parent="Bank" unique_id=1516267821]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, -2.65)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, -2.64)
 visibility_range_end = 65.0
 pixel_size = 0.012
 double_sided = false
 text = "COFRE"
 font_size = 30
+font = ExtResource("3_drprt")
+modulate = Color(1, 0.88, 0.65, 1)
 
 [node name="_Label3D_460" type="Label3D" parent="Bank" unique_id=147524556]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.2, 13.5)
@@ -11595,7 +11617,7 @@ font_size = 28
 
 [node name="_MeshInstance3D_461" type="MeshInstance3D" parent="Bank" unique_id=784165686]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1.2, 6.5)
-material_override = SubResource("StandardMaterial3D_b5mm1")
+material_override = SubResource("BancoCostaMat_Aco")
 mesh = SubResource("BoxMesh_0lp6y")
 
 [node name="_StaticBody3D_463" type="StaticBody3D" parent="Bank/_MeshInstance3D_461" unique_id=858888655]
@@ -11610,7 +11632,7 @@ mesh = SubResource("BoxMesh_aleju")
 
 [node name="_MeshInstance3D_465" type="MeshInstance3D" parent="Bank" unique_id=749048312]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.9, 1)
-material_override = SubResource("StandardMaterial3D_jlayg")
+material_override = SubResource("BancoCostaMat_Verde")
 mesh = SubResource("BoxMesh_uwbd4")
 
 [node name="_StaticBody3D_467" type="StaticBody3D" parent="Bank/_MeshInstance3D_465" unique_id=654590824]
@@ -11640,7 +11662,7 @@ mesh = SubResource("BoxMesh_x2eyu")
 
 [node name="_MeshInstance3D_472" type="MeshInstance3D" parent="Bank" unique_id=1790019491]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.2, -1.5)
-material_override = SubResource("StandardMaterial3D_yssma")
+material_override = SubResource("BancoCostaMat_Aco")
 mesh = SubResource("BoxMesh_6nvwp")
 
 [node name="VaultDoor" type="Node3D" parent="Bank" unique_id=127242336]
@@ -11648,7 +11670,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -3)
 
 [node name="_MeshInstance3D_474" type="MeshInstance3D" parent="Bank/VaultDoor" unique_id=16747]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.9, 0)
-material_override = SubResource("StandardMaterial3D_6u7me")
+material_override = SubResource("BancoCostaMat_Aco")
 mesh = SubResource("BoxMesh_1y363")
 
 [node name="_StaticBody3D_476" type="StaticBody3D" parent="Bank/VaultDoor/_MeshInstance3D_474" unique_id=983010150]
@@ -11658,22 +11680,22 @@ shape = SubResource("BoxShape3D_5qejg")
 
 [node name="_MeshInstance3D_647" type="MeshInstance3D" parent="Bank/VaultDoor" unique_id=1919191145]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.5, 1.9, 0.48)
-material_override = SubResource("StandardMaterial3D_4wane")
+material_override = SubResource("BancoCostaMat_Bronze")
 mesh = SubResource("TorusMesh_6mt1m")
 
 [node name="_MeshInstance3D_648" type="MeshInstance3D" parent="Bank/VaultDoor" unique_id=1732985107]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.9, 0.5)
-material_override = SubResource("StandardMaterial3D_mriqc")
+material_override = SubResource("BancoCostaMat_Bronze")
 mesh = SubResource("BoxMesh_wls5p")
 
 [node name="_MeshInstance3D_649" type="MeshInstance3D" parent="Bank/VaultDoor" unique_id=269274050]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 2.5, 1.9, 0.5)
-material_override = SubResource("StandardMaterial3D_mriqc")
+material_override = SubResource("BancoCostaMat_Bronze")
 mesh = SubResource("BoxMesh_8kv3e")
 
 [node name="_MeshInstance3D_477" type="MeshInstance3D" parent="Bank" unique_id=144646752]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, -3)
-material_override = SubResource("StandardMaterial3D_q71s7")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("BoxMesh_n6k5h")
 
 [node name="_StaticBody3D_479" type="StaticBody3D" parent="Bank/_MeshInstance3D_477" unique_id=882654189]
@@ -11706,7 +11728,7 @@ omni_range = 18.0
 [node name="_OmniLight3D_484" type="OmniLight3D" parent="Bank" unique_id=1265229400]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 7)
 visible = false
-light_color = Color(0.88235295, 0.93333334, 0.92941177, 1)
+light_color = Color(1, 0.89, 0.73, 1)
 light_energy = 2.0
 omni_range = 18.0
 
@@ -11714,17 +11736,17 @@ omni_range = 18.0
 
 [node name="_MeshInstance3D_489" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=1679544161]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.6, -10)
-material_override = SubResource("StandardMaterial3D_a35nj")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("CylinderMesh_42nef")
 
 [node name="_MeshInstance3D_490" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=1778456512]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.6, -1)
-material_override = SubResource("StandardMaterial3D_a35nj")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("CylinderMesh_7hsqt")
 
 [node name="_MeshInstance3D_491" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=589120909]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.6, 9)
-material_override = SubResource("StandardMaterial3D_a35nj")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("CylinderMesh_ukwd6")
 
 [node name="_MeshInstance3D_494" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=850444209]
@@ -11759,17 +11781,17 @@ mesh = SubResource("CylinderMesh_w6aaf")
 
 [node name="_MeshInstance3D_506" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=250115263]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.6, -10)
-material_override = SubResource("StandardMaterial3D_a35nj")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("CylinderMesh_4fhau")
 
 [node name="_MeshInstance3D_507" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=667619436]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.6, -1)
-material_override = SubResource("StandardMaterial3D_a35nj")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("CylinderMesh_ljtib")
 
 [node name="_MeshInstance3D_508" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=1880889030]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.6, 9)
-material_override = SubResource("StandardMaterial3D_a35nj")
+material_override = SubResource("BancoCostaMat_Pedra")
 mesh = SubResource("CylinderMesh_q2t2x")
 
 [node name="_MeshInstance3D_511" type="MeshInstance3D" parent="Bank/_Node3D_485" unique_id=1649119713]
@@ -11813,11 +11835,11 @@ material_override = SubResource("ShaderMaterial_hdjib")
 multimesh = SubResource("MultiMesh_4bj6y")
 
 [node name="_MultiMeshInstance3D_655" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=869955096]
-material_override = SubResource("StandardMaterial3D_sjf2o")
+material_override = SubResource("BancoCostaMat_Verde")
 multimesh = SubResource("MultiMesh_k7c6j")
 
 [node name="_MultiMeshInstance3D_656" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=710986059]
-material_override = SubResource("StandardMaterial3D_j3h0x")
+material_override = SubResource("BancoCostaMat_Bronze")
 multimesh = SubResource("MultiMesh_uekms")
 
 [node name="_MultiMeshInstance3D_657" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=489708993]
@@ -11825,19 +11847,19 @@ material_override = SubResource("StandardMaterial3D_is70y")
 multimesh = SubResource("MultiMesh_30qxp")
 
 [node name="_MultiMeshInstance3D_658" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=1069606347]
-material_override = SubResource("StandardMaterial3D_r10sj")
+material_override = SubResource("BancoCostaMat_Madeira")
 multimesh = SubResource("MultiMesh_4ag11")
 
 [node name="_MultiMeshInstance3D_659" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=1255608287]
-material_override = SubResource("StandardMaterial3D_1iqfh")
+material_override = SubResource("ShaderMaterial_hdjib")
 multimesh = SubResource("MultiMesh_do6k6")
 
 [node name="_MultiMeshInstance3D_660" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=404693952]
-material_override = SubResource("StandardMaterial3D_g286p")
+material_override = SubResource("BancoCostaMat_Bronze")
 multimesh = SubResource("MultiMesh_e0317")
 
 [node name="_MultiMeshInstance3D_661" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=980671405]
-material_override = SubResource("StandardMaterial3D_3flqx")
+material_override = SubResource("BancoCostaMat_Vidro")
 multimesh = SubResource("MultiMesh_wtu0g")
 
 [node name="_MultiMeshInstance3D_662" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=323685377]
@@ -11845,11 +11867,11 @@ material_override = SubResource("StandardMaterial3D_l0gx5")
 multimesh = SubResource("MultiMesh_1ataw")
 
 [node name="_MultiMeshInstance3D_663" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=1510005646]
-material_override = SubResource("StandardMaterial3D_13jfg")
+material_override = SubResource("BancoCostaMat_Aco")
 multimesh = SubResource("MultiMesh_guxe7")
 
 [node name="_MultiMeshInstance3D_664" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=47279554]
-material_override = SubResource("StandardMaterial3D_nt4al")
+material_override = SubResource("BancoCostaMat_Verde")
 multimesh = SubResource("MultiMesh_4h26a")
 
 [node name="_MultiMeshInstance3D_665" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=1286007052]
@@ -11857,16 +11879,12 @@ material_override = SubResource("StandardMaterial3D_xyh77")
 multimesh = SubResource("MultiMesh_fjosj")
 
 [node name="_MultiMeshInstance3D_666" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=1967844399]
-material_override = SubResource("StandardMaterial3D_qtu5d")
+material_override = SubResource("BancoCostaMat_Aco")
 multimesh = SubResource("MultiMesh_s57nc")
 
 [node name="_MultiMeshInstance3D_667" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=1551594715]
-material_override = SubResource("StandardMaterial3D_okowx")
+material_override = SubResource("BancoCostaMat_Bronze")
 multimesh = SubResource("MultiMesh_gbxxf")
-
-[node name="_MultiMeshInstance3D_668" type="MultiMeshInstance3D" parent="Bank/_Node3D_485" unique_id=245769273]
-material_override = SubResource("StandardMaterial3D_wo03o")
-multimesh = SubResource("MultiMesh_53kyp")
 
 [node name="_Label3D_527" type="Label3D" parent="Bank" unique_id=1735214143]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.2, 3.1, 0.2)
@@ -11875,6 +11893,8 @@ pixel_size = 0.012
 double_sided = false
 text = "CAIXA 01"
 font_size = 20
+font = ExtResource("3_drprt")
+modulate = Color(1, 0.88, 0.65, 1)
 
 [node name="_Label3D_531" type="Label3D" parent="Bank" unique_id=700588613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 3.1, 0.2)
@@ -11883,6 +11903,8 @@ pixel_size = 0.012
 double_sided = false
 text = "CAIXA 02"
 font_size = 20
+font = ExtResource("3_drprt")
+modulate = Color(1, 0.88, 0.65, 1)
 
 [node name="_Label3D_535" type="Label3D" parent="Bank" unique_id=1262398434]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 3.1, 0.2)
@@ -11891,6 +11913,8 @@ pixel_size = 0.012
 double_sided = false
 text = "CAIXA 03"
 font_size = 20
+font = ExtResource("3_drprt")
+modulate = Color(1, 0.88, 0.65, 1)
 
 [node name="_Label3D_538" type="Label3D" parent="Bank" unique_id=1915270378]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3.8, 3.5)
@@ -14134,3 +14158,46 @@ material = SubResource("StandardMaterial3D_bbgv6")
 position = Vector3(5, 5.6, 0)
 size = Vector3(2.8, 0.08, 0.35)
 material = SubResource("StandardMaterial3D_bbgv6")
+
+[node name="DetalhesBancoCostaVerde0" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_Verde")
+multimesh = SubResource("BancoCostaMulti0")
+cast_shadow = 0
+
+[node name="DetalhesBancoCostaFriso1" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_Friso")
+multimesh = SubResource("BancoCostaMulti1")
+
+[node name="DetalhesBancoCostaPedra2" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_Pedra")
+multimesh = SubResource("BancoCostaMulti2")
+
+[node name="DetalhesBancoCostaBronze3" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_Bronze")
+multimesh = SubResource("BancoCostaMulti3")
+cast_shadow = 0
+
+[node name="DetalhesBancoCostaBronze4" type="MultiMeshInstance3D" parent="Bank/VaultDoor"]
+material_override = SubResource("BancoCostaMat_Bronze")
+multimesh = SubResource("BancoCostaMulti4")
+cast_shadow = 0
+
+[node name="DetalhesBancoCostaVitralVerde5" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_VitralVerde")
+multimesh = SubResource("BancoCostaMulti5")
+cast_shadow = 0
+
+[node name="DetalhesBancoCostaVitralMel6" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_VitralMel")
+multimesh = SubResource("BancoCostaMulti6")
+cast_shadow = 0
+
+[node name="DetalhesBancoCostaVitralAzul7" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_VitralAzul")
+multimesh = SubResource("BancoCostaMulti7")
+cast_shadow = 0
+
+[node name="DetalhesBancoCostaLuz8" type="MultiMeshInstance3D" parent="Bank"]
+material_override = SubResource("BancoCostaMat_Luz")
+multimesh = SubResource("BancoCostaMulti8")
+cast_shadow = 0
