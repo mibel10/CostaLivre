@@ -283,7 +283,7 @@ func propose_mission(id: int,index: int) -> void:
 		return
 	var recipients:=[]
 	for peer_id in participants():
-		if peer_id != id:
+		if peer_id != id and world.prison_stage_for(peer_id) < 0:
 			recipients.append(peer_id)
 	if recipients.is_empty():
 		private_notice(id,"Esta operacao exclusiva precisa de outro jogador na sala.")
@@ -327,7 +327,7 @@ func respond_to_mission(id: int,accept: bool) -> void:
 	mission_invites.erase(id)
 	if not accept:
 		private_notice(mission_offer_from,str(network.members[id].get("name","Um parceiro"))+" recusou o convite.")
-	elif (mission_offer_started and world.activities.job == pending_mission) or (not mission_offer_started and world.activities.job < 0 and mission_offer_from in participants()):
+	elif (mission_offer_started and world.activities.job == pending_mission) or (not mission_offer_started and world.activities.job < 0 and mission_offer_from in participants() and world.prison_stage_for(mission_offer_from) < 0):
 		var entrance: Vector3 = world.life.PLACES[5] + Vector3(0, 0.3, 15)
 		if pending_mission in [27, 28]:
 			entrance = Vector3(294 if pending_mission == 27 else 798, 0.3, -78.5)
@@ -344,7 +344,16 @@ func respond_to_mission(id: int,accept: bool) -> void:
 		mission_offer_deadline = 0
 
 func tick_mission_offer() -> void:
-	if pending_mission>=24 and (Time.get_ticks_msec()>mission_offer_deadline or (mission_offer_started and world.activities.job != pending_mission) or (not mission_offer_started and not network.members.has(mission_offer_from))):
+	if pending_mission < 24:
+		return
+	for peer_id in mission_invites.keys():
+		if not network.members.has(peer_id):
+			mission_invites.erase(peer_id)
+		elif is_dead(peer_id) or world.prison_stage_for(peer_id) >= 0:
+			mission_invites.erase(peer_id)
+			send_personal(peer_id, "mission_offer_close", {})
+	var sender_unavailable: bool = not network.members.has(mission_offer_from) or is_dead(mission_offer_from) or world.prison_stage_for(mission_offer_from) >= 0
+	if mission_invites.is_empty() or Time.get_ticks_msec() > mission_offer_deadline or (mission_offer_started and world.activities.job != pending_mission) or (not mission_offer_started and sender_unavailable):
 		for peer_id in mission_invites:
 			if network.members.has(peer_id):
 				send_personal(peer_id, "mission_offer_close", {})

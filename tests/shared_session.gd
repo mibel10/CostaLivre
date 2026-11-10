@@ -49,6 +49,16 @@ func run() -> void:
 	assert(host.player.position!=client.player.position,"Different spawn points")
 	assert(host.network.rules.sheets.has(id))
 	var rules: Node = host.network.rules
+	rules.sheets[id]["prison_stage"] = 0
+	rules.propose_mission(1, 27)
+	assert(rules.pending_mission == -1, "A prisoner cannot be invited to co-op")
+	rules.sheets[id].erase("prison_stage")
+	rules.propose_mission(1, 27)
+	assert(rules.mission_invites.has(id))
+	rules.sheets[id]["prison_stage"] = 0
+	rules.tick_mission_offer()
+	assert(rules.pending_mission == -1 and rules.mission_invites.is_empty(), "An unavailable partner does not hold the invitation open")
+	rules.sheets[id].erase("prison_stage")
 	var farther_car: Node3D = host.cars[0]
 	var farther_position: Vector3 = farther_car.position
 	var farther_hp: float = farther_car.hp
