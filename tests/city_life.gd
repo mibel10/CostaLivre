@@ -15,6 +15,12 @@ func run() -> void:
 	assert(space.intersect_ray(road).is_empty(), "The east extension connects to the city")
 	var extension_ground := PhysicsRayQueryParameters3D.create(Vector3(1000,3,0), Vector3(1000,-2,0), 1)
 	assert(not space.intersect_ray(extension_ground).is_empty(), "The new road has solid ground")
+	for x in [934.5, 935.5, 936.5, 937.5, 938.5]:
+		var from := Vector3(x, 0.5, 0)
+		var ground := space.intersect_ray(PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN, 1))
+		assert(not ground.is_empty() and absf(ground.position.y - minf(0.0, (x - 938.0) * 0.025)) < 0.003, "The old boundary joins the new ground without a ledge")
+	var east_edge := PhysicsRayQueryParameters3D.create(Vector3(1338, 1, 0), Vector3(1350, 1, 0), 1)
+	assert(not space.intersect_ray(east_edge).is_empty(), "The outer boundary still stops traffic at the map edge")
 	var gate := PhysicsRayQueryParameters3D.create(Vector3(1035,1,80), Vector3(1035,1,70), 1)
 	assert(space.intersect_ray(gate).is_empty(), "The prison entrance is accessible")
 	world.player.set_physics_process(false)
