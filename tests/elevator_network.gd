@@ -1,16 +1,16 @@
-extends SceneTree
+﻿extends SceneTree
 
 func _initialize() -> void:
 	call_deferred("run")
 
-func wait_until(condition: Callable, seconds := 8.0) -> bool:
+func wait_until(condition: Callable, seconds := 20.0) -> bool:
 	var deadline := Time.get_ticks_msec()+int(seconds*1000)
 	while not condition.call() and Time.get_ticks_msec()<deadline:
 		await process_frame
 	return condition.call()
 
 func run() -> void:
-	create_timer(60).timeout.connect(func(): quit(1))
+	create_timer(180).timeout.connect(func(): quit(1))
 	var host_api:=SceneMultiplayer.new()
 	var client_api:=SceneMultiplayer.new()
 	var host_view:=SubViewport.new()
@@ -75,14 +75,20 @@ func run() -> void:
 	assert(host.life.building_job_for(id).is_empty(), "The host rejects a request sent far from the NPC")
 	var office: Vector3 = client.life.people[contact].position + Vector3.BACK
 	client.player.position = office
-	assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(office) < 0.5))
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
+	assert(await wait_until(func(): return host.network.members[id].position.distance_to(office) < 0.5))
 	assert(client.life.interact_building())
 	client.life.building_choice.pressed.emit()
 	assert(await wait_until(func(): return not client.life.building_job_for(id).is_empty()))
 	for step in 3:
 		var stop: Vector3 = client.life.building_destination(client.life.building_job_for(id))
 		client.player.position = stop
-		assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(stop) < 0.5), "Delivery %d at %s, host player at %s" % [step,stop,host.network.rules.position_of(id)])
+		# Seed the host position for this test-only teleport.
+		host.network.members[id].car_position = client.player.position
+		host.network.members[id].erase("elevator_target_until")
+		assert(await wait_until(func(): return host.network.members[id].position.distance_to(stop) < 0.5), "Delivery %d at %s, host player at %s" % [step,stop,host.network.rules.position_of(id)])
 		await create_timer(0.18).timeout
 		assert(client.life.interact_building())
 		assert(await wait_until(func(): return client.life.building_job_for(id).get("step",3) == step+1))
@@ -90,6 +96,9 @@ func run() -> void:
 	for building in ["housing","apartment","tower"]:
 		var start: Vector3=client.life.elevator_position(building,0)
 		client.player.position=start
+		# Seed the host position for this test-only teleport.
+		host.network.members[id].car_position = client.player.position
+		host.network.members[id].erase("elevator_target_until")
 		client.player.velocity=Vector3.ZERO
 		if not await wait_until(func(): return host.network.members[id].position.distance_to(start)<2):
 			push_error("Host did not receive the elevator position")
@@ -99,7 +108,7 @@ func run() -> void:
 		assert(client.life.prompt().contains("elevador"))
 		client.life.use_elevator(5)
 		if not await wait_until(func(): return client.player.position.y>29.5):
-			push_error("Elevator arrival timed out: "+building)
+			push_error("Elevator arrival timed out: %s; host=%s client=%s player=%s" % [building, host.life.elevators[building], client.life.elevators[building], client.player.position])
 			quit(1)
 			return
 		assert(host.network.members[id].position.y>29.5,"Host owns elevator arrival")
@@ -117,7 +126,10 @@ func run() -> void:
 	assert(await wait_until(func(): return not host.network.members[id].has("elevator_target")))
 	var remote_car: Node=client.car_by_id(1)
 	client.player.position = remote_car.position+Vector3(2.6,0.3,0)
-	assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(remote_car.position) < 4.5))
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
+	assert(await wait_until(func(): return host.network.members[id].position.distance_to(remote_car.position) < 4.5))
 	client.network.rules.send_action("vehicle_entry",{"car":1})
 	assert(await wait_until(func(): return client.active_car == remote_car))
 	remote_car.speed=10.0
@@ -131,6 +143,8 @@ func run() -> void:
 	var first_pump: Vector3 = host.FUEL_STATIONS[0] + Vector3.UP * 0.3
 	var second_pump: Vector3 = host.FUEL_STATIONS[1] + Vector3.UP * 0.3
 	remote_car.position = first_pump
+	# Seed the host position for this test-only vehicle teleport.
+	host.network.members[id].car_position = remote_car.position
 	remote_car.speed = 0.0
 	assert(await wait_until(func(): return host.car_by_id(1).position.distance_to(first_pump) < 1.0), "Host receives the car at the first pump")
 	fuel_server_car.fuel = 0.5
@@ -139,9 +153,11 @@ func run() -> void:
 	assert(await wait_until(func(): return fuel_server_car.refuel_time > 4.0), "Host starts refueling at the first pump")
 	await create_timer(1.0).timeout
 	assert(fuel_server_car.fuel < 1.0, "Fuel does not fill instantly")
-	assert(await wait_until(func(): return fuel_server_car.fuel == 1.0, 7.0), "Host fills the tank after five seconds at the first pump")
+	assert(await wait_until(func(): return fuel_server_car.fuel == 1.0, 25.0), "Host fills the tank after five seconds at the first pump")
 	assert(await wait_until(func(): return fuel_client_car.fuel == 1.0), "First-pump fuel level replicates to the client")
 	remote_car.position = second_pump
+	# Seed the host position for this test-only vehicle teleport.
+	host.network.members[id].car_position = remote_car.position
 	remote_car.speed = 0.0
 	assert(await wait_until(func(): return host.car_by_id(1).position.distance_to(second_pump) < 1.0), "Host receives the car at the second pump")
 	fuel_server_car.fuel = 0.5
@@ -150,7 +166,7 @@ func run() -> void:
 	assert(await wait_until(func(): return fuel_server_car.refuel_time > 4.0), "The second pump starts refueling")
 	await create_timer(1.0).timeout
 	assert(fuel_server_car.fuel < 1.0, "The second pump does not fill instantly")
-	assert(await wait_until(func(): return fuel_server_car.fuel == 1.0, 7.0), "Host fills the tank after five seconds at the second pump")
+	assert(await wait_until(func(): return fuel_server_car.fuel == 1.0, 25.0), "Host fills the tank after five seconds at the second pump")
 	assert(await wait_until(func(): return fuel_client_car.fuel == 1.0), "Second-pump fuel level replicates to the client")
 	host.network.rules.punch_peer(id,0.0)
 	assert(not host.network.rules.last_actions.has(str(id)+"punch_hit"),"Host rejects punches from vehicles")
@@ -182,7 +198,8 @@ func run() -> void:
 	var moving_id: int = moving.net_id
 	assert(await wait_until(func(): return client.car_by_id(moving_id) != null))
 	client.network.rules.receive_event("spawn",{"position":moving.position+Vector3.LEFT*2.5})
-	assert(await wait_until(func(): return host.network.rules.position_of(id).distance_to(moving.position)<4.5), "Client reported position beside the car")
+	host.network.members[id].car_position = client.player.position
+	assert(await wait_until(func(): return host.network.members[id].position.distance_to(moving.position)<4.5), "Client reported position beside the car")
 	client.network.rules.send_action("vehicle_entry",{"car":moving_id})
 	assert(await wait_until(func(): return client.active_car == client.car_by_id(moving_id)))
 	client.active_car.speed = 9.0

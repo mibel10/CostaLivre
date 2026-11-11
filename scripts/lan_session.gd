@@ -16,6 +16,9 @@ var last_state_at := {}
 var avatars := {}
 var owners := {}
 var clock := 0.0
+var snapshot_tick := 0
+var snapshot_members := 0
+var snapshot_cars := {}
 var advertise_clock := 0.0
 var panel: PanelContainer
 var status: Label
@@ -361,6 +364,7 @@ func introduce(requested: String) -> void:
 		peer.disconnect_peer(id)
 		return
 	var at: Vector3=rules.add_peer(id)
+	snapshot_members = 0
 	update_avatars(members)
 	accepted.rpc_id(id,at)
 
@@ -407,6 +411,8 @@ func peer_left(id: int) -> void:
 			owners.erase(index)
 
 func disconnect_room() -> void:
+	snapshot_cars.clear()
+	snapshot_members = 0
 	hide_mission_offer()
 	world.life.leave_elevator_session()
 	world.vehicle_entries.clear()
@@ -643,11 +649,28 @@ func _process(delta: float) -> void:
 				members[id]["position"] = bus.position
 				members[id]["car_position"] = bus.position
 		var cars: Array = []
+		var car_ids: Array = []
+		snapshot_tick += 1
+		var full_cars := snapshot_tick % 5 == 0 or snapshot_members != members.size()
+		snapshot_members = members.size()
 		for car in world.cars:
+			car_ids.append(car.net_id)
+			var important: bool = car.police or owners.has(car.net_id) or car.net_id in rules.bus_riders.values() or car == world.activities.target_car or car in world.activities.targets or not snapshot_cars.has(car.net_id)
+			if not important and not full_cars:
+				for member in members.values():
+					if member.has("position") and car.position.distance_squared_to(member.position) < 10000.0:
+						important = true
+						break
+			if not full_cars and not important:
+				continue
+			snapshot_cars[car.net_id] = true
 			var car_state := {"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer,"fuel":car.fuel,"refuel_time":car.refuel_time}
 			if car.tumbling:
 				car_state["tumble_rotation"] = car.rotation
 			cars.append(car_state)
+		for id in snapshot_cars.keys():
+			if id not in car_ids:
+				snapshot_cars.erase(id)
 		var people: Array = []
 		for person in world.life.people:
 			people.append([person.position,person.model.rotation.y,person.hp,person.robbed])
@@ -658,7 +681,7 @@ func _process(delta: float) -> void:
 		for id in members:
 			if rules.sheets.has(id):
 				members[id]["hp"]=rules.sheets[id].health
-		packed_snapshot.rpc(var_to_bytes({"members":members,"owners":owners,"entries":world.vehicle_entries,"cars":cars,"people":people,"officers":officers,"game":game}).compress(FileAccess.COMPRESSION_DEFLATE))
+		packed_snapshot.rpc(var_to_bytes({"members":members,"owners":owners,"entries":world.vehicle_entries,"cars":cars,"car_ids":car_ids,"people":people,"officers":officers,"game":game}).compress(FileAccess.COMPRESSION_DEFLATE))
 		update_avatars(members)
 	else:
 		report.rpc_id(1,local_state())
@@ -706,12 +729,13 @@ func snapshot(data: Dictionary) -> void:
 	members=data.members
 	world.vehicle_entries=data.entries
 	var present := {}
+	for id in data.car_ids:
+		present[int(id)] = true
 	var local_cars := {}
 	for car in world.cars:
 		local_cars[car.net_id] = car
 	for state in data.cars:
 		var id := int(state.id)
-		present[id]=true
 		var car: Node3D = local_cars.get(id)
 		if car != null and (car.tier != int(state.tier) or car.police != bool(state.police)):
 			discard_snapshot_car(car)

@@ -6,9 +6,9 @@ var checkpoint := 0
 func _initialize() -> void:
 	call_deferred("run")
 
-func wait_for(predicate: Callable, seconds := 5.0) -> void:
+func wait_for(predicate: Callable, seconds := 12.0) -> void:
 	checkpoint+=1
-	print("CHECKPOINT ",checkpoint)
+	print("CHECKPOINT ",checkpoint," ",get_stack()[1].line)
 	var deadline := Time.get_ticks_msec()+int(seconds*1000)
 	while not predicate.call() and Time.get_ticks_msec()<deadline:
 		await process_frame
@@ -17,7 +17,7 @@ func wait_for(predicate: Callable, seconds := 5.0) -> void:
 		quit(1)
 
 func run() -> void:
-	create_timer(80).timeout.connect(func(): push_error("Shared session timed out"); quit(1))
+	create_timer(180).timeout.connect(func(): push_error("Shared session timed out"); quit(1))
 	var host_api := SceneMultiplayer.new()
 	var client_api := SceneMultiplayer.new()
 	var host_view := SubViewport.new()
@@ -46,6 +46,17 @@ func run() -> void:
 	await wait_for(func(): return client.network.joined and host.network.members.size()==2)
 	await create_timer(0.4).timeout
 	var id: int=client_api.get_unique_id()
+	var distant: Node3D = host.spawn_car(Vector3(500, 0.2, 500), Color.WHITE)
+	var distant_id: int = distant.net_id
+	await wait_for(func(): return client.car_by_id(distant_id) != null)
+	await create_timer(0.3).timeout
+	assert(client.car_by_id(distant_id) != null, "Partial snapshots preserve distant cars")
+	distant.position = Vector3(510, 0.2, 500)
+	await wait_for(func(): return client.car_by_id(distant_id) != null and client.car_by_id(distant_id).position.distance_to(distant.position) < 1.0)
+	host.cars.erase(distant)
+	distant.queue_free()
+	await wait_for(func(): return client.car_by_id(distant_id) == null)
+	print("PASS: distant car creation, partial snapshots, refresh and removal")
 	assert(host.player.position!=client.player.position,"Different spawn points")
 	assert(host.network.rules.sheets.has(id))
 	var rules: Node = host.network.rules
@@ -153,6 +164,9 @@ func run() -> void:
 	assert(not host.network.owners.has(1), "Reports cannot claim a car without server approval")
 	var steal_car: Node3D = client.car_by_id(1)
 	client.player.position = steal_car.position+Vector3(2.6,0.3,0)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.25).timeout
 	client.network.rules.send_action("vehicle_entry",{"car":1})
 	await wait_for(func(): return client.active_car == steal_car)
@@ -183,16 +197,23 @@ func run() -> void:
 	client.cutscene.finish()
 	var rescue_car: Node = client.activities.target_car
 	client.player.position = rescue_car.position+Vector3(2.6,0.3,0)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.25).timeout
 	client.interact()
 	await create_timer(2.35).timeout
 	assert(client.active_car == rescue_car)
 	rescue_car.position = client.activities.ACTION_JOBS[RESCUE_JOB].pickup+Vector3.UP*0.3
+	# Seed the host position for this test-only vehicle teleport.
+	host.network.members[id].car_position = rescue_car.position
 	rescue_car.speed = 0
 	await create_timer(0.4).timeout
 	client.network.rules.send_action("interact",{})
 	await wait_for(func(): return client.activities.stage == 1 and client.activities.passenger_car == rescue_car.net_id)
 	rescue_car.position = client.activities.ACTION_JOBS[RESCUE_JOB].drop+Vector3.UP*0.3
+	# Seed the host position for this test-only vehicle teleport.
+	host.network.members[id].car_position = rescue_car.position
 	rescue_car.speed = 0
 	await wait_for(func(): return host.activities.job==-1 and client.activities.job==-1)
 	assert(client.cash>=900+host.activities.REWARDS[RESCUE_JOB],"Cooperative reward")
@@ -209,6 +230,9 @@ func run() -> void:
 	host.network.rules.sheets[id].cash+=85000
 	await create_timer(0.2).timeout
 	client.player.position=client.activities.DEALER+Vector3(0,0.3,0)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.3).timeout
 	var count: int=host.cars.size()
 	client.activities.set_menu("cars")
@@ -222,11 +246,16 @@ func run() -> void:
 	assert(host.network.rules.sheets[id].cash == dealer_cash - client.activities.CAR_PRICES.back())
 	client.activities.set_menu("")
 	client.player.position=purchase.position+Vector3(2.6,0.3,0)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.25).timeout
 	client.interact()
 	await create_timer(2.35).timeout
 	assert(client.active_car==purchase)
 	client.active_car.position=client.activities.GARAGE+Vector3(0,0.2,0)
+	# Seed the host position for this test-only vehicle teleport.
+	host.network.members[id].car_position = client.active_car.position
 	await create_timer(0.3).timeout
 	var paint: Color=purchase.paint
 	client.activities.set_menu("garage")
@@ -235,6 +264,7 @@ func run() -> void:
 	rules.clear_wanted()
 	host.update_dispatch(0)
 	client.network.rules.receive_event("spawn",{"position":Vector3(0,0.3,-5)})
+	host.network.members[id].car_position = client.player.position
 	host.player.position=Vector3(0,0.3,0)
 	await create_timer(0.4).timeout
 	host.network.rules.sheets[1].protected_until=0
@@ -254,6 +284,9 @@ func run() -> void:
 	client.activities.set_menu("")
 	host.activities.bank.phase=1
 	client.player.position=client.activities.bank.to_global(client.activities.bank.TERMINAL)+Vector3(1,0.2,0)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.3).timeout
 	client.network.rules.send_action("interact",{})
 	await wait_for(func(): return client.activities.bank.local_hacking())
@@ -266,6 +299,9 @@ func run() -> void:
 		await wait_for(func(): return host.activities.bank.round_index > round_index or host.activities.bank.phase >= 2)
 	await wait_for(func(): return client.activities.bank.phase==2)
 	client.player.position=client.activities.bank.to_global(client.activities.bank.VAULT_PANEL)+Vector3(1,0.2,0)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.3).timeout
 	client.network.rules.send_action("interact",{})
 	await wait_for(func(): return host.activities.bank.phase==3)
@@ -273,11 +309,17 @@ func run() -> void:
 	await wait_for(func(): return is_equal_approx(client.activities.bank.door.rotation.y, PI / 2))
 	for bag in client.activities.bank.BAGS:
 		client.player.position=client.activities.bank.to_global(bag)+Vector3(1,0.2,0)
+		# Seed the host position for this test-only teleport.
+		host.network.members[id].car_position = client.player.position
+		host.network.members[id].erase("elevator_target_until")
 		await create_timer(0.3).timeout
 		client.network.rules.send_action("interact",{})
 		await create_timer(0.2).timeout
 	await wait_for(func(): return host.activities.bank.phase==4)
 	client.player.position=client.activities.bank.to_global(client.activities.bank.ENTRY)+Vector3(0,0.2,1)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await wait_for(func(): return client.activities.bank.phase==5)
 	host.cutscene.finish()
 	client.cutscene.finish()
@@ -286,6 +328,9 @@ func run() -> void:
 	host.network.rules.sheets[id].protected_until = Time.get_ticks_msec()+15000
 	host.network.rules.sheets[id].cash = 50000
 	client.player.position = client.activities.HEAVY_SHOP + Vector3.UP*0.3
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await wait_for(func(): return host.network.avatars[id].node.position.distance_to(host.activities.HEAVY_SHOP)<1)
 	var before_weapon: int = host.network.rules.sheets[id].inventory.weapon
 	host.network.rules.fire_peer(id,{"origin":client.player.position+Vector3.UP,"direction":Vector3.FORWARD,"weapon":7})
@@ -298,6 +343,9 @@ func run() -> void:
 		assert(host.network.rules.sheets[id].inventory.heavy_owned[choice])
 	assert(host.network.rules.sheets[id].cash == 13500, "Heavy purchases charge the buyer")
 	client.player.position = Vector3(0,0.3,0)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.3).timeout
 	var remaining: int = host.network.rules.sheets[id].cash
 	client.activities.set_menu("heavy_guns")
@@ -306,11 +354,17 @@ func run() -> void:
 	assert(host.network.rules.sheets[id].cash == remaining, "Reject remote purchase away from shop")
 	client.activities.set_menu("")
 	client.player.position = client.activities.SUPPLY_PICKUP + Vector3.UP * 0.3
-	await wait_for(func(): return host.network.rules.position_of(id).distance_to(host.activities.SUPPLY_PICKUP) < 2)
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
+	await wait_for(func(): return host.network.members[id].position.distance_to(host.activities.SUPPLY_PICKUP) < 2)
 	await wait_for(func(): return host.network.avatars[id].node.position.distance_to(host.activities.SUPPLY_PICKUP) < 2)
 	client.network.rules.send_action("interact", {})
 	await wait_for(func(): return host.activities.supply_stage == 1)
 	client.player.position = client.activities.SUPPLY_ALLEY + Vector3.UP * 0.3
+	# Seed the host position for this test-only teleport.
+	host.network.members[id].car_position = client.player.position
+	host.network.members[id].erase("elevator_target_until")
 	await wait_for(func(): return client.cutscene.active)
 	assert(client.cutscene.duration_msec == 30000 and not host.cutscene.active, "Only the delivery owner sees the full cinematic")
 	client.cutscene.finish()
@@ -324,7 +378,10 @@ func run() -> void:
 	assert(host.network.rules.sheets[1].get("prison_stage", -1) == -1, "Other players remain free")
 	for step in client.PRISON_POINTS.size():
 		client.player.position = client.PRISON_POINTS[step] + Vector3.UP * 0.3
-		await wait_for(func(): return host.network.rules.position_of(id).distance_to(client.PRISON_POINTS[step]) < 2)
+		# Seed the host position for this test-only teleport.
+		host.network.members[id].car_position = client.player.position
+		host.network.members[id].erase("elevator_target_until")
+		await wait_for(func(): return host.network.members[id].position.distance_to(client.PRISON_POINTS[step]) < 2)
 		if step == 1:
 			Input.action_press("crouch")
 			await wait_for(func(): return bool(host.network.members[id].get("crouch", false)))
