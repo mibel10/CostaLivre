@@ -24,9 +24,19 @@ func _ready() -> void:
 func refresh() -> void:
 	badge.visible = world.settings.fps_corner >= 0
 	badge.text = "%d FPS" % Engine.get_frames_per_second()
+	if world.network != null and world.network.active():
+		if world.multiplayer.is_server():
+			badge.text += "\nPing: 0 ms"
+		else:
+			var server: ENetPacketPeer = world.network.peer.get_peer(1)
+			if server != null and server.get_state() == ENetPacketPeer.STATE_CONNECTED:
+				badge.text += "\nPing: %d ms" % roundi(server.get_statistic(ENetPacketPeer.PEER_ROUND_TRIP_TIME))
+			else:
+				badge.text += "\nPing: -- ms"
+	badge.size = badge.get_combined_minimum_size()
 	var corner: int = world.settings.fps_corner
 	var bounds := get_viewport().get_visible_rect().size
-	badge.position = Vector2(bounds.x-100 if corner in [1,3] else 5, bounds.y-25 if corner in [2,3] else 0)
+	badge.position = Vector2(bounds.x-badge.size.x-5 if corner in [1,3] else 5, bounds.y-badge.size.y-5 if corner in [2,3] else 0)
 
 func _process(_delta: float) -> void:
 	if world.settings.fps_corner < 0:

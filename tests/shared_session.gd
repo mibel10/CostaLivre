@@ -46,6 +46,10 @@ func run() -> void:
 	await wait_for(func(): return client.network.joined and host.network.members.size()==2)
 	await create_timer(0.4).timeout
 	var id: int=client_api.get_unique_id()
+	host.fps_counter.refresh()
+	client.fps_counter.refresh()
+	assert(host.fps_counter.badge.text.contains("Ping: 0 ms"), "The host displays its local ping")
+	assert(client.fps_counter.badge.text.contains("Ping: ") and client.fps_counter.badge.text.ends_with(" ms") and not client.fps_counter.badge.text.contains("--"), "The client displays the ENet ping")
 	var distant: Node3D = host.spawn_car(Vector3(500, 0.2, 500), Color.WHITE)
 	var distant_id: int = distant.net_id
 	await wait_for(func(): return client.car_by_id(distant_id) != null)
