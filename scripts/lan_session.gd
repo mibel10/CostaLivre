@@ -12,6 +12,7 @@ var discovery := PacketPeerUDP.new()
 var rooms := {}
 var members := {}
 var last_hit := {}
+var last_state_at := {}
 var avatars := {}
 var owners := {}
 var clock := 0.0
@@ -392,6 +393,7 @@ func server_left() -> void:
 
 func peer_left(id: int) -> void:
 	members.erase(id)
+	last_state_at.erase(id)
 	rules.sheets.erase(id)
 	if multiplayer.is_server():
 		rules.refresh_wanted_heat()
@@ -436,6 +438,7 @@ func disconnect_room() -> void:
 	members.clear()
 	owners.clear()
 	last_hit.clear()
+	last_state_at.clear()
 	rules.sheets.clear()
 	rules.bus_riders.clear()
 	rules.mission_invites.clear()
@@ -469,11 +472,22 @@ func report(state: Dictionary) -> void:
 	if members.has(id):
 		accept_state(id,state)
 
+func valid_session_position(at: Vector3) -> bool:
+	return at.is_finite() and at.x >= -195 and at.x <= world.MAP_EAST + 5.0 and absf(at.z) <= 153 and at.y >= -10 and at.y <= 75
+
 func accept_state(id: int, state: Dictionary) -> void:
 	if not state.get("position") is Vector3 or not state.get("car_position") is Vector3:
 		return
 	var at: Vector3 = state.position
-	if not at.is_finite() or at.x < -195 or at.x > world.MAP_EAST + 5.0 or absf(at.z)>153 or at.y < -10 or at.y>75:
+	var car_at: Vector3 = state.car_position
+	if not valid_session_position(at) or not valid_session_position(car_at):
+		return
+	for key in ["heading", "car_heading", "speed", "weapon_pitch", "roll"]:
+		var value = state.get(key, 0.0)
+		if not (value is float or value is int) or not is_finite(float(value)):
+			return
+	var car_value = state.get("car", -1)
+	if not car_value is int:
 		return
 	var riding = world.life.elevator_rider_position(id)
 	if riding is Vector3:
@@ -537,6 +551,18 @@ func accept_state(id: int, state: Dictionary) -> void:
 		if owners[index]==id and index!=car_id:
 			owners.erase(index)
 	var selected_car: Node=world.car_by_id(car_id)
+	if id != 1 and not world.vehicle_falls.has(id) and not world.vehicle_entries.has(id) and not rules.bus_riders.has(id) and world.life.elevator_rider_position(id) == null and Time.get_ticks_msec() >= int(members[id].get("elevator_target_until", 0)):
+		var previous: Vector3 = members[id].get("car_position", state.car_position)
+		var now := Time.get_ticks_msec()
+		var previous_time: int = int(last_state_at.get(id, now))
+		var elapsed: float = maxf(0.05, float(now - previous_time) / 1000.0)
+		var max_horizontal_speed := 22.0
+		if selected_car != null:
+			max_horizontal_speed = selected_car.Catalog.SPEEDS[selected_car.tier] + selected_car.engine_upgrade + 5.0
+		var displacement := Vector2(state.car_position.x - previous.x, state.car_position.z - previous.z).length()
+		if displacement > max_horizontal_speed * elapsed + 4.0 or absf(state.car_position.y - previous.y) > 35.0 * elapsed + 4.0:
+			return
+	last_state_at[id] = Time.get_ticks_msec()
 	if selected_car!=null and not selected_car.police and selected_car.hp>0 and int(owners.get(car_id,0)) == id and not rules.is_dead(id):
 		owners[car_id]=id
 		if selected_car.tumbling or Time.get_ticks_msec() < selected_car.tumble_lock_until:
