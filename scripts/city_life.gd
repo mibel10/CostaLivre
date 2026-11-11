@@ -4,6 +4,7 @@ const Pedestrian = preload("res://scripts/pedestrian.gd")
 const HOME_BUILDING := Vector3(861,0,-105)
 const PLACES := [Vector3(-63,0,21),Vector3(63,0,21),Vector3(-63,0,63),Vector3(-105,0,-21),Vector3(105,0,-63),Vector3(147,0,63)]
 const TITLES := ["CAFÉ MARÉ", "CLÍNICA COSTA", "RESIDENCIAL COSTA", "OFICINA DO PORTO", "MERCADO DA PRAIA", "ESTÚDIO SOLAR"]
+var computer_ready_at := {}
 var owned_home := -1
 var owned_homes: Array[int] = []
 var world: Node3D
@@ -667,6 +668,12 @@ func interact() -> bool:
 		if not owns_computer(computer_floor):
 			world.notify("Compre este apartamento para usar o computador.")
 			return true
+		var now := Time.get_ticks_msec()
+		var ready_at: int = computer_ready_at.get(computer_floor, 0)
+		if now < ready_at:
+			world.notify("Aguarde %d segundos para criar outro jogo." % ceili((ready_at - now) / 1000.0))
+			return true
+		computer_ready_at[computer_floor] = now + 10000
 		var outcome := randi_range(0, 2)
 		if outcome == 0:
 			world.cash += 15000
