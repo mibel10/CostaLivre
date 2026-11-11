@@ -616,10 +616,26 @@ func buy_home(floor_number: int) -> void:
 			return
 		world.notify("Apartamento comprado por $1000.")
 
+func home_computer_floor(at: Vector3) -> int:
+	var local := at - HOME_BUILDING
+	var floor_number := roundi(local.y / 6.0) - 1
+	if floor_number < 0 or floor_number >= 12 or absf(local.y - (floor_number + 1) * 6.0) > 2.0:
+		return -1
+	return floor_number if Vector2(local.x + 6.0, local.z - 5.0).length() < 2.0 else -1
+
+func owns_computer(floor_number: int) -> bool:
+	if world.network != null and world.network.active():
+		var id: int = world.network.rules.context_peer if world.network.rules.context_peer > 0 else multiplayer.get_unique_id()
+		return floor_number in world.network.rules.sheets.get(id, {}).get("homes", [])
+	return owned_homes.has(floor_number)
+
 func prompt() -> String:
 	if world.active_car != null:
 		return ""
 	var at: Vector3 = world.player.position
+	var computer_floor := home_computer_floor(at)
+	if computer_floor >= 0:
+		return "F / Criar jogo" if owns_computer(computer_floor) else "Computador do apartamento"
 	var home_floor := home_floor_at(at)
 	if home_floor >= 0:
 		if world.network != null and world.network.active():
@@ -646,6 +662,24 @@ func interact() -> bool:
 	if world.active_car != null:
 		return false
 	var at: Vector3 = world.player.position
+	var computer_floor := home_computer_floor(at)
+	if computer_floor >= 0:
+		if not owns_computer(computer_floor):
+			world.notify("Compre este apartamento para usar o computador.")
+			return true
+		var outcome := randi_range(0, 2)
+		if outcome == 0:
+			world.cash += 15000
+			world.notify("Seu jogo viralizou! Voc? ganhou $15000.")
+		elif outcome == 1:
+			world.cash += 100
+			world.notify("Seu jogo flopou. Voc? ganhou $100.")
+		else:
+			world.raise_heat(100)
+			world.notify("Seu jogo foi t?o ruim que a pol?cia veio atr?s de voc?!")
+		if world.activities.game_mode == "campaign":
+			world.activities.save_campaign()
+		return true
 	var home_floor := home_floor_at(at)
 	if home_floor >= 0:
 		buy_home(home_floor)
