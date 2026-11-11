@@ -28,10 +28,21 @@ func run() -> void:
 	page_tap.pressed = true
 	page_tap.position = world.hud.MENU_NEXT.get_center() * root.get_visible_rect().size / Vector2(1280, 720)
 	touch._input(page_tap)
-	assert(world.activities.job_page == 1, "Touching the next button changes the contracts page")
+	var emulated_tap := InputEventMouseButton.new()
+	emulated_tap.device = InputEvent.DEVICE_ID_EMULATION
+	emulated_tap.button_index = MOUSE_BUTTON_LEFT
+	emulated_tap.pressed = true
+	emulated_tap.position = page_tap.position
+	world._unhandled_input(emulated_tap)
+	assert(world.activities.job_page == 1, "Touching the next button changes the contracts page once")
+	touch._input(page_tap)
+	world._unhandled_input(emulated_tap)
+	assert(world.activities.job_page == 2, "A second touch advances one contracts page")
 	world.activities.set_menu("cars")
 	for i in 3:
 		touch._input(page_tap)
+		world._unhandled_input(emulated_tap)
+		assert(world.activities.car_page == i + 1, "Each touch advances one dealer page")
 	assert(world.activities.car_page == 3 and world.activities.menu_page_count() == 4, "Touch reaches the last dealer page")
 	world.activities.set_menu("owned_cars")
 	assert(world.activities.car_page == 0, "A short inventory cannot inherit an invalid dealer page")

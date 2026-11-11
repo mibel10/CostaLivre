@@ -212,6 +212,8 @@ func pointer_select(point: Vector2) -> bool:
 	return true
 
 func handle_input(event: InputEvent) -> bool:
+	if event is InputEventMouseButton and event.device == InputEvent.DEVICE_ID_EMULATION and menu in world.hud.PAGE_MENUS:
+		return true
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and pointer_select(event.position):
 		return true
 	if world.network!=null and world.network.active() and world.network.rules.local_mission_hacking():
