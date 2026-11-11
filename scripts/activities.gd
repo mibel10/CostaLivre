@@ -777,7 +777,10 @@ func tick_mission(delta: float) -> void:
 			rescue_point = spec.pickup + Vector3(0, 0, 2)
 	if rescue_point != Vector3.INF:
 		for car in world.cars:
-			if not is_instance_valid(car) or car.hp <= 0 or absf(car.speed) <= 3.0:
+			if not is_instance_valid(car):
+				continue
+			var player_driving: bool = int(world.network.owners.get(car.net_id, 0)) > 0 if world.network != null and world.network.active() else car.driving
+			if not player_driving or car.hp <= 0 or absf(car.speed) <= 3.0:
 				continue
 			var offset: Vector3 = car.to_local(rescue_point)
 			var size: Vector3 = preload("res://scripts/vehicle_catalog.gd").SIZES[car.tier]
