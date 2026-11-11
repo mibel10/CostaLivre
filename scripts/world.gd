@@ -1017,7 +1017,7 @@ func _physics_process(delta: float) -> void:
 				prison_after_death = true
 				finish(false)
 		else:
-			bust_progress = maxf(0, bust_progress - delta * 2)
+			bust_progress = 0.0
 	else:
 		bust_progress = 0
 		sight_timer = 0.0
