@@ -28,12 +28,24 @@ var toggle_sprint := false
 var camera_sensitivity := 1.0
 var texture_cache := {}
 var tracked := {}
+var upscaler_layer: CanvasLayer
+var upscaler: ColorRect
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	load_settings()
 	apply_display_settings()
 	register_visuals(world)
+	var shader_material := ShaderMaterial.new()
+	shader_material.shader = preload("res://shaders/upscale_sharpen.gdshader")
+	upscaler_layer = CanvasLayer.new()
+	upscaler_layer.layer = -1
+	upscaler = ColorRect.new()
+	upscaler.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	upscaler.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	upscaler.material = shader_material
+	upscaler_layer.add_child(upscaler)
+	world.add_child(upscaler_layer)
 	apply()
 
 func load_settings() -> void:
@@ -237,6 +249,8 @@ func set_upscaling(value: int) -> void:
 func apply_upscaling() -> void:
 	world.get_viewport().scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
 	world.get_viewport().scaling_3d_scale = UPSCALING_SCALES[upscaling]
+	upscaler.visible = upscaling > 0
+	upscaler.material.set_shader_parameter("strength", [0.0, 0.25, 0.35, 0.45, 0.55][upscaling])
 
 func get_window_resolutions() -> Array[Vector2i]:
 	var native_size := DisplayServer.screen_get_size()
