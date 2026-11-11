@@ -670,13 +670,13 @@ func interact() -> bool:
 		var outcome := randi_range(0, 2)
 		if outcome == 0:
 			world.cash += 15000
-			world.notify("Seu jogo viralizou! Voc? ganhou $15000.")
+			world.notify("Seu jogo viralizou! Você ganhou $15000.")
 		elif outcome == 1:
 			world.cash += 100
-			world.notify("Seu jogo flopou. Voc? ganhou $100.")
+			world.notify("Seu jogo flopou. Você ganhou $100.")
 		else:
 			world.raise_heat(100)
-			world.notify("Seu jogo foi t?o ruim que a pol?cia veio atr?s de voc?!")
+			world.notify("Seu jogo calado foi tão ruim que você agora é procurado 5 estrelas")
 		if world.activities.game_mode == "campaign":
 			world.activities.save_campaign()
 		return true
