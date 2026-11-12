@@ -55,11 +55,14 @@ func next_position() -> Vector3:
 	return to_global(ENTRY)
 
 func objective() -> String:
-	if phase == 5:
-		return "Banco em recuperação · %ds" % ceili(cooldown)
-	if not inside() and phase < 4:
-		return "Entre no Banco Costa pela porta da frente"
-	return ["Desligue a segurança no painel", "Hackeie o terminal do banco", "Acione o painel da porta do cofre", "Pegue os malotes · %d/3" % taken.count(true), "Saia do banco com o dinheiro"][mini(phase, 4)]
+	var text := "Banco em recuperação · %ds" % ceili(cooldown) if phase == 5 else ("Entre no Banco Costa pela porta da frente" if not inside() and phase < 4 else ["Desligue a segurança no painel", "Hackeie o terminal do banco", "Acione o painel da porta do cofre", "Pegue os malotes · %d/3" % taken.count(true), "Saia do banco com o dinheiro"][mini(phase, 4)])
+	if world.network != null and world.network.active() and phase in [1, 2, 3, 4]:
+		var id: int = world.network.rules.local_id()
+		if id == world.network.rules.bank_owner:
+			text += " · Papel: hacker"
+		elif id == world.network.rules.bank_lookout:
+			text += " · Papel: olheiro"
+	return text
 
 func prompt() -> String:
 	if phase == 5 or hacking:
@@ -91,7 +94,13 @@ func interact() -> bool:
 				new_round()
 		2:
 			phase = 3
-			world.raise_heat(55)
+			var alarm := 55.0
+			if world.network != null and world.network.active() and world.network.rules.bank_lookout > 0:
+				var lookout_at: Vector3 = world.network.rules.position_of(world.network.rules.bank_lookout)
+				if not contains_position(lookout_at) and lookout_at.distance_to(to_global(ENTRY)) < 8.0:
+					alarm = 35.0
+					world.network.rules.private_notice(world.network.rules.bank_lookout, "Você cobriu a entrada; o alarme foi reduzido.")
+			world.raise_heat(alarm)
 			world.notify("Cofre liberado! Alarme disparado. Pegue os três malotes e saia.")
 		3:
 			for i in BAGS.size():
@@ -168,6 +177,9 @@ func tick(delta: float) -> void:
 	door.rotation.y = move_toward(door.rotation.y, PI / 2 if phase >= 3 else 0.0, delta * 1.2)
 	if phase == 4 and not inside() and world.player.position.distance_to(to_global(ENTRY)) < 5:
 		world.cash += 4000
+		if world.network != null and world.network.active() and world.network.rules.bank_lookout > 0:
+			world.network.rules.award(world.network.rules.bank_lookout, 500)
+			world.network.rules.private_notice(world.network.rules.bank_lookout, "Golpe concluído como olheiro: +$500.")
 		phase = 5
 		cooldown = 100
 		if world.activities.job == 5:

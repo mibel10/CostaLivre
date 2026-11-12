@@ -15,6 +15,8 @@ var paint := Color("dd7542")
 var police := false
 var traffic := false
 var traffic_nearby := true
+var traffic_speed := 10.0
+var traffic_speed_time := 0.0
 var speed := 0.0
 var fuel := 1.0
 var refuel_time := 0.0
@@ -179,6 +181,9 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	hit_cooldown = maxf(0, hit_cooldown - delta)
+	traffic_speed_time = maxf(0.0, traffic_speed_time - delta)
+	if traffic_speed_time <= 0.0:
+		traffic_speed = 10.0
 	var steer := 0.0
 	var pursuit_blocked := false
 	if driving and world.finished:
@@ -193,13 +198,14 @@ func _physics_process(delta: float) -> void:
 			top_speed = Catalog.HOVER_SPEED if hovering else Catalog.SPEEDS[tier]
 			acceleration = (55.0 if hovering else Catalog.ACCEL[tier]) + engine_upgrade
 			speed = clampf(speed, -12.0, top_speed)
+		acceleration *= lerpf(0.58, 1.0, clampf(hp / MAX_HP, 0.0, 1.0))
 		if throttle != 0:
 			speed = move_toward(speed, throttle * (top_speed if throttle > 0 else (5.0 if tier == 9 else 12.0)), delta * (27 if speed * throttle < 0 else acceleration))
 		else:
 			speed = move_toward(speed, 0, delta * 3.5)
 		if Input.is_action_pressed("jump"):
 			speed = move_toward(speed, 0, delta * 28)
-		steer = Input.get_action_strength("left") - Input.get_action_strength("right")
+		steer = (Input.get_action_strength("left") - Input.get_action_strength("right")) * lerpf(0.45, 1.0, clampf(hp / MAX_HP, 0.0, 1.0))
 	elif police and police_phase=="parked":
 		speed=0
 		velocity=Vector3(0,-4,0)
@@ -238,7 +244,7 @@ func _physics_process(delta: float) -> void:
 		if position.distance_to(route[route_index]) < 5:
 			route_index = (route_index + 1) % route.size()
 		steer = ai_steer(route[route_index])
-		speed = move_toward(speed, 10.0, delta * 4)
+		speed = move_toward(speed, traffic_speed, delta * 4)
 	else:
 		speed = move_toward(speed, 0, delta * 9)
 	var turn := clampf(absf(speed) / 7.0, 0, 1) * (1 if speed >= 0 else -1)

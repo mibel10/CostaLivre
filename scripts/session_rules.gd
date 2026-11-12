@@ -27,6 +27,7 @@ var mission_round := 0
 var mission_mistakes := 0
 var mission_reveal_time := 0.0
 var mission_round_time := 0.0
+var bank_lookout := 0
 
 func _ready() -> void:
 	local_body=world.player
@@ -749,12 +750,36 @@ func choose_actor(destination: Vector3, holding := false, require_car := false, 
 			best=id
 	return best
 
+func update_bank_lookout() -> void:
+	var bank = world.activities.bank
+	var candidate := 0
+	if bank.phase in [1, 2, 3, 4] and bank_owner > 0:
+		var entrance: Vector3 = bank.to_global(Vector3(0, 0, 16))
+		for id in participants():
+			if id == bank_owner or bus_riders.has(id) or int(network.members[id].get("car", -1)) >= 0:
+				continue
+			var at: Vector3 = position_of(id)
+			if not bank.contains_position(at) and at.distance_to(entrance) < 6.0:
+				candidate = id
+				break
+	if candidate == bank_lookout:
+		return
+	var previous := bank_lookout
+	bank_lookout = candidate
+	if candidate > 0:
+		private_notice(candidate, "Função: olheiro. Fique do lado de fora, perto da entrada do banco.")
+		if sheets.has(bank_owner):
+			private_notice(bank_owner, "Um parceiro assumiu o papel de olheiro para o golpe.")
+	elif previous > 0 and sheets.has(bank_owner):
+		private_notice(bank_owner, "O olheiro deixou a entrada; o alarme voltará ao nível normal.")
+
 func physics(delta: float) -> void:
 	tick_mission_offer()
 	if network.is_client():
 		if Input.is_action_pressed("shoot") and world.activities.menu=="" and not is_dead(local_id()):
 			fire_local()
 		return
+	update_bank_lookout()
 	for car in world.cars:
 		if int(network.owners.get(car.net_id, 0)) > 0:
 			car.fuel = maxf(0.0, car.fuel - absf(car.speed) * delta / 6000.0)
@@ -859,6 +884,8 @@ func physics(delta: float) -> void:
 			if not is_instance_valid(observer) or observer.hp <= 0:
 				continue
 			var target := police_target_actor(observer.position, int(observer.get_meta("police_target_peer", 0)))
+			if target[0] > 0 and a.job == 29 and wanted_heat(target[0]) <= 0.0 and int(network.members.get(target[0], {}).get("outfit", 0)) == 5 and observer.position.distance_squared_to(target[1]) > 16.0:
+				continue
 			if world.police_can_see(observer, target[1]):
 				visible_police[observer] = target[0]
 	var seen := {}
@@ -922,7 +949,7 @@ func export_state() -> Dictionary:
 		sheets[1].inventory=inventory()
 	var a: Node=world.activities
 	var bank: Node=a.bank
-	return {"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"bank_door_angle":bank.door.rotation.y,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
+	return {"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"bank_lookout":bank_lookout,"day_time":world.atmosphere_cycle.day_time,"bank_door_angle":bank.door.rotation.y,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
 
 func apply_state(data: Dictionary) -> void:
 	sheets=data.get("sheets",{})
@@ -938,6 +965,8 @@ func apply_state(data: Dictionary) -> void:
 		if car!=null:
 			a.targets.append(car)
 	bank_owner=int(data.bank_owner)
+	bank_lookout=int(data.get("bank_lookout",0))
+	world.atmosphere_cycle.set_time(float(data.get("day_time", world.atmosphere_cycle.day_time)))
 	mission_hacking_peer=int(data.get("mission_hacking_peer",0))
 	mission_pattern.assign(data.get("mission_pattern",[]))
 	mission_entered=int(data.get("mission_entered",0))

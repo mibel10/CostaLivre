@@ -44,11 +44,15 @@ var materials := {}
 var visuals = Visuals.new()
 var engine_audio: AudioStreamPlayer
 var rng := RandomNumberGenerator.new()
+var city_event_rng := RandomNumberGenerator.new()
+var city_event_clock := 70.0
+var witness_call_times := {}
 var settings: Node
 var pause_menu: Control
 var hud_clock := 0.0
 var extra: Node
 var interiors: Node3D
+var atmosphere_cycle
 var life: Node3D
 var fps_counter: CanvasLayer
 var car_transition := false
@@ -85,14 +89,17 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	camera_shape.radius = 0.28
 	rng.seed = 185
+	city_event_rng.randomize()
+	city_event_clock = city_event_rng.randf_range(65.0, 100.0)
 	create_fuel_station()
 	setup_input()
 	rng.state = -3374745113267529202
 	interiors = preload("res://interiors.tscn").instantiate()
 	add_child(interiors)
-	var atmosphere := preload("res://scripts/atmosphere.gd").new()
-	atmosphere.world = self
-	add_child(atmosphere)
+	atmosphere_cycle = preload("res://scripts/atmosphere.gd").new()
+	atmosphere_cycle.name = "AtmosphereCycle"
+	atmosphere_cycle.world = self
+	add_child(atmosphere_cycle)
 	player = Player.new()
 	player.world = self
 	add_child(player)
@@ -625,6 +632,8 @@ func tick_vehicle_entries(delta: float) -> void:
 			if entry.at.distance_squared_to(car.position) >= 20.25 or (online and int(network.owners.get(car.net_id,0)) not in [0,id]):
 				continue
 			car.traffic = false
+			car.traffic_speed = 10.0
+			car.traffic_speed_time = 0.0
 			if not car.owned or entry.victim != 0:
 				car.owned = true
 				raise_heat(12,id)
@@ -750,12 +759,85 @@ func nearest_car() -> CharacterBody3D:
 func subject_position() -> Vector3:
 	return active_car.position if active_car != null else player.position
 
+func tick_city_events(delta: float) -> void:
+	city_event_clock -= delta
+	if city_event_clock > 0.0:
+		return
+	city_event_clock = city_event_rng.randf_range(75.0, 125.0)
+	var observers: Array[Vector3] = [subject_position()]
+	if network != null and network.active():
+		for id in network.rules.participants():
+			if id != multiplayer.get_unique_id():
+				observers.append(network.rules.position_of(id))
+	var nearby: Array[CharacterBody3D] = []
+	for car in cars:
+		if not car.traffic or car.police or car.hp <= 0 or car == activities.target_car or car in activities.targets:
+			continue
+		for at in observers:
+			var distance_squared := car.position.distance_squared_to(at)
+			if distance_squared < 90.0 * 90.0 and distance_squared > 14.0 * 14.0:
+				nearby.append(car)
+				break
+	if nearby.is_empty():
+		return
+	var event := city_event_rng.randi_range(0, 2)
+	var car: CharacterBody3D = nearby[city_event_rng.randi_range(0, nearby.size() - 1)]
+	if event == 0:
+		car.traffic = false
+		car.speed = 0.0
+		car.velocity = Vector3.ZERO
+		car.take_hit(car.hp)
+		var other: CharacterBody3D
+		for candidate in nearby:
+			if candidate != car and candidate.position.distance_squared_to(car.position) < 20.0 * 20.0:
+				other = candidate
+				break
+		if other != null:
+			other.traffic = false
+			other.speed = 0.0
+			other.velocity = Vector3.ZERO
+			other.take_hit(35.0)
+		announce_city_event("Acidente de trânsito na região. Dirija com cuidado.")
+	elif event == 1:
+		car.traffic = false
+		car.speed = 0.0
+		car.velocity = Vector3.ZERO
+		car.hp = minf(car.hp, 80.0)
+		announce_city_event("Um carro quebrou e bloqueia parte da via.")
+	else:
+		car.traffic_speed = 16.0
+		car.traffic_speed_time = 24.0
+		announce_city_event("Motorista imprudente avistado. Mantenha distância.")
+
+func announce_city_event(message: String) -> void:
+	if network != null and network.active():
+		network.rules.notice_all(message)
+	else:
+		notify(message)
+
+func witnessed_crime(actor: int, at: Vector3) -> bool:
+	if life == null or not at.is_finite():
+		return false
+	var now := Time.get_ticks_msec()
+	if now - int(witness_call_times.get(actor, -15000)) < 15000:
+		return false
+	for person in life.people:
+		if not is_instance_valid(person) or person.hp <= 0 or person.position.distance_squared_to(at) > 20.0 * 20.0:
+			continue
+		var query := PhysicsRayQueryParameters3D.create(person.position + Vector3.UP * 1.3, at + Vector3.UP, 1)
+		query.hit_from_inside = true
+		if get_world_3d().direct_space_state.intersect_ray(query).is_empty():
+			witness_call_times[actor] = now
+			return true
+	return false
+
 func raise_heat(amount: float, actor := 0) -> void:
 	if amount <= 0.0 or not is_finite(amount) or actor < 0:
 		return
 	if network!=null and network.is_client():
 		network.rules.send_action("crime",{"amount":clampf(amount,0,80)})
 		return
+	var witness_called := false
 	if network != null and network.active():
 		var rules: Node = network.rules
 		var id: int = actor if actor > 0 else rules.context_peer
@@ -763,6 +845,9 @@ func raise_heat(amount: float, actor := 0) -> void:
 			id = rules.attacker if rules.attacker > 0 else multiplayer.get_unique_id()
 		if not rules.sheets.has(id) or rules.is_dead(id):
 			return
+		witness_called = witnessed_crime(id, rules.position_of(id))
+		if witness_called:
+			amount += 12.0
 		rules.sheets[id]["wanted_heat"] = minf(100.0, rules.wanted_heat(id) + amount)
 		rules.sheets[id]["wanted_grace"] = CRIME_GRACE_SECONDS
 	if heat <= 0:
@@ -770,8 +855,17 @@ func raise_heat(amount: float, actor := 0) -> void:
 	if network != null and network.active():
 		network.rules.refresh_wanted_heat()
 	else:
+		witness_called = witnessed_crime(1, subject_position())
+		if witness_called:
+			amount += 12.0
 		heat = minf(100, heat + amount)
 	crime_grace = CRIME_GRACE_SECONDS
+	if witness_called:
+		var message := "Uma testemunha viu o crime e chamou a polícia."
+		if network != null and network.active():
+			network.rules.notice_all(message)
+		else:
+			notify(message)
 
 func check_vehicle_entry(previous: Vector3, current: Vector3, actor := 0) -> void:
 	var wanted: float = network.rules.wanted_heat(actor if actor > 0 else multiplayer.get_unique_id()) if network != null and network.active() else heat
@@ -804,6 +898,8 @@ func police_can_see(observer: Node3D, at := Vector3.INF) -> bool:
 	var origin := observer.position + Vector3(0, 1.5, 0)
 	var distance_squared := origin.distance_squared_to(target)
 	if distance_squared > 42.0 * 42.0:
+		return false
+	if (network == null or not network.active()) and activities != null and activities.job == 29 and heat <= 0.0 and profile != null and profile.outfit == 5 and distance_squared > 16.0:
 		return false
 	if network!=null and network.active() and distance_squared > 12.0 * 12.0 and network.rules.target_crouched(target-Vector3(0,1,0)):
 		return false
@@ -948,6 +1044,8 @@ func _physics_process(delta: float) -> void:
 		update_camera_focus_sample(delta)
 	if finished or get_tree().paused:
 		return
+	if network == null or not network.is_client():
+		tick_city_events(delta)
 	if prison_stage_for() >= 0 and (network == null or not network.active()):
 		tick_prison(1, player.position, Input.is_action_pressed("activity") and activities.menu == "", delta)
 	if prison_stage_for() >= 0 and active_car == null:

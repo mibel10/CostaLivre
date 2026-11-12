@@ -7,6 +7,7 @@ const CAMPAIGN_LENGTH := 25
 const SECRET_DATA_JOB := 29
 const DATA_VENT := Vector3(147, 0.8, 49)
 const DATA_TERMINAL := Vector3(147, 0, 63)
+const DATA_EXTRACTION_SECONDS := 30.0
 const FAVELA_CENTER_X := 1218.0
 
 const ACTION_JOBS := {
@@ -25,7 +26,7 @@ const ACTION_JOBS := {
 	20: {"name":"Passagem dos becos","kind":"foot_race","story":"Comece no acostamento. Entre nas vielas, agache sob a cobertura baixa e desça a escadaria até o próximo patamar.","reward":3600,"points":[Vector3(1196,9.9,7.1),Vector3(1202.5,9.9,7.1),Vector3(1202.5,9.9,13.45),Vector3(1210,9.9,14.0),Vector3(1217,9.9,13.45),Vector3(1225,9.9,13.45),Vector3(1231.5,9.9,13.0),Vector3(1241,9.9,13.45),Vector3(1241,9.9,18),Vector3(1241,7.7,24),Vector3(1245,7.7,26.1)],"race_time":45.0,"time":240.0},
 	21: {"name":"Carga quente","kind":"drive","story":"Leve a carga entre os mercados sob perseguicao. Passe pelos pontos e despiste antes da entrega final.","reward":5200,"model":8,"spawn":Vector3(294,0.3,-78.5),"points":[Vector3(294,0,126),Vector3(798,0,126),Vector3(798,0,-78.5)],"escape":true,"start_heat":80,"time":240.0},
 	22: {"name":"Cofres do leste","kind":"breach","story":"Atire nas fechaduras dos tres cofres, recolha os documentos e entregue-os na APEX depois de despistar.","reward":5400,"points":[Vector3(441,1.1,112),Vector3(483,1.1,112),Vector3(525,1.1,112)],"drop":Vector3(21,0,42),"time":200.0},
-	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e cruze a cidade sob cinco estrelas. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0},
+	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e escolha uma das duas rotas de fuga. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"alternate_points":[Vector3(798,0,126),Vector3(294,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0},
 	29: {"name":"Operação Tubulação","kind":"infiltration","story":"Agache e abra a tubulação do Data Center. Elimine dois policiais sem alertar a equipe, conecte o pendrive, extraia os dados e fuja pelo mesmo caminho.","reward":11000,"time":360.0},
 	30: {"name":"Corrida da costa a pé","kind":"foot_race","story":"Encontre o ponto de partida e corra pela avenida passando por todos os pontos antes do tempo acabar.","reward":2400,"points":[Vector3(-126,0,84),Vector3(-84,0,84),Vector3(-42,0,84),Vector3(0,0,84),Vector3(42,0,84)],"race_time":45.0,"time":180.0},
 	31: {"name":"Defesa da clínica","kind":"defend","story":"Defenda a Clínica Costa a pé. Enfrente os invasores e mantenha a posição até a área ficar segura.","reward":3600,"point":Vector3(63,0,26),"guards":[Vector3(55,0.2,34),Vector3(71,0.2,34),Vector3(63,0.2,39)],"duration":20.0,"time":160.0}
@@ -348,7 +349,7 @@ func buy(choice: int) -> void:
 			world.active_car.repair()
 			world.health = 100
 		elif choice == 1:
-			var colors := [Color("e04959"),Color("30c9bf"),Color("b894ed"),Color("e4b84c"),Color("ececec"),Color("343b49")]
+			var colors := [Color("e04959"),Color("30c9bf"),Color("b894ed"),Color("e4b84c"),Color("ececec"),Color("343b49"),Color("111925"),Color("c45c31"),Color("4a8759"),Color("e6e1c8")]
 			var current: int = colors.find(world.active_car.paint)
 			world.active_car.repaint(colors[(current+1)%colors.size()])
 		elif choice == 3:
@@ -1339,7 +1340,7 @@ func interact_campaign() -> bool:
 				stage = 3
 				progress = 0
 				spawn_infiltration_team()
-				world.notify("Pendrive conectado. Extraindo dados por 45 segundos: proteja o computador!")
+				world.notify("Pendrive conectado. Extraindo dados por 30 segundos: proteja o computador!")
 				return true
 			if stage == 4 and world.active_car == null and world.player.position.distance_to(DATA_TERMINAL) < 3:
 				stage = 5
@@ -1398,7 +1399,7 @@ func interact_campaign() -> bool:
 			stage = 1
 			spawn_action_guards()
 			world.raise_heat(100)
-			world.notify("Maleta em maos! Pegue o Aurora X marcado, passe pelos pontos e despiste antes de entrar na garagem.")
+			world.notify("Maleta em maos! Pegue o Aurora X e escolha uma das duas rotas antes de voltar a garagem.")
 			return true
 		return false
 	if job == 8 and stage == 0 and world.active_car != null and absf(world.active_car.speed) < 3 and world.subject_position().distance_to(INFORMANT_PICKUP) < 5:
@@ -1455,7 +1456,13 @@ func action_destination() -> Vector3:
 			return DATA_VENT if stage in [0,5] else DATA_TERMINAL
 		"getaway":
 			if stage == 0: return spec.pickup
-			return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.points[mini(stage-1,spec.points.size()-1)]
+			if is_instance_valid(target_car) and world.active_car != target_car: return target_car.position
+			var route_a: Array = spec.points
+			var route_b: Array = spec.alternate_points
+			if stage == 1 and progress == 0.0:
+				return route_a[0] if world.subject_position().distance_squared_to(route_a[0]) < world.subject_position().distance_squared_to(route_b[0]) else route_b[0]
+			var route: Array = route_b if int(progress) == 2 else route_a
+			return route[mini(stage-1,route.size()-1)]
 		"drive":
 			return target_car.position if is_instance_valid(target_car) and world.active_car != target_car else spec.points[mini(stage,spec.points.size()-1)]
 		"rescue":
@@ -1480,9 +1487,9 @@ func action_objective() -> String:
 		"assault": text = ["Elimine os invasores: %d" % contract_guards_alive(), "F / Recolha o objetivo", "Saia do prédio a pé"][mini(stage,2)]
 		"clinic_evacuation": text = "Pegue a ambulância marcada" if world.active_car != target_car else ("Recolha pacientes / %d/%d" % [stage,spec.points.size()] if stage < spec.points.size() else "Volte à Clínica Costa com a ambulância")
 		"infiltration":
-			text = ["Agache e atire na tampa da tubulacao", "Neutralize os dois policiais sem ruido / %d restantes" % contract_guards_alive(), "Entre no computador e conecte o pendrive", "Extraindo dados / %d%% / elimine a equipe tatica" % mini(roundi(progress/45.0*100),100), "Dados copiados / F para recuperar o pendrive", "Agache e fuja pela mesma tubulacao"][mini(stage,5)]
+			text = ["Vista a camiseta roxa do perfil, agache e abra a tubulacao", "Neutralize os dois policiais sem ruido / %d restantes" % contract_guards_alive(), "Entre no computador e conecte o pendrive", "Extraindo dados / %d%% / elimine a equipe tatica" % mini(roundi(progress/DATA_EXTRACTION_SECONDS*100),100), "Dados copiados / F para recuperar o pendrive", "Agache e fuja pela mesma tubulacao"][mini(stage,5)]
 		"getaway":
-			text = "F / Roubar a maleta no escritorio" if stage == 0 else ("Pegue o Aurora X marcado" if world.active_car != target_car else "Fuga %d/%d / leve a maleta a garagem" % [stage,spec.points.size()])
+			text = "F / Roubar a maleta no escritorio" if stage == 0 else ("Pegue o Aurora X marcado" if world.active_car != target_car else ("Escolha a rota norte ou sul e passe pelo primeiro ponto" if stage == 1 and progress == 0.0 else "Fuga %d/%d / leve a maleta a garagem" % [stage,spec.points.size()]))
 			if stage == spec.points.size() and world.heat > 0: text = "Despiste as cinco estrelas antes da entrega final"
 		"drive": text = "Pegue o veiculo marcado" if world.active_car != target_car else "Circuito %d/%d / preserve o carro" % [stage+1,spec.points.size()]
 		"rescue":
@@ -1525,16 +1532,26 @@ func tick_action_job(delta: float) -> void:
 				world.notify("Area segura. Conecte o pendrive no computador.")
 			elif stage == 3:
 				progress += delta
-				if progress >= 45 and contract_guards_alive() == 0:
+				if progress >= DATA_EXTRACTION_SECONDS and contract_guards_alive() == 0:
 					stage = 4
 					world.notify("Extracao concluida. Recupere o pendrive do computador.")
 		"getaway":
 			if not is_instance_valid(target_car) or target_car.hp <= 0:
 				fail_job("O carro da fuga foi destruido.")
-			elif stage > 0 and world.active_car == target_car and world.subject_position().distance_to(spec.points[stage-1]) < 8:
-				if stage < spec.points.size() or (stopped and world.heat <= 0):
+			elif stage == 1 and progress == 0.0 and world.active_car == target_car:
+				if world.subject_position().distance_to(spec.points[0]) < 8:
+					progress = 1.0
+					stage = 2
+					world.notify("Rota norte escolhida. Siga os pontos até a garagem.")
+				elif world.subject_position().distance_to(spec.alternate_points[0]) < 8:
+					progress = 2.0
+					stage = 2
+					world.notify("Rota sul escolhida. Siga os pontos até a garagem.")
+			elif stage > 1 and world.active_car == target_car:
+				var route: Array = spec.alternate_points if int(progress) == 2 else spec.points
+				if world.subject_position().distance_to(route[stage-1]) < 8 and (stage < route.size() or (stopped and world.heat <= 0)):
 					stage += 1
-					if stage > spec.points.size(): complete_job()
+					if stage > route.size(): complete_job()
 		"drive":
 			if bool(spec.get("fragile",false)) and is_instance_valid(target_car):
 				var shock: float = absf(target_car.speed-previous_mission_speed)
@@ -1693,10 +1710,10 @@ func spawn_infiltration_sentinels() -> void:
 		officers.append(guard)
 
 func spawn_infiltration_team() -> void:
-	for at in [Vector3(144,0.2,63),Vector3(150,0.2,63),Vector3(144,0.2,67),Vector3(150,0.2,67)]:
+	for at in [Vector3(144,0.2,63),Vector3(150,0.2,63),Vector3(144,0.2,67)]:
 		var guard := Officer.new()
 		guard.world = world
-		guard.hp = 180
+		guard.hp = 120
 		guard.set_meta("mission_contract",job)
 		guard.set_meta("mission_heavy",true)
 		world.add_child(guard)

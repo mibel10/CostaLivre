@@ -278,7 +278,7 @@ func draw_menu(a: Node) -> void:
 			var index: int = a.job_id_at(i)
 			rows.append("%s   ·   $%d" % [a.JOBS[index], a.REWARDS[index]])
 	elif a.menu == "garage":
-		rows = ["Reparo e cura   ·   $250", "Trocar pintura   ·   $300", "Melhorar motor   ·   $500", "Aumentar suspensao   /   $800", "Comprar veiculo"]
+		rows = ["Reparo e cura   ·   $250", "Pintura / 10 cores   ·   $300", "Melhorar motor   ·   $500", "Aumentar suspensao   /   $800", "Comprar veiculo"]
 	elif a.menu == "owned_cars":
 		for index in range(a.car_page*3,mini(a.purchased_cars.size(),a.car_page*3+3)):
 			rows.append("%s / RETIRAR" % a.Catalog.NAMES[int(a.purchased_cars[index].tier)])

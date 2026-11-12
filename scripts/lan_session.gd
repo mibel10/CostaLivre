@@ -453,6 +453,7 @@ func disconnect_room() -> void:
 	rules.mission_offer_started = false
 	rules.mission_hacking_peer = 0
 	rules.bank_owner = 1
+	rules.bank_lookout = 0
 	rules.last_actions.clear()
 	rules.visible_police.clear()
 	rules.robbery_worker = 0
