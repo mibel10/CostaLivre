@@ -51,6 +51,9 @@ var exploded := false
 var despawn_timer := -1.0
 var fire_particles: GPUParticles3D
 var smoke_particles: GPUParticles3D
+var damage_visuals: Node3D
+var body_damage_marks: Array[MeshInstance3D] = []
+var glass_damage_marks: Array[MeshInstance3D] = []
 
 func set_hover_mode(enabled: bool) -> void:
 	if hovering and not enabled:
@@ -369,8 +372,36 @@ func take_hit(amount: float) -> void:
 	if hp <= 0:
 		return
 	hp = maxf(0, hp - amount)
+	update_damage_appearance()
 	if hp <= 0:
 		show_wreck()
+
+func update_damage_appearance() -> void:
+	if hp >= MAX_HP * 0.7:
+		return
+	if damage_visuals == null:
+		damage_visuals = Node3D.new()
+		damage_visuals.name = "DamageMarks"
+		add_child(damage_visuals)
+		var size: Vector3 = Catalog.SIZES[tier]
+		for side in [-1.0, 1.0]:
+			for z in [-0.18, 0.18]:
+				var scratch := world.box(damage_visuals, Vector3(side * (size.x * 0.5 + 0.012), size.y * 0.43, size.z * z), Vector3(0.018, 0.12, 0.62), Color("68615a"))
+				scratch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				body_damage_marks.append(scratch)
+		var windshield_z: float = -size.z * 0.15 if tier != Catalog.BUS else -size.z * 0.5 + 0.08
+		var windshield_y: float = size.y * 0.72
+		for crack in 3:
+			var vertical: bool = crack > 0
+			var offset := Vector3(0 if crack == 0 else (-0.12 if crack == 1 else 0.14), 0.0, 0.0)
+			var mark_size := Vector3(0.36, 0.018, 0.018) if not vertical else Vector3(0.018, 0.28, 0.018)
+			var pane_mark := world.box(damage_visuals, Vector3(offset.x, windshield_y + offset.y, windshield_z), mark_size, Color("222a30"))
+			pane_mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			glass_damage_marks.append(pane_mark)
+	for mark in body_damage_marks:
+		mark.visible = hp <= MAX_HP * 0.7
+	for mark in glass_damage_marks:
+		mark.visible = hp <= MAX_HP * 0.35
 
 func show_wreck() -> void:
 	speed = 0
@@ -482,6 +513,9 @@ func explode() -> void:
 
 func repair() -> void:
 	hp = MAX_HP
+	for mark in body_damage_marks + glass_damage_marks:
+		if is_instance_valid(mark):
+			mark.hide()
 	wreck_timer=-1
 	exploded=false
 	despawn_timer=-1
@@ -528,6 +562,7 @@ func apply_network_health(value: float) -> void:
 	elif value>0 and hp<=0:
 		repair()
 	hp=value
+	update_damage_appearance()
 
 func apply_network_damage(timer: float,has_exploded: bool) -> void:
 	if hp<=0 and not has_exploded and not is_instance_valid(fire_particles):
