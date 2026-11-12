@@ -884,7 +884,7 @@ func physics(delta: float) -> void:
 			if not is_instance_valid(observer) or observer.hp <= 0:
 				continue
 			var target := police_target_actor(observer.position, int(observer.get_meta("police_target_peer", 0)))
-			if target[0] > 0 and a.job == 29 and wanted_heat(target[0]) <= 0.0 and int(network.members.get(target[0], {}).get("outfit", 0)) == 5 and observer.position.distance_squared_to(target[1]) > 16.0:
+			if target[0] > 0 and a.job == 29 and wanted_heat(target[0]) <= 0.0 and int(network.members.get(target[0], {}).get("outfit", 0)) / 8 == 5 and observer.position.distance_squared_to(target[1]) > 16.0:
 				continue
 			if world.police_can_see(observer, target[1]):
 				visible_police[observer] = target[0]

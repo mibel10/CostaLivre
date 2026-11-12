@@ -8,6 +8,8 @@ var original_meshes := {}
 var police := false
 var cj_style := false
 var outfit_index := -1
+var accessory_index := 0
+var cosmetic_attachment: Node3D
 static var outfit_cache := {}
 var weapon_mesh: MeshInstance3D
 var weapon_magazine: MeshInstance3D
@@ -324,8 +326,52 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 	outfit_cache[cache_key] = dressed_mesh
 
 func apply_outfit(selected: int) -> void:
-	outfit_index=clampi(selected,0,5)
+	outfit_index=clampi(int(selected / 8),0,5)
+	accessory_index=clampi(selected % 8,0,3)
 	for mesh in original_meshes:
 		if is_instance_valid(mesh):
 			mesh.mesh=original_meshes[mesh]
 			apply_street_clothes(mesh)
+	apply_accessory()
+
+func apply_accessory() -> void:
+	if is_instance_valid(cosmetic_attachment):
+		cosmetic_attachment.queue_free()
+	cosmetic_attachment = null
+	if accessory_index == 0 or rig == null:
+		return
+	var skeletons := rig.find_children("*", "Skeleton3D", true, false)
+	if skeletons.is_empty():
+		return
+	var skeleton: Skeleton3D = skeletons[0]
+	cosmetic_attachment = uniform_attachment(skeleton, "Skeleton_neck_joint_2")
+	var material := StandardMaterial3D.new()
+	material.albedo_color = [Color.TRANSPARENT,Color("263b55"),Color("a84342"),Color("101820")][accessory_index]
+	if accessory_index == 1:
+		var cap := MeshInstance3D.new()
+		var shape := CylinderMesh.new()
+		shape.top_radius = 0.075
+		shape.bottom_radius = 0.12
+		shape.height = 0.08
+		shape.radial_segments = 12
+		cap.mesh = shape
+		cap.material_override = material
+		cap.position = Vector3(0,0.2,0)
+		cosmetic_attachment.add_child(cap)
+	elif accessory_index == 2:
+		var band := MeshInstance3D.new()
+		var shape := BoxMesh.new()
+		shape.size = Vector3(0.2,0.065,0.19)
+		band.mesh = shape
+		band.material_override = material
+		band.position = Vector3(0,0.08,-0.02)
+		cosmetic_attachment.add_child(band)
+	else:
+		for side in [-1.0,1.0]:
+			var lens := MeshInstance3D.new()
+			var shape := BoxMesh.new()
+			shape.size = Vector3(0.075,0.045,0.018)
+			lens.mesh = shape
+			lens.material_override = material
+			lens.position = Vector3(side*0.045,0.105,-0.09)
+			cosmetic_attachment.add_child(lens)

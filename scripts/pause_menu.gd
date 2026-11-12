@@ -24,6 +24,7 @@ var awaiting_action := ""
 var key_buttons := {}
 var name_edit: LineEdit
 var outfit_select: OptionButton
+var accessory_select: OptionButton
 var profile_status: Label
 var menu_music: AudioStreamPlayer
 var early_access_notice: ColorRect
@@ -130,9 +131,16 @@ func _ready() -> void:
 	for outfit_name in world.profile.OUTFITS:
 		outfit_select.add_item(outfit_name)
 	pages.character.add_child(outfit_select)
-	button(pages.character,"SALVAR NOME E ROUPA",Rect2(0,345,420,55),save_profile)
-	button(pages.character,"VOLTAR",Rect2(440,345,180,55),func(): show_page("mode" if world.activities.menu=="mode" else "home"))
-	profile_status=label(pages.character,"Suas escolhas ficam salvas neste dispositivo.",Vector2(0,440),18,Color("8ddbb5"))
+	label(pages.character,"Loja de roupas · acessórios",Vector2(0,305),21)
+	accessory_select=OptionButton.new()
+	accessory_select.position=Vector2(0,342)
+	accessory_select.size=Vector2(620,48)
+	for accessory_name in world.profile.ACCESSORIES:
+		accessory_select.add_item(accessory_name)
+	pages.character.add_child(accessory_select)
+	button(pages.character,"COMPRAR / EQUIPAR",Rect2(0,410,300,55),save_profile)
+	button(pages.character,"VOLTAR",Rect2(320,410,180,55),func(): show_page("mode" if world.activities.menu=="mode" else "home"))
+	profile_status=label(pages.character,"",Vector2(0,490),18,Color("8ddbb5"))
 	label(pages.home, "Sua próxima jogada.", Vector2(0, 45), 32)
 	label(pages.home, "Mapa, opções e mudança de modo ficam aqui.", Vector2(0, 105), 18)
 	button(pages.home,"Creditos",Rect2(0,345,240,48),func(): world.activities.set_menu("credits"))
@@ -403,7 +411,8 @@ func show_page(value: String) -> void:
 	if value=="character":
 		name_edit.text=world.profile.player_name
 		outfit_select.select(world.profile.outfit)
-		profile_status.text="Suas escolhas ficam salvas neste dispositivo."
+		accessory_select.select(world.profile.accessory)
+		profile_status.text="Créditos da loja: %d · Roupas $300 · Acessórios $150" % world.profile.style_credits
 	for name in pages:
 		pages[name].visible = name == value
 	pause_sidebar.visible = value not in ["mode", "ending"] and world.activities.menu in ["pause", "map"]
@@ -512,8 +521,8 @@ func _process(delta: float) -> void:
 			refresh()
 
 func save_profile() -> void:
-	if world.profile.save_profile(name_edit.text,outfit_select.selected):
+	if world.profile.save_profile(name_edit.text,outfit_select.selected,accessory_select.selected):
 		name_edit.text=world.profile.player_name
-		profile_status.text="Nome e roupa salvos! Os outros jogadores recebem a mudanca."
+		profile_status.text="Equipado · Créditos restantes: %d" % world.profile.style_credits
 	else:
-		profile_status.text="Nao foi possivel salvar. Tente novamente."
+		profile_status.text="Créditos insuficientes ou falha ao salvar. Saldo: %d" % world.profile.style_credits

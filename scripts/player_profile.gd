@@ -1,9 +1,14 @@
 extends Node
 
 const OUTFITS := ["Regata branca / jeans azul","Camiseta vermelha / calca escura","Camiseta azul / calca verde","Camiseta verde / calca marrom","Camiseta mostarda / calca azul","Camiseta roxa / calca cinza"]
+const ACCESSORIES := ["Sem acessório", "Boné", "Bandana", "Óculos escuros"]
 var world: Node3D
 var player_name := "Jogador"
 var outfit := 0
+var accessory := 0
+var style_credits := 900
+var owned_outfits := [0]
+var owned_accessories := [0]
 var config_path := "user://profile.cfg"
 var nametag: Label3D
 
@@ -13,7 +18,13 @@ func _ready() -> void:
 	if config.load(config_path)==OK:
 		player_name=clean_name(str(config.get_value("player","name","Jogador")))
 		outfit=clampi(int(config.get_value("player","outfit",0)),0,5)
-	world.player.model.apply_outfit(outfit)
+		accessory=clampi(int(config.get_value("player","accessory",0)),0,ACCESSORIES.size()-1)
+		style_credits=maxi(0,int(config.get_value("player","style_credits",style_credits)))
+		owned_outfits=config.get_value("player","owned_outfits",[0])
+		owned_accessories=config.get_value("player","owned_accessories",[0])
+	if not outfit in owned_outfits: owned_outfits.append(outfit)
+	if not accessory in owned_accessories: owned_accessories.append(accessory)
+	world.player.model.apply_outfit(outfit*8+accessory)
 	nametag=create_nametag(world,player_name)
 
 static func clean_name(value: String) -> String:
@@ -27,19 +38,35 @@ static func clean_name(value: String) -> String:
 	result=result.strip_edges()
 	return "Jogador" if result.is_empty() else result
 
-func save_profile(value: String, selected: int) -> bool:
+func save_profile(value: String, selected: int, selected_accessory := 0) -> bool:
 	var name_value := clean_name(value)
 	selected=clampi(selected,0,5)
+	selected_accessory=clampi(selected_accessory,0,ACCESSORIES.size()-1)
+	var cost := (0 if selected in owned_outfits else 300) + (0 if selected_accessory in owned_accessories else 150)
+	if style_credits < cost:
+		return false
+	style_credits -= cost
+	if not selected in owned_outfits: owned_outfits.append(selected)
+	if not selected_accessory in owned_accessories: owned_accessories.append(selected_accessory)
 	var config := ConfigFile.new()
 	config.set_value("player","name",name_value)
 	config.set_value("player","outfit",selected)
+	config.set_value("player","accessory",selected_accessory)
+	config.set_value("player","style_credits",style_credits)
+	config.set_value("player","owned_outfits",owned_outfits)
+	config.set_value("player","owned_accessories",owned_accessories)
 	if config.save(config_path)!=OK:
+		style_credits += cost
 		return false
 	player_name=name_value
 	outfit=selected
-	world.player.model.apply_outfit(outfit)
+	accessory=selected_accessory
+	world.player.model.apply_outfit(outfit*8+accessory)
 	nametag.text=player_name
 	return true
+
+func appearance_code() -> int:
+	return outfit*8+accessory
 
 static func create_nametag(parent: Node, value: String) -> Label3D:
 	var label := Label3D.new()

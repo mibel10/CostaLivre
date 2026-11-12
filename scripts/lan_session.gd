@@ -469,7 +469,7 @@ func car_available(car: Node) -> bool:
 	return not active() or int(owners.get(car.net_id,0)) in [0,multiplayer.get_unique_id()]
 
 func local_state() -> Dictionary:
-	return {"aim_weapon":world.player.aim_weapon,"weapon_pitch":world.player.weapon_pitch,"roll":world.player.roll_time/world.player.ROLL_DURATION,"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.outfit,"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null and not world.bus_passenger else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
+	return {"aim_weapon":world.player.aim_weapon,"weapon_pitch":world.player.weapon_pitch,"roll":world.player.roll_time/world.player.ROLL_DURATION,"held":Input.is_action_pressed("activity") and world.activities.menu=="","crouch":world.active_car==null and world.player.is_crouching,"weapon":world.activities.weapon,"name":world.profile.player_name,"outfit":world.profile.appearance_code(),"position":world.player.position,"heading":world.player.model.rotation.y,"car":world.active_car.net_id if world.active_car!=null and not world.bus_passenger else -1,"car_position":world.subject_position(),"car_heading":world.active_car.heading if world.active_car!=null else 0.0,"speed":world.active_car.speed if world.active_car!=null else 0.0}
 
 @rpc("any_peer","call_remote","unreliable_ordered",1)
 func report(state: Dictionary) -> void:
@@ -581,7 +581,7 @@ func accept_state(id: int, state: Dictionary) -> void:
 	else:
 		state.car=-1
 	state["name"]=Profile.clean_name(str(state.get("name","Jogador")))
-	state["outfit"]=clampi(int(state.get("outfit",0)),0,5)
+	state["outfit"]=clampi(int(state.get("outfit",0)),0,47)
 	if rules.sheets.has(id):
 		var inv: Dictionary=rules.sheets[id].inventory
 		var wanted := clampi(int(state.get("weapon",1)),0,7)
@@ -830,7 +830,7 @@ func update_avatars(states: Dictionary) -> void:
 			actor.world=world
 			actor.peer_id=int(id)
 			world.add_child(actor)
-			actor.apply_outfit(clampi(int(states[id].get("outfit",0)),0,5))
+			actor.apply_outfit(clampi(int(states[id].get("outfit",0)),0,47))
 			actor.position=states[id].position
 			var tag := Profile.create_nametag(world,str(states[id].get("name","Jogador")))
 			tag.position=actor.position+Vector3(0,2.5,0)
@@ -838,7 +838,7 @@ func update_avatars(states: Dictionary) -> void:
 		var state: Dictionary=states[id]
 		var on_foot := int(state.car) < 0 and not state.has("bus")
 		var avatar: Dictionary=avatars[id]
-		var outfit: int=clampi(int(state.get("outfit",0)),0,5)
+		var outfit: int=clampi(int(state.get("outfit",0)),0,47)
 		if avatar.outfit!=outfit:
 			avatar.node.apply_outfit(outfit)
 			avatar.outfit=outfit
