@@ -158,10 +158,9 @@ func show_tutorial() -> void:
 	content.add_child(tips)
 	var skip := Button.new()
 	skip.text = "ENTENDI / PULAR TUTORIAL"
-	skip.pressed.connect(func(): world.profile.mark_tutorial_seen(); tutorial_panel.queue_free(); tutorial_panel = null; world.activities.set_menu(""))
+	skip.pressed.connect(func(): world.profile.mark_tutorial_seen(); tutorial_panel.queue_free(); tutorial_panel = null)
 	content.add_child(skip)
 	world.hud.get_parent().add_child(tutorial_panel)
-	world.activities.set_menu("tutorial")
 
 func _process(_delta: float) -> void:
 	if world != null and is_instance_valid(phone_button):
