@@ -205,7 +205,7 @@ func _ready() -> void:
 	chat_column.add_child(chat_row)
 	chat_input = LineEdit.new()
 	chat_input.max_length = CHAT_LIMIT
-	chat_input.placeholder_text = "Mensagem para quem está perto..."
+	chat_input.placeholder_text = "Mensagem para quem está perto... (/local compartilha sua posição)"
 	chat_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chat_input.text_submitted.connect(func(_text): send_chat())
 	chat_row.add_child(chat_input)
@@ -1128,6 +1128,10 @@ func relay_chat(id: int, message: String) -> void:
 	var clean_message := message.strip_edges().replace("\n", " ").replace("\r", " ").replace("\t", " ")
 	if clean_message.is_empty() or clean_message.length() > CHAT_LIMIT:
 		return
+	var share_location: bool = clean_message.to_lower() == "/local"
+	if share_location:
+		var location: Vector3 = rules.position_of(id)
+		clean_message = "📍 Localização compartilhada: X %d · Z %d" % [roundi(location.x), roundi(location.z)]
 	var now := Time.get_ticks_msec()
 	if now - int(chat_last_sent.get(id, -1000)) < CHAT_RATE_MS:
 		return
@@ -1135,7 +1139,7 @@ func relay_chat(id: int, message: String) -> void:
 	var player_name := Profile.clean_name(str(members[id].get("name", "Jogador")))
 	var speaker_at: Vector3 = rules.position_of(id)
 	for peer_id in members:
-		if rules.position_of(int(peer_id)).distance_to(speaker_at) > 70.0:
+		if not share_location and rules.position_of(int(peer_id)).distance_to(speaker_at) > 70.0:
 			continue
 		if int(peer_id) == 1:
 			broadcast_chat(id,player_name,clean_message)
