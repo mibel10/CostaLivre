@@ -220,6 +220,13 @@ func setup_street_musicians() -> void:
 		musician.model.add_child(instrument)
 		if musician.model.animation != null:
 			musician.model.animation.play("DoorWork")
+		var performance := AudioStreamPlayer3D.new()
+		performance.stream = world.pause_menu.menu_music.stream
+		performance.volume_db = -30.0
+		performance.unit_size = 5.0
+		performance.max_distance = 24.0
+		musician.add_child(performance)
+		performance.play()
 		building_contacts[people.size()] = ["musician",musician.position]
 		people.append(musician)
 
