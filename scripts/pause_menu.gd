@@ -140,7 +140,8 @@ func _ready() -> void:
 	pages.character.add_child(accessory_select)
 	button(pages.character,"COMPRAR / EQUIPAR",Rect2(0,410,300,55),save_profile)
 	button(pages.character,"VOLTAR",Rect2(320,410,180,55),func(): show_page("mode" if world.activities.menu=="mode" else "home"))
-	profile_status=label(pages.character,"",Vector2(0,490),18,Color("8ddbb5"))
+	button(pages.character,"TROCA RÁPIDA",Rect2(0,480,300,50),quick_change_profile)
+	profile_status=label(pages.character,"",Vector2(0,550),18,Color("8ddbb5"))
 	label(pages.home, "Sua próxima jogada.", Vector2(0, 45), 32)
 	label(pages.home, "Mapa, opções e mudança de modo ficam aqui.", Vector2(0, 105), 18)
 	button(pages.home,"Creditos",Rect2(0,345,240,48),func(): world.activities.set_menu("credits"))
@@ -526,3 +527,11 @@ func save_profile() -> void:
 		profile_status.text="Equipado · Créditos restantes: %d" % world.profile.style_credits
 	else:
 		profile_status.text="Créditos insuficientes ou falha ao salvar. Saldo: %d" % world.profile.style_credits
+
+func quick_change_profile() -> void:
+	if world.profile.quick_change():
+		outfit_select.select(world.profile.outfit)
+		accessory_select.select(world.profile.accessory)
+		profile_status.text="Troca rápida equipada · %s / %s" % [world.profile.OUTFITS[world.profile.outfit],world.profile.ACCESSORIES[world.profile.accessory]]
+	else:
+		profile_status.text="Compre mais opções na loja para desbloquear outra combinação."

@@ -68,6 +68,17 @@ func save_profile(value: String, selected: int, selected_accessory := 0) -> bool
 func appearance_code() -> int:
 	return outfit*8+accessory
 
+func quick_change() -> bool:
+	var styles: Array[Vector2i] = []
+	for clothing in owned_outfits:
+		for item in owned_accessories:
+			styles.append(Vector2i(int(clothing),int(item)))
+	if styles.size() < 2:
+		return false
+	var current := styles.find(Vector2i(outfit,accessory))
+	var next: Vector2i = styles[(current+1)%styles.size()]
+	return save_profile(player_name,next.x,next.y)
+
 static func create_nametag(parent: Node, value: String) -> Label3D:
 	var label := Label3D.new()
 	label.text=clean_name(value)
