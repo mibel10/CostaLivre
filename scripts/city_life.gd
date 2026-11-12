@@ -33,7 +33,10 @@ var offline_building_job := {}
 var building_dialog: CenterContainer
 var building_title: Label
 var building_choice: Button
+var conversation_choices: Array[Button] = []
 var building_marker: Label3D
+var rumors: Array[Dictionary] = []
+var conversation_showing_rumor := false
 var selected_contact := -1
 var elevator_ui: Control
 const ELEVATOR_FLOORS := {"housing": 13, "apartment": 10, "tower": 8}
@@ -105,6 +108,17 @@ func _ready() -> void:
 		ped.position = ped.route[i%4]
 		ped.point = (i+1)%4
 		people.append(ped)
+	for i in 18:
+		var center := Vector3(231+(i%9)*84,0,-63+((i/9)%2)*126)
+		var ped := Pedestrian.new()
+		ped.world = world
+		ped.appearance_index = i+36
+		ped.route.assign([center+Vector3(-13,0,-13),center+Vector3(13,0,-13),center+Vector3(13,0,13),center+Vector3(-13,0,13)])
+		add_child(ped)
+		var next_point := (i%4+1)%4
+		ped.position = ped.route[i%4].lerp(ped.route[next_point],0.5)
+		ped.point = next_point
+		people.append(ped)
 	for i in 3:
 		var staff := Pedestrian.new()
 		staff.world = world
@@ -172,6 +186,34 @@ func _ready() -> void:
 			if index >= PLACES.size() and slot == 0:
 				building_contacts[people.size()] = ["rest" if lobbies[index] == HOME_BUILDING else "office",lobbies[index]]
 			people.append(resident)
+	setup_street_musicians()
+
+func setup_street_musicians() -> void:
+	for i in 4:
+		var musician := Pedestrian.new()
+		musician.name = "MusicoRua%d" % i
+		musician.world = world
+		musician.appearance_index = i + 12
+		musician.stationary = true
+		musician.tint = [Color("d29a65"),Color("7a9b9e"),Color("b77979"),Color("8c9c70")][i]
+		musician.set_meta("street_musician", true)
+		add_child(musician)
+		musician.position = [Vector3(-84,0,28),Vector3(336,0,30),Vector3(714,0,-18),Vector3(1218,9.9,10)][i]
+		var instrument := MeshInstance3D.new()
+		var body := CapsuleMesh.new()
+		body.radius = 0.13
+		body.height = 0.65
+		instrument.mesh = body
+		var finish := StandardMaterial3D.new()
+		finish.albedo_color = Color("9f6039")
+		instrument.material_override = finish
+		instrument.position = Vector3(0.38,0.78,0.18)
+		instrument.rotation.z = -0.48
+		musician.model.add_child(instrument)
+		if musician.model.animation != null:
+			musician.model.animation.play("DoorWork")
+		building_contacts[people.size()] = ["musician",musician.position]
+		people.append(musician)
 
 func apartment_stair_route() -> Array[Vector3]:
 	var route: Array[Vector3]=[]
@@ -196,7 +238,7 @@ func elevator_building_at(at: Vector3) -> String:
 	for building: String in ELEVATOR_FLOORS:
 		var offset: Vector3 = at - ELEVATOR_CENTERS[building]
 		var front := elevator_front(building) * offset.z
-		if absf(offset.x) < 1.65 and front > -1.4 and front < 3.0 and offset.y >= BASEMENT_HEIGHT-0.25 and offset.y < (ELEVATOR_FLOORS[building]-1)*6+2.8:
+		if absf(offset.x) < 2.4 and front > -1.4 and front < 3.8 and offset.y >= BASEMENT_HEIGHT-0.25 and offset.y < (ELEVATOR_FLOORS[building]-1)*6+2.8:
 			return building
 	return ""
 
@@ -732,6 +774,12 @@ func build_contact_dialog() -> void:
 	building_choice.custom_minimum_size.y = 56
 	building_choice.pressed.connect(func(): submit_building_choice(selected_contact))
 	column.add_child(building_choice)
+	for i in 3:
+		var option := Button.new()
+		option.custom_minimum_size.y = 48
+		option.pressed.connect(func(): choose_conversation(i))
+		column.add_child(option)
+		conversation_choices.append(option)
 	var close := Button.new()
 	close.text = "Sair"
 	close.custom_minimum_size.y = 56
@@ -784,12 +832,44 @@ func interact_building() -> bool:
 	if contact < 0:
 		return false
 	selected_contact = contact
+	if building_contacts[contact][0] == "musician":
+		conversation_showing_rumor = false
+		building_title.text = "MÚSICA NA RUA\nO músico sorri e espera sua resposta."
+		building_choice.hide()
+		for i in conversation_choices.size():
+			conversation_choices[i].show()
+			conversation_choices[i].text = ["Ouvir um rumor sobre a cidade", "Agradecer pela música", "Perguntar sobre a casa abandonada"][i]
+		world.activities.set_menu("building_contact")
+		building_dialog.show()
+		return true
 	var offer: Array = BUILDING_OFFERS[building_contacts[contact][0]]
 	building_title.text = "%s\n%s" % [offer[0],offer[2]]
 	building_choice.text = offer[1]
+	building_choice.show()
+	for option in conversation_choices:
+		option.hide()
 	world.activities.set_menu("building_contact")
 	building_dialog.show()
 	return true
+
+func choose_conversation(choice: int) -> void:
+	if conversation_showing_rumor:
+		conversation_showing_rumor = false
+		world.activities.set_menu("")
+		building_dialog.hide()
+		return
+	if choice == 0 or choice == 2:
+		var rumor := {"at":Vector3(840,0,126) if choice == 0 else Vector3(903,0,-105),"text":"Uma casa vazia perto do cais tem luzes acesas depois da meia-noite." if choice == 0 else "Dizem que o Calado Fantasma aparece na casa abandonada do morro."}
+		if not rumors.any(func(entry): return entry.at == rumor.at):
+			rumors.append(rumor)
+		building_title.text = "RUMOR\n%s" % rumor.text
+		conversation_showing_rumor = true
+		for i in conversation_choices.size():
+			conversation_choices[i].visible = i == 2
+		conversation_choices[2].text = "Entendi"
+		return
+	world.activities.set_menu("")
+	building_dialog.hide()
 
 func submit_building_choice(contact: int) -> void:
 	if world.activities.menu == "building_contact":
@@ -928,10 +1008,13 @@ func _process(delta: float) -> void:
 		return
 	refresh = 0
 	var subject: Vector3 = world.subject_position()
+	var pedestrian_range := minf(float(world.settings.NEAR[world.settings.draw_distance]) + 18.0, 40.0)
+	var pedestrian_range_squared := pedestrian_range * pedestrian_range
 	var online: bool = world.network != null and world.network.active()
 	if online and world.network.is_client():
 		for ped in people:
-			ped.visible=ped.hp>0 and ped.position.distance_squared_to(subject)<3600
+			var range_squared: float = 3600.0 if ped.stationary else pedestrian_range_squared
+			ped.visible=ped.hp>0 and ped.position.distance_squared_to(subject)<range_squared
 			ped.model.process_mode=Node.PROCESS_MODE_INHERIT if ped.visible else Node.PROCESS_MODE_DISABLED
 			ped.set_physics_process(false)
 		return
@@ -962,6 +1045,6 @@ func _process(delta: float) -> void:
 	for i in nearby_walkers.size():
 		var ped = nearby_walkers[i]
 		var simulate := i < 24
-		ped.visible = ped.position.distance_squared_to(subject) < 3600.0
+		ped.visible = ped.position.distance_squared_to(subject) < pedestrian_range_squared
 		ped.model.process_mode = Node.PROCESS_MODE_INHERIT if ped.visible and simulate else Node.PROCESS_MODE_DISABLED
 		ped.set_physics_process(simulate)
