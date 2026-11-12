@@ -28,6 +28,8 @@ var mission_mistakes := 0
 var mission_reveal_time := 0.0
 var mission_round_time := 0.0
 var bank_lookout := 0
+var phone_contract_index := -1
+var phone_contract_deadline := 0
 
 func _ready() -> void:
 	local_body=world.player
@@ -312,6 +314,30 @@ func propose_mission(id: int,index: int) -> void:
 		send_personal(peer_id, "mission_offer", {"index": index, "host": host_name})
 	private_notice(id,"Convite enviado. A operacao comeca quando um parceiro aceitar.")
 
+func offer_phone_contract(index: int) -> void:
+	if not multiplayer.is_server() or index < 0 or index > 16 or world.activities.job >= 0:
+		return
+	phone_contract_index = index
+	phone_contract_deadline = Time.get_ticks_msec() + 60000
+	for peer_id in participants():
+		send_personal(peer_id,"phone_contract",{"index":index})
+
+func answer_phone_contract(id: int, index: int, accept: bool) -> void:
+	if index != phone_contract_index or Time.get_ticks_msec() > phone_contract_deadline:
+		return
+	if not accept:
+		send_personal(id,"phone_contract_close",{})
+		return
+	if world.activities.job >= 0 or is_dead(id) or world.prison_stage_for(id) >= 0:
+		private_notice(id,"Este contrato não está disponível agora.")
+		return
+	var selected := phone_contract_index
+	phone_contract_index = -1
+	phone_contract_deadline = 0
+	world.activities.start_job(selected,false,id)
+	for peer_id in participants():
+		send_personal(peer_id,"phone_contract_close",{})
+
 func send_personal(id: int, kind: String, data: Dictionary) -> void:
 	if id == local_id():
 		receive_event(kind, data)
@@ -426,6 +452,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 			else:
 				world.activities.start_job(requested_job, false, id)
 		"mission_response": respond_to_mission(id,bool(data.get("accept",false)))
+		"phone_contract_response": answer_phone_contract(id,int(data.get("index",-1)),bool(data.get("accept",false)))
 		"mission_digit": enter_mission_digit(id,clampi(int(data.get("digit",0)),1,4))
 		"mission_cancel":
 			if id==mission_hacking_peer:
@@ -622,6 +649,8 @@ func receive_event(kind: String, data: Dictionary) -> void:
 		"menu": world.activities.set_menu(str(data.get("value","")))
 		"mission_offer": network.show_mission_offer(int(data.get("index",24)),str(data.get("host","Host")))
 		"mission_offer_close": network.hide_mission_offer()
+		"phone_contract": world.hud.show_contract_message(int(data.get("index",-1)))
+		"phone_contract_close": world.hud.close_phone_message()
 		"elevator":
 			world.life.apply_elevator_arrival(data.get("position",Vector3.ZERO))
 		"cutscene": world.play_cutscene(str(data.get("title","Contrato")),str(data.get("subtitle","")))
@@ -780,6 +809,11 @@ func update_bank_lookout() -> void:
 
 func physics(delta: float) -> void:
 	tick_mission_offer()
+	if phone_contract_index >= 0 and (Time.get_ticks_msec() > phone_contract_deadline or world.activities.job >= 0):
+		for peer_id in participants():
+			send_personal(peer_id,"phone_contract_close",{})
+		phone_contract_index = -1
+		phone_contract_deadline = 0
 	if network.is_client():
 		if Input.is_action_pressed("shoot") and world.activities.menu=="" and not is_dead(local_id()):
 			fire_local()

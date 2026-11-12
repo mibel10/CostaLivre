@@ -11,6 +11,7 @@ var last_hack_entered := 0
 var audio: AudioStreamPlayer
 var step_audio: AudioStreamPlayer
 var siren_audio: AudioStreamPlayer
+var chase_audio: AudioStreamPlayer
 var sounds := {}
 var step_clock := 0.0
 var siren_clock := 0.0
@@ -28,6 +29,11 @@ func _ready() -> void:
 	siren_audio = AudioStreamPlayer.new()
 	siren_audio.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(siren_audio)
+	chase_audio = AudioStreamPlayer.new()
+	chase_audio.process_mode = Node.PROCESS_MODE_PAUSABLE
+	chase_audio.stream = make_chase_music()
+	chase_audio.volume_db = -60.0
+	add_child(chase_audio)
 	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit"]:
 		var wav := AudioStreamWAV.new()
 		wav.format = AudioStreamWAV.FORMAT_16_BITS
@@ -63,6 +69,29 @@ func play(name: String, volume := -18.0) -> void:
 	voice.stream = sounds[name]
 	voice.volume_db = volume
 	voice.play()
+
+func make_chase_music() -> AudioStreamWAV:
+	const RATE := 22050
+	const SECONDS := 8
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = RATE
+	stream.stereo = false
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_end = RATE * SECONDS
+	var data := PackedByteArray()
+	data.resize(RATE * SECONDS * 2)
+	var bass_notes := [55.0,55.0,65.41,49.0,55.0,73.42,65.41,49.0]
+	for i in RATE * SECONDS:
+		var t := float(i) / RATE
+		var beat := int(t * 2.0)
+		var bass := sin(TAU * bass_notes[beat % bass_notes.size()] * t) * 0.10
+		var pulse_phase := fposmod(t,0.5)
+		var pulse := sin(TAU * 165.0 * t) * exp(-pulse_phase * 13.0) * 0.16
+		var alarm := sin(TAU * (440.0 if beat % 4 < 2 else 523.25) * t) * 0.035
+		data.encode_s16(i * 2,int(clampf(bass + pulse + alarm,-1.0,1.0) * 15000.0))
+	stream.data = data
+	return stream
 
 func wheel_weapon(offset: Vector2) -> int:
 	return posmod(roundi((rad_to_deg(offset.angle()) + 90.0) / 45.0), 8)
@@ -130,6 +159,8 @@ func begin_death() -> void:
 
 func _process(delta: float) -> void:
 	if world.finished:
+		chase_audio.stop()
+		chase_audio.volume_db = -60.0
 		var seconds := (Time.get_ticks_msec() - death_started) / 1000.0
 		if seconds >= 3.0:
 			world.respawn_local()
@@ -140,6 +171,15 @@ func _process(delta: float) -> void:
 		return
 	if world.get_tree().paused:
 		return
+	var chase_heat: float = world.heat
+	if world.network != null and world.network.active():
+		chase_heat = world.network.rules.wanted_heat(multiplayer.get_unique_id())
+	var pursuit: bool = chase_heat >= (12.0 if world.network != null and world.network.active() else 20.0) and world.activities.menu == ""
+	if pursuit and not chase_audio.playing:
+		chase_audio.play()
+	chase_audio.volume_db = move_toward(chase_audio.volume_db,-17.0 if pursuit else -60.0,delta*22.0)
+	if not pursuit and chase_audio.playing and chase_audio.volume_db <= -59.0:
+		chase_audio.stop()
 	var current_car: Node3D = world.active_car
 	if current_car != last_car:
 		if current_car != null or is_instance_valid(last_car):
@@ -178,6 +218,7 @@ func _exit_tree() -> void:
 	audio.stop()
 	step_audio.stop()
 	siren_audio.stop()
+	chase_audio.stop()
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN and is_inside_tree() and world != null:

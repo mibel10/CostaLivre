@@ -104,6 +104,7 @@ var campaign_path := "user://campaign.cfg"
 var campaign_save_path := "user://campaign_save.cfg"
 var hack_pointer := false
 var prop_state := Vector4i(-2, -1, -1, -1)
+var phone_contract_clock := 45.0
 
 func _ready() -> void:
 	if JOBS.size()==17:
@@ -1179,7 +1180,16 @@ func complete_supply_scene() -> void:
 	else:
 		world.notify("Contato confirmado. Entregue a carga.")
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if game_mode == "sandbox" and job < 0 and menu == "" and not world.finished and (world.network == null or not world.network.is_client()):
+		phone_contract_clock -= delta
+		if phone_contract_clock <= 0.0:
+			phone_contract_clock = 120.0
+			var offer_index := randi_range(0,16)
+			if world.network != null and world.network.active():
+				world.network.rules.offer_phone_contract(offer_index)
+			else:
+				world.hud.show_contract_message(offer_index)
 	var show_hack_pointer: bool = bank.local_hacking() or (world.network != null and world.network.active() and world.network.rules.local_mission_hacking())
 	if hack_pointer != show_hack_pointer:
 		hack_pointer = show_hack_pointer

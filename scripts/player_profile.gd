@@ -9,6 +9,7 @@ var accessory := 0
 var style_credits := 2000
 var owned_outfits := [0]
 var owned_accessories := [0]
+var tutorial_seen := false
 var config_path := "user://profile.cfg"
 var nametag: Label3D
 
@@ -22,6 +23,7 @@ func _ready() -> void:
 		style_credits=maxi(0,int(config.get_value("player","style_credits",style_credits)))
 		owned_outfits=config.get_value("player","owned_outfits",[0])
 		owned_accessories=config.get_value("player","owned_accessories",[0])
+		tutorial_seen=bool(config.get_value("player","tutorial_seen",false))
 	if not outfit in owned_outfits: owned_outfits.append(outfit)
 	if not accessory in owned_accessories: owned_accessories.append(accessory)
 	world.player.model.apply_outfit(outfit*8+accessory)
@@ -57,6 +59,7 @@ func save_profile(value: String, selected: int, selected_accessory := 0) -> bool
 	config.set_value("player","style_credits",new_credits)
 	config.set_value("player","owned_outfits",new_outfits)
 	config.set_value("player","owned_accessories",new_accessories)
+	config.set_value("player","tutorial_seen",tutorial_seen)
 	if config.save(config_path)!=OK:
 		return false
 	style_credits=new_credits
@@ -68,6 +71,13 @@ func save_profile(value: String, selected: int, selected_accessory := 0) -> bool
 	world.player.model.apply_outfit(outfit*8+accessory)
 	nametag.text=player_name
 	return true
+
+func mark_tutorial_seen() -> void:
+	tutorial_seen = true
+	var config := ConfigFile.new()
+	config.load(config_path)
+	config.set_value("player","tutorial_seen",true)
+	config.save(config_path)
 
 func appearance_code() -> int:
 	return outfit*8+accessory

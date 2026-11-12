@@ -9,6 +9,12 @@ var navy := Color(0.035, 0.085, 0.12, 0.82)
 var panel_styles := {}
 var phone_button: Button
 var phone_panel: PanelContainer
+var phone_apps: VBoxContainer
+var phone_messages: VBoxContainer
+var phone_message_text: Label
+var phone_contract_index := -1
+var invite_available := false
+var tutorial_panel: PanelContainer
 const CHOICE_MENUS := ["jobs", "guns", "heavy_guns", "cars", "garage_cars", "owned_cars", "garage", "credits"]
 const PAGE_MENUS := ["jobs", "cars", "garage_cars", "owned_cars"]
 const MENU_CLOSE := Rect2(762, 590, 156, 52)
@@ -53,23 +59,49 @@ func _ready() -> void:
 	add_child(phone_button)
 	phone_panel = PanelContainer.new()
 	phone_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	phone_panel.position = Vector2(-340,-404)
-	phone_panel.custom_minimum_size = Vector2(320,330)
-	phone_panel.size = Vector2(320,330)
+	phone_panel.position = Vector2(-340,-484)
+	phone_panel.custom_minimum_size = Vector2(320,410)
+	phone_panel.size = Vector2(320,410)
 	phone_panel.hide()
 	add_child(phone_panel)
-	var apps := VBoxContainer.new()
-	phone_panel.add_child(apps)
-	for item in [["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
+	phone_apps = VBoxContainer.new()
+	phone_panel.add_child(phone_apps)
+	for item in [["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = item[0]
 		app.custom_minimum_size.y = 40
 		app.pressed.connect(phone_app.bind(item[1]))
-		apps.add_child(app)
+		phone_apps.add_child(app)
+	phone_messages = VBoxContainer.new()
+	phone_messages.hide()
+	phone_panel.add_child(phone_messages)
+	phone_message_text = Label.new()
+	phone_message_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	phone_messages.add_child(phone_message_text)
+	var accept_contract := Button.new()
+	accept_contract.text = "ACEITAR CONTRATO"
+	accept_contract.pressed.connect(accept_phone_contract)
+	phone_messages.add_child(accept_contract)
+	var dismiss_contract := Button.new()
+	dismiss_contract.text = "IGNORAR"
+	dismiss_contract.pressed.connect(func(): close_phone_message())
+	phone_messages.add_child(dismiss_contract)
+	var back := Button.new()
+	back.text = "VOLTAR"
+	back.pressed.connect(func(): phone_messages.hide(); phone_apps.show())
+	phone_messages.add_child(back)
 
 func phone_app(app: String) -> void:
 	phone_panel.hide()
 	match app:
+		"messages":
+			phone_panel.show()
+			phone_apps.hide()
+			phone_messages.show()
+			phone_message_text.text = "Nenhuma proposta nova." if phone_contract_index < 0 else "Mensagem de uma empresa local:\n\nContrato: %s\n\nAceite para iniciar." % world.activities.JOBS[phone_contract_index]
+		"invites":
+			if invite_available and world.network.active(): world.network.open_mission_offer()
+			else: world.notify("Você não tem convites de atividade pendentes.")
 		"jobs": world.activities.set_menu("jobs")
 		"map": world.pause_menu.show_page("map")
 		"chat":
@@ -77,6 +109,59 @@ func phone_app(app: String) -> void:
 			else: world.notify("O chat regional fica disponível durante o multiplayer.")
 		_: world.network.send_emote(app)
 	queue_redraw()
+
+func show_contract_message(index: int) -> void:
+	if index < 0 or index >= world.activities.JOBS.size():
+		return
+	phone_contract_index = index
+	phone_button.text = "CELULAR · NOVA MENSAGEM"
+	world.notify("Nova proposta no celular: %s." % world.activities.JOBS[index])
+
+func accept_phone_contract() -> void:
+	if phone_contract_index < 0:
+		return
+	var index := phone_contract_index
+	if world.network.active():
+		world.network.rules.send_action("phone_contract_response",{"index":index,"accept":true})
+	else:
+		world.activities.start_job(index)
+	close_phone_message()
+
+func close_phone_message() -> void:
+	phone_contract_index = -1
+	phone_button.text = "CELULAR · CONVITE" if invite_available else "CELULAR"
+	phone_messages.hide()
+	phone_apps.show()
+
+func set_phone_invite_available(value: bool) -> void:
+	invite_available = value
+	if phone_contract_index < 0:
+		phone_button.text = "CELULAR · CONVITE" if invite_available else "CELULAR"
+
+func show_tutorial() -> void:
+	if world.profile.tutorial_seen or tutorial_panel != null:
+		return
+	tutorial_panel = PanelContainer.new()
+	tutorial_panel.set_anchors_preset(Control.PRESET_CENTER)
+	tutorial_panel.position = Vector2(-260,-150)
+	tutorial_panel.size = Vector2(520,300)
+	tutorial_panel.theme = world.pause_menu.canvas.theme
+	var content := VBoxContainer.new()
+	tutorial_panel.add_child(content)
+	var title := Label.new()
+	title.text = "COMEÇANDO EM COSTA LIVRE"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+	var tips := Label.new()
+	tips.text = "PC: WASD para andar, mouse para olhar, F para interagir e M para contratos.\nAndroid: use o direcional e os botões na tela.\nUse o celular para mensagens, convites, mapa e emotes.\nNo multiplayer, o host valida missões e ações compartilhadas."
+	tips.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(tips)
+	var skip := Button.new()
+	skip.text = "ENTENDI / PULAR TUTORIAL"
+	skip.pressed.connect(func(): world.profile.mark_tutorial_seen(); tutorial_panel.queue_free(); tutorial_panel = null; world.activities.set_menu(""))
+	content.add_child(skip)
+	world.hud.get_parent().add_child(tutorial_panel)
+	world.activities.set_menu("tutorial")
 
 func _process(_delta: float) -> void:
 	if world != null and is_instance_valid(phone_button):

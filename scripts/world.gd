@@ -246,6 +246,7 @@ func start_mode(mode: String) -> void:
 		activities.job = -1
 		marker.visible = false
 		notify("Modo jogo livre: explore a cidade, faça contratos ou crie sua própria aventura.")
+		hud.show_tutorial()
 
 func restart_after_admin() -> bool:
 	if not admin_used:

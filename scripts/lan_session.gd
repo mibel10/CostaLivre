@@ -236,10 +236,17 @@ func open_menu() -> void:
 func show_mission_offer(index: int, host_name: String) -> void:
 	var titles: Array=world.activities.JOBS
 	offer_text.text="%s convida você para %s.\n\nAo aceitar, você vai para a entrada da missão." % [host_name,titles[index] if index == 33 else titles[clampi(index,24,28)]]
+	world.hud.set_phone_invite_available(true)
 	offer_panel.show()
 	world.restore_pointer()
 
+func open_mission_offer() -> void:
+	if offer_panel != null and is_instance_valid(offer_panel) and world.hud.invite_available:
+		offer_panel.show()
+		world.restore_pointer()
+
 func hide_mission_offer() -> void:
+	world.hud.set_phone_invite_available(false)
 	if is_instance_valid(offer_panel) and offer_panel.visible:
 		offer_panel.hide()
 		world.restore_pointer()
