@@ -2,6 +2,7 @@ extends Node3D
 
 const Pedestrian = preload("res://scripts/pedestrian.gd")
 const HOME_BUILDING := Vector3(861,0,-105)
+const HAUNTED_HOUSE := Vector3(903,0,-105)
 const PLACES := [Vector3(-63,0,21),Vector3(63,0,21),Vector3(-63,0,63),Vector3(-105,0,-21),Vector3(105,0,-63),Vector3(147,0,63)]
 const TITLES := ["CAFÉ MARÉ", "CLÍNICA COSTA", "RESIDENCIAL COSTA", "OFICINA DO PORTO", "MERCADO DA PRAIA", "ESTÚDIO SOLAR"]
 var computer_ready_at := {}
@@ -37,6 +38,10 @@ var conversation_choices: Array[Button] = []
 var building_marker: Label3D
 var rumors: Array[Dictionary] = []
 var conversation_showing_rumor := false
+var haunted_dialog := false
+var haunted_clues := 0
+var haunted_ghost: MeshInstance3D
+var haunted_clue_markers: Array[MeshInstance3D] = []
 var selected_contact := -1
 var elevator_ui: Control
 const ELEVATOR_FLOORS := {"housing": 13, "apartment": 10, "tower": 8}
@@ -81,6 +86,7 @@ func _ready() -> void:
 	build_elevators()
 	build_elevator_menu()
 	build_contact_dialog()
+	setup_haunted_house()
 	for i in 32:
 		var center := Vector3(-105+(i%4)*42,0,-63+((i/4)%4)*42)
 		var ped := Pedestrian.new()
@@ -214,6 +220,53 @@ func setup_street_musicians() -> void:
 			musician.model.animation.play("DoorWork")
 		building_contacts[people.size()] = ["musician",musician.position]
 		people.append(musician)
+
+func setup_haunted_house() -> void:
+	var house := Node3D.new()
+	house.name = "CasaAbandonada"
+	house.position = HAUNTED_HOUSE
+	add_child(house)
+	world.box(house,Vector3(0,-0.1,0),Vector3(12,0.2,10),Color("4b4945"),true)
+	world.box(house,Vector3(0,2,-5),Vector3(12,4,0.2),Color("554d48"),true)
+	world.box(house,Vector3(-6,2,0),Vector3(0.2,4,10),Color("554d48"),true)
+	world.box(house,Vector3(6,2,0),Vector3(0.2,4,10),Color("554d48"),true)
+	world.box(house,Vector3(-4.5,2,5),Vector3(3,4,0.2),Color("554d48"),true)
+	world.box(house,Vector3(4.5,2,5),Vector3(3,4,0.2),Color("554d48"),true)
+	world.box(house,Vector3(0,4.1,0),Vector3(12,0.3,10),Color("302c2a"),true)
+	var door := world.box(house,Vector3(-2,0.8,4.8),Vector3(0.12,1.6,0.08),Color("8a6746"),false)
+	door.rotation.y = -0.7
+	for at in [Vector3(-3,0.65,1),Vector3(3,0.65,0),Vector3(0,0.65,-3)]:
+		var clue := MeshInstance3D.new()
+		var orb := SphereMesh.new()
+		orb.radius = 0.16
+		orb.height = 0.32
+		clue.mesh = orb
+		clue.material_override = world.material(Color("91eaff"),true)
+		clue.position = at
+		house.add_child(clue)
+		haunted_clue_markers.append(clue)
+	var ghost_material := StandardMaterial3D.new()
+	ghost_material.albedo_color = Color(0.62,0.86,0.95,0.72)
+	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ghost_material.emission_enabled = true
+	ghost_material.emission = Color("a7e8ff")
+	ghost_material.emission_energy_multiplier = 1.6
+	haunted_ghost = MeshInstance3D.new()
+	var shape := CapsuleMesh.new()
+	shape.radius = 0.42
+	shape.height = 1.8
+	haunted_ghost.mesh = shape
+	haunted_ghost.material_override = ghost_material
+	haunted_ghost.position = HAUNTED_HOUSE + Vector3(0,1.2,0)
+	haunted_ghost.name = "CaladoFantasma"
+	add_child(haunted_ghost)
+	var name_tag := Label3D.new()
+	name_tag.text = "CALADO FANTASMA"
+	name_tag.position = Vector3(0,1.25,0)
+	name_tag.font_size = 24
+	name_tag.outline_size = 5
+	name_tag.modulate = Color("c8f4ff")
+	haunted_ghost.add_child(name_tag)
 
 func apartment_stair_route() -> Array[Vector3]:
 	var route: Array[Vector3]=[]
@@ -676,6 +729,10 @@ func prompt() -> String:
 	if world.active_car != null:
 		return ""
 	var at: Vector3 = world.player.position
+	if haunted_clues < 3 and at.distance_to(HAUNTED_HOUSE + [Vector3(-3,0,1),Vector3(3,0,0),Vector3(0,0,-3)][haunted_clues]) < 2.2:
+		return "F / Examinar vestígio %d de 3" % (haunted_clues+1)
+	if haunted_clues >= 3 and at.distance_to(HAUNTED_HOUSE) < 3.0:
+		return "F / Falar com Calado Fantasma"
 	var computer_floor := home_computer_floor(at)
 	if computer_floor >= 0:
 		return "F / Criar jogo" if owns_computer(computer_floor) else "Computador do apartamento"
@@ -705,6 +762,23 @@ func interact() -> bool:
 	if world.active_car != null:
 		return false
 	var at: Vector3 = world.player.position
+	if haunted_clues < 3 and at.distance_to(HAUNTED_HOUSE + [Vector3(-3,0,1),Vector3(3,0,0),Vector3(0,0,-3)][haunted_clues]) < 2.2:
+		haunted_clue_markers[haunted_clues].hide()
+		haunted_clues += 1
+		world.notify(["Há marcas de passos que terminam no meio da sala.","Um gravador repete o nome Calado entre chiados.","A sombra no chão aponta para o lugar onde o fantasma está."][haunted_clues-1])
+		world.extra.play("hack",-18.0)
+		return true
+	if haunted_clues >= 3 and at.distance_to(HAUNTED_HOUSE) < 3.0:
+		building_title.text = "CALADO FANTASMA\nAs pistas trouxeram você até aqui. O que deseja fazer?"
+		haunted_dialog = true
+		building_choice.hide()
+		for i in conversation_choices.size():
+			conversation_choices[i].visible = i < 2
+		conversation_choices[0].text = "Perguntar o que aconteceu"
+		conversation_choices[1].text = "Ajudar Calado a descansar"
+		world.activities.set_menu("building_contact")
+		building_dialog.show()
+		return true
 	var computer_floor := home_computer_floor(at)
 	if computer_floor >= 0:
 		if not owns_computer(computer_floor):
@@ -753,6 +827,22 @@ func interact() -> bool:
 		return true # Holding F advances the work in tick_tasks.
 	return false
 
+func resolve_haunted_story(peaceful: bool) -> void:
+	if peaceful:
+		building_title.text = "CALADO FANTASMA\nA luz se apaga, e a casa finalmente fica em silêncio."
+		if is_instance_valid(haunted_ghost):
+			haunted_ghost.hide()
+		if world.network == null or not world.network.active():
+			world.cash += 600
+		world.notify("Você ajudou Calado a descansar." + (" +$600" if world.network == null or not world.network.active() else ""))
+	else:
+		building_title.text = "CALADO FANTASMA\nEle aponta para a rua e sussurra: 'a cidade ainda precisa de você.'"
+		world.notify("Calado revelou um atalho seguro pelo morro.")
+	conversation_showing_rumor = true
+	for i in conversation_choices.size():
+		conversation_choices[i].visible = i == 2
+	conversation_choices[2].text = "Encerrar conversa"
+
 func near_building_mission(at: Vector3) -> bool:
 	var current: int = world.activities.job
 	return (TASKS.has(current) or NEW_TASKS.has(current) or current in [24,25,26]) and at.distance_squared_to(mission_position()) < 6.25
@@ -777,7 +867,7 @@ func build_contact_dialog() -> void:
 	for i in 3:
 		var option := Button.new()
 		option.custom_minimum_size.y = 48
-		option.pressed.connect(func(): choose_conversation(i))
+		option.pressed.connect(choose_conversation.bind(i))
 		column.add_child(option)
 		conversation_choices.append(option)
 	var close := Button.new()
@@ -822,6 +912,8 @@ func interact_building() -> bool:
 	if world.active_car != null:
 		return false
 	var at: Vector3 = world.player.position
+	if at.distance_to(HAUNTED_HOUSE) < 8.0:
+		return interact()
 	if home_floor_at(at) >= 0 or elevator_interaction(at) != 0 or near_building_mission(at):
 		return false
 	var job := building_job_for(building_player_id())
@@ -855,8 +947,13 @@ func interact_building() -> bool:
 func choose_conversation(choice: int) -> void:
 	if conversation_showing_rumor:
 		conversation_showing_rumor = false
+		haunted_dialog = false
 		world.activities.set_menu("")
 		building_dialog.hide()
+		return
+	if haunted_dialog:
+		haunted_dialog = false
+		resolve_haunted_story(choice == 1)
 		return
 	if choice == 0 or choice == 2:
 		var rumor := {"at":Vector3(840,0,126) if choice == 0 else Vector3(903,0,-105),"text":"Uma casa vazia perto do cais tem luzes acesas depois da meia-noite." if choice == 0 else "Dizem que o Calado Fantasma aparece na casa abandonada do morro."}
