@@ -162,6 +162,8 @@ func _draw() -> void:
 	if world.life != null:
 		for i in world.life.PLACES.size():
 			dot(world.life.PLACES[i]+Vector3(0,0,14),Color("9fd4b5"),world.life.TITLES[i])
+		for rumor in world.life.rumors:
+			dot(rumor.at, Color("c891df"), rumor.text)
 	for ix in range(8, 18):
 		var x := -147.0 + ix * 42
 		var z := -105.0 if ix == 12 else 105.0
