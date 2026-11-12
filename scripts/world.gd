@@ -29,6 +29,7 @@ const PRISON_SPAWN := Vector3(1012, 0.3, 40)
 const PRISON_INTERIOR := AABB(Vector3(1005.2, -0.4, 35.2), Vector3(59.6, 10.3, 39.6))
 const PRISON_POINTS := [Vector3(1012,0,40), Vector3(1012,0,61), Vector3(1035,0,60), Vector3(1054,0,65), Vector3(1035,0,48), Vector3(1035,0,73)]
 const PRISON_TEXT := ["Pegue a ferramenta na cela", "Agache para abrir o acesso ao corredor", "Segure F para desligar as câmeras", "Encontre o cartão de acesso", "Segure F para desativar o alarme", "Abra a saída"]
+const PRISON_GUARD_POSTS := [Vector3(1015,0.3,53), Vector3(1033,0.3,59), Vector3(1051,0.3,66)]
 var prison_stage := -1
 var prison_progress := 0.0
 var prison_after_death := false
@@ -91,6 +92,7 @@ func _ready() -> void:
 	rng.seed = 185
 	city_event_rng.randomize()
 	city_event_clock = city_event_rng.randf_range(65.0, 100.0)
+	batch_city_geometry(self)
 	create_fuel_station()
 	setup_input()
 	rng.state = -3374745113267529202
@@ -188,6 +190,7 @@ func _ready() -> void:
 		Vector2i(-126, -42), Vector2i(-84, -42), Vector2i(0, -42), Vector2i(42, -42),
 		Vector2i(84, 0), Vector2i(42, 42), Vector2i(-84, 84), Vector2i(0, 84),
 		Vector2i(210, 0), Vector2i(252, 0), Vector2i(546, 0), Vector2i(840, 0),
+		Vector2i(378, 0), Vector2i(714, 0),
 	]
 	for i in extra_blocks.size():
 		var block: Vector2i = extra_blocks[i]
@@ -370,33 +373,50 @@ func sign_text(value: String, at: Vector3) -> void:
 func batch_city_geometry(parent: Node3D = null) -> void:
 	if parent == null:
 		parent = self
-	# Native instancing keeps the generated city affordable on integrated GPUs.
+	# Chunked native instancing reduces static draw calls without spanning the whole map.
 	var groups := {}
 	for node in parent.get_children():
-		if node is MeshInstance3D and node.mesh is BoxMesh and node.visible and not node.get_meta("keep_mesh",false):
-			var mat: Material = node.material_override
-			if not groups.has(mat):
-				groups[mat] = []
-			var transform: Transform3D = node.transform
-			transform.basis = transform.basis.scaled(node.mesh.size)
-			groups[mat].append(transform)
-			for child in node.get_children():
-				if child is StaticBody3D:
-					child.reparent(parent, true)
-			parent.remove_child(node)
-			node.queue_free()
-	for mat in groups:
+		if not node is MeshInstance3D or not node.mesh is BoxMesh or not node.visible or node.get_meta("keep_mesh",false):
+			continue
+		if node.visibility_range_end > 0.0 or node.visibility_range_begin > 0.0 or node.layers != 1 or node.transparency > 0.0:
+			continue
+		var material: Material = node.material_override if node.material_override != null else node.mesh.surface_get_material(0)
+		if not material is StandardMaterial3D:
+			continue
+		var mat: StandardMaterial3D = material
+		if mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED or mat.albedo_color.a < 1.0:
+			continue
+		var safe_children := true
+		for child in node.get_children():
+			if not child is StaticBody3D:
+				safe_children = false
+		if not safe_children:
+			continue
+		var cell := Vector2i(floori(node.position.x / 64.0), floori(node.position.z / 64.0))
+		var key := "%d:%d:%d:%d" % [mat.get_instance_id(), cell.x, cell.y, node.cast_shadow]
+		if not groups.has(key):
+			groups[key] = {"material": mat, "transforms": [], "cast_shadow": node.cast_shadow}
+		var transform: Transform3D = node.transform
+		transform.basis = transform.basis.scaled(node.mesh.size)
+		groups[key].transforms.append(transform)
+		for child in node.get_children():
+			child.reparent(parent, true)
+		parent.remove_child(node)
+		node.queue_free()
+	for key in groups:
+		var batch: Dictionary = groups[key]
 		var instances := MultiMeshInstance3D.new()
 		var multi := MultiMesh.new()
 		multi.transform_format = MultiMesh.TRANSFORM_3D
 		var cube := BoxMesh.new()
 		cube.size = Vector3.ONE
 		multi.mesh = cube
-		multi.instance_count = groups[mat].size()
-		for i in groups[mat].size():
-			multi.set_instance_transform(i, groups[mat][i])
+		multi.instance_count = batch.transforms.size()
+		for i in batch.transforms.size():
+			multi.set_instance_transform(i, batch.transforms[i])
 		instances.multimesh = multi
-		instances.material_override = mat
+		instances.material_override = batch.material
+		instances.cast_shadow = batch.cast_shadow
 		parent.add_child(instances)
 
 func palm(at: Vector3) -> void:
@@ -887,11 +907,55 @@ func update_dispatch(delta: float) -> void:
 		station.dispatch(delta)
 
 func police_target(observer: Node3D) -> Vector3:
+	if bool(observer.get_meta("prison_guard", false)):
+		return prison_guard_target(observer.position)
 	var mission_vehicle: Node = car_by_id(int(observer.get_meta("mission_vehicle",-1)))
 	if mission_vehicle != null and mission_vehicle.hp > 0: return mission_vehicle.position
 	if network!=null and network.active():
 		return network.rules.police_target_actor(observer.position, int(observer.get_meta("police_target_peer", 0)))[1]
 	return subject_position()
+
+func prison_guard_target(from: Vector3) -> Vector3:
+	var target := Vector3.INF
+	var distance_squared := INF
+	if network != null and network.active():
+		for id in network.rules.sheets:
+			if int(network.rules.sheets[id].get("prison_stage", -1)) < 0:
+				continue
+			var at: Vector3 = network.rules.position_of(int(id))
+			var current := from.distance_squared_to(at)
+			if current < distance_squared:
+				target = at
+				distance_squared = current
+	elif prison_stage >= 0:
+		target = subject_position()
+	return target
+
+func prisoners_present() -> bool:
+	if network != null and network.active():
+		for sheet in network.rules.sheets.values():
+			if int(sheet.get("prison_stage", -1)) >= 0:
+				return true
+		return false
+	return prison_stage >= 0
+
+func update_prison_guards() -> void:
+	if network != null and network.is_client():
+		return
+	var guards: Array = activities.officers.filter(func(officer): return bool(officer.get_meta("prison_guard", false)))
+	if not prisoners_present():
+		for guard in guards:
+			activities.officers.erase(guard)
+			guard.queue_free()
+		return
+	while guards.size() < PRISON_GUARD_POSTS.size():
+		var guard := preload("res://scripts/officer.gd").new()
+		guard.world = self
+		guard.position = PRISON_GUARD_POSTS[guards.size()]
+		guard.set_meta("prison_guard", true)
+		add_child(guard)
+		activities.officers.append(guard)
+		guards.append(guard)
 
 func police_can_see(observer: Node3D, at := Vector3.INF) -> bool:
 	var target := (at if at.is_finite() else police_target(observer)) + Vector3.UP
@@ -1046,6 +1110,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if network == null or not network.is_client():
 		tick_city_events(delta)
+	update_prison_guards()
 	if prison_stage_for() >= 0 and (network == null or not network.active()):
 		tick_prison(1, player.position, Input.is_action_pressed("activity") and activities.menu == "", delta)
 	if prison_stage_for() >= 0 and active_car == null:

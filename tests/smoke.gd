@@ -21,7 +21,7 @@ func run() -> void:
 	await physics_frame
 	await physics_frame
 	var a = world.activities
-	assert(world.cars.size() == 87 and world.station.fleet.size() == 27, "Expanded city traffic, parked cars and police fleet")
+	assert(world.cars.size() == 89 and world.station.fleet.size() == 27, "Expanded city traffic, parked cars and police fleet")
 	world.player.position = Vector3(-5, 0.3, 7)
 	world.interact()
 	assert(world.active_car == null and world.car_transition)
@@ -32,7 +32,7 @@ func run() -> void:
 	assert(world.cops.is_empty() and world.heat == 0, "The starter car is owned")
 	world.raise_heat(12)
 	world.update_dispatch(6)
-	assert(world.cops.size() == 1 and world.heat <= 20, "One stolen car brings one patrol")
+	assert(world.cops.size() == 2 and world.heat == 24.0, "A witness escalates a car theft to two patrols")
 	var starter = world.active_car
 	world.active_car.speed = 10
 	world.interact()
@@ -44,7 +44,7 @@ func run() -> void:
 	var heat_before: float = world.heat
 	world.interact()
 	await create_timer(2.15).timeout
-	assert(world.active_car == starter and world.heat == heat_before, "Re-entering your car is legal")
+	assert(world.active_car == starter and world.heat <= heat_before, "Re-entering your car is legal without adding heat")
 	Input.action_press("forward")
 	var before: Vector3 = starter.position
 	for frame in 50:

@@ -5,6 +5,8 @@ const Profile = preload("res://scripts/player_profile.gd")
 const PORT := 28960
 const DISCOVERY := 28961
 const SYMBOLS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+const CHAT_LIMIT := 140
+const CHAT_RATE_MS := 700
 var world: Node3D
 var code := ""
 var peer: ENetMultiplayerPeer
@@ -39,6 +41,12 @@ var announced_version := Build.TOKEN
 var refusal_reason := ""
 var offer_panel: PanelContainer
 var offer_text: Label
+var chat_panel: PanelContainer
+var chat_toggle: Button
+var chat_log: RichTextLabel
+var chat_input: LineEdit
+var chat_history: Array[String] = []
+var chat_last_sent := {}
 
 func active() -> bool:
 	return peer != null and peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED and (multiplayer.is_server() or joined)
@@ -170,6 +178,40 @@ func _ready() -> void:
 	add_child(internet)
 	internet.prepared.connect(internet_prepared)
 	get_viewport().size_changed.connect(resize_panel)
+	var chat_layer := CanvasLayer.new()
+	chat_layer.layer = 120
+	add_child(chat_layer)
+	chat_toggle = Button.new()
+	chat_toggle.text = "CHAT" if OS.has_feature("android") else "Y · CHAT"
+	chat_toggle.theme = world.pause_menu.canvas.theme
+	chat_toggle.custom_minimum_size = Vector2(128, 44)
+	chat_toggle.pressed.connect(toggle_chat)
+	chat_layer.add_child(chat_toggle)
+	chat_toggle.hide()
+	chat_panel = PanelContainer.new()
+	chat_panel.theme = world.pause_menu.canvas.theme
+	chat_panel.visible = false
+	chat_layer.add_child(chat_panel)
+	var chat_column := VBoxContainer.new()
+	chat_panel.add_child(chat_column)
+	chat_log = RichTextLabel.new()
+	chat_log.bbcode_enabled = false
+	chat_log.scroll_active = true
+	chat_log.scroll_following = true
+	chat_log.custom_minimum_size = Vector2(300, 126)
+	chat_column.add_child(chat_log)
+	var chat_row := HBoxContainer.new()
+	chat_column.add_child(chat_row)
+	chat_input = LineEdit.new()
+	chat_input.max_length = CHAT_LIMIT
+	chat_input.placeholder_text = "Mensagem para a sala..."
+	chat_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	chat_input.text_submitted.connect(func(_text): send_chat())
+	chat_row.add_child(chat_input)
+	var chat_send := Button.new()
+	chat_send.text = "Enviar"
+	chat_send.pressed.connect(send_chat)
+	chat_row.add_child(chat_send)
 	resize_panel()
 	panel.hide()
 	multiplayer.peer_connected.connect(peer_joined)
@@ -182,6 +224,7 @@ func _ready() -> void:
 		discovery.set_broadcast_enabled(true)
 
 func open_menu() -> void:
+	close_chat()
 	if world.activities.menu!="network":
 		return_menu=world.activities.menu
 	world.activities.set_menu("network")
@@ -206,10 +249,63 @@ func answer_mission_offer(accept: bool) -> void:
 		hide_mission_offer()
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_ESCAPE and chat_panel.visible:
+			close_chat()
+			get_viewport().set_input_as_handled()
+			return
+		if event.physical_keycode == KEY_Y and active() and world.activities.menu == "" and not chat_panel.visible:
+			open_chat()
+			get_viewport().set_input_as_handled()
+			return
 	if is_instance_valid(offer_panel) and offer_panel.visible and event is InputEventKey and event.pressed and not event.echo:
 		if event.physical_keycode in [KEY_L, KEY_K]:
 			get_viewport().set_input_as_handled()
 			answer_mission_offer(event.physical_keycode == KEY_L)
+
+func toggle_chat() -> void:
+	if chat_panel.visible:
+		close_chat()
+	else:
+		open_chat()
+
+func open_chat() -> void:
+	if not active() or world.activities.menu != "":
+		return
+	chat_panel.show()
+	chat_toggle.text = "FECHAR CHAT"
+	world.activities.menu = "chat"
+	world.engine_audio.stream_paused = true
+	world.restore_pointer()
+	chat_input.grab_focus()
+	world.hud.queue_redraw()
+
+func close_chat() -> void:
+	if is_instance_valid(chat_panel):
+		chat_panel.hide()
+	if is_instance_valid(chat_input):
+		chat_input.release_focus()
+	if world.activities.menu == "chat":
+		world.activities.menu = ""
+	world.engine_audio.stream_paused = world.activities.menu != ""
+	if is_instance_valid(chat_toggle):
+		chat_toggle.text = "CHAT" if OS.has_feature("android") else "Y · CHAT"
+	world.restore_pointer()
+	world.hud.queue_redraw()
+
+func send_chat() -> void:
+	if not active():
+		return
+	var message := chat_input.text.strip_edges().replace("\n", " ").replace("\r", " ").replace("\t", " ")
+	chat_input.clear()
+	if message.is_empty():
+		chat_input.grab_focus()
+		return
+	if multiplayer.is_server():
+		relay_chat(1, message)
+	else:
+		submit_chat.rpc_id(1, message)
+	chat_input.grab_focus()
 
 func close_menu() -> void:
 	panel.hide()
@@ -398,6 +494,7 @@ func server_left() -> void:
 func peer_left(id: int) -> void:
 	members.erase(id)
 	last_state_at.erase(id)
+	chat_last_sent.erase(id)
 	rules.sheets.erase(id)
 	if multiplayer.is_server():
 		rules.refresh_wanted_heat()
@@ -411,8 +508,13 @@ func peer_left(id: int) -> void:
 			owners.erase(index)
 
 func disconnect_room() -> void:
+	close_chat()
 	snapshot_cars.clear()
 	snapshot_members = 0
+	chat_history.clear()
+	chat_last_sent.clear()
+	if is_instance_valid(chat_log):
+		chat_log.clear()
 	hide_mission_offer()
 	world.life.leave_elevator_session()
 	world.vehicle_entries.clear()
@@ -603,6 +705,9 @@ func accept_state(id: int, state: Dictionary) -> void:
 	members[id]=state
 
 func _process(delta: float) -> void:
+	if chat_panel.visible and (not active() or world.activities.menu != "chat"):
+		close_chat()
+	chat_toggle.visible = active() and world.activities.menu in ["", "chat"]
 	if connecting_since>0 and Time.get_ticks_msec()-connecting_since>15000:
 		connection_failed()
 	while discovery.get_available_packet_count()>0:
@@ -717,7 +822,8 @@ func apply_car(id: int,state: Dictionary) -> void:
 			if fall_speed < -3.5 and car.has_tumble_clearance():
 				car.begin_tumble(-car.global_basis.z * car.speed + Vector3.UP * maxf(-28.0, fall_speed))
 
-@rpc("authority","call_remote","reliable",2)
+# Newer state replaces missed ticks; all vehicles are refreshed every five ticks.
+@rpc("authority","call_remote","unreliable_ordered",2)
 func packed_snapshot(packet: PackedByteArray) -> void:
 	if packet.size()>65536:
 		return
@@ -893,6 +999,38 @@ func game_action(kind: String, data: Dictionary) -> void:
 	if multiplayer.is_server() and members.has(multiplayer.get_remote_sender_id()):
 		rules.action(multiplayer.get_remote_sender_id(),kind,data)
 
+func relay_chat(id: int, message: String) -> void:
+	if not multiplayer.is_server() or not members.has(id):
+		return
+	var clean_message := message.strip_edges().replace("\n", " ").replace("\r", " ").replace("\t", " ")
+	if clean_message.is_empty() or clean_message.length() > CHAT_LIMIT:
+		return
+	var now := Time.get_ticks_msec()
+	if now - int(chat_last_sent.get(id, -1000)) < CHAT_RATE_MS:
+		return
+	chat_last_sent[id] = now
+	var player_name := Profile.clean_name(str(members[id].get("name", "Jogador")))
+	broadcast_chat.rpc(id, player_name, clean_message)
+
+@rpc("any_peer", "call_remote", "reliable")
+func submit_chat(message: String) -> void:
+	if not multiplayer.is_server():
+		return
+	var id := multiplayer.get_remote_sender_id()
+	if id <= 1 or not members.has(id):
+		return
+	relay_chat(id, message)
+
+@rpc("authority", "call_local", "reliable")
+func broadcast_chat(id: int, player_name: String, message: String) -> void:
+	var speaker := "Você" if id == multiplayer.get_unique_id() else Profile.clean_name(player_name)
+	chat_history.append("%s: %s" % [speaker, message])
+	while chat_history.size() > 8:
+		chat_history.pop_front()
+	chat_log.clear()
+	for line in chat_history:
+		chat_log.append_text(line + "\n")
+
 @rpc("authority","call_remote","reliable")
 func personal(kind: String, data: Dictionary) -> void:
 	rules.receive_event(kind,data)
@@ -948,6 +1086,21 @@ func resize_panel() -> void:
 	var bounds := get_viewport().get_visible_rect().size
 	panel.size=Vector2(minf(740,bounds.x-32),minf(680,bounds.y-24))
 	panel.position=(bounds-panel.size)/2
+	if chat_toggle != null:
+		chat_toggle.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		chat_toggle.offset_left = -144
+		chat_toggle.offset_right = -16
+		chat_toggle.offset_top = 176
+		chat_toggle.offset_bottom = 220
+	if chat_panel != null:
+		var width := minf(360.0, bounds.x - 32.0)
+		var height := minf(232.0, bounds.y - 32.0)
+		var top := minf(228.0, bounds.y - height - 16.0)
+		chat_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		chat_panel.offset_left = -width - 16.0
+		chat_panel.offset_right = -16.0
+		chat_panel.offset_top = top
+		chat_panel.offset_bottom = top + height
 
 func ui_button(parent: Node, text: String, callback: Callable) -> void:
 	var button := Button.new()

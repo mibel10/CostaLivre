@@ -141,10 +141,20 @@ func run() -> void:
 	settings.set_quality(3, false)
 	var newly_spawned = world.spawn_car(Vector3(42, 0.3, 42), Color.BLUE, false, 1)
 	var detail = newly_spawned.get_node("DetailedBody")
-	assert(detail.get_node("FarBody").visibility_range_begin == settings.NEAR[3], "New cars inherit graphics settings")
+	var car_detail_distance: float = minf(settings.NEAR[settings.draw_distance], 12.0)
+	assert(detail.get_node("FarBody").visibility_range_begin == car_detail_distance, "New cars inherit the shorter high-performance LOD")
 	for child in detail.get_children():
 		if child.is_in_group("car_detail"):
-			assert(child.visibility_range_end == settings.NEAR[3])
+			assert(child.visibility_range_end == car_detail_distance)
+	settings.set_quality(5, false)
+	assert(not detail.get_node("FarBody").visible, "EXTREMO keeps the original car mesh at every distance")
+	assert(detail.get_node("FarBody").visibility_range_begin == settings.FAR[5])
+	assert(environment.fog_depth_end == world.camera.far, "EXTREMO fog reaches the full render distance")
+	for child in detail.get_children():
+		if child.is_in_group("car_detail"):
+			assert(child.lod_bias == 0.0 and child.visibility_range_end == settings.FAR[5])
+	settings.set_quality(3, false)
+	assert(detail.get_node("FarBody").visible, "Lower presets restore the distant car mesh")
 	var normal_states := {}
 	settings.set_quality(0, false)
 	for id in settings.tracked:
@@ -177,6 +187,7 @@ func run() -> void:
 	var old_cash: int = world.cash
 	assert(ui.admin_entry.is_visible_in_tree())
 	ui.admin_entry.pressed.emit()
+	await create_timer(0.5).timeout
 	assert(ui.page == "admin")
 	world.game_mode = "campaign"
 	ui.admin_action("cash")

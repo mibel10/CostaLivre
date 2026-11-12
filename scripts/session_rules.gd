@@ -881,7 +881,7 @@ func physics(delta: float) -> void:
 		police_sight_clock=0.2
 		visible_police.clear()
 		for observer in world.cops + a.officers:
-			if not is_instance_valid(observer) or observer.hp <= 0:
+			if not is_instance_valid(observer) or observer.hp <= 0 or bool(observer.get_meta("prison_guard", false)):
 				continue
 			var target := police_target_actor(observer.position, int(observer.get_meta("police_target_peer", 0)))
 			if target[0] > 0 and a.job == 29 and wanted_heat(target[0]) <= 0.0 and int(network.members.get(target[0], {}).get("outfit", 0)) / 8 == 5 and observer.position.distance_squared_to(target[1]) > 16.0:

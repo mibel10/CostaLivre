@@ -161,7 +161,8 @@ func finish_action(world: Node, car: Node) -> void:
 			assert(a.stage == 2)
 			world.player.position = a.DATA_TERMINAL
 			assert(a.interact_campaign())
-			a.tick_mission(46.0)
+			assert(a.contract_guards_alive() == 3 and a.officers.filter(func(guard): return int(guard.get_meta("mission_contract", -1)) == a.job and is_equal_approx(guard.hp, 120.0)).size() == 3, "The extraction team is smaller and survivable")
+			a.tick_mission(a.DATA_EXTRACTION_SECONDS + 1.0)
 			assert(a.stage == 3, "Extraction still requires defeating the tactical team")
 			for guard in a.officers:
 				if guard.hp > 0 and guard.get_meta("mission_contract", -1) == a.job:

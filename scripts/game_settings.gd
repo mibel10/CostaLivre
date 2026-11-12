@@ -180,13 +180,17 @@ func register_visuals(node: Node) -> void:
 
 func apply_range(node: GeometryInstance3D) -> void:
 	node.lod_bias = LOD_BIAS[draw_distance]
+	var extreme := quality == 5
+	var car_lod_distance: float = FAR[draw_distance] if extreme else minf(NEAR[draw_distance], 12.0)
 	if node.is_in_group("car_simple"):
-		node.lod_bias = 1000.0
+		node.lod_bias = 0.0 if extreme else 1000.0
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_detail"):
-		node.visibility_range_end = minf(NEAR[draw_distance], 14.0) if node.has_meta("police_lod") else NEAR[draw_distance]
+		node.lod_bias = 0.0 if extreme else LOD_BIAS[draw_distance]
+		node.visibility_range_end = car_lod_distance
 	elif node.is_in_group("car_far"):
-		node.visibility_range_begin = minf(NEAR[draw_distance], 14.0) if node.has_meta("police_lod") else NEAR[draw_distance]
+		node.visible = not extreme
+		node.visibility_range_begin = car_lod_distance
 		node.visibility_range_end = FAR[draw_distance]
 	elif node.is_in_group("car_shadow"):
 		node.visibility_range_end = 70.0 if quality == 5 and shadow_quality == 3 else [0.1, 22.0, 34.0, 50.0][shadow_quality]
@@ -226,7 +230,7 @@ func apply() -> void:
 			environment.fog_enabled = extreme or quality < 3
 			environment.fog_mode = Environment.FOG_MODE_DEPTH if extreme else Environment.FOG_MODE_EXPONENTIAL
 			environment.fog_depth_begin = 95.0
-			environment.fog_depth_end = 900.0
+			environment.fog_depth_end = world.camera.far if extreme else 900.0
 			environment.fog_density = 0.63 if extreme else (0.0015 if quality < 2 else 0.003)
 			environment.fog_sky_affect = 0.08 if extreme else 1.0
 			environment.glow_enabled = extreme

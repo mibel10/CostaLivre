@@ -14,16 +14,16 @@ func run() -> void:
 	var save := ConfigFile.new()
 	assert(save.load(world.profile.config_path)==OK and save.get_value("player","outfit")==4)
 	var state: Dictionary=world.network.local_state()
-	assert(state.name=="Amigo" and state.outfit==4)
+	assert(state.name=="Amigo" and state.outfit==world.profile.appearance_code())
 	state.name="Outro jogador"
-	state.outfit=3
+	state.outfit=3*8
 	world.network.update_avatars({2:state})
 	assert(world.network.avatars[2].tag.text=="Outro jogador")
 	assert(world.network.avatars[2].node.model.outfit_index==3)
 	state.name="Novo Nome"
-	state.outfit=5
+	state.outfit=5*8+2
 	world.network.update_avatars({2:state})
-	assert(world.network.avatars[2].tag.text=="Novo Nome" and world.network.avatars[2].node.model.outfit_index==5)
+	assert(world.network.avatars[2].tag.text=="Novo Nome" and world.network.avatars[2].node.model.outfit_index==5 and world.network.avatars[2].node.model.accessory_index==2)
 	var tag: Label3D=world.network.avatars[2].tag
 	world.network.peer_left(2)
 	await process_frame

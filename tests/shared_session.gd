@@ -154,7 +154,7 @@ func run() -> void:
 		car.police_phase = "parked"
 		car.speed = 0
 		car.velocity = Vector3.ZERO
-	assert(host.life.people.size() == 148 and client.life.people.size() == 148)
+	assert(host.life.people.size() == 171 and client.life.people.size() == 171)
 	assert(host.life.get_node("Predio16NPC0").position == client.life.get_node("Predio16NPC0").position)
 	var resident_index: int = host.life.people.size()-1
 	host.life.people[resident_index].take_hit(10)

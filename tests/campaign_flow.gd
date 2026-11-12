@@ -10,6 +10,7 @@ func run() -> void:
 	assert(paused and world.activities.menu == "mode", "Launch asks for a game mode")
 	assert(world.pause_menu.early_access_notice.visible, "The early access warning appears on launch")
 	world.pause_menu.early_access_button.emit_signal("pressed")
+	await create_timer(0.5).timeout
 	assert(not world.pause_menu.early_access_notice.visible, "The warning can be dismissed")
 	world.start_mode("sandbox")
 	assert(not paused and world.activities.job == -1, "Sandbox starts free roam")
@@ -104,6 +105,22 @@ func run() -> void:
 	world.respawn_local()
 	assert(world.prison_stage == 0 and world.player.position == world.PRISON_SPAWN)
 	await physics_frame
+	assert(world.activities.officers.filter(func(officer): return bool(officer.get_meta("prison_guard", false))).size() == world.PRISON_GUARD_POSTS.size(), "The prison guards spawn for the escape")
+	world.prison_stage = 4
+	world.player.position = world.PRISON_POINTS[4]
+	world.health = 100.0
+	world.player.set_physics_process(false)
+	Input.action_press("activity")
+	for _i in 120:
+		await create_timer(0.1).timeout
+		if world.prison_stage != 4:
+			break
+	Input.action_release("activity")
+	world.player.set_physics_process(true)
+	assert(world.prison_stage == 5 and world.health > 0.0, "The long alarm interaction remains survivable with prison guards")
+	world.prison_stage = 0
+	world.prison_progress = 0.0
+	world.player.position = world.PRISON_SPAWN
 	var prison_space: PhysicsDirectSpaceState3D = world.get_world_3d().direct_space_state
 	var gate_ray := PhysicsRayQueryParameters3D.create(Vector3(1035, 1.3, 40.38), Vector3(1026, 1.3, 40.38), 1)
 	var gate_hit: Dictionary = prison_space.intersect_ray(gate_ray)
@@ -139,6 +156,8 @@ func run() -> void:
 	world.player.is_crouching = false
 	assert(world.prison_stage == -1 and world.activities.job == world.activities.SECRET_DATA_JOB, "Escape resumes the campaign chapter")
 	world.cutscene.finish()
+	await physics_frame
+	assert(world.activities.officers.filter(func(officer): return bool(officer.get_meta("prison_guard", false))).is_empty(), "The prison guards leave after the escape")
 	world.activities.campaign_index = 5
 	world.activities.start_job(5)
 	world.cutscene.finish()

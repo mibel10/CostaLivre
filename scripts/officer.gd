@@ -38,6 +38,9 @@ func _physics_process(delta: float) -> void:
 		model.animate(0)
 		return
 	var player_target: Vector3=world.police_target(self)
+	if not player_target.is_finite():
+		model.animate(0)
+		return
 	if contract and position.distance_to(player_target) > 60:
 		model.animate(0)
 		return
@@ -50,22 +53,28 @@ func _physics_process(delta: float) -> void:
 	var offset: Vector3=target-position
 	var direction := offset.normalized()
 	var climbing:=mission_stair and mission_stair_index<mission_stair_route.size()
-	var moving: bool = climbing or ((world.heat > 0 or contract) and offset.length() > 10)
+	var prison_guard: bool = bool(get_meta("prison_guard", false))
+	var infiltration_tactical: bool = bool(get_meta("mission_heavy", false)) and int(get_meta("mission_contract", -1)) == world.activities.SECRET_DATA_JOB
+	var moving: bool = climbing or ((world.heat > 0 or contract or prison_guard) and offset.length() > (7.0 if prison_guard else 10.0))
 	if climbing:
 		velocity=direction*3.2
+	elif prison_guard:
+		velocity.x = direction.x * 2.8 if moving else 0.0
+		velocity.z = direction.z * 2.8 if moving else 0.0
+		velocity.y = -4 if is_on_floor() else velocity.y - delta * 22
 	else:
 		velocity.x = direction.x * 4 if moving else 0.0
 		velocity.z = direction.z * 4 if moving else 0.0
 		velocity.y = -4 if is_on_floor() else velocity.y - delta * 22
 	move_and_slide()
 	model.animate(Vector2(velocity.x, velocity.z).length())
-	if world.heat > 0 or contract:
+	if world.heat > 0 or contract or prison_guard:
 		model.rotation.y = atan2(-offset.x, -offset.z)
 	fire_time -= delta
 	var response_threshold:=12 if world.network!=null and world.network.active() else 20
-	if (world.heat < response_threshold and not mission_stair and not contract) or position.distance_to(player_target)>32 or fire_time > 0:
+	if (world.heat < response_threshold and not mission_stair and not contract and not prison_guard) or position.distance_to(player_target)>32 or fire_time > 0:
 		return
-	fire_time = 1.8
+	fire_time = 3.2 if prison_guard or infiltration_tactical else 1.8
 	var from := position + Vector3(0, 1.4, 0)
 	var to: Vector3 = player_target + Vector3(0, 1, 0)
 	var query := PhysicsRayQueryParameters3D.create(from, to, 7)
@@ -76,14 +85,14 @@ func _physics_process(delta: float) -> void:
 		return
 	var victim: Node3D = hit.collider
 	var online: bool = world.network != null and world.network.active()
-	var damage := 18 if bool(get_meta("mission_heavy", false)) else 9
+	var damage := 5 if prison_guard else (8 if infiltration_tactical else (18 if bool(get_meta("mission_heavy", false)) else 9))
 	if contract and int(get_meta("mission_vehicle", -1)) >= 0 and victim == world.car_by_id(int(get_meta("mission_vehicle"))):
 		victim.take_hit(12)
 	elif online:
 		var target_peer := int(victim.get_meta("peer_id", 0))
 		if target_peer == 0 and victim.get_script() == preload("res://scripts/car.gd"):
 			target_peer = int(world.network.owners.get(victim.net_id, 0))
-		if target_peer <= 0 or (not contract and not mission_stair and world.network.rules.wanted_heat(target_peer) <= 0.0):
+		if target_peer <= 0 or (not contract and not mission_stair and not prison_guard and world.network.rules.wanted_heat(target_peer) <= 0.0):
 			return
 		world.network.rules.damage_peer(target_peer, damage, 0, true)
 	elif victim == world.player or victim == world.active_car:

@@ -242,7 +242,7 @@ func setup_haunted_house() -> void:
 	world.box(house,Vector3(-4.5,2,5),Vector3(3,4,0.2),Color("554d48"),true)
 	world.box(house,Vector3(4.5,2,5),Vector3(3,4,0.2),Color("554d48"),true)
 	world.box(house,Vector3(0,4.1,0),Vector3(12,0.3,10),Color("302c2a"),true)
-	var door := world.box(house,Vector3(-2,0.8,4.8),Vector3(0.12,1.6,0.08),Color("8a6746"),false)
+	var door: MeshInstance3D = world.box(house,Vector3(-2,0.8,4.8),Vector3(0.12,1.6,0.08),Color("8a6746"),false)
 	door.rotation.y = -0.7
 	for at in [Vector3(-3,0.65,1),Vector3(3,0.65,0),Vector3(0,0.65,-3)]:
 		var clue := MeshInstance3D.new()

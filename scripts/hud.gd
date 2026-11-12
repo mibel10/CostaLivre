@@ -152,7 +152,7 @@ func _draw() -> void:
 		draw_hack(a.bank)
 	elif world.network!=null and world.network.active() and world.network.rules.local_mission_hacking():
 		draw_mission_hack(world.network.rules)
-	if a.menu != "":
+	if a.menu != "" and a.menu != "chat":
 		draw_menu(a)
 	if world.finished:
 		backdrop()

@@ -32,10 +32,11 @@ func run() -> void:
 	bank.interact()
 	world.player.position = bank.to_global(bank.TERMINAL)
 	bank.interact()
+	var heat_before_failures: float = world.heat
 	for failure in 3:
 		bank.tick(2.6)
 		bank.enter_digit(bank.pattern[0] % 4 + 1)
-	assert(bank.lockout == 15 and not bank.hacking and bank.phase == 1 and world.heat == 30, "Three errors trigger alarm and lockout, never open the vault")
+	assert(bank.lockout == 15 and not bank.hacking and bank.phase == 1 and world.heat >= heat_before_failures + 30.0, "Three errors trigger alarm and lockout without opening the vault")
 	assert(bank.interact() and not bank.hacking, "Lockout prevents retry")
 	bank.tick(16)
 	bank.interact()

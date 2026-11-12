@@ -30,7 +30,7 @@ func run() -> void:
 	var shadows: int=host.settings.shadow_quality
 	host.settings.set_custom("textures",3)
 	assert(host.settings.shadow_quality==shadows and host.settings.texture_quality==3)
-	assert(host.life.people.size()==148)
+	assert(host.life.people.size()==171)
 	host.start_mode("sandbox")
 	Input.action_press("aim")
 	host._process(0.016)
@@ -66,10 +66,27 @@ func run() -> void:
 	assert(host.network.avatars.size()==1 and client.network.avatars.size()==1)
 	var remote_id: int=client_api.get_unique_id()
 	assert(host.network.avatars[remote_id].tag.text=="Amigo")
-	assert(host.network.avatars[remote_id].outfit==4)
+	assert(host.network.avatars[remote_id].outfit==4*8)
 	assert(client.network.avatars[1].tag.text=="Anfitriao")
+	assert(client.network.chat_toggle.visible, "Chat is available inside an active room")
+	client.network.open_chat()
+	assert(client.network.chat_panel.visible and client.activities.menu=="chat" and not client.get_tree().paused, "Opening chat blocks local controls without pausing the online world")
+	client.network.chat_input.text="Oi, sala!"
+	client.network.send_chat()
+	await create_timer(0.2).timeout
+	assert(host.network.chat_history == ["Amigo: Oi, sala!"] and client.network.chat_history == ["Você: Oi, sala!"], "The host relays chat with the correct local names")
+	client.network.chat_input.text="Mensagem repetida"
+	client.network.send_chat()
+	await create_timer(0.15).timeout
+	assert(host.network.chat_history.size()==1 and client.network.chat_history.size()==1, "The host rate-limits repeated chat")
+	client.network.close_chat()
+	assert(not client.network.chat_panel.visible and client.activities.menu=="", "Closing chat returns the player to gameplay")
+	host.network.chat_input.text="Teste do host"
+	host.network.send_chat()
+	await create_timer(0.2).timeout
+	assert(host.network.chat_history == ["Amigo: Oi, sala!", "Você: Teste do host"] and client.network.chat_history == ["Você: Oi, sala!", "Anfitriao: Teste do host"], "Host messages reach the client without changing sender identity")
 	var remote: Node3D = host.network.avatars[remote_id].node
-	client.player.position = host.player.position + Vector3(5.0, 0.3, 0.0)
+	host.player.position = client.player.position + Vector3(-5.0, 0.0, 0.0)
 	await create_timer(0.3).timeout
 	assert(remote.visible)
 	client.activities.clips[1] = 4
@@ -97,22 +114,20 @@ func run() -> void:
 	client.player.set_crouched(false)
 	assert(client.profile.save_profile("Novo Nome",5))
 	await create_timer(0.4).timeout
-	assert(host.network.avatars[remote_id].tag.text=="Novo Nome" and host.network.avatars[remote_id].outfit==5)
+	assert(host.network.avatars[remote_id].tag.text=="Novo Nome" and host.network.avatars[remote_id].outfit==5*8)
 	var previous_tag: Label3D=host.network.avatars[remote_id].tag
-	client.player.position=Vector3(0,0.3,12)
+	client.player.position+=Vector3(1,0,0)
 	await create_timer(0.5).timeout
 	var client_id: int=client_api.get_unique_id()
 	assert(host.network.members[client_id].position.distance_to(client.player.position)<2)
 	var wrong_model: Node = client.car_by_id(1)
 	wrong_model.tier = 6
-	await create_timer(0.3).timeout
+	await create_timer(0.7).timeout
 	assert(not is_instance_valid(wrong_model) and client.car_by_id(1).tier == host.car_by_id(1).tier)
-	var loan: Node = host.spawn_car(Vector3(42, 0.3, 10), Color.BLUE, false, 4)
+	var loan: Node = host.spawn_car(client.player.position + Vector3(0, 0.3, 2.0), Color.BLUE, false, 4)
 	var loan_id: int = loan.net_id
 	await create_timer(0.3).timeout
 	var remote_loan: Node = client.car_by_id(loan_id)
-	client.player.position = remote_loan.position + Vector3.RIGHT * 2.5
-	await create_timer(0.25).timeout
 	client.interact()
 	await create_timer(2.35).timeout
 	assert(client.active_car == remote_loan)

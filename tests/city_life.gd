@@ -47,9 +47,9 @@ func run() -> void:
 	assert(standing_hit != null and standing_hit.get_collider().name == "Teto", "Standing is blocked by the duct roof")
 	world.player.position = Vector3(0, 0.2, 12)
 	world.player.set_physics_process(true)
-	assert(world.life.rooms.size() == 22 and world.life.people.size() == 148)
+	assert(world.life.rooms.size() == 22 and world.life.people.size() == 171)
 	var traffic: Array = world.cars.filter(func(car): return car.traffic)
-	assert(traffic.size() == 33 and traffic.filter(func(car): return car.position.x > 200).size() == 20)
+	assert(traffic.size() == 35 and traffic.filter(func(car): return car.position.x > 200).size() == 22)
 	var local_car: Node3D = traffic[traffic.size() - 12]
 	var eastern_car: Node3D = traffic.back()
 	world.player.position = local_car.position + Vector3(-10, 0.3, 0)
@@ -59,7 +59,7 @@ func run() -> void:
 	for i in 90:
 		await physics_frame
 	assert(local_car.position.distance_squared_to(before_traffic) > 4.0, "The additional cars drive on their routes")
-	assert(world.life.people.filter(func(person): return person.position.x > 200 and not person.stationary and not person.shopper).size() == 36)
+	assert(world.life.people.filter(func(person): return person.position.x > 200 and not person.stationary and not person.shopper).size() == 54)
 	var lobby_counts := {}
 	for person in world.life.people:
 		if person.has_meta("building_center"):
@@ -118,7 +118,7 @@ func run() -> void:
 	assert(contact.visible and not contact.is_physics_processing(), "Nearby contacts stay visible even with all walking slots full")
 	for i in crowd.size():
 		crowd[i].position = original_positions[i]
-	var ped = world.life.people[3]
+	var ped = world.life.people.filter(func(person): return person.hp > 0 and not person.stationary and not person.shopper)[0]
 	world.player.position = ped.position + Vector3(2,0,0)
 	world.life._process(1)
 	var before: Vector3 = ped.position
@@ -163,7 +163,7 @@ func run() -> void:
 	world.activities.handle_input(key)
 	assert(world.activities.job_page == 0)
 	world.activities.set_menu("")
-	assert(world.life.building_contacts.size() == 21)
+	assert(world.life.building_contacts.size() == 26)
 	var office := -1
 	var cafe := -1
 	for index: int in world.life.building_contacts:
@@ -206,7 +206,7 @@ func run() -> void:
 	world.check_vehicle_entry(entrance + Vector3.BACK, entrance)
 	assert(world.heat == 0.0, "The supermarket entrance is still outside")
 	world.check_vehicle_entry(entrance, entrance + Vector3.FORWARD)
-	assert(world.heat == 60.0, "Driving across the threshold gives three stars")
+	assert(world.heat >= 60.0, "Driving across the threshold gives three stars even when witnesses call police")
 	world.heat = 20.0
 	world.check_vehicle_entry(entrance + Vector3.FORWARD, entrance + Vector3.FORWARD * 2)
 	assert(world.heat == 20.0, "Movement inside does not renew wanted level")

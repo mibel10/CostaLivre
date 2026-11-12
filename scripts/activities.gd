@@ -213,8 +213,12 @@ func pointer_select(point: Vector2) -> bool:
 	return true
 
 func handle_input(event: InputEvent) -> bool:
-	if event is InputEventMouseButton and event.device == InputEvent.DEVICE_ID_EMULATION and menu in world.hud.PAGE_MENUS:
-		return true
+	if event is InputEventMouseButton and event.device == InputEvent.DEVICE_ID_EMULATION:
+		var touch_ui: bool = menu in world.hud.CHOICE_MENUS or bank.local_hacking()
+		if world.network != null and world.network.active():
+			touch_ui = touch_ui or world.network.rules.local_mission_hacking()
+		if touch_ui:
+			return true
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and pointer_select(event.position):
 		return true
 	if world.network!=null and world.network.active() and world.network.rules.local_mission_hacking():
@@ -1080,7 +1084,8 @@ func tick_police(delta: float) -> void:
 			continue
 		var target:Vector3=world.police_target(officers[i]) if world.network!=null and world.network.active() else world.subject_position()
 		var mission_stair:bool=bool(officers[i].get_meta("mission_stair",false))
-		if (mission_stair and job!=12) or (not mission_stair and (world.heat < response_threshold or officers[i].position.distance_to(target) > 70)):
+		var prison_guard:bool=bool(officers[i].get_meta("prison_guard",false))
+		if (mission_stair and job!=12) or (prison_guard and not world.prisoners_present()) or (not mission_stair and not prison_guard and (world.heat < response_threshold or officers[i].position.distance_to(target) > 70)):
 			officers[i].queue_free()
 			officers.remove_at(i)
 

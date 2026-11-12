@@ -46,6 +46,21 @@ func run() -> void:
 	assert(world.activities.car_page == 3 and world.activities.menu_page_count() == 4, "Touch reaches the last dealer page")
 	world.activities.set_menu("owned_cars")
 	assert(world.activities.car_page == 0, "A short inventory cannot inherit an invalid dealer page")
+	world.cash = 0
+	world.activities.set_menu("guns")
+	var gun_tap := InputEventScreenTouch.new()
+	gun_tap.pressed = true
+	gun_tap.position = world.hud.choice_rect(0).get_center() * root.get_visible_rect().size / Vector2(1280, 720)
+	touch._input(gun_tap)
+	assert(world.activities.menu == "guns", "Insufficient funds keep the purchase menu open")
+	world.toast_time = 0.0
+	var gun_click := InputEventMouseButton.new()
+	gun_click.device = InputEvent.DEVICE_ID_EMULATION
+	gun_click.button_index = MOUSE_BUTTON_LEFT
+	gun_click.pressed = true
+	gun_click.position = gun_tap.position
+	world._unhandled_input(gun_click)
+	assert(world.toast_time == 0.0, "A touch-generated mouse click does not repeat actions in non-paged menus")
 	world.activities.set_menu("")
 	world.activities.weapon = 0
 	touch.action("weapon", true)

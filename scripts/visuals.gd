@@ -224,7 +224,7 @@ func build_car(car: CharacterBody3D) -> void:
 	car.add_child(root)
 	var body := MeshInstance3D.new()
 	body.mesh = car_body
-	body.add_to_group("car_simple")
+	body.add_to_group("car_detail")
 	body.visibility_range_end = 170
 	body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(body)
@@ -254,7 +254,7 @@ func build_car(car: CharacterBody3D) -> void:
 		pivot.add_child(spin)
 		var wheel := MeshInstance3D.new()
 		wheel.mesh = car_wheels[key].mesh
-		wheel.add_to_group("car_simple")
+		wheel.add_to_group("car_detail")
 		wheel.visibility_range_end = 170
 		wheel.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		spin.add_child(wheel)
@@ -284,6 +284,23 @@ func build_car(car: CharacterBody3D) -> void:
 		spoiler.position = Vector3(0,1.35,-1.82)
 		spoiler.material_override = car.world.material(Color("272c31"))
 		root.add_child(spoiler)
+	for detail in root.find_children("*", "GeometryInstance3D", true, false):
+		detail.add_to_group("car_detail")
+	var far_body := MeshInstance3D.new()
+	far_body.name = "FarBody"
+	far_body.mesh = preload("res://assets/models/vehicle_far.res")
+	far_body.add_to_group("car_far")
+	far_body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var far_key: String = "far" + car.paint.to_html()
+	if not paint_cache.has(far_key):
+		var far_paint := StandardMaterial3D.new()
+		far_paint.albedo_color = car.paint
+		far_paint.metallic = 0.35
+		far_paint.roughness = 0.45
+		far_paint.cull_mode = BaseMaterial3D.CULL_DISABLED
+		paint_cache[far_key] = far_paint
+	far_body.set_surface_override_material(0, paint_cache[far_key])
+	root.add_child(far_body)
 	# Shadow proxy avoids rendering every detailed vehicle again in each cascade.
 	var shadow := MeshInstance3D.new()
 	var proxy := BoxMesh.new()

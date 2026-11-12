@@ -55,7 +55,7 @@ func next_position() -> Vector3:
 	return to_global(ENTRY)
 
 func objective() -> String:
-	var text := "Banco em recuperação · %ds" % ceili(cooldown) if phase == 5 else ("Entre no Banco Costa pela porta da frente" if not inside() and phase < 4 else ["Desligue a segurança no painel", "Hackeie o terminal do banco", "Acione o painel da porta do cofre", "Pegue os malotes · %d/3" % taken.count(true), "Saia do banco com o dinheiro"][mini(phase, 4)])
+	var text: String = "Banco em recuperação · %ds" % ceili(cooldown) if phase == 5 else ("Entre no Banco Costa pela porta da frente" if not inside() and phase < 4 else ["Desligue a segurança no painel", "Hackeie o terminal do banco", "Acione o painel da porta do cofre", "Pegue os malotes · %d/3" % taken.count(true), "Saia do banco com o dinheiro"][mini(phase, 4)])
 	if world.network != null and world.network.active() and phase in [1, 2, 3, 4]:
 		var id: int = world.network.rules.local_id()
 		if id == world.network.rules.bank_owner:
