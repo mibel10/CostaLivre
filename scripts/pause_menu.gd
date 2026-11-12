@@ -31,6 +31,7 @@ var early_access_notice: ColorRect
 var early_access_button: Button
 var ending_party_ready := false
 var ending_confetti: Array[ColorRect] = []
+var campaign_party: Node3D
 const REBIND_ACTIONS := ["forward","back","left","right","jump","sprint","crouch","interact","activity","reload","jobs","map","pause","reset"]
 const REBIND_LABELS := ["Frente","Ré","Esquerda","Direita","Pular","Correr / acelerar","Agachar","Entrar / sair","Interagir / assaltar","Recarregar","Missões","Mapa","Pausar","Reposicionar"]
 
@@ -112,7 +113,7 @@ func _ready() -> void:
 	label(pages.ending,"CALADO NO PALCO PRINCIPAL  ·  PRÊMIO FANTASMA DE OURO  ·  O BOLO SUMIU DE NOVO",Vector2(350,242),16,Color("a7e8ff"))
 	label(pages.ending,"Dizem que o Calado Fantasma apareceu só para conferir se a cidade ficou livre mesmo.",Vector2(352,278),17,Color("d4ddd5"))
 	label(pages.ending,"Uma última noite na orla: música, luzes e histórias de toda a campanha.",Vector2(352,310),17,Color("d4ddd5"))
-	button(pages.ending,"CONTINUAR NO JOGO LIVRE",Rect2(352,370,440,58),func(): world.start_mode("sandbox"))
+	button(pages.ending,"CONTINUAR NO JOGO LIVRE",Rect2(352,370,440,58),continue_after_party)
 	button(pages.ending,"VOLTAR À ESCOLHA DE MODO",Rect2(352,450,440,58),show_mode_select)
 	var confetti_rng := RandomNumberGenerator.new()
 	confetti_rng.seed = 2048
@@ -355,6 +356,7 @@ func open_for(value: String) -> void:
 		show_page("map" if value == "map" else ("mode" if value == "mode" else ("ending" if value == "campaign_complete" else "home")))
 
 func show_mode_select() -> void:
+	clear_campaign_party()
 	world.activities.set_menu("mode")
 	if early_access_notice.visible:
 		early_access_button.grab_focus.call_deferred()
@@ -398,6 +400,7 @@ func make_menu_music() -> AudioStreamWAV:
 
 func show_campaign_complete() -> void:
 	world.activities.set_menu("campaign_complete")
+	start_campaign_party()
 	if is_instance_valid(menu_music):
 		menu_music.volume_db = -9.0
 		if not menu_music.playing:
@@ -409,6 +412,49 @@ func show_campaign_complete() -> void:
 			var fall := create_tween().set_loops()
 			fall.tween_property(confetti,"position:y",760.0,3.2+float(i%7)*0.22).from(-30.0-float(i%11)*38.0)
 
+func start_campaign_party() -> void:
+	clear_campaign_party()
+	campaign_party = Node3D.new()
+	campaign_party.name = "FestaFinalCampanha"
+	campaign_party.process_mode = Node.PROCESS_MODE_ALWAYS
+	world.add_child(campaign_party)
+	campaign_party.global_position = world.player.global_position
+	var Pedestrian = preload("res://scripts/pedestrian.gd")
+	for i in 8:
+		var guest: CharacterBody3D = Pedestrian.new()
+		guest.world = world
+		guest.name = "ConvidadoFesta%d" % i
+		guest.appearance_index = i + 20
+		guest.stationary = true
+		guest.tint = [Color("e2bd78"),Color("83cbb4"),Color("a7dff0"),Color("d39abf")][i%4]
+		campaign_party.add_child(guest)
+		guest.position = Vector3(cos(TAU*float(i)/8.0)*4.2,0,sin(TAU*float(i)/8.0)*4.2)
+		guest.set_physics_process(false)
+		if guest.model.animation != null:
+			guest.model.animation.play("DoorWork" if i%2 == 0 else "Animation")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = Time.get_ticks_msec()
+	for i in 6:
+		var light := OmniLight3D.new()
+		light.light_color = [Color("ffd18a"),Color("85d5b7"),Color("a7e8ff")][i%3]
+		light.light_energy = 2.0
+		light.omni_range = 9.0
+		light.position = Vector3(rng.randf_range(-6,6),rng.randf_range(2.5,4),rng.randf_range(-6,6))
+		campaign_party.add_child(light)
+		var pulse := create_tween().set_loops()
+		pulse.tween_property(light,"light_energy",0.5,0.55)
+		pulse.tween_property(light,"light_energy",2.0,0.55)
+
+func clear_campaign_party() -> void:
+	if is_instance_valid(campaign_party):
+		campaign_party.queue_free()
+	campaign_party = null
+	ending_party_ready = false
+
+func continue_after_party() -> void:
+	clear_campaign_party()
+	world.start_mode("sandbox")
+
 func start_new_campaign() -> void:
 	if world.restart_after_admin():
 		return
@@ -417,6 +463,7 @@ func start_new_campaign() -> void:
 		return
 	if is_instance_valid(menu_music):
 		menu_music.stop()
+	clear_campaign_party()
 	world.activities.set_menu("")
 	world.game_mode = "campaign"
 	world.activities.game_mode = "campaign"
