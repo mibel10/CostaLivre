@@ -97,6 +97,7 @@ func run() -> void:
 		ui.quality_select.item_selected.emit(quality)
 		assert(settings.quality == quality)
 		assert(world.camera.far == settings.FAR[quality])
+		assert(settings.shadow_quality == [2, 2, 1, 0, 0, 3][quality])
 	for index in settings.FPS_LIMITS.size():
 		ui.fps_select.item_selected.emit(index)
 		assert(Engine.max_fps == settings.FPS_LIMITS[index])

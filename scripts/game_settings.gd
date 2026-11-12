@@ -128,7 +128,7 @@ func set_quality(index: int, persist := true) -> void:
 
 func apply_preset_values() -> void:
 	texture_quality = 0 if quality == 5 else mini(quality, 3)
-	shadow_quality = [3, 2, 1, 0, 0, 3][quality]
+	shadow_quality = [2, 2, 1, 0, 0, 3][quality]
 	antialiasing = 3 if quality == 5 else 0
 	draw_distance = quality
 	detail_maps = quality < 3 or quality == 5
