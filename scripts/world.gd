@@ -576,7 +576,7 @@ func interact() -> void:
 		if closest == null:
 			return
 		if network != null and network.active():
-			if not network.car_available(closest) and closest.tier == closest.Catalog.BUS:
+			if not network.car_available(closest):
 				network.rules.send_action("bus_board",{"car":closest.net_id})
 			else:
 				network.rules.send_action("vehicle_entry",{"car":closest.net_id})

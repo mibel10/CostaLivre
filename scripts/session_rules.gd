@@ -538,7 +538,7 @@ func hurt_local(amount: float) -> void:
 func board_bus(id: int, car_id: int) -> void:
 	var member: Dictionary = network.members.get(id, {})
 	var car: Node3D = world.car_by_id(car_id)
-	if member.is_empty() or int(member.get("car", -1)) >= 0 or car == null or car.tier != car.Catalog.BUS or car.hp <= 0:
+	if member.is_empty() or int(member.get("car", -1)) >= 0 or car == null or car.police or car.tier == 9 or car.hp <= 0:
 		return
 	var driver: int = network.owners.get(car_id, 0)
 	if driver == 0 or driver == id or position_of(id).distance_to(car.position) >= 4.5:
@@ -546,8 +546,9 @@ func board_bus(id: int, car_id: int) -> void:
 	if absf(car.speed) > 3.0:
 		private_notice(id, "Espere o ônibus parar para embarcar.")
 		return
-	if bus_riders.values().count(car_id) >= car.Catalog.BUS_CAPACITY - 1:
-		private_notice(id, "O ônibus está lotado.")
+	var capacity: int = car.Catalog.BUS_CAPACITY if car.tier == car.Catalog.BUS else 3
+	if bus_riders.values().count(car_id) >= capacity - 1:
+		private_notice(id, "O veículo está lotado.")
 		return
 	bus_riders[id] = car_id
 	member["bus"] = car_id
