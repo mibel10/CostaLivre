@@ -50,6 +50,29 @@ func run() -> void:
 	client.fps_counter.refresh()
 	assert(host.fps_counter.badge.text.contains("Ping: 0 ms"), "The host displays its local ping")
 	assert(client.fps_counter.badge.text.contains("Ping: ") and client.fps_counter.badge.text.ends_with(" ms") and not client.fps_counter.badge.text.contains("--"), "The client displays the ENet ping")
+	var contact_index := -1
+	for i in host.life.people.size():
+		if host.life.people[i].stationary and host.life.people[i].hp > 0:
+			contact_index = i
+			break
+	assert(contact_index >= 0, "The test needs a stationary pedestrian")
+	var contact: Node3D = host.life.people[contact_index]
+	var contact_original: Vector3 = contact.position
+	var contact_near: Vector3 = client.player.position + Vector3(8, 0, 0)
+	contact.position = contact_near
+	await wait_for(func(): return client.life.people[contact_index].position.distance_to(contact_near) < 0.5)
+	var synced_contact_position: Vector3 = client.life.people[contact_index].position
+	var contact_phase: int = posmod(contact_index + id, 10)
+	host.network.snapshot_tick = posmod(contact_phase - 6, 10)
+	contact.position = client.player.position + Vector3(66, 0, 0)
+	await create_timer(0.35).timeout
+	assert(client.life.people[contact_index].position.distance_to(synced_contact_position) < 0.1, "Far pedestrians skip per-tick snapshots")
+	var contact_returned: Vector3 = client.player.position + Vector3(12, 0, 0)
+	contact.position = contact_returned
+	await wait_for(func(): return client.life.people[contact_index].position.distance_to(contact_returned) < 0.5)
+	contact.position = contact_original
+	client.life.people[contact_index].position = contact_original
+	print("PASS: pedestrian relevancy follows the receiving player")
 	var distant: Node3D = host.spawn_car(Vector3(500, 0.2, 500), Color.WHITE)
 	var distant_id: int = distant.net_id
 	await wait_for(func(): return client.car_by_id(distant_id) != null)
@@ -167,6 +190,7 @@ func run() -> void:
 	host.network.accept_state(id,theft)
 	assert(not host.network.owners.has(1), "Reports cannot claim a car without server approval")
 	var steal_car: Node3D = client.car_by_id(1)
+	steal_car.position = host.car_by_id(1).position
 	client.player.position = steal_car.position+Vector3(2.6,0.3,0)
 	# Seed the host position for this test-only teleport.
 	host.network.members[id].car_position = client.player.position

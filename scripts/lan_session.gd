@@ -7,6 +7,7 @@ const DISCOVERY := 28961
 const SYMBOLS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 const CHAT_LIMIT := 140
 const CHAT_RATE_MS := 700
+const SNAPSHOT_PACKET_LIMIT := 1200
 var world: Node3D
 var code := ""
 var peer: ENetMultiplayerPeer
@@ -19,8 +20,6 @@ var avatars := {}
 var owners := {}
 var clock := 0.0
 var snapshot_tick := 0
-var snapshot_members := 0
-var snapshot_cars := {}
 var advertise_clock := 0.0
 var panel: PanelContainer
 var status: Label
@@ -460,7 +459,6 @@ func introduce(requested: String) -> void:
 		peer.disconnect_peer(id)
 		return
 	var at: Vector3=rules.add_peer(id)
-	snapshot_members = 0
 	update_avatars(members)
 	accepted.rpc_id(id,at)
 
@@ -509,8 +507,6 @@ func peer_left(id: int) -> void:
 
 func disconnect_room() -> void:
 	close_chat()
-	snapshot_cars.clear()
-	snapshot_members = 0
 	chat_history.clear()
 	chat_last_sent.clear()
 	if is_instance_valid(chat_log):
@@ -754,40 +750,80 @@ func _process(delta: float) -> void:
 			if bus != null:
 				members[id]["position"] = bus.position
 				members[id]["car_position"] = bus.position
-		var cars: Array = []
 		var car_ids: Array = []
 		snapshot_tick += 1
-		var full_cars := snapshot_tick % 5 == 0 or snapshot_members != members.size()
-		snapshot_members = members.size()
 		for car in world.cars:
 			car_ids.append(car.net_id)
-			var important: bool = car.police or owners.has(car.net_id) or car.net_id in rules.bus_riders.values() or car == world.activities.target_car or car in world.activities.targets or not snapshot_cars.has(car.net_id)
-			if not important and not full_cars:
-				for member in members.values():
-					if member.has("position") and car.position.distance_squared_to(member.position) < 10000.0:
-						important = true
-						break
-			if not full_cars and not important:
-				continue
-			snapshot_cars[car.net_id] = true
-			var car_state := {"id":car.net_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer,"fuel":car.fuel,"refuel_time":car.refuel_time}
-			if car.tumbling:
-				car_state["tumble_rotation"] = car.rotation
-			cars.append(car_state)
-		for id in snapshot_cars.keys():
-			if id not in car_ids:
-				snapshot_cars.erase(id)
-		var people: Array = []
-		for person in world.life.people:
-			people.append([person.position,person.model.rotation.y,person.hp,person.robbed])
 		var officers: Array=[]
 		for officer in world.activities.officers:
 			officers.append([officer.position,officer.model.rotation.y,officer.hp,int(officer.get_meta("mission_contract",-1))])
+		var mission_car_ids := {}
+		if is_instance_valid(world.activities.target_car):
+			mission_car_ids[world.activities.target_car.net_id] = true
+		for target in world.activities.targets:
+			mission_car_ids[target.net_id] = true
 		var game: Dictionary=rules.export_state()
 		for id in members:
 			if rules.sheets.has(id):
 				members[id]["hp"]=rules.sheets[id].health
-		packed_snapshot.rpc(var_to_bytes({"members":members,"owners":owners,"entries":world.vehicle_entries,"cars":cars,"car_ids":car_ids,"people":people,"officers":officers,"game":game}).compress(FileAccess.COMPRESSION_DEFLATE))
+		var session_packet: PackedByteArray = var_to_bytes({"members":members,"owners":owners,"entries":world.vehicle_entries,"car_ids":car_ids}).compress(FileAccess.COMPRESSION_DEFLATE)
+		var game_packet: PackedByteArray = var_to_bytes({"officers":officers,"game":game}).compress(FileAccess.COMPRESSION_DEFLATE)
+		var car_state_cache := {}
+		for peer_id in members:
+			if int(peer_id) == 1 or members[peer_id].is_empty():
+				continue
+			var member: Dictionary = members[peer_id]
+			var observer: Vector3 = member.get("car_position", member.get("position", world.player.position))
+			var relevant_cars: Array = []
+			for car in world.cars:
+				var car_id: int = car.net_id
+				var close: bool = car.position.distance_squared_to(observer) < 10000.0
+				var assigned: bool = int(owners.get(car_id, 0)) == int(peer_id) or int(rules.bus_riders.get(int(peer_id), -1)) == car_id
+				var mission: bool = mission_car_ids.has(car_id)
+				var distant_refresh: bool = posmod(car_id + int(peer_id), 10) == snapshot_tick % 10
+				if close or assigned or mission or distant_refresh:
+					var car_state: Dictionary = car_state_cache.get(car_id, {})
+					if car_state.is_empty():
+						car_state = {"id":car_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer,"fuel":car.fuel,"refuel_time":car.refuel_time}
+						if car.tumbling:
+							car_state["tumble_rotation"] = car.rotation
+						car_state_cache[car_id] = car_state
+					relevant_cars.append(car_state)
+			var people: Array = []
+			for person_index in world.life.people.size():
+				var person: Node3D = world.life.people[person_index]
+				var close: bool = person.position.distance_squared_to(observer) <= 4225.0
+				var distant_refresh: bool = posmod(person_index + int(peer_id), 10) == snapshot_tick % 10
+				if close or distant_refresh:
+					people.append([person_index,person.position,person.model.rotation.y,person.hp,person.robbed])
+			packed_snapshot.rpc_id(int(peer_id), session_packet)
+			packed_snapshot.rpc_id(int(peer_id), game_packet)
+			var entity_count: int = relevant_cars.size() + people.size()
+			var chunk_size := 1
+			var packets: Array[PackedByteArray] = []
+			# Entity-only deltas can be split without duplicating the authoritative session state.
+			while entity_count > 0:
+				var chunk_count: int = mini(chunk_size, maxi(1, entity_count))
+				var oversized := false
+				packets.clear()
+				for chunk_index in chunk_count:
+					var car_chunk: Array = []
+					for car_index in relevant_cars.size():
+						if car_index % chunk_count == chunk_index:
+							car_chunk.append(relevant_cars[car_index])
+					var people_chunk: Array = []
+					for person_index in people.size():
+						if person_index % chunk_count == chunk_index:
+							people_chunk.append(people[person_index])
+					var payload := {"cars":car_chunk,"people":people_chunk}
+					var packet: PackedByteArray = var_to_bytes(payload).compress(FileAccess.COMPRESSION_DEFLATE)
+					packets.append(packet)
+					oversized = oversized or packet.size() > SNAPSHOT_PACKET_LIMIT
+				if not oversized or chunk_count >= entity_count:
+					break
+				chunk_size *= 2
+			for packet in packets:
+				packed_snapshot.rpc_id(int(peer_id), packet)
 		update_avatars(members)
 	else:
 		report.rpc_id(1,local_state())
@@ -832,16 +868,21 @@ func packed_snapshot(packet: PackedByteArray) -> void:
 		snapshot(decoded)
 
 func snapshot(data: Dictionary) -> void:
-	owners=data.owners
-	members=data.members
-	world.vehicle_entries=data.entries
+	if data.has("owners"):
+		owners=data.owners
+	if data.has("members"):
+		members=data.members
+	if data.has("entries"):
+		world.vehicle_entries=data.entries
 	var present := {}
-	for id in data.car_ids:
-		present[int(id)] = true
+	if data.has("car_ids"):
+		for id in data.car_ids:
+			present[int(id)] = true
 	var local_cars := {}
-	for car in world.cars:
-		local_cars[car.net_id] = car
-	for state in data.cars:
+	if data.has("cars"):
+		for car in world.cars:
+			local_cars[car.net_id] = car
+	for state in data.get("cars", []):
 		var id := int(state.id)
 		var car: Node3D = local_cars.get(id)
 		if car != null and (car.tier != int(state.tier) or car.police != bool(state.police)):
@@ -876,44 +917,51 @@ func snapshot(data: Dictionary) -> void:
 		car.hovering=bool(state.get("hovering", false))
 		car.engine_upgrade=state.engine
 		car.set_suspension(float(state.get("suspension",0)))
-	for car in world.cars.duplicate():
-		if not present.has(car.net_id):
-			discard_snapshot_car(car)
-	world.cops.clear()
-	for car in world.cars:
-		if car.police and car.police_phase in ["exit","pursuit"]:
-			world.cops.append(car)
-	for i in mini(data.people.size(),world.life.people.size()):
-		var person: Node3D=world.life.people[i]
-		var state: Array=data.people[i]
+	if data.has("car_ids"):
+		for car in world.cars.duplicate():
+			if not present.has(car.net_id):
+				discard_snapshot_car(car)
+	if data.has("cars"):
+		world.cops.clear()
+		for car in world.cars:
+			if car.police and car.police_phase in ["exit","pursuit"]:
+				world.cops.append(car)
+	for state in data.get("people", []):
+		var person_index: int = int(state[0])
+		if person_index < 0 or person_index >= world.life.people.size():
+			continue
+		var person: Node3D=world.life.people[person_index]
 		if person.visible:
-			person.model.animate(1.6 if person.position.distance_squared_to(state[0])>0.0004 and state[2]>0 else 0.0)
-		person.position=state[0]
-		person.model.rotation.y=state[1]
-		person.hp=state[2]
-		person.robbed=state[3]
+			person.model.animate(1.6 if person.position.distance_squared_to(state[1])>0.0004 and state[3]>0 else 0.0)
+		person.position=state[1]
+		person.model.rotation.y=state[2]
+		person.hp=state[3]
+		person.robbed=state[4]
 		person.collision_layer=0 if person.hp<=0 else 4
 		person.model.rotation.z=PI/2 if person.hp<=0 else 0
-	while world.activities.officers.size()>data.officers.size():
-		world.activities.officers.pop_back().queue_free()
-	while world.activities.officers.size()<data.officers.size():
-		var officer := preload("res://scripts/officer.gd").new()
-		officer.world=world
-		world.add_child(officer)
-		world.activities.officers.append(officer)
-	for i in data.officers.size():
-		var officer: Node3D=world.activities.officers[i]
-		officer.model.animate(3.0 if officer.position.distance_to(data.officers[i][0])>0.03 else 0.0)
-		officer.position=data.officers[i][0]
-		officer.model.rotation.y=data.officers[i][1]
-		officer.hp=data.officers[i][2]
-		var contract: int = int(data.officers[i][3])
-		if contract >= 0: officer.set_meta("mission_contract",contract)
-		elif officer.has_meta("mission_contract"): officer.remove_meta("mission_contract")
-		officer.model.rotation.z=PI/2 if officer.hp<=0 else 0
-		officer.collision_layer=0 if officer.hp<=0 else 4
-	rules.apply_state(data.game)
-	update_avatars(members)
+	if data.has("officers"):
+		while world.activities.officers.size()>data.officers.size():
+			world.activities.officers.pop_back().queue_free()
+		while world.activities.officers.size()<data.officers.size():
+			var officer := preload("res://scripts/officer.gd").new()
+			officer.world=world
+			world.add_child(officer)
+			world.activities.officers.append(officer)
+		for i in data.officers.size():
+			var officer: Node3D=world.activities.officers[i]
+			officer.model.animate(3.0 if officer.position.distance_to(data.officers[i][0])>0.03 else 0.0)
+			officer.position=data.officers[i][0]
+			officer.model.rotation.y=data.officers[i][1]
+			officer.hp=data.officers[i][2]
+			var contract: int = int(data.officers[i][3])
+			if contract >= 0: officer.set_meta("mission_contract",contract)
+			elif officer.has_meta("mission_contract"): officer.remove_meta("mission_contract")
+			officer.model.rotation.z=PI/2 if officer.hp<=0 else 0
+			officer.collision_layer=0 if officer.hp<=0 else 4
+	if data.has("game"):
+		rules.apply_state(data.game)
+	if data.has("members"):
+		update_avatars(members)
 
 func discard_snapshot_car(car: Node3D) -> void:
 	if car == world.active_car:
