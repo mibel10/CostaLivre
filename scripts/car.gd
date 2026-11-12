@@ -30,6 +30,7 @@ var lights: Array[MeshInstance3D] = []
 var route: Array[Vector3] = []
 var route_index := 0
 var siren_clock := 0.0
+var siren_audio: AudioStreamPlayer3D
 var hit_cooldown := 0.0
 var tier := 0
 var owned := false
@@ -106,6 +107,16 @@ func _ready() -> void:
 	world.visuals.build_car(self)
 	heading = rotation.y
 	model_name = Catalog.NAMES[tier]
+	if police and world.extra != null:
+		var siren: AudioStreamWAV = world.extra.sounds["siren"].duplicate()
+		siren.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		siren.loop_end = siren.data.size() / 2
+		siren_audio = AudioStreamPlayer3D.new()
+		siren_audio.stream = siren
+		siren_audio.volume_db = -12.0
+		siren_audio.unit_size = 12.0
+		siren_audio.max_distance = 140.0
+		add_child(siren_audio)
 
 func _process(delta: float) -> void:
 	if tier != Catalog.SUPERCAR:
@@ -335,6 +346,11 @@ func _physics_process(delta: float) -> void:
 			wheel.rotation.x = wheel_angle
 	if police:
 		siren_clock += delta
+		var siren_active: bool = police_phase in ["exit", "pursuit"]
+		if siren_audio != null and siren_active and not siren_audio.playing:
+			siren_audio.play()
+		elif siren_audio != null and not siren_active and siren_audio.playing:
+			siren_audio.stop()
 		for i in lights.size():
 			lights[i].visible = police_phase in ["exit","pursuit"] and fmod(siren_clock + i * 0.2, 0.4) < 0.25
 	if position.y < -8:
