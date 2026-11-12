@@ -173,6 +173,7 @@ func _draw() -> void:
 	dot(a.GUN_SHOP, Color("9ed8ff"), "Arsenal")
 	dot(a.DEALER, Color("c7afff"), "APEX")
 	dot(a.GARAGE, Color("8ddbb5"), "Oficina")
+	dot(Vector3(210,0,42), Color("e9a7d1"), "Costa Moda / roupas e acessórios")
 	if world.station!=null:
 		for station in world.station.STATIONS:
 			dot(station.center,Color("8db8ef"),"Delegacia / %d viaturas" % int(station.count))

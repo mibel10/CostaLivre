@@ -23,6 +23,7 @@ const BUILDING_OFFERS := {
 	"bank": ["Banco Costa", "Entregar 3 malotes em 60 s · +$200", "Precisamos levar estes malotes aos pontos de coleta."],
 	"guns": ["Arsenal", "Ver catálogo de armas comuns", "Quer ver o que temos no balcão?"],
 	"cars": ["Concessionária", "Ver catálogo de veículos", "Procurando um veículo?"],
+	"clothes": ["Costa Moda", "Abrir loja de roupas e acessórios", "Quer renovar o visual?"],
 	"garage": ["Garagem Costa", "Ver serviços da oficina", "O que seu carro está precisando?"],
 }
 const BUILDING_REWARD := 200
@@ -87,6 +88,7 @@ func _ready() -> void:
 	build_elevator_menu()
 	build_contact_dialog()
 	setup_haunted_house()
+	setup_clothing_shop()
 	for i in 32:
 		var center := Vector3(-105+(i%4)*42,0,-63+((i/4)%4)*42)
 		var ped := Pedestrian.new()
@@ -267,6 +269,25 @@ func setup_haunted_house() -> void:
 	name_tag.outline_size = 5
 	name_tag.modulate = Color("c8f4ff")
 	haunted_ghost.add_child(name_tag)
+
+func setup_clothing_shop() -> void:
+	var shopkeeper := Pedestrian.new()
+	shopkeeper.name = "VendedoraCostaModa"
+	shopkeeper.world = world
+	shopkeeper.appearance_index = 8
+	shopkeeper.stationary = true
+	shopkeeper.tint = Color("bb8eac")
+	add_child(shopkeeper)
+	shopkeeper.position = Vector3(210,0,42)
+	building_contacts[people.size()] = ["clothes",shopkeeper.position]
+	people.append(shopkeeper)
+	var sign := Label3D.new()
+	sign.text = "COSTA MODA · ROUPAS E ACESSÓRIOS"
+	sign.position = shopkeeper.position + Vector3(0,2.4,0)
+	sign.font_size = 30
+	sign.outline_size = 6
+	sign.modulate = Color("ffd18a")
+	add_child(sign)
 
 func apartment_stair_route() -> Array[Vector3]:
 	var route: Array[Vector3]=[]
@@ -924,6 +945,10 @@ func interact_building() -> bool:
 	if contact < 0:
 		return false
 	selected_contact = contact
+	if building_contacts[contact][0] == "clothes":
+		world.activities.set_menu("pause")
+		world.pause_menu.show_page("character")
+		return true
 	if building_contacts[contact][0] == "musician":
 		conversation_showing_rumor = false
 		building_title.text = "MÚSICA NA RUA\nO músico sorri e espera sua resposta."
