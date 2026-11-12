@@ -694,6 +694,11 @@ func apply_elevator_arrival(at: Vector3) -> void:
 	if not at.is_finite():
 		return
 	move_elevator_rider(at)
+	if home_floor_at(at) >= 0:
+		world.player.model.position = Vector3(0,0,-0.7)
+		var entry_tween := create_tween()
+		entry_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		entry_tween.tween_property(world.player.model,"position",Vector3.ZERO,0.28)
 	refresh = 0.5
 	world.camera_check_timer = 0
 

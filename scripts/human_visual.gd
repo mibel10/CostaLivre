@@ -199,6 +199,13 @@ func play_emote(name: String) -> void:
 	emote_lock = 1.8 if gesture != "Griddy" else 2.4
 	animation.play(gesture,0.12)
 
+func play_pickup_animation() -> void:
+	if animation == null or not animation.has_animation("DoorWork"):
+		return
+	emote_lock = 0.8
+	animation.speed_scale = 1.0
+	animation.play("DoorWork",0.1)
+
 func _process(delta: float) -> void:
 	if emote_lock > 0.0:
 		emote_lock = maxf(0.0,emote_lock-delta)

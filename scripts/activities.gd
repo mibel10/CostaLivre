@@ -1381,11 +1381,13 @@ func interact_campaign() -> bool:
 			world.notify("Passageiro a bordo. Chegue ao destino antes do tempo acabar.")
 			return true
 		if spec.kind == "escape_file" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
+			world.player.model.play_pickup_animation()
 			stage = 1
 			world.life.begin_apartment_stair_chase()
 			world.notify("Arquivo recolhido! A policia entrou pelas escadas. Saia do predio e despiste a busca.")
 			return true
 		if spec.kind == "intercept" and stage == 1 and is_instance_valid(target_car) and world.active_car == null and world.player.position.distance_to(target_car.position) < 4:
+			world.player.model.play_pickup_animation()
 			stage = 2
 			world.raise_heat(40)
 			world.notify("Maleta recolhida! Despiste a policia e entregue no destino marcado.")
@@ -1397,6 +1399,7 @@ func interact_campaign() -> bool:
 			world.notify("Invasores chegando! Fique no local e elimine os atacantes.")
 			return true
 		if spec.kind == "cargo" and stage < spec.points.size() and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
+			world.player.model.play_pickup_animation()
 			stage += 1
 			world.raise_heat(15)
 			world.notify("Caixa recolhida. Busque a proxima." if stage < spec.points.size() else "Carga reunida! Consiga um carro, despiste e leve a carga a oficina.")
@@ -1429,12 +1432,14 @@ func interact_campaign() -> bool:
 			world.notify("Corrida cooperativa iniciada! Alcancem cada ponto juntos.")
 			return true
 		if spec.kind == "breach" and stage < spec.points.size() and progress >= 1 and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
+			world.player.model.play_pickup_animation()
 			stage += 1
 			progress = 0
 			world.raise_heat(12)
 			world.notify("Documentos recolhidos. Abra o proximo cofre." if stage < spec.points.size() else "Documentos reunidos! Despiste e leve-os a APEX.")
 			return true
 		if spec.kind == "getaway" and stage == 0 and world.active_car == null and world.player.position.distance_to(spec.pickup) < 3:
+			world.player.model.play_pickup_animation()
 			stage = 1
 			spawn_action_guards()
 			world.raise_heat(100)
