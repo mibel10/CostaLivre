@@ -784,7 +784,9 @@ func interact() -> bool:
 		return false
 	var at: Vector3 = world.player.position
 	if haunted_clues < 3 and at.distance_to(HAUNTED_HOUSE + [Vector3(-3,0,1),Vector3(3,0,0),Vector3(0,0,-3)][haunted_clues]) < 2.2:
-		haunted_clue_markers[haunted_clues].hide()
+		var marker_tween := create_tween()
+		marker_tween.tween_property(haunted_clue_markers[haunted_clues],"scale",Vector3.ZERO,0.2)
+		marker_tween.tween_callback(haunted_clue_markers[haunted_clues].hide)
 		haunted_clues += 1
 		world.notify(["Há marcas de passos que terminam no meio da sala.","Um gravador repete o nome Calado entre chiados.","A sombra no chão aponta para o lugar onde o fantasma está."][haunted_clues-1])
 		world.extra.play("hack",-18.0)
@@ -798,7 +800,7 @@ func interact() -> bool:
 		conversation_choices[0].text = "Perguntar o que aconteceu"
 		conversation_choices[1].text = "Ajudar Calado a descansar"
 		world.activities.set_menu("building_contact")
-		building_dialog.show()
+		animate_building_dialog()
 		return true
 	var computer_floor := home_computer_floor(at)
 	if computer_floor >= 0:
@@ -852,7 +854,10 @@ func resolve_haunted_story(peaceful: bool) -> void:
 	if peaceful:
 		building_title.text = "CALADO FANTASMA\nA luz se apaga, e a casa finalmente fica em silêncio."
 		if is_instance_valid(haunted_ghost):
-			haunted_ghost.hide()
+			var ghost_material: StandardMaterial3D = haunted_ghost.material_override
+			var fade := create_tween()
+			fade.tween_property(ghost_material,"albedo_color:a",0.0,0.85)
+			fade.tween_callback(haunted_ghost.hide)
 		if world.network == null or not world.network.active():
 			world.cash += 600
 		world.notify("Você ajudou Calado a descansar." + (" +$600" if world.network == null or not world.network.active() else ""))
@@ -957,7 +962,7 @@ func interact_building() -> bool:
 			conversation_choices[i].show()
 			conversation_choices[i].text = ["Ouvir um rumor sobre a cidade", "Agradecer pela música", "Perguntar sobre a casa abandonada"][i]
 		world.activities.set_menu("building_contact")
-		building_dialog.show()
+		animate_building_dialog()
 		return true
 	var offer: Array = BUILDING_OFFERS[building_contacts[contact][0]]
 	building_title.text = "%s\n%s" % [offer[0],offer[2]]
@@ -966,8 +971,16 @@ func interact_building() -> bool:
 	for option in conversation_choices:
 		option.hide()
 	world.activities.set_menu("building_contact")
-	building_dialog.show()
+	animate_building_dialog()
 	return true
+
+func animate_building_dialog() -> void:
+	building_dialog.show()
+	building_dialog.modulate.a = 0.0
+	building_dialog.scale = Vector2(0.96,0.96)
+	var tween := create_tween().set_parallel(true)
+	tween.tween_property(building_dialog,"modulate:a",1.0,0.16)
+	tween.tween_property(building_dialog,"scale",Vector2.ONE,0.16)
 
 func choose_conversation(choice: int) -> void:
 	if conversation_showing_rumor:
