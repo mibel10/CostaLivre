@@ -29,6 +29,8 @@ var profile_status: Label
 var menu_music: AudioStreamPlayer
 var early_access_notice: ColorRect
 var early_access_button: Button
+var ending_party_ready := false
+var ending_confetti: Array[ColorRect] = []
 const REBIND_ACTIONS := ["forward","back","left","right","jump","sprint","crouch","interact","activity","reload","jobs","map","pause","reset"]
 const REBIND_LABELS := ["Frente","Ré","Esquerda","Direita","Pular","Correr / acelerar","Agachar","Entrar / sair","Interagir / assaltar","Recarregar","Missões","Mapa","Pausar","Reposicionar"]
 
@@ -105,10 +107,23 @@ func _ready() -> void:
 	ending_shade.color = Color("0c1b25")
 	ending_shade.size = Vector2(1280,720)
 	pages.ending.add_child(ending_shade)
-	label(pages.ending,"CAMPANHA CONCLUÍDA",Vector2(390,190),38,Color("ffd18a"))
-	label(pages.ending,"Os %d capítulos foram concluídos. A cidade está livre." % world.activities.CAMPAIGN_LENGTH,Vector2(392,260),20)
-	button(pages.ending,"CONTINUAR NO JOGO LIVRE",Rect2(392,340,440,58),func(): world.start_mode("sandbox"))
-	button(pages.ending,"VOLTAR À ESCOLHA DE MODO",Rect2(392,420,440,58),show_mode_select)
+	label(pages.ending,"FESTA DA LIBERDADE",Vector2(350,130),46,Color("ffd18a"))
+	label(pages.ending,"Os %d capítulos terminaram. A Costa Livre está em festa!" % world.activities.CAMPAIGN_LENGTH,Vector2(352,195),21)
+	label(pages.ending,"CALADO NO PALCO PRINCIPAL  ·  PRÊMIO FANTASMA DE OURO  ·  O BOLO SUMIU DE NOVO",Vector2(350,242),16,Color("a7e8ff"))
+	label(pages.ending,"Dizem que o Calado Fantasma apareceu só para conferir se a cidade ficou livre mesmo.",Vector2(352,278),17,Color("d4ddd5"))
+	label(pages.ending,"Uma última noite na orla: música, luzes e histórias de toda a campanha.",Vector2(352,310),17,Color("d4ddd5"))
+	button(pages.ending,"CONTINUAR NO JOGO LIVRE",Rect2(352,370,440,58),func(): world.start_mode("sandbox"))
+	button(pages.ending,"VOLTAR À ESCOLHA DE MODO",Rect2(352,450,440,58),show_mode_select)
+	var confetti_rng := RandomNumberGenerator.new()
+	confetti_rng.seed = 2048
+	for i in 42:
+		var confetti := ColorRect.new()
+		confetti.size = Vector2(confetti_rng.randf_range(4,10),confetti_rng.randf_range(10,20))
+		confetti.color = [Color("ffd18a"),Color("85d5b7"),Color("a7e8ff"),Color("dca5d1")][i%4]
+		confetti.position = Vector2(confetti_rng.randf_range(0,1280),-40-confetti_rng.randf_range(0,700))
+		confetti.rotation = confetti_rng.randf_range(-1,1)
+		pages.ending.add_child(confetti)
+		ending_confetti.append(confetti)
 	button(pages.mode,"NOME E ROUPA",Rect2(70,567,440,48),func(): show_page("character"))
 	menu_music=AudioStreamPlayer.new()
 	menu_music.name="MenuMusic"
@@ -321,7 +336,12 @@ func button(parent: Node, value: String, rect: Rect2, callback: Callable) -> But
 	node.text = value
 	node.position = rect.position
 	node.size = rect.size
-	node.pressed.connect(callback)
+	node.pressed.connect(func():
+		node.scale = Vector2(0.96,0.96)
+		var press_tween := create_tween()
+		press_tween.tween_property(node,"scale",Vector2.ONE,0.12)
+		press_tween.finished.connect(func(): callback.call())
+	)
 	parent.add_child(node)
 	return node
 
@@ -378,6 +398,16 @@ func make_menu_music() -> AudioStreamWAV:
 
 func show_campaign_complete() -> void:
 	world.activities.set_menu("campaign_complete")
+	if is_instance_valid(menu_music):
+		menu_music.volume_db = -9.0
+		if not menu_music.playing:
+			menu_music.play()
+	if not ending_party_ready:
+		ending_party_ready = true
+		for i in ending_confetti.size():
+			var confetti := ending_confetti[i]
+			var fall := create_tween().set_loops()
+			fall.tween_property(confetti,"position:y",760.0,3.2+float(i%7)*0.22).from(-30.0-float(i%11)*38.0)
 
 func start_new_campaign() -> void:
 	if world.restart_after_admin():
@@ -416,6 +446,11 @@ func show_page(value: String) -> void:
 		profile_status.text="Créditos da loja: %d · Roupas $300 · Acessórios $150" % world.profile.style_credits
 	for name in pages:
 		pages[name].visible = name == value
+		if name == value:
+			pages[name].modulate.a = 0.0
+			var appear := create_tween().set_parallel(true)
+			appear.tween_property(pages[name],"modulate:a",1.0,0.16)
+			appear.tween_property(pages[name],"scale",Vector2.ONE,0.16).from(Vector2(0.985,0.985))
 	pause_sidebar.visible = value not in ["mode", "ending"] and world.activities.menu in ["pause", "map"]
 	refresh()
 	if value == "map":
