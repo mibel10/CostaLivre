@@ -49,7 +49,7 @@ func run() -> void:
 	world.player.set_physics_process(true)
 	assert(world.life.rooms.size() == 22 and world.life.people.size() == 171)
 	var traffic: Array = world.cars.filter(func(car): return car.traffic)
-	assert(traffic.size() == 35 and traffic.filter(func(car): return car.position.x > 200).size() == 22)
+	assert(traffic.size() == 38 and traffic.filter(func(car): return car.position.x > 200).size() == 24)
 	var local_car: Node3D = traffic[traffic.size() - 12]
 	var eastern_car: Node3D = traffic.back()
 	world.player.position = local_car.position + Vector3(-10, 0.3, 0)
