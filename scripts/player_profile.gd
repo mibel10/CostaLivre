@@ -6,7 +6,7 @@ var world: Node3D
 var player_name := "Jogador"
 var outfit := 0
 var accessory := 0
-var style_credits := 900
+var style_credits := 2000
 var owned_outfits := [0]
 var owned_accessories := [0]
 var config_path := "user://profile.cfg"
@@ -45,19 +45,23 @@ func save_profile(value: String, selected: int, selected_accessory := 0) -> bool
 	var cost := (0 if selected in owned_outfits else 300) + (0 if selected_accessory in owned_accessories else 150)
 	if style_credits < cost:
 		return false
-	style_credits -= cost
-	if not selected in owned_outfits: owned_outfits.append(selected)
-	if not selected_accessory in owned_accessories: owned_accessories.append(selected_accessory)
+	var new_credits := style_credits - cost
+	var new_outfits: Array = owned_outfits.duplicate()
+	var new_accessories: Array = owned_accessories.duplicate()
+	if not selected in new_outfits: new_outfits.append(selected)
+	if not selected_accessory in new_accessories: new_accessories.append(selected_accessory)
 	var config := ConfigFile.new()
 	config.set_value("player","name",name_value)
 	config.set_value("player","outfit",selected)
 	config.set_value("player","accessory",selected_accessory)
-	config.set_value("player","style_credits",style_credits)
-	config.set_value("player","owned_outfits",owned_outfits)
-	config.set_value("player","owned_accessories",owned_accessories)
+	config.set_value("player","style_credits",new_credits)
+	config.set_value("player","owned_outfits",new_outfits)
+	config.set_value("player","owned_accessories",new_accessories)
 	if config.save(config_path)!=OK:
-		style_credits += cost
 		return false
+	style_credits=new_credits
+	owned_outfits.assign(new_outfits)
+	owned_accessories.assign(new_accessories)
 	player_name=name_value
 	outfit=selected
 	accessory=selected_accessory
