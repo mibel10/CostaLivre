@@ -8,6 +8,7 @@ const SYMBOLS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 const CHAT_LIMIT := 140
 const CHAT_RATE_MS := 700
 const SNAPSHOT_PACKET_LIMIT := 1200
+const EMOTES := ["wave","griddy","take_l","dance"]
 var world: Node3D
 var code := ""
 var peer: ENetMultiplayerPeer
@@ -46,6 +47,7 @@ var chat_log: RichTextLabel
 var chat_input: LineEdit
 var chat_history: Array[String] = []
 var chat_last_sent := {}
+var emote_last_sent := {}
 
 func active() -> bool:
 	return peer != null and peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED and (multiplayer.is_server() or joined)
@@ -203,7 +205,7 @@ func _ready() -> void:
 	chat_column.add_child(chat_row)
 	chat_input = LineEdit.new()
 	chat_input.max_length = CHAT_LIMIT
-	chat_input.placeholder_text = "Mensagem para a sala..."
+	chat_input.placeholder_text = "Mensagem para quem está perto..."
 	chat_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chat_input.text_submitted.connect(func(_text): send_chat())
 	chat_row.add_child(chat_input)
@@ -233,7 +235,7 @@ func open_menu() -> void:
 
 func show_mission_offer(index: int, host_name: String) -> void:
 	var titles: Array=world.activities.JOBS
-	offer_text.text="%s convida você para %s.\n\nAo aceitar, você vai para a entrada da missão." % [host_name,titles[clampi(index,24,28)]]
+	offer_text.text="%s convida você para %s.\n\nAo aceitar, você vai para a entrada da missão." % [host_name,titles[index] if index == 33 else titles[clampi(index,24,28)]]
 	offer_panel.show()
 	world.restore_pointer()
 
@@ -249,6 +251,10 @@ func answer_mission_offer(accept: bool) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
+		if world.activities.menu == "" and event.physical_keycode in [KEY_G,KEY_F6,KEY_F7,KEY_F8]:
+			send_emote({KEY_G:"wave",KEY_F6:"griddy",KEY_F7:"take_l",KEY_F8:"dance"}[event.physical_keycode])
+			get_viewport().set_input_as_handled()
+			return
 		if event.keycode == KEY_ESCAPE and chat_panel.visible:
 			close_chat()
 			get_viewport().set_input_as_handled()
@@ -305,6 +311,42 @@ func send_chat() -> void:
 	else:
 		submit_chat.rpc_id(1, message)
 	chat_input.grab_focus()
+
+func send_emote(name: String) -> void:
+	if not name in EMOTES:
+		return
+	var local_id := multiplayer.get_unique_id() if active() else 1
+	var now := Time.get_ticks_msec()
+	if now-int(emote_last_sent.get(local_id,0))<800:
+		return
+	emote_last_sent[local_id]=now
+	if not active():
+		world.player.model.play_emote(name)
+		return
+	if multiplayer.is_server():
+		apply_emote(local_id,name)
+	else:
+		world.player.model.play_emote(name)
+		request_emote.rpc_id(1,name)
+
+func apply_emote(id: int, name: String) -> void:
+	if not members.has(id):
+		return
+	members[id]["emote"] = name
+	members[id]["emote_seq"] = int(members[id].get("emote_seq",0))+1
+	if id == multiplayer.get_unique_id():
+		world.player.model.play_emote(name)
+
+@rpc("any_peer","call_remote","reliable")
+func request_emote(name: String) -> void:
+	if not multiplayer.is_server() or name not in EMOTES:
+		return
+	var id := multiplayer.get_remote_sender_id()
+	var now := Time.get_ticks_msec()
+	if not members.has(id) or now-int(emote_last_sent.get(id,0))<800:
+		return
+	emote_last_sent[id]=now
+	apply_emote(id,name)
 
 func close_menu() -> void:
 	panel.hide()
@@ -698,7 +740,14 @@ func accept_state(id: int, state: Dictionary) -> void:
 	var pitch = state.get("weapon_pitch", 0.0)
 	state["weapon_pitch"] = clampf(float(pitch), -1.35, 1.35) if (pitch is float or pitch is int) and is_finite(float(pitch)) else 0.0
 	state["aim_weapon"] = state.get("aim_weapon") == true and int(state.get("weapon", 0)) > 0 and int(state.car) < 0 and not state.has("bus") and state.roll == 0.0 and not riding is Vector3 and not rules.is_dead(id) and not world.vehicle_entries.has(id) and not world.vehicle_falls.has(id)
+	var emote := str(members[id].get("emote", ""))
+	var emote_seq := int(members[id].get("emote_seq", 0))
+	state.erase("emote")
+	state.erase("emote_seq")
 	members[id]=state
+	if emote_seq > 0:
+		members[id]["emote"] = emote
+		members[id]["emote_seq"] = emote_seq
 
 func _process(delta: float) -> void:
 	if chat_panel.visible and (not active() or world.activities.menu != "chat"):
@@ -785,6 +834,11 @@ func _process(delta: float) -> void:
 					var car_state: Dictionary = car_state_cache.get(car_id, {})
 					if car_state.is_empty():
 						car_state = {"id":car_id,"position":car.position,"heading":car.heading,"speed":car.speed,"hp":car.hp,"tier":car.tier,"paint":car.paint,"police":car.police,"phase":car.police_phase,"owned":car.owned,"hovering":car.hovering,"engine":car.engine_upgrade,"suspension":car.suspension_height,"wreck_timer":car.wreck_timer,"exploded":car.exploded,"despawn_timer":car.despawn_timer,"fuel":car.fuel,"refuel_time":car.refuel_time}
+						if car.has_meta("rival_name"):
+							car_state["rival_name"] = str(car.get_meta("rival_name"))
+							car_state["traffic"] = car.traffic
+							car_state["route"] = car.route.duplicate()
+							car_state["route_index"] = car.route_index
 						if car.tumbling:
 							car_state["tumble_rotation"] = car.rotation
 						car_state_cache[car_id] = car_state
@@ -917,6 +971,16 @@ func snapshot(data: Dictionary) -> void:
 		car.hovering=bool(state.get("hovering", false))
 		car.engine_upgrade=state.engine
 		car.set_suspension(float(state.get("suspension",0)))
+		if state.has("rival_name"):
+			world.mark_street_rival(car,str(state.rival_name))
+			car.traffic = bool(state.get("traffic",true))
+			car.route.assign(state.get("route",[]))
+			car.route_index = int(state.get("route_index",0))
+		elif car.has_meta("rival_name"):
+			car.remove_meta("rival_name")
+			var rival_tag := car.get_node_or_null("RivalTag")
+			if rival_tag != null:
+				rival_tag.queue_free()
 	if data.has("car_ids"):
 		for car in world.cars.duplicate():
 			if not present.has(car.net_id):
@@ -988,10 +1052,14 @@ func update_avatars(states: Dictionary) -> void:
 			actor.position=states[id].position
 			var tag := Profile.create_nametag(world,str(states[id].get("name","Jogador")))
 			tag.position=actor.position+Vector3(0,2.5,0)
-			avatars[id]={"node":actor,"at":actor.position,"heading":0.0,"outfit":actor.model.outfit_index,"tag":tag,"tag_at":tag.position}
+			avatars[id]={"node":actor,"at":actor.position,"heading":0.0,"outfit":actor.model.outfit_index,"tag":tag,"tag_at":tag.position,"emote_seq":int(states[id].get("emote_seq",0))}
 		var state: Dictionary=states[id]
 		var on_foot := int(state.car) < 0 and not state.has("bus")
 		var avatar: Dictionary=avatars[id]
+		var emote_seq := int(state.get("emote_seq",0))
+		if emote_seq != int(avatar.get("emote_seq",0)):
+			avatar.node.model.play_emote(str(state.get("emote","wave")))
+			avatar["emote_seq"] = emote_seq
 		var outfit: int=clampi(int(state.get("outfit",0)),0,47)
 		if avatar.outfit!=outfit:
 			avatar.node.apply_outfit(outfit)
@@ -1058,7 +1126,14 @@ func relay_chat(id: int, message: String) -> void:
 		return
 	chat_last_sent[id] = now
 	var player_name := Profile.clean_name(str(members[id].get("name", "Jogador")))
-	broadcast_chat.rpc(id, player_name, clean_message)
+	var speaker_at: Vector3 = rules.position_of(id)
+	for peer_id in members:
+		if rules.position_of(int(peer_id)).distance_to(speaker_at) > 70.0:
+			continue
+		if int(peer_id) == 1:
+			broadcast_chat(id,player_name,clean_message)
+		else:
+			broadcast_chat.rpc_id(int(peer_id),id,player_name,clean_message)
 
 @rpc("any_peer", "call_remote", "reliable")
 func submit_chat(message: String) -> void:

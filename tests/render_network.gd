@@ -69,6 +69,8 @@ func run() -> void:
 	assert(host.network.avatars[remote_id].outfit==4*8)
 	assert(client.network.avatars[1].tag.text=="Anfitriao")
 	assert(client.network.chat_toggle.visible, "Chat is available inside an active room")
+	host.player.position = client.player.position + Vector3(-20.0, 0.0, 0.0)
+	await create_timer(0.3).timeout
 	client.network.open_chat()
 	assert(client.network.chat_panel.visible and client.activities.menu=="chat" and not client.get_tree().paused, "Opening chat blocks local controls without pausing the online world")
 	client.network.chat_input.text="Oi, sala!"

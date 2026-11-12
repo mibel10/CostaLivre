@@ -289,6 +289,8 @@ func send_action(kind: String, data := {}) -> void:
 		network.game_action.rpc_id(1,kind,data)
 
 func propose_mission(id: int,index: int) -> void:
+	if index not in [24,25,26,27,28,33]:
+		return
 	if world.activities.job>=0 or pending_mission>=24:
 		private_notice(id,"Conclua o contrato atual antes de abrir outra operacao.")
 		return
@@ -342,6 +344,8 @@ func respond_to_mission(id: int,accept: bool) -> void:
 		var entrance: Vector3 = world.life.PLACES[5] + Vector3(0, 0.3, 15)
 		if pending_mission in [27, 28]:
 			entrance = Vector3(294 if pending_mission == 27 else 798, 0.3, -78.5)
+		elif pending_mission == 33:
+			entrance = world.activities.ACTION_JOBS[33].points[0] + Vector3(0, 0.3, 0)
 		if not mission_offer_started:
 			teleport_to_contract(mission_offer_from, entrance + Vector3.LEFT * 1.5)
 		var offset := 1.5 if not mission_offer_started else 2.5 + float(id % 3)
@@ -349,7 +353,8 @@ func respond_to_mission(id: int,accept: bool) -> void:
 		if not mission_offer_started:
 			mission_offer_started = true
 			world.activities.start_job(pending_mission, true, mission_offer_from)
-		world.raise_heat(42.0, id)
+		if pending_mission != 33:
+			world.raise_heat(42.0, id)
 		private_notice(id, "Convite aceito. Você chegou à entrada da missão.")
 	if mission_invites.is_empty():
 		pending_mission = -1
@@ -414,7 +419,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"reload": with_actor(id,world.activities.reload)
 		"job":
 			var requested_job:=clampi(int(data.get("index",0)),0,world.activities.JOBS.size()-1)
-			if requested_job >= 24 and requested_job < 29:
+			if requested_job >= 24 and requested_job < 29 or requested_job == 33:
 				propose_mission(id,requested_job)
 			elif world.activities.job>=0:
 				private_notice(id,"Conclua o contrato atual da sala primeiro.")

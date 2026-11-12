@@ -29,7 +29,9 @@ const ACTION_JOBS := {
 	23: {"name":"Última fuga","kind":"getaway","story":"Roube a maleta no escritorio, entre no Aurora X e escolha uma das duas rotas de fuga. Entregue na garagem depois de despistar.","reward":9000,"model":3,"spawn":Vector3(567,0.3,126),"pickup":Vector3(567,0,112),"points":[Vector3(798,0,-126),Vector3(546,0,126),Vector3(-21,0,63)],"alternate_points":[Vector3(798,0,126),Vector3(294,0,126),Vector3(-21,0,63)],"guards":[Vector3(559,0.2,120),Vector3(575,0.2,120),Vector3(567,0.2,123)],"time":300.0},
 	29: {"name":"Operação Tubulação","kind":"infiltration","story":"Agache e abra a tubulação do Data Center. Elimine dois policiais sem alertar a equipe, conecte o pendrive, extraia os dados e fuja pelo mesmo caminho.","reward":11000,"time":360.0},
 	30: {"name":"Corrida da costa a pé","kind":"foot_race","story":"Encontre o ponto de partida e corra pela avenida passando por todos os pontos antes do tempo acabar.","reward":2400,"points":[Vector3(-126,0,84),Vector3(-84,0,84),Vector3(-42,0,84),Vector3(0,0,84),Vector3(42,0,84)],"race_time":45.0,"time":180.0},
-	31: {"name":"Defesa da clínica","kind":"defend","story":"Defenda a Clínica Costa a pé. Enfrente os invasores e mantenha a posição até a área ficar segura.","reward":3600,"point":Vector3(63,0,26),"guards":[Vector3(55,0.2,34),Vector3(71,0.2,34),Vector3(63,0.2,39)],"duration":20.0,"time":160.0}
+	31: {"name":"Defesa da clínica","kind":"defend","story":"Defenda a Clínica Costa a pé. Enfrente os invasores e mantenha a posição até a área ficar segura.","reward":3600,"point":Vector3(63,0,26),"guards":[Vector3(55,0.2,34),Vector3(71,0.2,34),Vector3(63,0.2,39)],"duration":20.0,"time":160.0},
+	32: {"name":"Corrupção policial","kind":"assault","story":"Um policial corrupto vende informações da cidade. Invada a delegacia central, recupere as provas e saia antes que a equipe de cobertura chegue.","reward":6800,"point":Vector3(105,0.3,21),"exit":Vector3(105,0,42),"guards":[Vector3(96,0.2,21),Vector3(114,0.2,21),Vector3(105,0.2,14)],"time":210.0},
+	33: {"name":"Corrida cooperativa","kind":"coop_race","story":"Convide um parceiro e atravessem juntos os pontos de controle antes que o cronômetro termine.","reward":5200,"points":[Vector3(-126,0,84),Vector3(-84,0,84),Vector3(-42,0,42),Vector3(0,0,0),Vector3(42,0,-42),Vector3(84,0,-84)],"race_time":90.0,"time":150.0}
 }
 
 var JOBS := ["Correio da costa", "Caixa rápido", "Encomenda de luxo", "Volta da ilha", "Acerto de contas", "Golpe no banco", "Procurado", "Oficina em servico", "Resgate na favela", "Plantao na clinica", "Inventario da praia", "Conexao no estudio", "Arquivo do decimo andar", "Emergencia medica", "Inspecao residencial", "Apartamento seguro", "Turno do cafe"]
@@ -72,6 +74,7 @@ const INFORMANT_SAFEHOUSE := Vector3(189,0,126)
 var passenger_car := -1
 var shipment_integrity := 100.0
 var previous_mission_speed := 0.0
+var coop_race_participants: Array[int] = []
 var target_car: CharacterBody3D
 var targets: Array[CharacterBody3D] = []
 var robbery_cooldowns := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -117,6 +120,11 @@ func _ready() -> void:
 		STORY_BEATS.append(ACTION_JOBS[SECRET_DATA_JOB].story)
 	if JOBS.size() == 30:
 		for id in [30, 31]:
+			JOBS.append(ACTION_JOBS[id].name)
+			REWARDS.append(ACTION_JOBS[id].reward)
+			STORY_BEATS.append(ACTION_JOBS[id].story)
+	if JOBS.size() == 32:
+		for id in [32, 33]:
 			JOBS.append(ACTION_JOBS[id].name)
 			REWARDS.append(ACTION_JOBS[id].reward)
 			STORY_BEATS.append(ACTION_JOBS[id].story)
@@ -493,7 +501,7 @@ func start_job(index: int, coop_accepted := false, actor := 0) -> void:
 	if world.network!=null and world.network.is_client():
 		world.network.rules.send_action("job",{"index":index})
 		return
-	if index >= 24 and index < 29:
+	if index >= 24 and index < 29 or index == 33:
 		if world.network == null or not world.network.active():
 			world.notify("Esta operação é exclusiva do multiplayer.")
 			return
@@ -502,6 +510,8 @@ func start_job(index: int, coop_accepted := false, actor := 0) -> void:
 			return
 	if index < 0 or index >= JOBS.size():
 		return
+	if index == 33:
+		coop_race_participants.clear()
 	# Replacing a contract cannot leave unbounded parked mission vehicles behind.
 	for guard in officers.duplicate():
 		if guard.has_meta("mission_contract"):
@@ -1394,6 +1404,20 @@ func interact_campaign() -> bool:
 			clock = float(spec.race_time)
 			world.notify("Percurso iniciado! Corra pelos pontos e agache sob o cano na viela.")
 			return true
+		if spec.kind == "coop_race" and stage == 0 and world.active_car == null and not world.bus_passenger and world.player.position.distance_to(spec.points[0]) < 4:
+			coop_race_participants.clear()
+			for peer_id in world.network.rules.participants():
+				var member: Dictionary = world.network.members[peer_id]
+				if int(member.get("car", -1)) < 0 and not member.has("bus") and world.network.rules.position_of(peer_id).distance_to(spec.points[0]) <= 8.0:
+					coop_race_participants.append(peer_id)
+			if coop_race_participants.size() < 2:
+				world.notify("A corrida precisa de pelo menos dois jogadores no ponto de partida.")
+				coop_race_participants.clear()
+				return true
+			stage = 1
+			clock = float(spec.race_time)
+			world.notify("Corrida cooperativa iniciada! Alcancem cada ponto juntos.")
+			return true
 		if spec.kind == "breach" and stage < spec.points.size() and progress >= 1 and world.active_car == null and world.player.position.distance_to(spec.points[stage]) < 3:
 			stage += 1
 			progress = 0
@@ -1446,7 +1470,7 @@ func action_requires_car() -> bool:
 	return ACTION_JOBS.has(job) and (ACTION_JOBS[job].kind in ["drive","rescue","clinic_evacuation"] or (ACTION_JOBS[job].kind == "cargo" and stage >= ACTION_JOBS[job].points.size()) or (ACTION_JOBS[job].kind == "getaway" and stage > 0))
 
 func action_requires_foot() -> bool:
-	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["foot_race","infiltration","assault"]
+	return ACTION_JOBS.has(job) and ACTION_JOBS[job].kind in ["foot_race","coop_race","infiltration","assault"]
 
 func action_destination() -> Vector3:
 	var spec: Dictionary = ACTION_JOBS[job]
@@ -1476,6 +1500,7 @@ func action_destination() -> Vector3:
 			var car: Node = world.car_by_id(passenger_car)
 			return car.position if car != null and world.active_car != car else spec.drop
 		"foot_race": return spec.points[mini(stage,spec.points.size()-1)]
+		"coop_race": return spec.points[mini(stage,spec.points.size()-1)]
 		"breach": return spec.points[stage] if stage < spec.points.size() else spec.drop
 		"cargo": return spec.points[stage] if stage < spec.points.size() else spec.drop
 		"escort": return target_car.position if is_instance_valid(target_car) else spec.drop
@@ -1501,6 +1526,7 @@ func action_objective() -> String:
 			text = "Busque o passageiro de carro / F para embarcar" if stage == 0 else "Leve o passageiro ao destino"
 			if stage == 0 and spec.has("model") and world.active_car != target_car: text = "Pegue o carro de atendimento marcado"
 		"foot_race": text = "F / Iniciar percurso a pe" if stage == 0 else "Percurso %d/%d" % [stage,spec.points.size()-1]
+		"coop_race": text = "F / Iniciar com a equipe" if stage == 0 else "Corrida da equipe %d/%d" % [stage,spec.points.size()-1]
 		"breach": text = ("Cofre %d/%d / " % [stage+1,spec.points.size()] + ("F: recolher documentos" if progress >= 1 else "atire na fechadura")) if stage < spec.points.size() else "Despiste e entregue os documentos na APEX"
 		"cargo": text = "F / Recolha a caixa %d/%d" % [stage+1,spec.points.size()] if stage < spec.points.size() else "Despiste e entregue a carga de carro na oficina"
 		"escort": text = "F / Autorizar saida do comboio" if stage == 0 else "Proteja o comboio / veiculo %d%%" % roundi(target_car.hp/target_car.MAX_HP*100)
@@ -1579,6 +1605,21 @@ func tick_action_job(delta: float) -> void:
 				if world.active_car != null:
 					fail_job("O percurso deve ser feito a pe.")
 				elif world.player.position.distance_to(spec.points[stage]) < 2.5:
+					stage += 1
+					if stage >= spec.points.size(): complete_job()
+		"coop_race":
+			if stage > 0 and world.network != null and world.network.active() and not world.network.is_client():
+				var together := true
+				var active_participants: Array = world.network.rules.participants()
+				for peer_id in coop_race_participants:
+					if peer_id not in active_participants:
+						together = false
+						break
+					var member: Dictionary = world.network.members[peer_id]
+					if int(member.get("car", -1)) >= 0 or member.has("bus") or world.network.rules.position_of(peer_id).distance_to(spec.points[stage]) > 5.0:
+						together = false
+						break
+				if together:
 					stage += 1
 					if stage >= spec.points.size(): complete_job()
 		"breach":

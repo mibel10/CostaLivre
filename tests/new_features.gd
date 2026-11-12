@@ -10,7 +10,7 @@ func run() -> void:
 	world.start_mode("sandbox")
 	await physics_frame
 	var extra = world.extra
-	assert(world.activities.JOBS.size() == 32)
+	assert(world.activities.JOBS.size() == 34)
 	var car = world.cars[0]
 	world.player.position = car.position + Vector3(-2,0,0)
 	world.interact()

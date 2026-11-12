@@ -20,6 +20,7 @@ var weapon_aim_hold := 0.0
 var weapon_aim: WeaponAim
 var rig: Node3D
 var crouch_tween: Tween
+var emote_lock := 0.0
 
 class WeaponAim extends SkeletonModifier3D:
 	var visual: Node3D
@@ -104,6 +105,30 @@ func _ready() -> void:
 			work.track_insert_key(i,0.21,rest*Quaternion(Vector3.RIGHT,0.68)*Quaternion(Vector3.FORWARD,side*0.27))
 			work.track_insert_key(i,0.42,work.track_get_key_value(i,0))
 		library.add_animation("DoorWork",work)
+	for emote in ["Wave","Griddy","TakeTheL"]:
+		if not library.has_animation(emote):
+			var gesture: Animation = library.get_animation("Idle").duplicate()
+			gesture.length = 1.4
+			gesture.loop_mode = Animation.LOOP_LINEAR if emote == "Griddy" else Animation.LOOP_NONE
+			for track in gesture.get_track_count():
+				var path := String(gesture.track_get_path(track))
+				if gesture.track_get_type(track) != Animation.TYPE_ROTATION_3D or not ("arm_joint" in path and ("__2_" in path or "__3_" in path)):
+					continue
+				var side := -1.0 if "joint_L" in path else 1.0
+				var raises_arm: bool = emote == "Griddy" or (emote == "Wave" and side > 0) or (emote == "TakeTheL" and side < 0)
+				if not raises_arm:
+					continue
+				var rest: Quaternion = gesture.track_get_key_value(track,0)
+				while gesture.track_get_key_count(track) > 0:
+					gesture.track_remove_key(track,0)
+				var angle := 0.75 if emote == "Griddy" else 1.35
+				gesture.track_insert_key(track,0.0,rest)
+				gesture.track_insert_key(track,0.35,rest*Quaternion(Vector3.RIGHT,angle)*Quaternion(Vector3.FORWARD,side*0.35))
+				gesture.track_insert_key(track,0.7,rest)
+				if emote == "Griddy":
+					gesture.track_insert_key(track,1.05,rest*Quaternion(Vector3.RIGHT,-angle)*Quaternion(Vector3.FORWARD,-side*0.35))
+					gesture.track_insert_key(track,1.4,rest)
+			library.add_animation(emote,gesture)
 	animation.play("Idle")
 	animation.advance(0)
 	if police:
@@ -152,7 +177,7 @@ func uniform_attachment(skeleton: Skeleton3D, bone_name: String) -> Node3D:
 	return pivot
 
 func animate(speed: float) -> void:
-	if animation == null:
+	if animation == null or emote_lock > 0.0:
 		return
 	if speed < 0.2:
 		animation.speed_scale = 1
@@ -162,6 +187,21 @@ func animate(speed: float) -> void:
 		animation.speed_scale = clampf(speed / 3.0, 0.55, 2.5)
 		if animation.current_animation != "Animation":
 			animation.play("Animation",0.18)
+
+func play_emote(name: String) -> void:
+	if animation == null:
+		return
+	var gesture: String = str({"wave":"Wave","griddy":"Griddy","take_l":"TakeTheL","dance":"Griddy"}.get(name,""))
+	if gesture.is_empty() or not animation.has_animation(gesture):
+		return
+	emote_lock = 1.8 if gesture != "Griddy" else 2.4
+	animation.play(gesture,0.12)
+
+func _process(delta: float) -> void:
+	if emote_lock > 0.0:
+		emote_lock = maxf(0.0,emote_lock-delta)
+		if emote_lock == 0.0:
+			animate(0.0)
 
 func show_crouch(crouched: bool) -> void:
 	if crouch_tween != null:

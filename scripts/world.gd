@@ -201,6 +201,16 @@ func _ready() -> void:
 		car.route_index = 2
 		car.heading = PI
 		car.rotation.y = PI
+	var bus_routes := [
+		[Vector3(-126,0.2,0),Vector3(-126,0.2,84),Vector3(84,0.2,84),Vector3(84,0.2,-84),Vector3(-126,0.2,-84)],
+		[Vector3(294,0.2,-126),Vector3(546,0.2,-126),Vector3(798,0.2,-126),Vector3(798,0.2,126),Vector3(294,0.2,126)],
+		[Vector3(882,0.2,-84),Vector3(882,0.2,84),Vector3(714,0.2,126),Vector3(546,0.2,84),Vector3(714,0.2,-84)]
+	]
+	for i in bus_routes.size():
+		var bus := spawn_car(bus_routes[i][0],Color("e8bd4c"),false,preload("res://scripts/vehicle_catalog.gd").BUS)
+		bus.traffic = true
+		bus.route.assign(bus_routes[i])
+		bus.route_index = 1
 	var escape_car := spawn_car(Vector3(1048, 0.2, 84), Color("567b8a"), false, 7)
 	escape_car.heading = PI / 2
 	escape_car.rotation.y = escape_car.heading
@@ -780,6 +790,8 @@ func subject_position() -> Vector3:
 	return active_car.position if active_car != null else player.position
 
 func tick_city_events(delta: float) -> void:
+	if network != null and network.is_client():
+		return
 	city_event_clock -= delta
 	if city_event_clock > 0.0:
 		return
@@ -789,6 +801,10 @@ func tick_city_events(delta: float) -> void:
 		for id in network.rules.participants():
 			if id != multiplayer.get_unique_id():
 				observers.append(network.rules.position_of(id))
+	var event := city_event_rng.randi_range(0, 3)
+	if event == 3:
+		spawn_street_rival()
+		return
 	var nearby: Array[CharacterBody3D] = []
 	for car in cars:
 		if not car.traffic or car.police or car.hp <= 0 or car == activities.target_car or car in activities.targets:
@@ -800,7 +816,6 @@ func tick_city_events(delta: float) -> void:
 				break
 	if nearby.is_empty():
 		return
-	var event := city_event_rng.randi_range(0, 2)
 	var car: CharacterBody3D = nearby[city_event_rng.randi_range(0, nearby.size() - 1)]
 	if event == 0:
 		car.traffic = false
@@ -828,6 +843,40 @@ func tick_city_events(delta: float) -> void:
 		car.traffic_speed = 16.0
 		car.traffic_speed_time = 24.0
 		announce_city_event("Motorista imprudente avistado. Mantenha distância.")
+
+func spawn_street_rival() -> void:
+	if cars.filter(func(car): return car.has_meta("rival_name") and car.hp > 0).size() >= 3:
+		return
+	var routes := [
+		[Vector3(-126,0.2,-84),Vector3(84,0.2,-84),Vector3(84,0.2,84),Vector3(-126,0.2,84)],
+		[Vector3(294,0.2,126),Vector3(798,0.2,126),Vector3(798,0.2,-126),Vector3(294,0.2,-126)],
+		[Vector3(882,0.2,84),Vector3(714,0.2,126),Vector3(546,0.2,84),Vector3(714,0.2,-84)]
+	]
+	var route: Array = routes[city_event_rng.randi_range(0,routes.size()-1)]
+	var names := ["Nina Veloz","Duda Turbo","Rafa Costa"]
+	var rival_name: String = names[city_event_rng.randi_range(0,names.size()-1)]
+	var rival := spawn_car(route[0],Color("d84b5b"),false,city_event_rng.randi_range(3,7))
+	rival.traffic = true
+	rival.route.assign(route)
+	rival.route_index = 1
+	mark_street_rival(rival,rival_name)
+	announce_city_event("%s apareceu para desafiar os pilotos da região." % rival_name)
+
+func mark_street_rival(car: Node3D, rival_name: String) -> void:
+	car.set_meta("rival_name",rival_name)
+	var existing_tag := car.get_node_or_null("RivalTag") as Label3D
+	if existing_tag != null:
+		existing_tag.text = "RIVAL · " + rival_name
+		return
+	var tag := Label3D.new()
+	tag.name = "RivalTag"
+	tag.text = "RIVAL · " + rival_name
+	tag.font_size = 28
+	tag.pixel_size = 0.003
+	tag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	tag.modulate = Color("ffd16b")
+	tag.position = Vector3(0,2.1,0)
+	car.add_child(tag)
 
 func announce_city_event(message: String) -> void:
 	if network != null and network.active():

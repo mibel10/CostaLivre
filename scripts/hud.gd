@@ -7,6 +7,8 @@ var muted := Color("a7b9bf")
 var gold := Color("ffd18a")
 var navy := Color(0.035, 0.085, 0.12, 0.82)
 var panel_styles := {}
+var phone_button: Button
+var phone_panel: PanelContainer
 const CHOICE_MENUS := ["jobs", "guns", "heavy_guns", "cars", "garage_cars", "owned_cars", "garage", "credits"]
 const PAGE_MENUS := ["jobs", "cars", "garage_cars", "owned_cars"]
 const MENU_CLOSE := Rect2(762, 590, 156, 52)
@@ -41,6 +43,44 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	font = ThemeDB.fallback_font
+	phone_button = Button.new()
+	phone_button.text = "CELULAR"
+	phone_button.custom_minimum_size = Vector2(142,48)
+	phone_button.size = Vector2(142,48)
+	phone_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	phone_button.position = Vector2(-158,-66)
+	phone_button.pressed.connect(func(): phone_panel.visible = not phone_panel.visible)
+	add_child(phone_button)
+	phone_panel = PanelContainer.new()
+	phone_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	phone_panel.position = Vector2(-340,-364)
+	phone_panel.custom_minimum_size = Vector2(320,290)
+	phone_panel.size = Vector2(320,290)
+	phone_panel.hide()
+	add_child(phone_panel)
+	var apps := VBoxContainer.new()
+	phone_panel.add_child(apps)
+	for item in [["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["TAKE THE L", "take_l"]]:
+		var app := Button.new()
+		app.text = item[0]
+		app.custom_minimum_size.y = 40
+		app.pressed.connect(phone_app.bind(item[1]))
+		apps.add_child(app)
+
+func phone_app(app: String) -> void:
+	phone_panel.hide()
+	match app:
+		"jobs": world.activities.set_menu("jobs")
+		"map": world.pause_menu.show_page("map")
+		"chat":
+			if world.network.active(): world.network.open_chat()
+			else: world.notify("O chat regional fica disponível durante o multiplayer.")
+		_: world.network.send_emote(app)
+	queue_redraw()
+
+func _process(_delta: float) -> void:
+	if world != null and is_instance_valid(phone_button):
+		phone_button.visible = not world.finished and world.activities.menu in ["", "chat"]
 
 func text(value: String, at: Vector2, size: int = 16, color := Color("edf1ed")) -> void:
 	draw_string(font, at, value, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
