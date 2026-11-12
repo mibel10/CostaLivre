@@ -53,14 +53,14 @@ func _ready() -> void:
 	add_child(phone_button)
 	phone_panel = PanelContainer.new()
 	phone_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	phone_panel.position = Vector2(-340,-364)
-	phone_panel.custom_minimum_size = Vector2(320,290)
-	phone_panel.size = Vector2(320,290)
+	phone_panel.position = Vector2(-340,-404)
+	phone_panel.custom_minimum_size = Vector2(320,330)
+	phone_panel.size = Vector2(320,330)
 	phone_panel.hide()
 	add_child(phone_panel)
 	var apps := VBoxContainer.new()
 	phone_panel.add_child(apps)
-	for item in [["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["TAKE THE L", "take_l"]]:
+	for item in [["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = item[0]
 		app.custom_minimum_size.y = 40

@@ -105,28 +105,30 @@ func _ready() -> void:
 			work.track_insert_key(i,0.21,rest*Quaternion(Vector3.RIGHT,0.68)*Quaternion(Vector3.FORWARD,side*0.27))
 			work.track_insert_key(i,0.42,work.track_get_key_value(i,0))
 		library.add_animation("DoorWork",work)
-	for emote in ["Wave","Griddy","TakeTheL"]:
+	for emote in ["Wave","Griddy","TakeTheL","Dance"]:
 		if not library.has_animation(emote):
 			var gesture: Animation = library.get_animation("Idle").duplicate()
 			gesture.length = 1.4
-			gesture.loop_mode = Animation.LOOP_LINEAR if emote == "Griddy" else Animation.LOOP_NONE
+			gesture.loop_mode = Animation.LOOP_LINEAR if emote in ["Griddy","Dance"] else Animation.LOOP_NONE
 			for track in gesture.get_track_count():
 				var path := String(gesture.track_get_path(track))
 				if gesture.track_get_type(track) != Animation.TYPE_ROTATION_3D or not ("arm_joint" in path and ("__2_" in path or "__3_" in path)):
 					continue
 				var side := -1.0 if "joint_L" in path else 1.0
-				var raises_arm: bool = emote == "Griddy" or (emote == "Wave" and side > 0) or (emote == "TakeTheL" and side < 0)
+				var raises_arm: bool = emote in ["Griddy","Dance"] or (emote == "Wave" and side > 0) or (emote == "TakeTheL" and side < 0)
 				if not raises_arm:
 					continue
 				var rest: Quaternion = gesture.track_get_key_value(track,0)
 				while gesture.track_get_key_count(track) > 0:
 					gesture.track_remove_key(track,0)
-				var angle := 0.75 if emote == "Griddy" else 1.35
+				var angle := 0.75 if emote == "Griddy" else (0.55 if emote == "Dance" else 1.35)
 				gesture.track_insert_key(track,0.0,rest)
-				gesture.track_insert_key(track,0.35,rest*Quaternion(Vector3.RIGHT,angle)*Quaternion(Vector3.FORWARD,side*0.35))
+				var first_pose: Quaternion = rest*Quaternion(Vector3.FORWARD,side*0.75) if emote == "Dance" else rest*Quaternion(Vector3.RIGHT,angle)*Quaternion(Vector3.FORWARD,side*0.35)
+				gesture.track_insert_key(track,0.35,first_pose)
 				gesture.track_insert_key(track,0.7,rest)
-				if emote == "Griddy":
-					gesture.track_insert_key(track,1.05,rest*Quaternion(Vector3.RIGHT,-angle)*Quaternion(Vector3.FORWARD,-side*0.35))
+				if emote in ["Griddy","Dance"]:
+					var second_pose: Quaternion = rest*Quaternion(Vector3.FORWARD,-side*0.75) if emote == "Dance" else rest*Quaternion(Vector3.RIGHT,-angle)*Quaternion(Vector3.FORWARD,-side*0.35)
+					gesture.track_insert_key(track,1.05,second_pose)
 					gesture.track_insert_key(track,1.4,rest)
 			library.add_animation(emote,gesture)
 	animation.play("Idle")
@@ -191,7 +193,7 @@ func animate(speed: float) -> void:
 func play_emote(name: String) -> void:
 	if animation == null:
 		return
-	var gesture: String = str({"wave":"Wave","griddy":"Griddy","take_l":"TakeTheL","dance":"Griddy"}.get(name,""))
+	var gesture: String = str({"wave":"Wave","griddy":"Griddy","take_l":"TakeTheL","dance":"Dance"}.get(name,""))
 	if gesture.is_empty() or not animation.has_animation(gesture):
 		return
 	emote_lock = 1.8 if gesture != "Griddy" else 2.4
