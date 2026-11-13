@@ -327,6 +327,7 @@ func send_emote(name: String) -> void:
 	if now-int(emote_last_sent.get(local_id,0))<800:
 		return
 	emote_last_sent[local_id]=now
+	world.extra.play_emote_music(name)
 	if not active():
 		world.player.model.play_emote(name)
 		return
@@ -343,6 +344,7 @@ func apply_emote(id: int, name: String) -> void:
 	members[id]["emote_seq"] = int(members[id].get("emote_seq",0))+1
 	if id == multiplayer.get_unique_id():
 		world.player.model.play_emote(name)
+	world.extra.play_emote_music(name)
 
 @rpc("any_peer","call_remote","reliable")
 func request_emote(name: String) -> void:
@@ -1086,7 +1088,9 @@ func update_avatars(states: Dictionary) -> void:
 		var avatar: Dictionary=avatars[id]
 		var emote_seq := int(state.get("emote_seq",0))
 		if emote_seq != int(avatar.get("emote_seq",0)):
-			avatar.node.model.play_emote(str(state.get("emote","wave")))
+			var emote_name := str(state.get("emote","wave"))
+			avatar.node.model.play_emote(emote_name)
+			world.extra.play_emote_music(emote_name)
 			avatar["emote_seq"] = emote_seq
 		var outfit: int=clampi(int(state.get("outfit",0)),0,47)
 		if avatar.outfit!=outfit:

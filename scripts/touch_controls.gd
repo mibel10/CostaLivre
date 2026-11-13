@@ -53,6 +53,8 @@ func context() -> String:
 		return "hack"
 	if world.network!=null and world.network.active() and world.network.rules.local_mission_hacking():
 		return "mission_hack"
+	if world.activities.menu == "" and world.extra.emote_wheel:
+		return "emote_wheel"
 	if world.activities.menu == "" and world.extra.wheel:
 		return "weapon_wheel"
 	return world.activities.menu
@@ -176,6 +178,14 @@ func _input(event: InputEvent) -> void:
 			world.hud.queue_redraw()
 			get_viewport().set_input_as_handled()
 			return
+		if context() == "emote_wheel":
+			var offset: Vector2 = event.position / get_viewport_rect().size * Vector2(1280,720) - Vector2(640,360)
+			if offset.length() >= 66.0 and offset.length() <= 205.0:
+				world.network.send_emote(world.network.EMOTES[world.extra.wheel_emote(offset)])
+			world.extra.emote_wheel = false
+			world.hud.queue_redraw()
+			get_viewport().set_input_as_handled()
+			return
 		for entry in buttons():
 			if point.distance_to(entry[0].get_center()) <= entry[0].size.x/2:
 				if not fingers.values().has(entry[2]):
@@ -237,6 +247,9 @@ func _process(delta: float) -> void:
 	var state := context()
 	if state != "weapon_wheel" and world.extra.wheel:
 		world.extra.wheel = false
+		world.hud.queue_redraw()
+	if state != "emote_wheel" and world.extra.emote_wheel:
+		world.extra.emote_wheel = false
 		world.hud.queue_redraw()
 	if state != last_context:
 		release_all()

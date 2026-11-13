@@ -454,7 +454,7 @@ func restore_pointer() -> void:
 	if activities == null or activities.bank == null:
 		return
 	var pointer_needed: bool = finished or activities.menu != "" or activities.bank.local_hacking()
-	pointer_needed = pointer_needed or (extra != null and extra.wheel) or (hud != null and hud.phone_panel.visible)
+	pointer_needed = pointer_needed or (extra != null and (extra.wheel or extra.emote_wheel)) or (hud != null and hud.phone_panel.visible)
 	if network != null and network.active():
 		pointer_needed = pointer_needed or network.offer_panel.visible or network.rules.local_mission_hacking()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if pointer_needed else Input.MOUSE_MODE_CAPTURED
@@ -1259,7 +1259,7 @@ func _process(delta: float) -> void:
 			escape_marker.position = PRISON_POINTS[stage] + Vector3.UP * 2.2
 	if camera == null:
 		return
-	var scoped: bool = not get_tree().paused and not finished and active_car == null and not car_transition and activities.menu == "" and not extra.wheel and activities.weapon == 6 and Input.is_action_pressed("aim") and (network == null or not network.active() or not network.rules.is_dead(multiplayer.get_unique_id())) and (cutscene == null or not cutscene.active)
+	var scoped: bool = not get_tree().paused and not finished and active_car == null and not car_transition and activities.menu == "" and not extra.wheel and not extra.emote_wheel and activities.weapon == 6 and Input.is_action_pressed("aim") and (network == null or not network.active() or not network.rules.is_dead(multiplayer.get_unique_id())) and (cutscene == null or not cutscene.active)
 	if sniper_scope_hidden != scoped:
 		player.model.visible = not scoped
 		sniper_scope_hidden = scoped

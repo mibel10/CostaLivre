@@ -72,7 +72,7 @@ func _ready() -> void:
 	phone_panel.add_child(phone_scroll)
 	phone_scroll.add_child(phone_apps)
 	phone_apps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
+	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["RODA DE EMOTES / B", "emote_wheel"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = item[0]
 		app.custom_minimum_size.y = 40
@@ -122,6 +122,7 @@ func phone_app(app: String) -> void:
 		"chat":
 			if world.network.active(): world.network.open_chat()
 			else: world.notify("O chat regional fica disponível durante o multiplayer.")
+		"emote_wheel": world.extra.emote_wheel = true
 		_: world.network.send_emote(app)
 	world.restore_pointer()
 	queue_redraw()
@@ -232,6 +233,9 @@ func _draw() -> void:
 		return
 	if world.extra != null and world.extra.wheel:
 		draw_wheel()
+		return
+	if world.extra != null and world.extra.emote_wheel:
+		draw_emote_wheel()
 		return
 	if a.menu == "" and a.weapon == 6 and world.active_car == null and not world.car_transition and Input.is_action_pressed("aim"):
 		draw_sniper_scope(a)
@@ -373,6 +377,25 @@ func draw_wheel() -> void:
 	var selected_name: String = a.WEAPON_NAMES[world.extra.selection]
 	draw_string(font, Vector2(565, 365), selected_name, HORIZONTAL_ALIGNMENT_CENTER, 150, 16, gold)
 	var hint := "Toque numa arma para equipar" if OS.has_feature("android") else "Solte Q para equipar · mova o mouse para escolher"
+	draw_string(font, Vector2(360, 600), hint, HORIZONTAL_ALIGNMENT_CENTER, 560, 17, gold)
+
+func draw_emote_wheel() -> void:
+	var names := ["CUMPRIMENTAR", "GRIDDY", "TAKE THE L", "DANÇA", "GOLDEN WIND"]
+	for i in names.size():
+		var angle := deg_to_rad(-90.0 + i * 72.0)
+		var center := Vector2(640,360) + Vector2(cos(angle),sin(angle)) * 133
+		var sector := PackedVector2Array()
+		for step in 17:
+			var edge := deg_to_rad(-126.0 + i * 72.0 + step * 4.5)
+			sector.append(Vector2(640,360) + Vector2(cos(edge),sin(edge)) * 205)
+		for step in range(16,-1,-1):
+			var edge := deg_to_rad(-126.0 + i * 72.0 + step * 4.5)
+			sector.append(Vector2(640,360) + Vector2(cos(edge),sin(edge)) * 66)
+		draw_colored_polygon(sector, Color("765526") if world.extra.emote_selection == i else Color(0.03, 0.07, 0.1, 0.92))
+		draw_string(font, center + Vector2(-62, 5), names[i], HORIZONTAL_ALIGNMENT_CENTER, 124, 15, ink)
+	draw_circle(Vector2(640,360), 55, Color("203e4b"))
+	draw_string(font, Vector2(580, 355), "EMOTE", HORIZONTAL_ALIGNMENT_CENTER, 120, 15, gold)
+	var hint := "Toque num emote para dançar" if OS.has_feature("android") else "Solte B para dançar · mova o mouse para escolher"
 	draw_string(font, Vector2(360, 600), hint, HORIZONTAL_ALIGNMENT_CENTER, 560, 17, gold)
 
 func backdrop() -> void:

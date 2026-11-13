@@ -3,6 +3,8 @@ extends Node
 var world: Node3D
 var wheel := false
 var selection := 0
+var emote_wheel := false
+var emote_selection := 0
 var punch_time := 0.0
 var punch_arm: MeshInstance3D
 var last_car: Node3D
@@ -12,6 +14,7 @@ var audio: AudioStreamPlayer
 var step_audio: AudioStreamPlayer
 var siren_audio: AudioStreamPlayer
 var chase_audio: AudioStreamPlayer
+var emote_music: AudioStreamPlayer
 var sounds := {}
 var step_clock := 0.0
 var siren_clock := 0.0
@@ -34,6 +37,12 @@ func _ready() -> void:
 	chase_audio.stream = make_chase_music()
 	chase_audio.volume_db = -60.0
 	add_child(chase_audio)
+	if ResourceLoader.exists("res://assets/audio/golden_wind.ogg"):
+		emote_music = AudioStreamPlayer.new()
+		emote_music.process_mode = Node.PROCESS_MODE_PAUSABLE
+		emote_music.stream = load("res://assets/audio/golden_wind.ogg") as AudioStream
+		emote_music.volume_db = -8.0
+		add_child(emote_music)
 	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit"]:
 		var wav := AudioStreamWAV.new()
 		wav.format = AudioStreamWAV.FORMAT_16_BITS
@@ -96,10 +105,17 @@ func make_chase_music() -> AudioStreamWAV:
 func wheel_weapon(offset: Vector2) -> int:
 	return posmod(roundi((rad_to_deg(offset.angle()) + 90.0) / 45.0), 8)
 
+func wheel_emote(offset: Vector2) -> int:
+	return posmod(roundi((rad_to_deg(offset.angle()) + 90.0) / 72.0), 5)
+
+func play_emote_music(name: String) -> void:
+	if name == "torture_dance" and is_instance_valid(emote_music) and not emote_music.playing:
+		emote_music.play()
+
 func handle_input(event: InputEvent) -> bool:
 	if world.finished:
 		return false
-	if event is InputEventKey and event.physical_keycode == KEY_Q and not event.echo and not world.get_tree().paused and not world.activities.bank.local_hacking() and not (world.network!=null and world.network.active() and world.network.rules.local_mission_hacking()):
+	if event is InputEventKey and event.physical_keycode == KEY_Q and not event.echo and not emote_wheel and not world.get_tree().paused and not world.activities.bank.local_hacking() and not (world.network!=null and world.network.active() and world.network.rules.local_mission_hacking()):
 		wheel = event.pressed
 		if wheel:
 			selection = world.activities.weapon
@@ -113,6 +129,22 @@ func handle_input(event: InputEvent) -> bool:
 			world.restore_pointer()
 		world.hud.queue_redraw()
 		return true
+	if event is InputEventKey and event.physical_keycode == KEY_B and not event.echo:
+		if event.pressed and not wheel and not world.get_tree().paused and world.activities.menu == "" and not world.hud.phone_panel.visible and world.active_car == null and not world.car_transition and not world.activities.bank.local_hacking() and not (world.network != null and world.network.active() and world.network.rules.local_mission_hacking()):
+			emote_wheel = true
+			emote_selection = 0
+			Engine.time_scale = 1.0 if world.network != null and world.network.active() else 0.2
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			world.get_viewport().warp_mouse(world.get_viewport().get_visible_rect().size / 2)
+			world.hud.queue_redraw()
+			return true
+		if not event.pressed and emote_wheel:
+			emote_wheel = false
+			world.network.send_emote(world.network.EMOTES[emote_selection])
+			Engine.time_scale = 1
+			world.restore_pointer()
+			world.hud.queue_redraw()
+			return true
 	if wheel:
 		if event is InputEventMouseMotion:
 			var cursor: Vector2 = event.position / world.get_viewport().get_visible_rect().size * Vector2(1280, 720) - Vector2(640, 360)
@@ -121,6 +153,12 @@ func handle_input(event: InputEvent) -> bool:
 			selection = wheel_weapon(cursor)
 			if not world.activities.owns_weapon(selection):
 				selection = 0
+		return true
+	if emote_wheel:
+		if event is InputEventMouseMotion:
+			var cursor: Vector2 = event.position / world.get_viewport().get_visible_rect().size * Vector2(1280, 720) - Vector2(640, 360)
+			if cursor.length() >= 30.0:
+				emote_selection = wheel_emote(cursor)
 		return true
 	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_V and not world.get_tree().paused and world.active_car == null:
 		punch()
@@ -152,6 +190,7 @@ func punch() -> void:
 
 func begin_death() -> void:
 	wheel = false
+	emote_wheel = false
 	Engine.time_scale = 0.18
 	death_started = Time.get_ticks_msec()
 	death_filter.visible = true
@@ -223,7 +262,8 @@ func _exit_tree() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN and is_inside_tree() and world != null:
 		world.restore_pointer.call_deferred()
-	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT and wheel:
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT and (wheel or emote_wheel):
 		wheel = false
+		emote_wheel = false
 		Engine.time_scale = 1
 		world.hud.queue_redraw()
