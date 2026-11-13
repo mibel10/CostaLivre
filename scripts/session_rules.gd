@@ -1245,9 +1245,9 @@ func tick_pvp(delta: float) -> void:
 		for i in count:
 			var id: int = pvp_queue.pop_front()
 			teams[id] = i % 2
-		pvp_saved[id] = {"inventory":inventory() if id == local_id() else sheets[id].inventory.duplicate(true),"at":position_of(id),"health":sheets[id].health,"wanted_heat":sheets[id].get("wanted_heat",null),"wanted_grace":sheets[id].get("wanted_grace",null)}
-		sheets[id].erase("wanted_heat")
-		sheets[id].erase("wanted_grace")
+			pvp_saved[id] = {"inventory":inventory() if id == local_id() else sheets[id].inventory.duplicate(true),"at":position_of(id),"health":sheets[id].health,"wanted_heat":sheets[id].get("wanted_heat",null),"wanted_grace":sheets[id].get("wanted_grace",null)}
+			sheets[id].erase("wanted_heat")
+			sheets[id].erase("wanted_grace")
 		pvp = {"teams":teams,"scores":[0,0],"round":0,"phase":"break","time":0.0}
 		refresh_wanted_heat()
 	for id in pvp.teams.keys():
