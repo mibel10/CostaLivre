@@ -1137,7 +1137,7 @@ func sync_arrow_pickups(states: Array) -> void:
 		shaft.position.y = 0.72
 		visual.add_child(shaft)
 		var point := MeshInstance3D.new()
-		var point_mesh := ConeMesh.new()
+		var point_mesh := CylinderMesh.new()
 		point_mesh.top_radius = 0.0
 		point_mesh.bottom_radius = 0.14
 		point_mesh.height = 0.3
@@ -1145,7 +1145,7 @@ func sync_arrow_pickups(states: Array) -> void:
 		point.material_override = gold
 		point.position.y = 1.27
 		visual.add_child(point)
-		var feathers := world.box(visual, Vector3(0,0.31,0), Vector3(0.2,0.12,0.06), Color("fff0a6"), false, true)
+		var feathers: MeshInstance3D = world.box(visual, Vector3(0,0.31,0), Vector3(0.2,0.12,0.06), Color("fff0a6"), false, true)
 		feathers.rotation.z = 0.5
 		var spin := visual.create_tween().set_loops()
 		spin.tween_property(visual,"rotation:y",TAU,2.4)
