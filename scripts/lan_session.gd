@@ -555,6 +555,13 @@ func peer_left(id: int) -> void:
 			owners.erase(index)
 
 func disconnect_room() -> void:
+	if active() and multiplayer.is_server() and not rules.pvp.is_empty(): rules.finish_pvp(-1)
+	rules.sync_stand_walls([])
+	rules.pvp.clear()
+	rules.pvp_queue.clear()
+	rules.pvp_saved.clear()
+	rules.stand_history.clear()
+	rules.stand_fields.clear()
 	close_chat()
 	chat_history.clear()
 	chat_last_sent.clear()
@@ -713,6 +720,8 @@ func accept_state(id: int, state: Dictionary) -> void:
 		var max_horizontal_speed := 22.0
 		if selected_car != null:
 			max_horizontal_speed = selected_car.Catalog.SPEEDS[selected_car.tier] + selected_car.engine_upgrade + 5.0
+		if selected_car == null and float(rules.sheets.get(id,{}).get("stand_slow",0.0)) > 0.0:
+			max_horizontal_speed *= 0.35
 		var displacement := Vector2(state.car_position.x - previous.x, state.car_position.z - previous.z).length()
 		if displacement > max_horizontal_speed * elapsed + 4.0 or absf(state.car_position.y - previous.y) > 35.0 * elapsed + 4.0:
 			return

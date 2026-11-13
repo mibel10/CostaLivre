@@ -79,6 +79,22 @@ func run() -> void:
 	world.activities.tick_mission(0.1)
 	assert(world.activities.job == -1, "Indoor contract completes")
 	world.cutscene.finish()
+	var stand_rules = world.network.rules
+	world.player.position = Vector3(0,0.3,0)
+	for selected in 5:
+		stand_rules.offline_stand.stand = selected
+		stand_rules.offline_stand.stand_cooldown = 0.0
+		stand_rules.stand_history[1] = []
+		for sample in 21: stand_rules.stand_history[1].append(world.player.position)
+		stand_rules.use_stand(1,0.0)
+		assert(stand_rules.offline_stand.stand_cooldown > 0.0)
+		await process_frame
+	for object in stand_rules.stand_objects.duplicate():
+		if int(object.get_meta("stand_kind",-1)) == 3:
+			var collider = object.get_child(0).get_child(0)
+			for shot in 4: world.activities.weapon_impact({"collider":collider},object.position,2)
+			assert(not stand_rules.stand_objects.has(object), "Gunfire shatters the fragile barrier")
+	print("PASS: all five Stands activate offline")
 	world.finish(false)
 	assert(Engine.time_scale == 0.18 and extra.death_filter.visible)
 	world.queue_free()

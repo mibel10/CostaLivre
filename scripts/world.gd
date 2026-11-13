@@ -460,6 +460,10 @@ func restore_pointer() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if pointer_needed else Input.MOUSE_MODE_CAPTURED
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_H and activities.menu == "":
+		network.rules.local_stand_action()
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_N and activities.menu == "":
 		hud.toggle_phone()
 		get_viewport().set_input_as_handled()

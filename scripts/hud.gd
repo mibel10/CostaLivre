@@ -9,6 +9,7 @@ var navy := Color(0.035, 0.085, 0.12, 0.82)
 var panel_styles := {}
 var phone_button: Button
 var phone_panel: PanelContainer
+var phone_scroll: ScrollContainer
 var phone_apps: VBoxContainer
 var phone_messages: VBoxContainer
 var phone_message_text: Label
@@ -65,8 +66,12 @@ func _ready() -> void:
 	phone_panel.hide()
 	add_child(phone_panel)
 	phone_apps = VBoxContainer.new()
-	phone_panel.add_child(phone_apps)
-	for item in [["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
+	phone_scroll = ScrollContainer.new()
+	phone_scroll.custom_minimum_size = Vector2(300,390)
+	phone_panel.add_child(phone_scroll)
+	phone_scroll.add_child(phone_apps)
+	phone_apps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["TROCAR STAND", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = item[0]
 		app.custom_minimum_size.y = 40
@@ -88,7 +93,7 @@ func _ready() -> void:
 	phone_messages.add_child(dismiss_contract)
 	var back := Button.new()
 	back.text = "VOLTAR"
-	back.pressed.connect(func(): phone_messages.hide(); phone_apps.show())
+	back.pressed.connect(func(): phone_messages.hide(); phone_scroll.show())
 	phone_messages.add_child(back)
 
 func toggle_phone() -> void:
@@ -98,9 +103,14 @@ func toggle_phone() -> void:
 func phone_app(app: String) -> void:
 	phone_panel.hide()
 	match app:
+		"pvp":
+			if world.network.active(): world.network.rules.send_action("pvp_join")
+			else: world.notify("Conecte-se a uma sala multiplayer para convidar ao PvP.")
+		"stand": world.network.rules.local_stand_action()
+		"stand_select": world.network.rules.local_stand_action(true)
 		"messages":
 			phone_panel.show()
-			phone_apps.hide()
+			phone_scroll.hide()
 			phone_messages.show()
 			phone_message_text.text = "Nenhuma proposta nova." if phone_contract_index < 0 else "Mensagem de uma empresa local:\n\nContrato: %s\n\nAceite para iniciar." % world.activities.JOBS[phone_contract_index]
 		"invites":
@@ -136,7 +146,7 @@ func close_phone_message() -> void:
 	phone_contract_index = -1
 	phone_button.text = "CELULAR · CONVITE" if invite_available else "CELULAR"
 	phone_messages.hide()
-	phone_apps.show()
+	phone_scroll.show()
 
 func set_phone_invite_available(value: bool) -> void:
 	invite_available = value
@@ -191,6 +201,12 @@ func _draw() -> void:
 	if world == null or font == null or world.activities == null:
 		return
 	draw_set_transform(Vector2.ZERO, 0, get_viewport_rect().size / Vector2(1280, 720))
+	if world.network != null and world.activities.menu == "":
+		var rules: Node = world.network.rules
+		var sheet: Dictionary = rules.stand_sheet(multiplayer.get_unique_id())
+		text("%s / H / %.0fs" % [rules.STAND_NAMES[int(sheet.get("stand",0))],float(sheet.get("stand_cooldown",0.0))],Vector2(400,95),16)
+		if not rules.pvp.is_empty():
+			text("PVP %d/5 / %d x %d / %.0fs" % [rules.pvp.round,rules.pvp.scores[0],rules.pvp.scores[1],rules.pvp.time],Vector2(400,120),18)
 	var a: Node = world.activities
 	if world.finished:
 		draw_rect(Rect2(0, 270, 1280, 155), Color(0, 0, 0, 0.45))

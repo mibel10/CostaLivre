@@ -81,6 +81,8 @@ func _physics_process(delta: float) -> void:
 	var direction := Vector3(input.x, 0, input.y).rotated(Vector3.UP, world.camera_yaw)
 	var sprinting: bool = sprint_latched if world.settings.toggle_sprint else Input.is_action_pressed("sprint")
 	var speed := (1.8 if is_crouching else (9.0 if sprinting else 5.0))
+	if float(world.network.rules.stand_sheet(multiplayer.get_unique_id()).get("stand_slow",0.0)) > 0.0:
+		speed *= 0.35
 	velocity.x = move_toward(velocity.x, direction.x * speed, delta * 30)
 	velocity.z = move_toward(velocity.z, direction.z * speed, delta * 30)
 	if not is_on_floor():
@@ -105,6 +107,8 @@ func _physics_process(delta: float) -> void:
 		position = Vector3(-5, 2, 12)
 
 func start_roll() -> bool:
+	if float(world.network.rules.stand_sheet(multiplayer.get_unique_id()).get("stand_slow",0.0)) > 0.0:
+		return false
 	if roll_cooldown > 0 or not is_on_floor() or world.active_car != null or world.car_transition or world.finished:
 		return false
 	roll_time = ROLL_DURATION

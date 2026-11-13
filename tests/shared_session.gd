@@ -434,6 +434,82 @@ func run() -> void:
 	assert(host.health == 100 and not hover_car.hovering, "The victim is safe until the car descends")
 	host.network.apply_car(id, {"car": hover_car.net_id, "car_position": Vector3(0, 2, 84), "car_heading": 0.0, "speed": 0.0})
 	assert(host.health == 0 and not host.network.rules.is_dead(id), "The host detects the remote driver's descending car and spares the driver")
+	# Five-round PvP restores equipment and awards only the winning team.
+	host.network.owners.clear()
+	host.network.members[id].car = -1
+	host.health = 100.0
+	host.network.rules.sheets[1].health = 100.0
+	host.network.rules.sheets[id].health = 100.0
+	host.activities.job = -1
+	host.activities.bank.phase = 0
+	host.network.rules.pending_mission = -1
+	var pvp_rules = host.network.rules
+	var cash_before: int = host.cash
+	var weapon_before: int = host.activities.weapon
+	pvp_rules.join_pvp(1)
+	pvp_rules.join_pvp(id)
+	pvp_rules.tick_pvp(13.0)
+	assert(pvp_rules.pvp.teams.size() == 2 and pvp_rules.pvp.round == 1)
+	await wait_for(func(): return not client.network.rules.pvp.is_empty())
+	assert(client.activities.rifle_owned and client.activities.clips[2] == 30)
+	pvp_rules.sheets[1]["stand"] = 3
+	pvp_rules.use_stand(1,0.0)
+	await wait_for(func(): return client.network.rules.remote_stand_walls.size() == 1)
+	assert(pvp_rules.sheets[1].stand_cooldown > 0.0)
+	var objects_before: int = pvp_rules.stand_objects.size()
+	pvp_rules.use_stand(1,0.0)
+	assert(pvp_rules.stand_objects.size() == objects_before, "The host enforces Stand cooldown")
+	var barrier = pvp_rules.stand_objects[0]
+	var barrier_body = barrier.get_child(0).get_child(0)
+	for shot in 4: host.activities.weapon_impact({"collider":barrier_body},barrier.position,2)
+	await wait_for(func(): return client.network.rules.remote_stand_walls.is_empty())
+
+
+	for round_index in 5:
+		assert(pvp_rules.pvp.round == round_index + 1)
+		assert(int(pvp_rules.sheets[id].stand) in range(5))
+		pvp_rules.sheets[id].protected_until = 0
+		pvp_rules.damage_peer(id,100.0,1)
+		assert(pvp_rules.is_dead(id))
+		pvp_rules.tick_pvp(0.1)
+		if round_index < 4: pvp_rules.tick_pvp(5.0)
+	assert(pvp_rules.pvp.is_empty() and host.cash == cash_before + 2500)
+	assert(host.activities.weapon == weapon_before and not pvp_rules.is_dead(id))
+	print("PASS: five PvP arenas, random Stands, loadouts, rounds, reward and restoration")
+	var partner = await add_arena_client("Partner")
+	var opponent = await add_arena_client("Opponent")
+	await wait_for(func(): return host.network.members.size() == 4)
+	var partner_id: int = partner.multiplayer.get_unique_id()
+	var opponent_id: int = opponent.multiplayer.get_unique_id()
+	pvp_rules.join_pvp(1)
+	pvp_rules.join_pvp(id)
+	pvp_rules.join_pvp(partner_id)
+	pvp_rules.join_pvp(opponent_id)
+	pvp_rules.tick_pvp(13.0)
+	assert(pvp_rules.pvp.teams.size() == 4)
+	pvp_rules.sheets[partner_id].protected_until = 0
+	pvp_rules.damage_peer(partner_id,100.0,1)
+	assert(pvp_rules.sheets[partner_id].health == 100.0, "Friendly fire is blocked")
+	pvp_rules.sheets[id].protected_until = 0
+	pvp_rules.damage_peer(id,100.0,1)
+	pvp_rules.tick_pvp(0.1)
+	assert(pvp_rules.pvp.round == 1 and pvp_rules.pvp.phase == "fight", "A living teammate keeps the round running")
+	pvp_rules.sheets[opponent_id].protected_until = 0
+	pvp_rules.damage_peer(opponent_id,100.0,1)
+	pvp_rules.tick_pvp(0.1)
+	assert(pvp_rules.pvp.scores[0] == 1 and pvp_rules.pvp.phase == "break")
+	pvp_rules.tick_pvp(5.0)
+	opponent.network.disconnect_room()
+	await wait_for(func(): return host.network.members.size() == 3)
+	partner.network.disconnect_room()
+	await wait_for(func(): return host.network.members.size() == 2)
+	pvp_rules.tick_pvp(0.1)
+	assert(pvp_rules.pvp.teams.size() == 2, "Disconnected players leave the active teams")
+	pvp_rules.finish_pvp(-1)
+	partner.queue_free()
+	opponent.queue_free()
+	print("PASS: four connected peers form 2v2, team eliminations, friendly fire and disconnect cleanup")
+
 	client.network.disconnect_room()
 	await wait_for(func(): return host.network.members.size()==1)
 	client.network.announced_version="old-build"
@@ -448,3 +524,18 @@ func run() -> void:
 	await process_frame
 	print("PASS: version rejection, police fleet, coop mission, PvP both directions, respawn, car purchase, garage, bank hack and bags")
 	quit()
+
+func add_arena_client(label: String) -> Node:
+	var view := SubViewport.new()
+	view.name = label
+	view.size = Vector2i(1280,720)
+	view.own_world_3d = true
+	root.add_child(view)
+	set_multiplayer(SceneMultiplayer.new(),NodePath("/root/"+label+"/World"))
+	var game = load("res://main.tscn").instantiate()
+	game.name = "World"
+	view.add_child(game)
+	game.network.address_field.text = game.network.make_internet_code("127.0.0.1",28960,host.network.code)
+	game.network.join_room()
+	await wait_for(func(): return game.network.joined)
+	return game

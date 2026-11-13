@@ -28,6 +28,18 @@ var mission_mistakes := 0
 var mission_reveal_time := 0.0
 var mission_round_time := 0.0
 var bank_lookout := 0
+const STAND_NAMES := ["Mão de Concreto", "Passo Reverso", "Sinal Fechado", "Vitrine Quebrada", "Maré Baixa"]
+const PVP_ARENAS := [Vector3(0,0.3,0), Vector3(84,0.3,84), Vector3(294,0.3,-126), Vector3(546,0.3,-126), Vector3(798,0.3,126)]
+var pvp := {}
+var pvp_queue: Array = []
+var pvp_wait := 0.0
+var pvp_saved := {}
+var stand_history := {}
+var stand_sample := 0.0
+var stand_fields: Array = []
+var stand_objects: Array[Node3D] = []
+var remote_stand_walls := {}
+var offline_stand := {"stand":0,"stand_cooldown":0.0,"stand_slow":0.0}
 var phone_contract_index := -1
 var phone_contract_deadline := 0
 
@@ -423,7 +435,14 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		if now - int(last_actions.get(key, 0)) < (50 if kind == "fire" else 150):
 			return
 		last_actions[key] = now
+	if pvp.get("teams", {}).has(id) and kind not in ["fire", "punch", "reload", "stand_use"]:
+		return
 	match kind:
+		"stand_use": use_stand(id, float(data.get("yaw",0.0)))
+		"stand_select":
+			sheets[id]["stand"] = (int(sheets[id].get("stand",0)) + 1) % STAND_NAMES.size()
+			private_notice(id, STAND_NAMES[sheets[id].stand] + " / H para usar")
+		"pvp_join": join_pvp(id)
 		"supply_scene_complete":
 			if id == world.activities.supply_owner and world.activities.supply_stage == 2:
 				world.activities.complete_supply_scene()
@@ -444,6 +463,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"punch": punch_peer(id,float(data.get("yaw",0)))
 		"reload": with_actor(id,world.activities.reload)
 		"job":
+			if not pvp.is_empty(): return
 			var requested_job:=clampi(int(data.get("index",0)),0,world.activities.JOBS.size()-1)
 			if requested_job >= 24 and requested_job < 29 or requested_job == 33:
 				propose_mission(id,requested_job)
@@ -579,6 +599,10 @@ func leave_bus(id: int, forced := false) -> void:
 func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> void:
 	if not multiplayer.is_server() or not sheets.has(id) or is_dead(id) or not is_finite(amount):
 		return
+	var teams: Dictionary = pvp.get("teams", {})
+	if teams.has(id) or teams.has(killer):
+		if not teams.has(id) or not teams.has(killer) or teams[id] == teams[killer] or pvp.get("phase", "") != "fight":
+			return
 	if killer>0 and Time.get_ticks_msec()<sheets[id].protected_until:
 		return
 	var old: float=world.health if id==local_id() and context_peer in [0,local_id()] else float(sheets[id].health)
@@ -600,7 +624,7 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 		for car_id in network.owners.keys():
 			if network.owners[car_id]==id:
 				network.owners.erase(car_id)
-		if killer>0 and killer!=id and sheets.has(killer):
+		if killer>0 and killer!=id and sheets.has(killer) and not teams.has(id):
 			award(killer,1500)
 			private_notice(killer,"Jogador eliminado / +$1500")
 			world.raise_heat(35, killer)
@@ -608,6 +632,7 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
+		"stand_effect": show_stand_effect(data)
 		"prison_escape":
 			if sheets.has(local_id()): sheets[local_id()]["prison_stage"] = -1
 			world.life.apply_elevator_arrival(Vector3(1035, 0.3, 79))
@@ -711,7 +736,7 @@ func fire_peer(id: int,data: Dictionary) -> void:
 		a.clips[selected]-=1
 		a.fire_cooldown=a.FIRE_INTERVAL[selected]
 		a.mission_noise()
-		if not a.mission_shot_is_quiet(): world.raise_heat(3)
+		if not a.mission_shot_is_quiet() and not pvp.get("teams",{}).has(id): world.raise_heat(3)
 		var end := origin+direction.normalized()*(600 if selected==6 else 180)
 		var query := PhysicsRayQueryParameters3D.create(origin,end,7)
 		query.exclude=[world.player.get_rid()] + ([world.active_car.get_rid()] if world.active_car!=null else [])
@@ -758,7 +783,7 @@ func punch_peer(id: int, yaw: float) -> void:
 				attacker=id
 				target.take_hit(25)
 				attacker=0
-				world.raise_heat(6, id)
+				if not pvp.get("teams",{}).has(id): world.raise_heat(6, id)
 				break
 
 func tick_inventory(id: int, delta: float) -> void:
@@ -814,6 +839,9 @@ func update_bank_lookout() -> void:
 		private_notice(bank_owner, "O olheiro deixou a entrada; o alarme voltará ao nível normal.")
 
 func physics(delta: float) -> void:
+	if multiplayer.is_server():
+		tick_stands(delta)
+		tick_pvp(delta)
 	tick_mission_offer()
 	if phone_contract_index >= 0 and (Time.get_ticks_msec() > phone_contract_deadline or world.activities.job >= 0):
 		for peer_id in participants():
@@ -855,6 +883,8 @@ func physics(delta: float) -> void:
 			continue
 		if is_dead(id):
 			world.life.building_job_for(id).clear()
+			if pvp.get("teams", {}).has(id):
+				continue
 			if Time.get_ticks_msec()>=sheets[id].dead_until:
 				sheets[id].health=100.0
 				sheets[id].life+=1
@@ -994,10 +1024,12 @@ func export_state() -> Dictionary:
 		sheets[1].inventory=inventory()
 	var a: Node=world.activities
 	var bank: Node=a.bank
-	return {"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"bank_lookout":bank_lookout,"day_time":world.atmosphere_cycle.day_time,"bank_door_angle":bank.door.rotation.y,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
+	return {"stand_walls":stand_objects.filter(func(object): return is_instance_valid(object) and int(object.get_meta("stand_kind",-1)) == 3).map(func(object): return {"id":object.get_instance_id(),"at":object.position,"yaw":object.rotation.y}),"pvp":pvp,"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"bank_lookout":bank_lookout,"day_time":world.atmosphere_cycle.day_time,"bank_door_angle":bank.door.rotation.y,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
 
 func apply_state(data: Dictionary) -> void:
 	sheets=data.get("sheets",{})
+	pvp=data.get("pvp",{})
+	sync_stand_walls(data.get("stand_walls",[]))
 	world.life.apply_elevator_snapshot(data.elevators)
 	world.heat=float(data.get("heat",0))
 	var a: Node=world.activities
@@ -1036,3 +1068,280 @@ func apply_state(data: Dictionary) -> void:
 				a.set(key,sheet.inventory[key])
 		world.player.collision_layer=0 if is_dead(local_id()) or world.active_car!=null else 2
 	update_marker()
+
+func _physics_process(delta: float) -> void:
+	if network != null and not network.active() and not world.finished:
+		tick_stands(delta)
+
+func stand_sheet(id: int) -> Dictionary:
+	return sheets.get(id, {}) if network.active() else offline_stand
+
+func local_stand_action(select := false) -> void:
+	if network.active():
+		send_action("stand_select" if select else "stand_use", {"yaw":world.camera_yaw})
+	elif select:
+		offline_stand.stand = (int(offline_stand.stand) + 1) % STAND_NAMES.size()
+		world.notify(STAND_NAMES[offline_stand.stand] + " / H para usar")
+	else:
+		use_stand(1, world.camera_yaw)
+
+func tick_stands(delta: float) -> void:
+	var ids: Array = participants() if network.active() else [1]
+	stand_sample += delta
+	for id in ids:
+		var sheet := stand_sheet(id)
+		sheet["stand_cooldown"] = maxf(0.0, float(sheet.get("stand_cooldown",0.0)) - delta)
+		sheet["stand_slow"] = maxf(0.0, float(sheet.get("stand_slow",0.0)) - delta)
+		if stand_sample >= 0.1:
+			if not stand_history.has(id): stand_history[id] = []
+			stand_history[id].append(position_of(id) if network.active() else world.subject_position())
+			if stand_history[id].size() > 21: stand_history[id].pop_front()
+	if stand_sample >= 0.1: stand_sample = 0.0
+	for field in stand_fields.duplicate():
+		field.time -= delta
+		if field.time <= 0.0:
+			stand_fields.erase(field)
+			continue
+		for id in ids:
+			if id != field.owner and stand_enemy(field.owner,id) and position_of(id).distance_to(field.at) < 7.0:
+				stand_sheet(id)["stand_slow"] = 0.3
+		for person in world.life.people + world.activities.officers:
+			if person.hp > 0 and person.position.distance_to(field.at) < 7.0:
+				person.set_meta("stand_slow_until", Time.get_ticks_msec()+300)
+
+func stand_enemy(source: int, target: int) -> bool:
+	var teams: Dictionary = pvp.get("teams", {})
+	if teams.has(source) or teams.has(target):
+		return teams.has(source) and teams.has(target) and teams[source] != teams[target]
+	return true
+
+func use_stand(id: int, yaw: float) -> void:
+	if not is_finite(yaw) or world.finished or (network.active() and is_dead(id)):
+		return
+	var at: Vector3 = position_of(id) if network.active() else world.player.position
+	if (id == local_id() and (world.active_car != null or world.car_transition)) or int(network.members.get(id,{}).get("car",-1)) >= 0 or bus_riders.has(id) or world.vehicle_entries.has(id) or world.life.elevator_rider_position(id) != null:
+		return
+	var sheet := stand_sheet(id)
+	if float(sheet.get("stand_cooldown",0.0)) > 0.0: return
+	var selected: int = int(sheet.get("stand",0))
+	var forward := Vector3.FORWARD.rotated(Vector3.UP,yaw)
+	var destination := at + forward * 3.0
+	if selected == 1:
+		if not stand_history.has(id) or stand_history[id].size() < 15: return
+		stand_teleport(id, stand_history[id][0])
+		stand_history[id].clear()
+	elif selected == 2:
+		stand_fields.append({"owner":id,"at":destination,"time":4.0})
+	elif selected in [0,4]:
+		var reach := 4.5 if selected == 0 else 8.0
+		for target in participants() if network.active() else []:
+			if target == id or not stand_enemy(id,target): continue
+			var offset: Vector3 = position_of(target)-at
+			if offset.length() < reach and offset.normalized().dot(forward) > 0.2 and stand_clear(at,position_of(target)):
+				damage_peer(target,55.0 if selected == 0 else 20.0,id)
+				if not is_dead(target): stand_teleport(target,position_of(target)+forward*3.0)
+		if pvp.is_empty():
+			for victim in world.life.people + world.activities.officers + world.cars:
+				var offset: Vector3 = victim.position-at
+				if victim.hp > 0 and offset.length() < reach and offset.normalized().dot(forward) > 0.2 and stand_clear(at,victim.position):
+					attacker = id if network.active() else 0
+					victim.take_hit(80.0 if selected == 0 else 25.0)
+					attacker = 0
+					var occupied_vehicle: bool = network.active() and victim in world.cars and int(network.owners.get(victim.net_id,0)) > 0
+					if not occupied_vehicle:
+						victim.move_and_collide(forward*2.0)
+	if selected == 3 and not stand_clear(at,destination): return
+	sheet["stand_cooldown"] = 12.0 if selected != 1 else 16.0
+	var effect := {"stand":selected,"at":at,"target":destination,"yaw":yaw}
+	if network.active():
+		for peer_id in network.members: send_personal(peer_id,"stand_effect",effect)
+	else: show_stand_effect(effect)
+
+func stand_clear(from: Vector3, to: Vector3) -> bool:
+	var query := PhysicsRayQueryParameters3D.create(from+Vector3.UP,to+Vector3.UP,1)
+	return world.get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+func stand_teleport(id: int, at: Vector3) -> void:
+	if network.active() and not network.valid_session_position(at): return
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = 0.35
+	capsule.height = 1.8
+	var clearance := PhysicsShapeQueryParameters3D.new()
+	clearance.shape = capsule
+	clearance.transform.origin = at + Vector3.UP*0.9
+	clearance.collision_mask = 1
+	if not world.get_world_3d().direct_space_state.intersect_shape(clearance,1).is_empty(): return
+	var origin: Vector3 = position_of(id) if network.active() else world.player.position
+	if not stand_clear(origin,at): return
+	if network.active():
+		var member: Dictionary = network.members[id]
+		member.position = at
+		member.car_position = at
+		if id != local_id() and network.avatars.has(id):
+			network.avatars[id].node.position = at
+			network.avatars[id].at = at
+		member["elevator_target"] = at
+		member["elevator_target_until"] = Time.get_ticks_msec()+600
+		send_personal(id,"elevator",{"position":at})
+	else:
+		world.life.move_elevator_rider(at)
+
+func show_stand_effect(data: Dictionary) -> void:
+	var figure := Node3D.new()
+	world.add_child(figure)
+	figure.position = data.at
+	figure.rotation.y = float(data.yaw)
+	var color := Color("57d8e8")
+	world.box(figure,Vector3(0.8,1.5,0.5),Vector3(0.6,0.8,0.35),color)
+	world.box(figure,Vector3(0.8,2.1,0.5),Vector3(0.4,0.4,0.4),color)
+	world.box(figure,Vector3(0.35,1.5,-0.1),Vector3(0.25,0.3,1.0),color)
+	world.box(figure,Vector3(1.25,1.5,-0.1),Vector3(0.25,0.3,1.0),color)
+	figure.create_tween().tween_property(figure,"scale",Vector3.ONE*0.01,0.8).finished.connect(figure.queue_free)
+	var selected := int(data.stand)
+	if selected == 3 and network.active() and network.is_client(): return
+	if selected in [2,3,4]:
+		var effect := Node3D.new()
+		world.add_child(effect)
+		effect.position = data.target
+		effect.rotation.y = float(data.yaw)
+		stand_objects.append(effect)
+		effect.set_meta("stand_kind",selected)
+		var size := Vector3(6,2.8,0.3) if selected == 3 else Vector3(12,0.12,12)
+		var surface: MeshInstance3D = world.box(effect,Vector3(0,1.4,0) if selected == 3 else Vector3(0,0.15,0),size,Color("91cddd") if selected == 3 else Color("ddae49"),selected == 3)
+		if selected == 3:
+			effect.set_meta("health",75.0)
+			surface.get_child(0).set_meta("stand_wall",effect)
+		get_tree().create_timer(6.0 if selected == 3 else (4.0 if selected == 2 else 0.5)).timeout.connect(func():
+			stand_objects.erase(effect)
+			if is_instance_valid(effect): effect.queue_free())
+
+func join_pvp(id: int) -> void:
+	if int(network.members.get(id,{}).get("car",-1)) >= 0 or bus_riders.has(id) or world.vehicle_entries.has(id) or world.life.elevator_rider_position(id) != null:
+		private_notice(id,"Saia do veículo ou elevador para entrar na fila PvP.")
+		return
+	if not pvp.is_empty() or world.activities.job >= 0 or world.activities.bank.phase != 0 or pending_mission >= 0:
+		private_notice(id,"Conclua a atividade atual antes do PvP.")
+		return
+	if pvp_queue.has(id):
+		pvp_queue.erase(id)
+		private_notice(id,"Você saiu da fila PvP.")
+		return
+	pvp_queue.append(id)
+	notice_all("Convite PvP! Abra o celular e toque em PVP / ENTRAR. Com 4 jogadores será 2v2, com 2 será 1v1.")
+	if pvp_queue.size() >= 2 and pvp_wait <= 0.0: pvp_wait = 12.0
+
+func tick_pvp(delta: float) -> void:
+	pvp_queue = pvp_queue.filter(func(id): return network.members.has(id) and not is_dead(id) and world.prison_stage_for(id) < 0)
+	if pvp.is_empty():
+		if pvp_queue.size() < 2:
+			pvp_wait = 0.0
+			return
+		pvp_wait -= delta
+		if pvp_wait > 0.0: return
+		if world.activities.job >= 0 or world.activities.bank.phase != 0: return
+		var count := 4 if pvp_queue.size() >= 4 else 2
+		var teams := {}
+		for i in count:
+			var id: int = pvp_queue.pop_front()
+			teams[id] = i % 2
+			pvp_saved[id] = {"inventory":inventory() if id == local_id() else sheets[id].inventory.duplicate(true),"at":position_of(id),"health":sheets[id].health}
+		pvp = {"teams":teams,"scores":[0,0],"round":0,"phase":"break","time":0.0}
+	for id in pvp.teams.keys():
+		if not network.members.has(id): pvp.teams.erase(id)
+	var team0: bool = pvp.teams.values().has(0)
+	var team1: bool = pvp.teams.values().has(1)
+	if not team0 or not team1:
+		finish_pvp(0 if team0 else (1 if team1 else -1))
+		return
+	pvp.time -= delta
+	if pvp.phase == "break":
+		if pvp.time <= 0.0: start_pvp_round()
+		return
+	var health := [0.0,0.0]
+	for id in pvp.teams:
+		health[pvp.teams[id]] += float(sheets[id].health)
+		if not is_dead(id) and position_of(id).distance_to(PVP_ARENAS[pvp.round-1]) > 38.0:
+			teleport_to_contract(id,PVP_ARENAS[pvp.round-1]+Vector3((int(pvp.teams[id])*2-1)*10,0,0))
+	if health[0] > 0.0 and health[1] > 0.0 and pvp.time > 0.0: return
+	var winner := -1 if is_equal_approx(health[0],health[1]) else (0 if health[0] > health[1] else 1)
+	if winner >= 0: pvp.scores[winner] += 1
+	notice_all("PvP rodada %d / %d x %d" % [pvp.round,pvp.scores[0],pvp.scores[1]])
+	if pvp.round >= 5:
+		finish_pvp(-1 if pvp.scores[0] == pvp.scores[1] else (0 if pvp.scores[0] > pvp.scores[1] else 1))
+	else:
+		pvp.phase = "break"
+		pvp.time = 4.0
+
+func start_pvp_round() -> void:
+	for object in stand_objects:
+		if is_instance_valid(object): object.queue_free()
+	stand_objects.clear()
+	stand_fields.clear()
+	pvp.round += 1
+	pvp.phase = "fight"
+	pvp.time = 90.0
+	var index := [0,0]
+	for id in pvp.teams:
+		var team: int = pvp.teams[id]
+		sheets[id].health = 100.0
+		sheets[id].protected_until = Time.get_ticks_msec()+2500
+		sheets[id]["stand"] = randi_range(0,4)
+		sheets[id]["stand_cooldown"] = 0.0
+		sheets[id]["stand_slow"] = 0.0
+		stand_history.erase(id)
+		var inv: Dictionary = sheets[id].inventory
+		inv.weapon = 2
+		inv.rifle_owned = true
+		inv.shotgun_owned = false
+		inv.smg_owned = false
+		inv.heavy_owned = [false,false,false]
+		inv.clips = [0,12,30,0,0,0,0,0]
+		inv.reserves = [0,72,180,0,0,0,0,0]
+		inv.fire_cooldown = 0.0
+		inv.reload_time = 0.0
+		if id == local_id():
+			world.health = 100.0
+			for key in INVENTORY: world.activities.set(key,inv[key])
+		var at: Vector3 = PVP_ARENAS[pvp.round-1]+Vector3((team*2-1)*12,0,index[team]*3)
+		index[team] += 1
+		teleport_to_contract(id,at)
+		send_personal(id,"equip",{"weapon":2})
+		private_notice(id,"PvP %d/5 / Equipe %d / %s / H ou celular para usar" % [pvp.round,team+1,STAND_NAMES[sheets[id].stand]])
+
+func finish_pvp(winner: int) -> void:
+	for object in stand_objects:
+		if is_instance_valid(object): object.queue_free()
+	stand_objects.clear()
+	for id in pvp_saved:
+		if not sheets.has(id) or not network.members.has(id): continue
+		var saved: Dictionary = pvp_saved[id]
+		sheets[id].health = saved.health
+		sheets[id].inventory = saved.inventory
+		if id == local_id():
+			world.health = saved.health
+			for key in INVENTORY: world.activities.set(key,saved.inventory[key])
+		teleport_to_contract(id,saved.at)
+		send_personal(id,"equip",{"weapon":saved.inventory.weapon})
+		if pvp.teams.get(id,-2) == winner:
+			award(id,2500)
+			private_notice(id,"Vitória no PvP! +$2500")
+		else: private_notice(id,"PvP encerrado. Resultado %d x %d." % [pvp.scores[0],pvp.scores[1]])
+	pvp.clear()
+	pvp_saved.clear()
+	stand_fields.clear()
+
+func sync_stand_walls(states: Array) -> void:
+	var present := {}
+	for state in states:
+		present[state.id] = true
+		if remote_stand_walls.has(state.id): continue
+		var wall := Node3D.new()
+		world.add_child(wall)
+		wall.position = state.at
+		wall.rotation.y = float(state.yaw)
+		world.box(wall,Vector3(0,1.4,0),Vector3(6,2.8,0.3),Color("91cddd"),true)
+		remote_stand_walls[state.id] = wall
+	for id in remote_stand_walls.keys():
+		if not present.has(id):
+			if is_instance_valid(remote_stand_walls[id]): remote_stand_walls[id].queue_free()
+			remote_stand_walls.erase(id)

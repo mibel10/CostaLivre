@@ -1005,6 +1005,13 @@ func owns_weapon(index: int) -> bool:
 	return index < 2 or (rifle_owned if index == 2 else (shotgun_owned if index == 3 else smg_owned))
 
 func weapon_impact(hit: Dictionary, at: Vector3, selected: int) -> void:
+	if not hit.is_empty() and hit.collider.has_meta("stand_wall"):
+		var wall: Node3D = hit.collider.get_meta("stand_wall")
+		wall.set_meta("health",float(wall.get_meta("health",75.0))-DAMAGE[selected])
+		if float(wall.get_meta("health")) <= 0.0:
+			world.network.rules.stand_objects.erase(wall)
+			wall.queue_free()
+		return
 	if not hit.is_empty(): campaign_target_hit(hit.collider)
 	if selected not in [5,7]:
 		if not hit.is_empty() and hit.collider.has_method("take_hit"):
