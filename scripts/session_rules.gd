@@ -610,7 +610,7 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 	if (id==local_id() and context_peer in [0,local_id()]) or id==context_peer:
 		world.health=sheets[id].health
 	if sheets[id].health<=0:
-		if by_police or int(sheets[id].get("prison_stage", -1)) >= 0:
+		if (by_police and not teams.has(id)) or int(sheets[id].get("prison_stage", -1)) >= 0:
 			sheets[id]["prison_stage"] = 0
 			sheets[id]["prison_progress"] = 0.0
 		sheets[id].dead_until=Time.get_ticks_msec()+3000
