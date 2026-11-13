@@ -413,7 +413,8 @@ func show_wreck() -> void:
 		if child is MeshInstance3D:
 			intact_materials[child] = child.material_override
 			child.material_override = world.material(Color("353638"))
-	world.notify("Veículo inutilizado.")
+	if world.network == null or not world.network.active() or world.active_car == self or int(world.network.owners.get(net_id, 0)) == multiplayer.get_unique_id():
+		world.notify("Veículo inutilizado.")
 
 func start_wreck_effects() -> void:
 	if is_instance_valid(fire_particles): return
