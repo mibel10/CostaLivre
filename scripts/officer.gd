@@ -103,7 +103,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		return
 	if online:
-		world.network.shot_effect.rpc(from, hit.position, 1)
+		world.network.shot_effect.rpc(from, hit.position, 1, 0, (hit.position-from).normalized())
 	else:
 		world.activities.trace(from, hit.position, Color("ff8264"))
 
