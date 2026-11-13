@@ -72,7 +72,7 @@ func _ready() -> void:
 	phone_panel.add_child(phone_scroll)
 	phone_scroll.add_child(phone_apps)
 	phone_apps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
+	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = item[0]
 		app.custom_minimum_size.y = 40

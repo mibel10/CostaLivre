@@ -8,7 +8,7 @@ const SYMBOLS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 const CHAT_LIMIT := 140
 const CHAT_RATE_MS := 700
 const SNAPSHOT_PACKET_LIMIT := 1200
-const EMOTES := ["wave","griddy","take_l","dance"]
+const EMOTES := ["wave","griddy","take_l","dance","torture_dance"]
 var world: Node3D
 var code := ""
 var peer: ENetMultiplayerPeer
@@ -258,8 +258,8 @@ func answer_mission_offer(accept: bool) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
-		if world.activities.menu == "" and event.physical_keycode in [KEY_G,KEY_F6,KEY_F7,KEY_F8]:
-			send_emote({KEY_G:"wave",KEY_F6:"griddy",KEY_F7:"take_l",KEY_F8:"dance"}[event.physical_keycode])
+		if world.activities.menu == "" and event.physical_keycode in [KEY_G,KEY_F6,KEY_F7,KEY_F8,KEY_F9]:
+			send_emote({KEY_G:"wave",KEY_F6:"griddy",KEY_F7:"take_l",KEY_F8:"dance",KEY_F9:"torture_dance"}[event.physical_keycode])
 			get_viewport().set_input_as_handled()
 			return
 		if event.keycode == KEY_ESCAPE and chat_panel.visible:
