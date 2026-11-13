@@ -74,6 +74,18 @@ func run() -> void:
 	assert(not car.glass_damage_marks[0].visible)
 	car.apply_network_health(car.MAX_HP)
 	assert(not car.body_damage_marks[0].visible and not car.glass_damage_marks[0].visible, "Replicated repairs clear damage marks")
+	var patrol = world.station.fleet[0]
+	patrol.police_phase = "pursuit"
+	patrol._process(0.1)
+	assert(patrol.siren_audio.playing, "Siren follows replicated pursuit state without physics")
+	patrol.repaint(patrol.paint)
+	await process_frame
+	assert(is_instance_valid(patrol.siren_audio), "Repaint preserves the siren")
+	patrol.hp = 0
+	patrol._process(0.1)
+	assert(not patrol.siren_audio.playing, "Destroyed patrols stop their siren")
+	patrol.repair()
+	patrol.police_phase = "parked"
 	world.active_car = null
 	car.driving = false
 	world.cash = 10000

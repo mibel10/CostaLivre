@@ -122,6 +122,15 @@ func _ready() -> void:
 		add_child(siren_audio)
 
 func _process(delta: float) -> void:
+	if police:
+		siren_clock += delta
+		var siren_active: bool = hp > 0 and police_phase in ["exit", "pursuit"]
+		if siren_audio != null and siren_active and not siren_audio.playing:
+			siren_audio.play()
+		elif siren_audio != null and not siren_active and siren_audio.playing:
+			siren_audio.stop()
+		for i in lights.size():
+			lights[i].visible = siren_active and fmod(siren_clock + i * 0.2, 0.4) < 0.25
 	if tier != Catalog.SUPERCAR:
 		return
 	var body := get_node_or_null("CustomVehicle") as Node3D
@@ -347,15 +356,6 @@ func _physics_process(delta: float) -> void:
 			hub.rotation.y = steering_angle
 		for wheel in wheels:
 			wheel.rotation.x = wheel_angle
-	if police:
-		siren_clock += delta
-		var siren_active: bool = police_phase in ["exit", "pursuit"]
-		if siren_audio != null and siren_active and not siren_audio.playing:
-			siren_audio.play()
-		elif siren_audio != null and not siren_active and siren_audio.playing:
-			siren_audio.stop()
-		for i in lights.size():
-			lights[i].visible = police_phase in ["exit","pursuit"] and fmod(siren_clock + i * 0.2, 0.4) < 0.25
 	if position.y < -8:
 		position = Vector3(0, 1, 0)
 		speed = 0
