@@ -1188,7 +1188,8 @@ func _process(delta: float) -> void:
 			ped.hide()
 			ped.model.process_mode = Node.PROCESS_MODE_DISABLED
 			ped.set_physics_process(false)
-	nearby_walkers.sort_custom(func(a, b): return distances[a] < distances[b])
+	if nearby_walkers.size() > 24:
+		nearby_walkers.sort_custom(func(a, b): return distances[a] < distances[b])
 	for i in nearby_walkers.size():
 		var ped = nearby_walkers[i]
 		var simulate := i < 24
