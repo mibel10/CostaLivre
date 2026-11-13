@@ -968,7 +968,7 @@ func shoot() -> void:
 	if weapon == 0:
 		world.extra.punch()
 		return
-	if weapon <= 0 or fire_cooldown > 0 or reload_time > 0 or world.active_car != null or bank.hacking:
+	if weapon <= 0 or fire_cooldown > 0 or reload_time > 0 or world.bus_passenger or bank.hacking:
 		return
 	if clips[weapon] <= 0:
 		reload()
@@ -986,8 +986,11 @@ func shoot() -> void:
 	if not hit.is_empty():
 		end = hit.position
 	var muzzle: Vector3 = world.player.position + Vector3(0, 1.35, 0)
+	if world.active_car != null:
+		var size: Vector3 = Catalog.SIZES[world.active_car.tier]
+		muzzle = world.active_car.to_global(Vector3(-size.x * 0.36, size.y * 0.72, 0))
 	var muzzle_query := PhysicsRayQueryParameters3D.create(muzzle, end, 7)
-	muzzle_query.exclude = [world.player.get_rid()]
+	muzzle_query.exclude = [world.player.get_rid()] + ([world.active_car.get_rid()] if world.active_car != null else [])
 	var obstruction := world.get_world_3d().direct_space_state.intersect_ray(muzzle_query)
 	if not obstruction.is_empty():
 		hit = obstruction

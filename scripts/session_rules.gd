@@ -691,6 +691,8 @@ func fire_peer(id: int,data: Dictionary) -> void:
 	var direction: Vector3=data.direction
 	if not origin.is_finite() or not direction.is_finite() or direction.length()<0.1 or origin.distance_to(position_of(id))>14:
 		return
+	if bus_riders.has(id):
+		return
 	with_actor(id,func():
 		var a: Node=world.activities
 		var selected := clampi(int(data.get("weapon",1)),0,7)
@@ -701,7 +703,7 @@ func fire_peer(id: int,data: Dictionary) -> void:
 		if not a.owns_weapon(selected):
 			return
 		a.weapon=selected
-		if world.active_car!=null or a.fire_cooldown>0 or a.reload_time>0 or (a.bank.hacking and bank_owner==id):
+		if a.fire_cooldown>0 or a.reload_time>0 or (a.bank.hacking and bank_owner==id):
 			return
 		if a.clips[selected]<=0:
 			a.reload()
@@ -717,8 +719,11 @@ func fire_peer(id: int,data: Dictionary) -> void:
 		if not hit.is_empty():
 			end=hit.position
 		var muzzle: Vector3 = world.player.position+Vector3(0,1.35,0)
+		if world.active_car!=null:
+			var size: Vector3 = world.active_car.Catalog.SIZES[world.active_car.tier]
+			muzzle=world.active_car.to_global(Vector3(-size.x*0.36,size.y*0.72,0))
 		query=PhysicsRayQueryParameters3D.create(muzzle,end,7)
-		query.exclude=[world.player.get_rid()]
+		query.exclude=[world.player.get_rid()] + ([world.active_car.get_rid()] if world.active_car!=null else [])
 		var cover := world.get_world_3d().direct_space_state.intersect_ray(query)
 		if not cover.is_empty():
 			hit=cover
