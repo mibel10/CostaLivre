@@ -46,7 +46,7 @@ func _physics_process(delta: float) -> void:
 		point = (point + 1) % route.size()
 		return
 	var speed := 0.4 if scared else (3.8 if world.heat > 20 and position.distance_to(world.subject_position()) < 25 else 1.6)
-	if Time.get_ticks_msec() < int(get_meta("stand_slow_until",0)): speed *= 0.35
+	if Time.get_ticks_msec() < int(get_meta("stand_slow_until",0)): speed *= 0.22
 	velocity = direction.normalized() * speed + Vector3(0, -4, 0)
 	move_and_slide()
 	model.rotation.y = lerp_angle(model.rotation.y, atan2(-direction.x, -direction.z), delta * 6)

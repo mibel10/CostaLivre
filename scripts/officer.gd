@@ -67,8 +67,8 @@ func _physics_process(delta: float) -> void:
 		velocity.z = direction.z * 4 if moving else 0.0
 		velocity.y = -4 if is_on_floor() else velocity.y - delta * 22
 	if Time.get_ticks_msec() < int(get_meta("stand_slow_until",0)):
-		velocity.x *= 0.35
-		velocity.z *= 0.35
+		velocity.x *= 0.22
+		velocity.z *= 0.22
 	move_and_slide()
 	model.animate(Vector2(velocity.x, velocity.z).length())
 	if world.heat > 0 or contract or prison_guard:

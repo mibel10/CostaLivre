@@ -74,6 +74,16 @@ func run() -> void:
 	host.network.close_menu()
 	await create_timer(0.4).timeout
 	var id: int=client_api.get_unique_id()
+	if "--stands-only" in OS.get_cmdline_user_args():
+		await test_stand_rework(id)
+		host.network.disconnect_room()
+		client.network.disconnect_room()
+		host.queue_free()
+		client.queue_free()
+		await process_frame
+		print("PASS: focused multiplayer Stand suite")
+		quit()
+		return
 	host.fps_counter.refresh()
 	client.fps_counter.refresh()
 	assert(host.fps_counter.badge.text.contains("Ping: 0 ms"), "The host displays its local ping")
@@ -489,7 +499,7 @@ func run() -> void:
 	assert(pvp_rules.stand_objects.size() == objects_before, "The host enforces Stand cooldown")
 	var barrier = pvp_rules.stand_objects[0]
 	var barrier_body = barrier.get_child(0).get_child(0)
-	for shot in 4: host.activities.weapon_impact({"collider":barrier_body},barrier.position,2)
+	for shot in 5: host.activities.weapon_impact({"collider":barrier_body},barrier.position,2)
 	await wait_for(func(): return client.network.rules.remote_stand_walls.is_empty())
 
 
@@ -504,6 +514,7 @@ func run() -> void:
 	assert(pvp_rules.pvp.is_empty() and host.cash == cash_before + 2500)
 	assert(host.activities.weapon == weapon_before and not pvp_rules.is_dead(id))
 	print("PASS: five PvP arenas, random Stands, loadouts, rounds, reward and restoration")
+	await test_stand_rework(id)
 	var partner = await add_arena_client("Partner")
 	var opponent = await add_arena_client("Opponent")
 	await wait_for(func(): return host.network.members.size() == 4)
@@ -552,6 +563,107 @@ func run() -> void:
 	await process_frame
 	print("PASS: version rejection, police fleet, coop mission, PvP both directions, respawn, car purchase, garage, bank hack and bags")
 	quit()
+
+func test_stand_rework(id: int) -> void:
+	var rules = host.network.rules
+	var stand_origin: Vector3 = host.SPAWNS[0]
+	var forward := Vector3.FORWARD
+	host.active_car = null
+	client.active_car = null
+	host.car_transition = false
+	client.car_transition = false
+	host.network.owners.clear()
+	host.vehicle_entries.clear()
+	host.vehicle_falls.clear()
+	rules.bus_riders.clear()
+	for player_id in [1,id]:
+		host.network.members[player_id]["car"] = -1
+		host.network.members[player_id].erase("bus")
+		host.network.members[player_id].erase("elevator_target")
+		host.network.members[player_id].erase("elevator_target_until")
+		for building in host.life.elevators:
+			host.life.elevators[building].riders.erase(player_id)
+		host.network.members[player_id]["position"] = stand_origin
+		host.network.members[player_id]["car_position"] = stand_origin
+		rules.sheets[player_id]["protected_until"] = 0
+		rules.sheets[player_id]["stand_cooldown"] = 0.0
+	host.player.position = stand_origin
+	client.player.position = stand_origin+forward*3.0
+	client.player.velocity = Vector3.ZERO
+	host.network.members[id]["position"] = client.player.position
+	host.network.members[id]["car_position"] = client.player.position
+	host.network.avatars[id].node.position = client.player.position
+	host.network.avatars[id].at = client.player.position
+	rules.sheets[id].health = 100.0
+	rules.sheets[1].stand = 0
+	rules.use_stand(1,0.0)
+	assert(rules.sheets[id].health == 40.0 and rules.position_of(id).z < stand_origin.z-3.0, "Mão de Concreto host result hp=%s at=%s origin=%s protected=%s" % [rules.sheets[id].health,rules.position_of(id),stand_origin,rules.sheets[id].protected_until])
+	print("PASS: multiplayer Stand 1/5 Mão de Concreto")
+	await wait_for(func(): return float(client.network.rules.sheets.get(id,{}).get("health",100.0)) == 40.0)
+	await create_timer(0.7).timeout
+	var remote_at := stand_origin+forward*6.0
+	host.network.members[id]["position"] = remote_at
+	host.network.members[id]["car_position"] = remote_at
+	host.network.members[id].erase("elevator_target")
+	host.network.members[id].erase("elevator_target_until")
+	host.network.avatars[id].node.position = remote_at
+	host.network.avatars[id].at = remote_at
+	client.player.position = remote_at
+	client.player.velocity = Vector3.ZERO
+	rules.sheets[id].stand_cooldown = 0.0
+	var rewind_at := stand_origin+forward*4.5
+	rules.sheets[id].stand = 1
+	rules.sheets[id].health = 60.0
+	rules.sheets[id].stand_slow = 0.5
+	rules.stand_history[id] = []
+	for sample in 21: rules.stand_history[id].append(rewind_at)
+	rules.use_stand(id,0.0)
+	assert(rules.sheets[id].health == 80.0 and rules.sheets[id].stand_slow == 0.0 and rules.position_of(id).is_equal_approx(rewind_at), "Passo Reverso host result hp=%s slow=%s at=%s expected=%s" % [rules.sheets[id].health,rules.sheets[id].stand_slow,rules.position_of(id),rewind_at])
+	print("PASS: multiplayer Stand 2/5 Passo Reverso")
+	await wait_for(func(): return client.player.position.distance_to(rewind_at) < 0.2)
+	await create_timer(0.7).timeout
+	remote_at = stand_origin+forward*7.0
+	host.network.members[id]["position"] = remote_at
+	host.network.members[id]["car_position"] = remote_at
+	host.network.members[id].erase("elevator_target")
+	host.network.members[id].erase("elevator_target_until")
+	host.network.avatars[id].node.position = remote_at
+	host.network.avatars[id].at = remote_at
+	client.player.position = remote_at
+	client.player.velocity = Vector3.ZERO
+	rules.sheets[1].stand = 2
+	rules.sheets[1].stand_cooldown = 0.0
+	rules.sheets[id].stand_slow = 0.0
+	rules.use_stand(1,0.0)
+	rules.tick_stands(0.05)
+	assert(rules.stand_fields.size() > 0 and rules.sheets[id].stand_slow > 0.0, "Sinal Fechado applies its slow zone on the host")
+	print("PASS: multiplayer Stand 3/5 Sinal Fechado")
+	rules.sheets[1].stand = 3
+	rules.sheets[1].stand_cooldown = 0.0
+	rules.use_stand(1,0.0)
+	await wait_for(func(): return client.network.rules.remote_stand_walls.size() == 1)
+	var network_wall: Node3D = rules.stand_objects.filter(func(object): return int(object.get_meta("stand_kind",-1)) == 3)[0]
+	assert(network_wall.get_meta("health") == rules.STAND_WALL_HEALTH)
+	var network_wall_id: int = network_wall.get_instance_id()
+	var network_wall_body = network_wall.get_child(0).get_child(0)
+	for shot in 5: host.activities.weapon_impact({"collider":network_wall_body},network_wall.position,2)
+	await wait_for(func(): return client.network.rules.remote_stand_walls.is_empty())
+	assert(rules.stand_objects.all(func(object): return not is_instance_valid(object) or object.get_instance_id() != network_wall_id), "Vitrine Quebrada is host-durable and its break replicates")
+	print("PASS: multiplayer Stand 4/5 Vitrine Quebrada")
+	rules.sheets[1].stand = 4
+	rules.sheets[1].stand_cooldown = 0.0
+	remote_at = stand_origin+forward*8.0
+	host.network.members[id]["position"] = remote_at
+	host.network.members[id]["car_position"] = remote_at
+	client.player.position = remote_at
+	host.network.avatars[id].node.position = remote_at
+	host.network.avatars[id].at = remote_at
+	rules.sheets[id].health = 100.0
+	rules.sheets[id].protected_until = 0
+	rules.use_stand(1,0.0)
+	assert(rules.sheets[id].health == 75.0 and rules.position_of(id).z < stand_origin.z-8.0, "Maré Baixa host result hp=%s at=%s" % [rules.sheets[id].health,rules.position_of(id)])
+	print("PASS: multiplayer Stand 5/5 Maré Baixa")
+	await process_frame
 
 func add_arena_client(label: String) -> Node:
 	var view := SubViewport.new()

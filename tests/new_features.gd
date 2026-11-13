@@ -81,20 +81,59 @@ func run() -> void:
 	world.cutscene.finish()
 	var stand_rules = world.network.rules
 	world.player.position = Vector3(0,0.3,0)
-	for selected in 5:
-		stand_rules.offline_stand.stand = selected
-		stand_rules.offline_stand.stand_cooldown = 0.0
-		stand_rules.stand_history[1] = []
-		for sample in 21: stand_rules.stand_history[1].append(world.player.position)
-		stand_rules.use_stand(1,0.0)
-		assert(stand_rules.offline_stand.stand_cooldown > 0.0)
-		await process_frame
-	for object in stand_rules.stand_objects.duplicate():
-		if int(object.get_meta("stand_kind",-1)) == 3:
-			var collider = object.get_child(0).get_child(0)
-			for shot in 4: world.activities.weapon_impact({"collider":collider},object.position,2)
-			assert(not stand_rules.stand_objects.has(object), "Gunfire shatters the fragile barrier")
-	print("PASS: all five Stands activate offline")
+	var stand_target = load("res://scripts/pedestrian.gd").new()
+	stand_target.world = world
+	stand_target.stationary = true
+	world.life.add_child(stand_target)
+	world.life.people.append(stand_target)
+	await process_frame
+	stand_target.position = Vector3(0,0.3,-3.0)
+	stand_target.hp = 150.0
+	stand_rules.offline_stand.stand = 0
+	stand_rules.offline_stand.stand_cooldown = 0.0
+	stand_rules.use_stand(1,0.0)
+	assert(is_equal_approx(stand_target.hp,60.0) and stand_target.position.z < -3.0, "Concrete Hand hits hard and knocks nearby targets back")
+	assert(stand_rules.offline_stand.stand_cooldown == stand_rules.STAND_COOLDOWNS[0])
+	stand_target.position = Vector3(0,0.3,24)
+	world.player.position = Vector3(0,0.3,0)
+	world.health = 60.0
+	stand_rules.offline_stand.stand = 1
+	stand_rules.offline_stand.stand_cooldown = 0.0
+	stand_rules.stand_history[1] = []
+	for sample in 21: stand_rules.stand_history[1].append(Vector3(4,0.3,0))
+	stand_rules.use_stand(1,0.0)
+	assert(world.player.position.is_equal_approx(Vector3(4,0.3,0)) and world.health == 80.0 and stand_rules.offline_stand.stand_slow == 0.0, "Reverse Step rewinds safely, heals and clears slow")
+	world.player.position = Vector3(0,0.3,0)
+	stand_target.position = Vector3(0,0.3,-4.0)
+	stand_rules.offline_stand.stand = 2
+	stand_rules.offline_stand.stand_cooldown = 0.0
+	stand_rules.stand_fields.clear()
+	stand_rules.use_stand(1,0.0)
+	assert(stand_rules.stand_fields.size() == 1 and stand_rules.stand_fields[0].time == 5.0, "Closed Signal holds a large control zone")
+	stand_rules.tick_stands(0.05)
+	assert(stand_target.get_meta("stand_slow_until",0) > Time.get_ticks_msec(), "Closed Signal slows NPCs inside the zone")
+	stand_rules.offline_stand.stand = 3
+	stand_rules.offline_stand.stand_cooldown = 0.0
+	stand_rules.use_stand(1,0.0)
+	var barrier: Node3D = stand_rules.stand_objects.filter(func(object): return int(object.get_meta("stand_kind",-1)) == 3)[0]
+	assert(barrier.get_meta("health") == stand_rules.STAND_WALL_HEALTH and stand_rules.STAND_WALL_HEALTH > 4*world.activities.DAMAGE[2], "Shattered Display is durable cover")
+	var barrier_body = barrier.get_child(0).get_child(0)
+	for shot in 4: world.activities.weapon_impact({"collider":barrier_body},barrier.position,2)
+	assert(stand_rules.stand_objects.has(barrier), "Shattered Display withstands four rifle hits")
+	world.activities.weapon_impact({"collider":barrier_body},barrier.position,2)
+	assert(not stand_rules.stand_objects.has(barrier), "Gunfire eventually shatters the cover")
+	await process_frame
+	stand_target.position = Vector3(0,0.3,-8.0)
+	stand_target.hp = 150.0
+	stand_rules.offline_stand.stand = 4
+	stand_rules.offline_stand.stand_cooldown = 0.0
+	stand_rules.stand_fields.clear()
+	stand_rules.use_stand(1,0.0)
+	assert(is_equal_approx(stand_target.hp,110.0) and stand_target.position.z < -8.0, "Low Tide sweeps a wide arc, damages and pushes targets")
+	assert(stand_rules.stand_fields.size() == 1 and stand_rules.stand_fields[0].kind == 4, "Low Tide leaves a short stagger pulse")
+	stand_rules.tick_stands(0.05)
+	assert(stand_target.get_meta("stand_slow_until",0) > Time.get_ticks_msec(), "Low Tide staggers NPCs")
+	print("PASS: each Stand ability, cooldown, healing, crowd control, cover and knockback works offline")
 	world.finish(false)
 	assert(Engine.time_scale == 0.18 and extra.death_filter.visible)
 	world.queue_free()

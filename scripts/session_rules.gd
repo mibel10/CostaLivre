@@ -29,6 +29,8 @@ var mission_reveal_time := 0.0
 var mission_round_time := 0.0
 var bank_lookout := 0
 const STAND_NAMES := ["Mão de Concreto", "Passo Reverso", "Sinal Fechado", "Vitrine Quebrada", "Maré Baixa"]
+const STAND_COOLDOWNS := [14.0,18.0,16.0,18.0,14.0]
+const STAND_WALL_HEALTH := 120.0
 const GOLDEN_ARROW_SPAWN := Vector3(-2, 0.3, 8)
 const PVP_ARENAS := [Vector3(0,0.3,0), Vector3(84,0.3,84), Vector3(294,0.3,-126), Vector3(546,0.3,-126), Vector3(798,0.3,126)]
 var pvp := {}
@@ -1262,12 +1264,16 @@ func tick_stands(delta: float) -> void:
 		if field.time <= 0.0:
 			stand_fields.erase(field)
 			continue
+		var field_kind: int = int(field.get("kind", 2))
+		var radius := 8.0 if field_kind == 2 else 10.0
+		var stagger := 0.35 if field_kind == 2 else 0.9
 		for id in ids:
-			if id != field.owner and stand_enemy(field.owner,id) and position_of(id).distance_to(field.at) < 7.0:
-				stand_sheet(id)["stand_slow"] = 0.3
+			if id != field.owner and stand_enemy(field.owner,id) and position_of(id).distance_to(field.at) < radius:
+				var sheet := stand_sheet(id)
+				sheet["stand_slow"] = maxf(float(sheet.get("stand_slow",0.0)),stagger)
 		for person in world.life.people + world.activities.officers:
-			if person.hp > 0 and person.position.distance_to(field.at) < 7.0:
-				person.set_meta("stand_slow_until", Time.get_ticks_msec()+300)
+			if person.hp > 0 and person.position.distance_to(field.at) < radius:
+				person.set_meta("stand_slow_until", Time.get_ticks_msec()+int(stagger*1000.0))
 
 func stand_enemy(source: int, target: int) -> bool:
 	var teams: Dictionary = pvp.get("teams", {})
@@ -1289,6 +1295,7 @@ func use_stand(id: int, yaw: float) -> void:
 		return
 	var forward := Vector3.FORWARD.rotated(Vector3.UP,yaw)
 	var destination := at + forward * 3.0
+	var effect_target := destination
 	if selected == 1:
 		if not stand_history.has(id) or stand_history[id].size() < 15:
 			private_notice(id,"Passo Reverso precisa de mais histórico de movimento.")
@@ -1303,31 +1310,56 @@ func use_stand(id: int, yaw: float) -> void:
 			private_notice(id,"Não há um ponto seguro para o Passo Reverso.")
 			return
 		stand_history[id].clear()
+		effect_target = position_of(id) if network.active() else world.player.position
+		if network.active():
+			sheet["health"] = minf(100.0,float(sheet.get("health",100.0))+20.0)
+			if id == local_id(): world.health = sheet.health
+		else:
+			world.health = minf(100.0,world.health+20.0)
+		sheet["stand_slow"] = 0.0
 	elif selected == 2:
-		stand_fields.append({"owner":id,"at":destination,"time":4.0})
+		if not stand_clear(at,destination):
+			private_notice(id,"O Sinal Fechado precisa de espaço livre à frente.")
+			return
+		stand_fields.append({"owner":id,"at":destination,"time":5.0,"kind":selected})
+	elif selected == 3 and not stand_clear(at,destination):
+		private_notice(id,"Não há espaço livre à frente para erguer a Vitrine Quebrada.")
+		return
 	elif selected in [0,4]:
-		var reach := 4.5 if selected == 0 else 8.0
+		var reach := 5.0 if selected == 0 else 10.0
+		var forward_dot := 0.58 if selected == 0 else -0.05
+		var player_damage := 60.0 if selected == 0 else 25.0
+		var actor_damage := 90.0 if selected == 0 else 40.0
+		var knockback := 2.5 if selected == 0 else 5.5
+		var stagger := 0.7 if selected == 0 else 1.2
+		if selected == 4:
+			stand_fields.append({"owner":id,"at":at+forward*5.0,"time":0.8,"kind":selected})
+			effect_target = at+forward*5.0
 		for target in participants() if network.active() else []:
-			if target == id or not stand_enemy(id,target): continue
-			var offset: Vector3 = position_of(target)-at
-			if offset.length() < reach and offset.normalized().dot(forward) > 0.2 and stand_clear(at,position_of(target)):
-				damage_peer(target,55.0 if selected == 0 else 20.0,id)
-				if not is_dead(target): stand_teleport(target,position_of(target)+forward*3.0)
+			if target == id or not stand_enemy(id,target) or int(network.members.get(target,{}).get("car",-1)) >= 0 or bus_riders.has(target): continue
+			var target_at: Vector3 = position_of(target)
+			var offset: Vector3 = target_at-at
+			if offset.length() < reach and offset.length_squared() > 0.001 and offset.normalized().dot(forward) > forward_dot and stand_clear(at,target_at):
+				if Time.get_ticks_msec() < int(sheets[target].get("protected_until",0)): continue
+				damage_peer(target,player_damage,id)
+				if not is_dead(target):
+					stand_sheet(target)["stand_slow"] = stagger
+					stand_teleport(target,target_at+forward*knockback)
 		if pvp.is_empty():
 			for victim in world.life.people + world.activities.officers + world.cars:
 				var offset: Vector3 = victim.position-at
-				if victim.hp > 0 and offset.length() < reach and offset.normalized().dot(forward) > 0.2 and stand_clear(at,victim.position):
+				if victim.hp > 0 and offset.length() < reach and offset.length_squared() > 0.001 and offset.normalized().dot(forward) > forward_dot and stand_clear(at,victim.position):
 					attacker = id if network.active() else 0
-					victim.take_hit(80.0 if selected == 0 else 25.0)
+					victim.take_hit(actor_damage)
 					attacker = 0
+					if victim not in world.cars:
+						victim.set_meta("stand_slow_until",Time.get_ticks_msec()+int(stagger*1000.0))
 					var occupied_vehicle: bool = network.active() and victim in world.cars and int(network.owners.get(victim.net_id,0)) > 0
 					if not occupied_vehicle:
-						victim.move_and_collide(forward*2.0)
-	if selected == 3 and not stand_clear(at,destination):
-		private_notice(id,"Não há espaço livre à frente para erguer a Vitrine Quebrada.")
-		return
-	sheet["stand_cooldown"] = 12.0 if selected != 1 else 16.0
-	var effect := {"stand":selected,"at":at,"target":destination,"yaw":yaw}
+						victim.move_and_collide(forward*knockback)
+	var cooldown: float = STAND_COOLDOWNS[selected]
+	sheet["stand_cooldown"] = cooldown
+	var effect := {"stand":selected,"at":at,"target":effect_target,"yaw":yaw}
 	if network.active():
 		for peer_id in network.members: send_personal(peer_id,"stand_effect",effect)
 	else: show_stand_effect(effect)
@@ -1376,36 +1408,91 @@ func stand_teleport(id: int, at: Vector3) -> bool:
 	return true
 
 func show_stand_effect(data: Dictionary) -> void:
+	var selected := clampi(int(data.get("stand",0)),0,STAND_NAMES.size()-1)
+	var colors := [Color("ff835d"),Color("a48cff"),Color("ffd84e"),Color("8beaff"),Color("39b8e8")]
+	var color: Color = colors[selected]
 	var figure := Node3D.new()
 	world.add_child(figure)
-	figure.position = data.at
-	figure.rotation.y = float(data.yaw)
-	var color := Color("57d8e8")
+	figure.position = data.get("at",Vector3.ZERO)
+	figure.rotation.y = float(data.get("yaw",0.0))
+	figure.scale = Vector3.ONE*0.35
 	world.box(figure,Vector3(0.8,1.5,0.5),Vector3(0.6,0.8,0.35),color)
 	world.box(figure,Vector3(0.8,2.1,0.5),Vector3(0.4,0.4,0.4),color)
 	world.box(figure,Vector3(0.35,1.5,-0.1),Vector3(0.25,0.3,1.0),color)
 	world.box(figure,Vector3(1.25,1.5,-0.1),Vector3(0.25,0.3,1.0),color)
-	figure.create_tween().tween_property(figure,"scale",Vector3.ONE*0.01,0.8).finished.connect(figure.queue_free)
-	var selected := int(data.stand)
+	match selected:
+		0:
+			world.box(figure,Vector3(0.2,1.5,-0.75),Vector3(0.8,0.55,0.75),Color("fff0cf"),false,true)
+			world.box(figure,Vector3(0.2,1.83,-0.84),Vector3(0.58,0.18,0.55),color,false,true)
+		1:
+			world.box(figure,Vector3(0.8,2.1,0.28),Vector3(0.7,0.08,0.08),Color("e1dcff"),false,true)
+			world.box(figure,Vector3(0.8,2.1,0.28),Vector3(0.08,0.7,0.08),Color("e1dcff"),false,true)
+		2:
+			world.box(figure,Vector3(0.8,2.32,-0.05),Vector3(1.1,0.12,0.12),Color("fff0a8"),false,true)
+			world.box(figure,Vector3(0.8,1.5,-0.45),Vector3(1.25,0.12,0.12),Color("ff705a"),false,true)
+		3:
+			var shard: MeshInstance3D = world.box(figure,Vector3(0.8,1.5,-0.3),Vector3(0.12,1.25,0.08),Color("d7fbff"),false,true)
+			shard.rotation.z = 0.38
+			world.box(figure,Vector3(0.8,1.42,-0.32),Vector3(0.9,0.08,0.08),Color("d7fbff"),false,true)
+		4:
+			world.box(figure,Vector3(0.3,1.25,-0.4),Vector3(0.7,0.12,0.9),Color("a0ecff"),false,true)
+			world.box(figure,Vector3(1.3,1.65,-0.4),Vector3(0.7,0.12,0.9),Color("a0ecff"),false,true)
+	var figure_tween := figure.create_tween()
+	figure_tween.tween_property(figure,"scale",Vector3.ONE*1.12,0.12)
+	figure_tween.tween_property(figure,"scale",Vector3.ONE*0.01,0.58)
+	figure_tween.finished.connect(figure.queue_free)
+	if selected == 1:
+		var travel: Vector3 = data.get("target",figure.position)-figure.position
+		if travel.length() > 0.5:
+			var trail := Node3D.new()
+			world.add_child(trail)
+			trail.position = (figure.position+data.get("target",figure.position))*0.5+Vector3.UP*0.15
+			trail.rotation.y = atan2(-travel.x,-travel.z)
+			world.box(trail,Vector3.ZERO,Vector3(0.16,0.16,travel.length()),color,false,true)
+			trail.scale = Vector3(1,0.08,0.08)
+			var trail_tween := trail.create_tween()
+			trail_tween.tween_property(trail,"scale",Vector3.ONE,0.1)
+			trail_tween.tween_property(trail,"scale",Vector3(1,0.01,1),0.5)
+			trail_tween.finished.connect(trail.queue_free)
 	if selected == 3 and network.active() and network.is_client(): return
-	if selected in [2,3,4]:
-		var effect := Node3D.new()
-		world.add_child(effect)
-		effect.position = data.target
-		effect.rotation.y = float(data.yaw)
-		stand_objects.append(effect)
-		effect.set_meta("stand_kind",selected)
-		var size := Vector3(6,2.8,0.3) if selected == 3 else Vector3(12,0.12,12)
-		var surface: MeshInstance3D = world.box(effect,Vector3(0,1.4,0) if selected == 3 else Vector3(0,0.15,0),size,Color("91cddd") if selected == 3 else Color("ddae49"),selected == 3)
-		if selected == 3:
-			effect.set_meta("health",75.0)
-			surface.get_child(0).set_meta("stand_wall",effect)
-		var effect_ref: WeakRef = weakref(effect)
-		get_tree().create_timer(6.0 if selected == 3 else (4.0 if selected == 2 else 0.5)).timeout.connect(func():
-			var expired_effect := effect_ref.get_ref() as Node3D
-			if expired_effect == null: return
-			stand_objects.erase(expired_effect)
-			expired_effect.queue_free())
+	if selected not in [2,3,4]: return
+	var effect := Node3D.new()
+	world.add_child(effect)
+	effect.position = data.get("target",Vector3.ZERO)
+	effect.rotation.y = float(data.get("yaw",0.0))
+	stand_objects.append(effect)
+	effect.set_meta("stand_kind",selected)
+	var duration := 5.0 if selected == 2 else (8.0 if selected == 3 else 0.7)
+	if selected == 2:
+		for side in [-1.0,1.0]:
+			world.box(effect,Vector3(0,0.08,side*8.0),Vector3(16,0.12,0.16),Color("ffd84e"),false,true)
+			world.box(effect,Vector3(side*8.0,0.08,0),Vector3(0.16,0.12,16),Color("ffd84e"),false,true)
+			for end in [-1.0,1.0]:
+				world.box(effect,Vector3(side*7.45,1.1,end*7.45),Vector3(0.2,2.2,0.2),Color("ff705a"),false,true)
+	elif selected == 3:
+		build_stand_wall_visual(effect)
+		effect.set_meta("health",STAND_WALL_HEALTH)
+		effect.get_child(0).get_child(0).set_meta("stand_wall",effect)
+	else:
+		effect.scale = Vector3(0.08,1.0,0.08)
+		world.box(effect,Vector3(0,0.1,0),Vector3(16,0.12,0.18),color,false,true)
+		world.box(effect,Vector3(0,0.12,0),Vector3(0.18,0.12,16),Color("9beaff"),false,true)
+		effect.create_tween().tween_property(effect,"scale",Vector3.ONE,0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	var effect_ref: WeakRef = weakref(effect)
+	get_tree().create_timer(duration).timeout.connect(func():
+		var expired_effect := effect_ref.get_ref() as Node3D
+		if expired_effect == null: return
+		stand_objects.erase(expired_effect)
+		expired_effect.queue_free())
+
+func build_stand_wall_visual(parent: Node3D) -> void:
+	world.box(parent,Vector3(0,1.4,0),Vector3(6,2.8,0.3),Color("91cddd"),true)
+	for x in [-2.0,0.0,2.0]:
+		world.box(parent,Vector3(x,1.4,-0.18),Vector3(0.07,2.7,0.04),Color("d7fbff"),false,true)
+	var crack: MeshInstance3D = world.box(parent,Vector3(-0.25,1.25,-0.2),Vector3(1.2,0.06,0.04),Color("d7fbff"),false,true)
+	crack.rotation.z = -0.48
+	crack = world.box(parent,Vector3(0.32,1.78,-0.2),Vector3(1.0,0.06,0.04),Color("d7fbff"),false,true)
+	crack.rotation.z = 0.52
 
 func join_pvp(id: int) -> void:
 	if int(network.members.get(id,{}).get("car",-1)) >= 0 or bus_riders.has(id) or world.vehicle_entries.has(id) or world.life.elevator_rider_position(id) != null:
@@ -1541,7 +1628,7 @@ func sync_stand_walls(states: Array) -> void:
 		world.add_child(wall)
 		wall.position = state.at
 		wall.rotation.y = float(state.yaw)
-		world.box(wall,Vector3(0,1.4,0),Vector3(6,2.8,0.3),Color("91cddd"),true)
+		build_stand_wall_visual(wall)
 		remote_stand_walls[state.id] = wall
 	for id in remote_stand_walls.keys():
 		if not present.has(id):
