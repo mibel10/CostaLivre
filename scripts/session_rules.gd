@@ -1400,9 +1400,12 @@ func show_stand_effect(data: Dictionary) -> void:
 		if selected == 3:
 			effect.set_meta("health",75.0)
 			surface.get_child(0).set_meta("stand_wall",effect)
+		var effect_ref: WeakRef = weakref(effect)
 		get_tree().create_timer(6.0 if selected == 3 else (4.0 if selected == 2 else 0.5)).timeout.connect(func():
-			stand_objects.erase(effect)
-			if is_instance_valid(effect): effect.queue_free())
+			var expired_effect := effect_ref.get_ref() as Node3D
+			if expired_effect == null: return
+			stand_objects.erase(expired_effect)
+			expired_effect.queue_free())
 
 func join_pvp(id: int) -> void:
 	if int(network.members.get(id,{}).get("car",-1)) >= 0 or bus_riders.has(id) or world.vehicle_entries.has(id) or world.life.elevator_rider_position(id) != null:
