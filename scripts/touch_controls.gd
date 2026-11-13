@@ -16,7 +16,7 @@ var button_sizes := {}
 var saved_button_sizes := {}
 var selected_button := "shoot"
 var saved_button_scale := 1.0
-const CONTROLS := ["stand","pause","map","shoot","aim","interact","activity","jump","sprint","jobs","weapon","reload","roll","crouch","reset","flip","stick"]
+const CONTROLS := ["phone","stand","pause","map","shoot","aim","interact","activity","jump","sprint","jobs","weapon","reload","roll","crouch","reset","flip","stick"]
 var edit_message := ""
 var visible_actions: Array[String] = []
 var visibility_clock := 0.0
@@ -47,6 +47,8 @@ func context() -> String:
 		return "mission_offer"
 	if world.cutscene.active:
 		return "cutscene"
+	if world.hud.phone_panel.visible:
+		return "phone"
 	if world.activities.bank.local_hacking():
 		return "hack"
 	if world.network!=null and world.network.active() and world.network.rules.local_mission_hacking():
@@ -61,10 +63,12 @@ func base_buttons() -> Array:
 		return []
 	if state == "death":
 		return [[Rect2(510,570,260,70),"RECOMEÇAR","restart"]]
+	if state == "phone":
+		return [[Rect2(735,245,150,55),"CELULAR","phone"]]
 	if state != "":
 		return [] # Native pause/menu controls use Android touch-to-mouse input.
-	var rows := [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(735,180,150,55),"CELULAR","phone"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
-	rows.append([Rect2(900,180,160,55),"STAND","stand"])
+	var rows := [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(735,245,150,55),"CELULAR","phone"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
+	rows.append([Rect2(900,245,160,55),"STAND","stand"])
 	rows.append([Rect2(1085,320,165,80),"DESVIRAR","flip"])
 	return rows if editing else rows.filter(func(entry): return entry[2] in visible_actions)
 
@@ -273,7 +277,7 @@ func buttons() -> Array:
 	for entry in rows:
 		var at: Vector2 = entry[0].get_center()
 		var r: float = minf(entry[0].size.x,entry[0].size.y)/2
-		if context() == "":
+		if context() in ["", "phone"]:
 			r = control_radius(entry[2])
 			at = positions.get(entry[2],at/Vector2(1280,720))*Vector2(1280,720)
 		entry[0] = Rect2(at-Vector2.ONE*r,Vector2.ONE*r*2)
@@ -400,7 +404,9 @@ func _draw() -> void:
 		else:
 			var icon_name := "previous" if name == "pause" and context() != "" else name
 			var texture: Texture2D = icons.get(icon_name)
-			if texture == null:
+			if texture == null and name in ["phone", "stand"]:
+				draw_control_icon(name,at,r)
+			elif texture == null:
 				draw_string(font,at+Vector2(-r*0.65,6),str(entry[1]).substr(0,7),HORIZONTAL_ALIGNMENT_LEFT,r*1.4,14,Color.WHITE)
 			if texture != null:
 				draw_texture_rect(texture,Rect2(at-Vector2.ONE*r*0.53,Vector2.ONE*r*1.06),false)
@@ -411,6 +417,25 @@ func _draw() -> void:
 		for entry in [[Rect2(440,15,70,55),"A−"],[Rect2(530,15,70,55),"A+"],[Rect2(650,15,170,55),"SALVAR"],[Rect2(835,15,180,55),"RESTAURAR"],[Rect2(1030,15,180,55),"CANCELAR"]]:
 			draw_rect(entry[0],Color(0.18,0.32,0.4))
 			draw_string(font,entry[0].position+Vector2(12,35),entry[1],HORIZONTAL_ALIGNMENT_LEFT,-1,17,Color.WHITE)
+
+func draw_control_icon(name: String, at: Vector2, radius: float) -> void:
+	var color := Color("edf1ed")
+	var icon_scale := radius / 40.0
+	if name == "phone":
+		var body := Rect2(at + Vector2(-11,-19)*icon_scale,Vector2(22,38)*icon_scale)
+		draw_rect(body,color,false,2.5*icon_scale)
+		draw_line(at+Vector2(-5,-13)*icon_scale,at+Vector2(5,-13)*icon_scale,color,1.8*icon_scale)
+		draw_line(at+Vector2(-5,13)*icon_scale,at+Vector2(5,13)*icon_scale,color,1.8*icon_scale)
+		draw_circle(at+Vector2(0,8)*icon_scale,1.5*icon_scale,color)
+	else:
+		draw_circle(at+Vector2(0,-14)*icon_scale,5*icon_scale,color)
+		draw_line(at+Vector2(0,-8)*icon_scale,at+Vector2(0,10)*icon_scale,color,3*icon_scale)
+		draw_line(at+Vector2(-1,-3)*icon_scale,at+Vector2(-10,5)*icon_scale,color,3*icon_scale)
+		draw_line(at+Vector2(1,-3)*icon_scale,at+Vector2(10,5)*icon_scale,color,3*icon_scale)
+		draw_line(at+Vector2(0,9)*icon_scale,at+Vector2(-8,18)*icon_scale,color,3*icon_scale)
+		draw_line(at+Vector2(0,9)*icon_scale,at+Vector2(8,18)*icon_scale,color,3*icon_scale)
+		draw_line(at+Vector2(-19,-7)*icon_scale,at+Vector2(-14,-12)*icon_scale,Color("ffd18a"),2*icon_scale)
+		draw_line(at+Vector2(19,-7)*icon_scale,at+Vector2(14,-12)*icon_scale,Color("ffd18a"),2*icon_scale)
 
 func _exit_tree() -> void:
 	release_all()

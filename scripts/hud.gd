@@ -56,6 +56,7 @@ func _ready() -> void:
 	phone_button.size = Vector2(142,48)
 	phone_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	phone_button.position = Vector2(-158,-66)
+	phone_button.visible = not OS.has_feature("android")
 	phone_button.pressed.connect(toggle_phone)
 	add_child(phone_button)
 	phone_panel = PanelContainer.new()
@@ -179,7 +180,9 @@ func show_tutorial() -> void:
 
 func _process(_delta: float) -> void:
 	if world != null and is_instance_valid(phone_button):
-		phone_button.visible = not world.finished and world.activities.menu in ["", "chat"]
+		if world.finished or world.activities.menu not in ["", "chat"] or world.cutscene.active:
+			phone_panel.hide()
+		phone_button.visible = not OS.has_feature("android") and not world.finished and world.activities.menu in ["", "chat"] and not world.cutscene.active
 
 func text(value: String, at: Vector2, size: int = 16, color := Color("edf1ed")) -> void:
 	draw_string(font, at, value, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
