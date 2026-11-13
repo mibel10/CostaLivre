@@ -1170,7 +1170,10 @@ func stand_teleport(id: int, at: Vector3) -> void:
 	var clearance := PhysicsShapeQueryParameters3D.new()
 	clearance.shape = capsule
 	clearance.transform.origin = at + Vector3.UP*0.9
-	clearance.collision_mask = 1
+	clearance.collision_mask = 7
+	var actor: Node3D = world.player if id == local_id() else network.avatars.get(id, {}).get("node")
+	if actor != null:
+		clearance.exclude = [actor.get_rid()]
 	if not world.get_world_3d().direct_space_state.intersect_shape(clearance,1).is_empty(): return
 	var origin: Vector3 = position_of(id) if network.active() else world.player.position
 	if not stand_clear(origin,at): return
