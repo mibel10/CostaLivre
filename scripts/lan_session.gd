@@ -542,7 +542,19 @@ func peer_left(id: int) -> void:
 	members.erase(id)
 	last_state_at.erase(id)
 	chat_last_sent.erase(id)
+	emote_last_sent.erase(id)
+	vehicle_grants.erase(id)
+	world.vehicle_entries.erase(id)
+	world.vehicle_falls.erase(id)
 	rules.sheets.erase(id)
+	rules.mission_invites.erase(id)
+	rules.stand_history.erase(id)
+	if rules.mission_hacking_peer == id:
+		rules.mission_hacking_peer = 0
+	rules.pvp_queue.erase(id)
+	rules.pvp_saved.erase(id)
+	if rules.pvp.has("teams"):
+		rules.pvp.teams.erase(id)
 	if multiplayer.is_server():
 		rules.refresh_wanted_heat()
 	rules.bus_riders.erase(id)
