@@ -269,6 +269,8 @@ func _notification(what: int) -> void:
 			activities.bank.handle_input(back)
 		elif activities.menu in ["pause","map"]:
 			pause_menu.resume()
+		elif activities.menu == "network":
+			network.close_menu()
 		elif activities.menu not in ["mode","campaign_complete"]:
 			activities.set_menu("pause" if activities.menu == "" else "")
 	if what == NOTIFICATION_APPLICATION_PAUSED and activities.menu == "" and not finished:

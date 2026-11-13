@@ -222,6 +222,9 @@ func pointer_select(point: Vector2) -> bool:
 	return true
 
 func handle_input(event: InputEvent) -> bool:
+	if menu == "network" and event.is_action_pressed("pause"):
+		world.network.close_menu()
+		return true
 	if event is InputEventMouseButton and event.device == InputEvent.DEVICE_ID_EMULATION:
 		var touch_ui: bool = menu in world.hud.CHOICE_MENUS or bank.local_hacking()
 		if world.network != null and world.network.active():
@@ -1343,9 +1346,13 @@ func show_passenger_boarding(start: Vector3, car_id: int) -> void:
 	actor.add_child(model)
 	var side := 1.0 if car.to_local(start).x >= 0 else -1.0
 	var tween := actor.create_tween()
+	var car_ref: WeakRef = weakref(car)
 	tween.tween_method(func(elapsed: float):
-		if is_instance_valid(car) and is_instance_valid(model):
-			model.pose_vehicle_entry(actor, car, side, elapsed)
+		var current_car: Node3D = car_ref.get_ref()
+		if current_car == null:
+			actor.queue_free()
+		elif is_instance_valid(model):
+			model.pose_vehicle_entry(actor, current_car, side, elapsed)
 	, 0.0, 2.0, 2.0)
 	tween.tween_callback(actor.queue_free)
 

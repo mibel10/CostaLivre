@@ -21,6 +21,42 @@ func run() -> void:
 	world.pause_menu.show_campaign_complete()
 	assert(ui.pages.ending.is_visible_in_tree() and not ui.pause_sidebar.is_visible_in_tree())
 	world.start_mode("sandbox")
+	world.activities.set_menu("")
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_Q
+	key.pressed = false
+	world.activities.weapon = 1
+	world.extra.handle_input(key)
+	assert(world.activities.weapon == 1 and not world.extra.wheel, "An unmatched Q release does not change weapons")
+	world.activities.menu = "jobs"
+	key.pressed = true
+	world.extra.handle_input(key)
+	assert(not world.extra.wheel, "Q does not open a weapon wheel through a menu")
+	world.activities.menu = ""
+	world.extra.handle_input(key)
+	assert(world.extra.wheel and Engine.time_scale < 1)
+	world.extra.handle_input(action("pause"))
+	assert(not world.extra.wheel and Engine.time_scale == 1, "Escape cancels the wheel and restores game speed")
+	world.hud.phone_app("emote_wheel")
+	var emote_click := InputEventMouseButton.new()
+	emote_click.button_index = MOUSE_BUTTON_LEFT
+	emote_click.pressed = true
+	emote_click.position = Vector2(640,227) * root.get_visible_rect().size / Vector2(1280,720)
+	Input.action_press("shoot")
+	world.extra.handle_input(emote_click)
+	assert(not world.extra.emote_wheel and world.player.model.emote_lock > 0, "A phone-opened emote wheel accepts a mouse click")
+	assert(not Input.is_action_pressed("shoot"), "Choosing an emote does not leave the fire button held")
+	world.hud.phone_app("emote_wheel")
+	world.extra.handle_input(action("pause"))
+	assert(not world.extra.emote_wheel and Engine.time_scale == 1)
+	var boarding_car: Node3D = world.spawn_car(Vector3(500,50,500), Color.WHITE)
+	world.activities.show_passenger_boarding(boarding_car.position + Vector3.RIGHT * 3, boarding_car.net_id)
+	var boarding_actor: Node3D = world.get_child(world.get_child_count() - 1)
+	world.cars.erase(boarding_car)
+	boarding_car.queue_free()
+	for frame in 4:
+		await process_frame
+	assert(not is_instance_valid(boarding_actor), "Removing a vehicle cancels its passenger boarding visual")
 	await physics_frame
 	var original_position: Vector3 = world.player.position
 	world.player.position = Vector3(500, 0.3, 0)

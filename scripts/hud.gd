@@ -98,6 +98,9 @@ func _ready() -> void:
 	phone_messages.add_child(back)
 
 func toggle_phone() -> void:
+	if world.extra != null and (world.extra.wheel or world.extra.emote_wheel):
+		world.extra.wheel = false
+		world.extra.finish_emote_wheel()
 	phone_panel.visible = not phone_panel.visible
 	world.restore_pointer()
 
@@ -395,7 +398,7 @@ func draw_emote_wheel() -> void:
 		draw_string(font, center + Vector2(-62, 5), names[i], HORIZONTAL_ALIGNMENT_CENTER, 124, 15, ink)
 	draw_circle(Vector2(640,360), 55, Color("203e4b"))
 	draw_string(font, Vector2(580, 355), "EMOTE", HORIZONTAL_ALIGNMENT_CENTER, 120, 15, gold)
-	var hint := "Toque num emote para dançar" if OS.has_feature("android") else "Solte B para dançar · mova o mouse para escolher"
+	var hint := "Toque num emote para usar · toque fora para cancelar" if OS.has_feature("android") else "Solte B ou clique para usar · Esc / botao direito cancela"
 	draw_string(font, Vector2(360, 600), hint, HORIZONTAL_ALIGNMENT_CENTER, 560, 17, gold)
 
 func backdrop() -> void:

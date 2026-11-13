@@ -112,10 +112,24 @@ func play_emote_music(name: String) -> void:
 	if name == "torture_dance" and is_instance_valid(emote_music) and not emote_music.playing:
 		emote_music.play()
 
+func finish_emote_wheel(index := -1) -> void:
+	emote_wheel = false
+	Engine.time_scale = 1
+	if index >= 0 and index < world.network.EMOTES.size():
+		world.network.send_emote(world.network.EMOTES[index])
+	world.restore_pointer()
+	world.hud.queue_redraw()
+
 func handle_input(event: InputEvent) -> bool:
 	if world.finished:
 		return false
-	if event is InputEventKey and event.physical_keycode == KEY_Q and not event.echo and not emote_wheel and not world.get_tree().paused and not world.activities.bank.local_hacking() and not (world.network!=null and world.network.active() and world.network.rules.local_mission_hacking()):
+	if (wheel or emote_wheel) and event.is_action_pressed("pause"):
+		wheel = false
+		finish_emote_wheel()
+		return true
+	if event is InputEventKey and event.physical_keycode == KEY_Q and not event.echo and not emote_wheel:
+		if not wheel and (not event.pressed or world.activities.menu != "" or world.hud.phone_panel.visible or world.get_tree().paused or world.activities.bank.local_hacking() or (world.network != null and world.network.active() and world.network.rules.local_mission_hacking())):
+			return false
 		wheel = event.pressed
 		if wheel:
 			selection = world.activities.weapon
@@ -123,8 +137,9 @@ func handle_input(event: InputEvent) -> bool:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			world.get_viewport().warp_mouse(world.get_viewport().get_visible_rect().size / 2)
 		else:
-			world.activities.weapon = selection
-			world.activities.reload_time = 0
+			if world.activities.menu == "" and not world.get_tree().paused:
+				world.activities.weapon = selection
+				world.activities.reload_time = 0
 			Engine.time_scale = 1
 			world.restore_pointer()
 		world.hud.queue_redraw()
@@ -139,11 +154,7 @@ func handle_input(event: InputEvent) -> bool:
 			world.hud.queue_redraw()
 			return true
 		if not event.pressed and emote_wheel:
-			emote_wheel = false
-			world.network.send_emote(world.network.EMOTES[emote_selection])
-			Engine.time_scale = 1
-			world.restore_pointer()
-			world.hud.queue_redraw()
+			finish_emote_wheel(emote_selection)
 			return true
 	if wheel:
 		if event is InputEventMouseMotion:
@@ -155,6 +166,11 @@ func handle_input(event: InputEvent) -> bool:
 				selection = 0
 		return true
 	if emote_wheel:
+		if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
+			Input.action_release("shoot" if event.button_index == MOUSE_BUTTON_LEFT else "aim")
+			var offset: Vector2 = event.position / world.get_viewport().get_visible_rect().size * Vector2(1280,720) - Vector2(640,360)
+			finish_emote_wheel(wheel_emote(offset) if event.button_index == MOUSE_BUTTON_LEFT and offset.length() >= 66.0 and offset.length() <= 205.0 else -1)
+			return true
 		if event is InputEventMouseMotion:
 			var cursor: Vector2 = event.position / world.get_viewport().get_visible_rect().size * Vector2(1280, 720) - Vector2(640, 360)
 			if cursor.length() >= 30.0:

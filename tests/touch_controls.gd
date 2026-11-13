@@ -70,6 +70,11 @@ func run() -> void:
 	tap.position = Vector2(734, 266) * root.get_visible_rect().size / Vector2(1280, 720)
 	touch._input(tap)
 	assert(world.activities.weapon == 1 and not world.extra.wheel, "Tapping the pistol equips it and closes the wheel")
+	world.hud.phone_app("emote_wheel")
+	Engine.time_scale = 0.2
+	tap.position = Vector2(640,227) * root.get_visible_rect().size / Vector2(1280,720)
+	touch._input(tap)
+	assert(not world.extra.emote_wheel and Engine.time_scale == 1, "Touch selection also restores normal speed")
 	world.activities.clips[1] = 1
 	world.activities.reserves[1] = 12
 	assert("reload" in touch.gameplay_actions(), "Reload appears with a pistol and spare ammo")

@@ -4,6 +4,17 @@ func _initialize() -> void:
 	create_timer(5).timeout.connect(func(): quit(1))
 	var session := load("res://scripts/lan_session.gd")
 	var router := load("res://scripts/internet_access.gd")
+	var connection: Node = router.new()
+	root.add_child(connection)
+	connection.start_online(true)
+	assert(connection.resolver != IP.RESOLVER_INVALID_ID and connection.control == null, "DNS resolution is queued")
+	connection.stop()
+	assert(connection.resolver == IP.RESOLVER_INVALID_ID and connection.deadline == 0, "Cancellation clears DNS and timeout")
+	connection.registered_remote = true
+	connection.relay_port = 30000
+	connection._command("connect-relay 30000")
+	assert(connection.relay_port == 30000 and connection.udp == null, "Duplicate relay notifications leave an established client alone")
+	connection.queue_free()
 	var relay_invite := "CL2-" + "ZRxfX4SxDgt1Vn3v5MqbX|AB123".to_utf8_buffer().hex_encode()
 	var relay: Dictionary = session.parse_target(relay_invite.to_lower(), "")
 	assert(relay.relay == "ZRxfX4SxDgt1Vn3v5MqbX" and relay.code == "AB123")

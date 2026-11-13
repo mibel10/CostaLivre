@@ -38,6 +38,24 @@ func run() -> void:
 	client=load("res://main.tscn").instantiate()
 	client.name="World"
 	client_view.add_child(client)
+	host.network.open_menu()
+	host.network.rules.last_actions[999] = 123
+	host.network.close_menu()
+	assert(host.network.rules.last_actions.has(999), "Closing an idle menu preserves offline gameplay state")
+	host.network.rules.last_actions.erase(999)
+	host.network.open_menu()
+	host.network.host_internet()
+	host.network.close_menu()
+	assert(host.activities.menu == "mode" and not host.network.active())
+	assert(host.network.internet.resolver == IP.RESOLVER_INVALID_ID and host.network.internet.control == null, "Closing the menu cancels room creation")
+	host.network.open_menu()
+	host.network.connect_target({"relay":"cancelled-room","code":"AB123"})
+	var back := InputEventAction.new()
+	back.action = "pause"
+	back.pressed = true
+	host._unhandled_input(back)
+	assert(host.activities.menu == "mode" and host.network.relay_target == "", "Closing the menu cancels joining too")
+	assert(not host.network.panel.visible)
 	assert(host.station.fleet.size()==27)
 	var initial_cars: int=host.cars.size()
 	if "--relay" in OS.get_cmdline_user_args():
@@ -46,6 +64,10 @@ func run() -> void:
 		client.network.address_field.text = host.network.invitation.text
 	else:
 		host.network.host()
+		host_api.connection_failed.emit()
+		host.network.host()
+		await process_frame
+		assert(host.network.active(), "A delayed failure from an old connection cannot close a new room")
 		client.network.address_field.text=client.network.make_internet_code("127.0.0.1",28960,host.network.code)
 	client.network.join_room()
 	await wait_for(func(): return client.network.joined and host.network.members.size()==2, 30.0)

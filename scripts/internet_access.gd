@@ -22,6 +22,7 @@ var retry_at := 0
 var relay_port := 0
 var host_peer: ENetMultiplayerPeer
 var handshakes: Array[Dictionary] = []
+var resolver := IP.RESOLVER_INVALID_ID
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -29,16 +30,15 @@ func _ready() -> void:
 func start_online(as_host: bool) -> void:
 	stop()
 	hosting = as_host
-	address = IP.resolve_hostname(SERVER, IP.TYPE_IPV4)
-	if not address.is_valid_ip_address():
-		_fail("O servico de salas nao respondeu. Tente novamente.")
-		return
-	control = StreamPeerTCP.new()
 	deadline = Time.get_ticks_msec() + 12000
-	if control.connect_to_host(address, CONTROL_PORT) != OK:
-		_fail("Nao foi possivel acessar o servico de salas.")
+	resolver = IP.resolve_hostname_queue_item(SERVER, IP.TYPE_IPV4)
+	if resolver == IP.RESOLVER_INVALID_ID:
+		_fail("O servico de salas nao respondeu. Tente novamente.")
 
 func stop() -> void:
+	if resolver != IP.RESOLVER_INVALID_ID:
+		IP.erase_resolve_item(resolver)
+		resolver = IP.RESOLVER_INVALID_ID
 	if control != null:
 		control.disconnect_from_host()
 	if udp != null:
@@ -82,6 +82,8 @@ func _command(line: String) -> void:
 		"set-oid": open_id = parts[1]
 		"set-pid": private_id = parts[1]
 		"connect-relay":
+			if not hosting and registered_remote and udp == null:
+				return # A repeated notification must not replace an established client.
 			if not registered_remote or not parts[1].is_valid_int() or parts[1].to_int() < 1 or parts[1].to_int() > 65535:
 				_fail("Sala nao encontrada ou relay indisponivel. Confira o convite e tente novamente.")
 				return
@@ -93,16 +95,30 @@ func _command(line: String) -> void:
 				retry_at = 0
 
 func _process(_delta: float) -> void:
+	var now := Time.get_ticks_msec()
+	if deadline > 0 and now > deadline:
+		_fail("O servico de salas demorou para responder. Confira sua internet e tente novamente.")
+		return
+	if resolver != IP.RESOLVER_INVALID_ID:
+		var result := IP.get_resolve_item_status(resolver)
+		if result == IP.RESOLVER_STATUS_WAITING:
+			return
+		address = IP.get_resolve_item_address(resolver) if result == IP.RESOLVER_STATUS_DONE else ""
+		IP.erase_resolve_item(resolver)
+		resolver = IP.RESOLVER_INVALID_ID
+		if not address.is_valid_ip_address():
+			_fail("O servico de salas nao respondeu. Tente novamente.")
+			return
+		control = StreamPeerTCP.new()
+		if control.connect_to_host(address, CONTROL_PORT) != OK:
+			_fail("Nao foi possivel acessar o servico de salas.")
+			return
 	if control == null:
 		return
-	var now := Time.get_ticks_msec()
 	control.poll()
 	var state := control.get_status()
 	if state in [StreamPeerTCP.STATUS_ERROR, StreamPeerTCP.STATUS_NONE]:
 		_fail("Conexao com o servico de salas encerrada. Tente criar ou entrar novamente.")
-		return
-	if deadline > 0 and now > deadline:
-		_fail("O servico de salas demorou para responder. Confira sua internet e tente novamente.")
 		return
 	if state != StreamPeerTCP.STATUS_CONNECTED:
 		return

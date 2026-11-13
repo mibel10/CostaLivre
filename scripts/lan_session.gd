@@ -68,7 +68,9 @@ func _ready() -> void:
 	multiplayer.auth_timeout=8
 	multiplayer.peer_authenticating.connect(authenticating)
 	# Closing ENet from inside its polling callbacks can invalidate the active poll.
-	multiplayer.peer_authentication_failed.connect(authentication_failed, CONNECT_DEFERRED)
+	multiplayer.peer_authentication_failed.connect(func(id):
+		if peer != null:
+			authentication_failed.call_deferred(id, peer))
 	var layer := CanvasLayer.new()
 	layer.layer = 45
 	add_child(layer)
@@ -157,6 +159,8 @@ func _ready() -> void:
 	address_field.max_length=272
 	address_field.placeholder_text="Cole aqui o convite recebido"
 	online.add_child(address_field)
+	address_field.text_submitted.connect(func(_text): join_room())
+	ui_button(online,"COLAR CONVITE",paste_invite)
 	add_help(online,"A conexao e preparada automaticamente. Mantenha o jogo aberto enquanto seus amigos entram.")
 	ui_button(online,"ENTRAR COM ESTE CODIGO",join_room)
 	var advanced := CheckButton.new()
@@ -181,7 +185,7 @@ func _ready() -> void:
 	var footer := HBoxContainer.new()
 	column.add_child(footer)
 	ui_button(footer,"DESCONECTAR",func(): disconnect_room(); status.text="Desconectado.")
-	ui_button(footer,"VOLTAR AO JOGO",close_menu)
+	ui_button(footer,"VOLTAR",close_menu)
 	internet=preload("res://scripts/internet_access.gd").new()
 	add_child(internet)
 	internet.registered.connect(internet_registered)
@@ -227,8 +231,12 @@ func _ready() -> void:
 	multiplayer.peer_connected.connect(peer_joined)
 	multiplayer.peer_disconnected.connect(peer_left)
 	multiplayer.connected_to_server.connect(connected)
-	multiplayer.connection_failed.connect(connection_failed, CONNECT_DEFERRED)
-	multiplayer.server_disconnected.connect(server_left, CONNECT_DEFERRED)
+	multiplayer.connection_failed.connect(func():
+		if peer != null:
+			connection_failed.call_deferred(peer))
+	multiplayer.server_disconnected.connect(func():
+		if peer != null:
+			server_left.call_deferred(peer))
 	var result := discovery.bind(0)
 	if result == OK:
 		discovery.set_broadcast_enabled(true)
@@ -266,6 +274,10 @@ func answer_mission_offer(accept: bool) -> void:
 		hide_mission_offer()
 
 func _input(event: InputEvent) -> void:
+	if world.activities.menu == "network" and event.is_action_pressed("pause"):
+		close_menu()
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		if world.activities.menu == "" and event.physical_keycode in [KEY_G,KEY_F6,KEY_F7,KEY_F8,KEY_F9]:
 			send_emote({KEY_G:"wave",KEY_F6:"griddy",KEY_F7:"take_l",KEY_F8:"dance",KEY_F9:"torture_dance"}[event.physical_keycode])
@@ -333,7 +345,7 @@ func send_emote(name: String) -> void:
 		return
 	var local_id := multiplayer.get_unique_id() if active() else 1
 	var now := Time.get_ticks_msec()
-	if now-int(emote_last_sent.get(local_id,0))<800:
+	if emote_last_sent.has(local_id) and now-int(emote_last_sent[local_id])<800:
 		return
 	emote_last_sent[local_id]=now
 	world.extra.play_emote_music(name)
@@ -361,14 +373,24 @@ func request_emote(name: String) -> void:
 		return
 	var id := multiplayer.get_remote_sender_id()
 	var now := Time.get_ticks_msec()
-	if not members.has(id) or now-int(emote_last_sent.get(id,0))<800:
+	if not members.has(id) or (emote_last_sent.has(id) and now-int(emote_last_sent[id])<800):
 		return
 	emote_last_sent[id]=now
 	apply_emote(id,name)
 
 func close_menu() -> void:
+	if not active() and (peer != null or internet.control != null or internet.resolver != IP.RESOLVER_INVALID_ID):
+		disconnect_room()
 	panel.hide()
 	world.activities.set_menu("" if active() else return_menu)
+
+func paste_invite() -> void:
+	var pasted := DisplayServer.clipboard_get().strip_edges()
+	if parse_target(pasted,field.text.strip_edges().to_upper()).is_empty():
+		status.text = "Nenhum convite valido para colar. Copie o convite enviado pelo anfitriao."
+		return
+	address_field.text = pasted
+	status.text = "Convite colado. Toque em ENTRAR COM ESTE CODIGO."
 
 func host(listening_port := PORT, keep_internet := false) -> void:
 	if world.restart_after_admin():
@@ -487,7 +509,6 @@ func host_internet() -> void:
 	if world.restart_after_admin():
 		return
 	disconnect_room()
-	return_menu=""
 	tabs.current_tab=1
 	world.activities.set_menu("network")
 	panel.show()
@@ -503,6 +524,7 @@ func internet_registered(open_id: String, local_port: int) -> void:
 		internet.stop()
 		return
 	online_host = true
+	return_menu = ""
 	invitation.text = "CL2-" + (open_id + "|" + code).to_utf8_buffer().hex_encode()
 	world.activities.set_menu("network")
 	panel.show()
@@ -584,8 +606,8 @@ func accepted(at: Vector3) -> void:
 	panel.hide()
 	world.notify("Conectado a sala " + code)
 
-func connection_failed() -> void:
-	if peer == null:
+func connection_failed(expected_peer: ENetMultiplayerPeer = null) -> void:
+	if peer == null or (expected_peer != null and expected_peer != peer):
 		return
 	var via_relay := not relay_target.is_empty()
 	disconnect_room()
@@ -593,8 +615,8 @@ func connection_failed() -> void:
 	world.activities.set_menu("network")
 	panel.show()
 
-func server_left() -> void:
-	if peer == null:
+func server_left(expected_peer: ENetMultiplayerPeer = null) -> void:
+	if peer == null or (expected_peer != null and expected_peer != peer):
 		return
 	var was_joined := joined
 	disconnect_room()
@@ -848,6 +870,10 @@ func accept_state(id: int, state: Dictionary) -> void:
 		members[id]["emote_seq"] = emote_seq
 
 func _process(delta: float) -> void:
+	if panel.visible and world.activities.menu != "network":
+		panel.hide()
+		if not active() and (peer != null or internet.control != null or internet.resolver != IP.RESOLVER_INVALID_ID):
+			disconnect_room()
 	if chat_panel.visible and (not active() or world.activities.menu != "chat"):
 		close_chat()
 	chat_toggle.visible = active() and world.activities.menu in ["", "chat"]
@@ -1301,9 +1327,11 @@ func authenticate(id: int,packet: PackedByteArray) -> void:
 		return
 	multiplayer.disconnect_peer.call_deferred(id)
 	if not multiplayer.is_server():
-		authentication_failed.call_deferred(id)
+		authentication_failed.call_deferred(id, peer)
 
-func authentication_failed(_id: int) -> void:
+func authentication_failed(_id: int, expected_peer: ENetMultiplayerPeer = null) -> void:
+	if expected_peer != null and expected_peer != peer:
+		return
 	if peer != null and (peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED or not multiplayer.is_server()):
 		var reason := refusal_reason if not refusal_reason.is_empty() else "Conexao recusada. Confira a versao e o codigo da sala."
 		disconnect_room()

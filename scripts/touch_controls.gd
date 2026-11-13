@@ -175,15 +175,15 @@ func _input(event: InputEvent) -> void:
 					world.extra.wheel = false
 			else:
 				world.extra.wheel = false
+			if not world.extra.wheel:
+				Engine.time_scale = 1
+				world.restore_pointer()
 			world.hud.queue_redraw()
 			get_viewport().set_input_as_handled()
 			return
 		if context() == "emote_wheel":
 			var offset: Vector2 = event.position / get_viewport_rect().size * Vector2(1280,720) - Vector2(640,360)
-			if offset.length() >= 66.0 and offset.length() <= 205.0:
-				world.network.send_emote(world.network.EMOTES[world.extra.wheel_emote(offset)])
-			world.extra.emote_wheel = false
-			world.hud.queue_redraw()
+			world.extra.finish_emote_wheel(world.extra.wheel_emote(offset) if offset.length() >= 66.0 and offset.length() <= 205.0 else -1)
 			get_viewport().set_input_as_handled()
 			return
 		for entry in buttons():
@@ -247,10 +247,11 @@ func _process(delta: float) -> void:
 	var state := context()
 	if state != "weapon_wheel" and world.extra.wheel:
 		world.extra.wheel = false
+		Engine.time_scale = 1
+		world.restore_pointer()
 		world.hud.queue_redraw()
 	if state != "emote_wheel" and world.extra.emote_wheel:
-		world.extra.emote_wheel = false
-		world.hud.queue_redraw()
+		world.extra.finish_emote_wheel()
 	if state != last_context:
 		release_all()
 		last_context = state
