@@ -4,6 +4,11 @@ func _initialize() -> void:
 	create_timer(5).timeout.connect(func(): quit(1))
 	var session := load("res://scripts/lan_session.gd")
 	var router := load("res://scripts/internet_access.gd")
+	var relay_invite := "CL2-" + "ZRxfX4SxDgt1Vn3v5MqbX|AB123".to_utf8_buffer().hex_encode()
+	var relay: Dictionary = session.parse_target(relay_invite.to_lower(), "")
+	assert(relay.relay == "ZRxfX4SxDgt1Vn3v5MqbX" and relay.code == "AB123")
+	for invalid in ["CL2-", "CL2-xyz", "CL2-" + "id\nconnect-relay other|AB123".to_utf8_buffer().hex_encode(), "CL2-" + "id|AB!23".to_utf8_buffer().hex_encode()]:
+		assert(session.parse_target(invalid, "").is_empty())
 	for i in 128:
 		var ip := "%d.%d.%d.%d" % [1+i,i%255,(i*7)%256,(i*13)%256]
 		var encoded: String=session.make_internet_code(ip,28960+i,"AB123")

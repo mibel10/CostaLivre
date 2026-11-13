@@ -1,94 +1,175 @@
 extends Node
 
-signal prepared(address: String, mapped: bool, message: String)
-var worker: Thread
-var router: UPNP
-var stopping := false
-var cleaning := false
-var renew_clock := 0.0
-const PORT := 28960
+signal registered(open_id: String, local_port: int)
+signal relayed(address: String, port: int, local_port: int)
+signal failed(message: String)
+
+const SERVER := "foxssake.studio"
+const CONTROL_PORT := 8890
+const REGISTRATION_PORT := 8809
+var control: StreamPeerTCP
+var udp: PacketPeerUDP
+var address := ""
+var open_id := ""
+var private_id := ""
+var local_port := 0
+var hosting := false
+var registered_remote := false
+var sent_registration := false
+var buffer := ""
+var deadline := 0
+var retry_at := 0
+var relay_port := 0
+var host_peer: ENetMultiplayerPeer
+var handshakes: Array[Dictionary] = []
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
-func start() -> void:
-	if worker != null or router != null:
-		prepared.emit("",false,"Aguarde o encerramento da conexao anterior.")
+func start_online(as_host: bool) -> void:
+	stop()
+	hosting = as_host
+	address = IP.resolve_hostname(SERVER, IP.TYPE_IPV4)
+	if not address.is_valid_ip_address():
+		_fail("O servico de salas nao respondeu. Tente novamente.")
 		return
-	stopping=false
-	cleaning=false
-	worker=Thread.new()
-	var error := worker.start(_setup)
-	if error!=OK:
-		worker=null
-		prepared.emit("",false,"Nao foi possivel preparar a conexao automatica.")
-
-func _setup() -> Dictionary:
-	var device := UPNP.new()
-	if device.discover(4000,2,"InternetGatewayDevice")!=UPNP.UPNP_RESULT_SUCCESS:
-		return {"message":"Abertura automatica indisponivel. Encaminhe UDP 28960 no roteador do anfitriao."}
-	var gateway := device.get_gateway()
-	if gateway==null or not gateway.is_valid_gateway():
-		return {"message":"Roteador sem gateway UPnP compativel. Configure UDP 28960 manualmente."}
-	var address := device.query_external_address()
-	if not public_ipv4(address):
-		return {"message":"O roteador informou IP privado/CGNAT. Use outro anfitriao ou uma conexao com acesso externo."}
-	var result := device.add_port_mapping(PORT,PORT,"CostaLivre","UDP",3600)
-	if result!=UPNP.UPNP_RESULT_SUCCESS:
-		return {"address":address,"message":"Porta nao confirmada. Encaminhe UDP 28960 no roteador do anfitriao."}
-	return {"router":device,"address":address,"message":"Porta solicitada ao roteador. Compartilhe o convite para conectar."}
+	control = StreamPeerTCP.new()
+	deadline = Time.get_ticks_msec() + 12000
+	if control.connect_to_host(address, CONTROL_PORT) != OK:
+		_fail("Nao foi possivel acessar o servico de salas.")
 
 func stop() -> void:
-	stopping=true
-	if worker==null and router!=null:
-		cleaning=true
-		worker=Thread.new()
-		if worker.start(_remove)!=OK:
-			worker=null
+	if control != null:
+		control.disconnect_from_host()
+	if udp != null:
+		udp.close()
+	control = null
+	udp = null
+	host_peer = null
+	open_id = ""
+	private_id = ""
+	buffer = ""
+	local_port = 0
+	relay_port = 0
+	deadline = 0
+	retry_at = 0
+	registered_remote = false
+	sent_registration = false
+	handshakes.clear()
 
-func _remove() -> Dictionary:
-	if router!=null:
-		router.delete_port_mapping(PORT,"UDP")
-	return {}
+func request_relay(target: String) -> void:
+	if control == null or not registered_remote:
+		_fail("A conexao de internet ainda nao esta pronta.")
+		return
+	control.put_data(("connect-relay " + target + "\n").to_utf8_buffer())
+	deadline = Time.get_ticks_msec() + 15000
 
-static func public_ipv4(address: String) -> bool:
-	if not address.is_valid_ip_address() or address.contains(":"):
+func accept_relay(peer: ENetMultiplayerPeer, port: int) -> void:
+	if handshakes.size() >= 16:
+		return
+	host_peer = peer
+	handshakes.append({"port":port,"until":Time.get_ticks_msec()+8000,"next":0})
+
+func _fail(message: String) -> void:
+	stop()
+	failed.emit(message)
+
+func _command(line: String) -> void:
+	var parts := line.split(" ", false, 1)
+	if parts.size() != 2:
+		return
+	match parts[0]:
+		"set-oid": open_id = parts[1]
+		"set-pid": private_id = parts[1]
+		"connect-relay":
+			if not registered_remote or not parts[1].is_valid_int() or parts[1].to_int() < 1 or parts[1].to_int() > 65535:
+				_fail("Sala nao encontrada ou relay indisponivel. Confira o convite e tente novamente.")
+				return
+			relay_port = parts[1].to_int()
+			if hosting:
+				relayed.emit(address, relay_port, local_port)
+			else:
+				udp.set_dest_address(address, relay_port)
+				retry_at = 0
+
+func _process(_delta: float) -> void:
+	if control == null:
+		return
+	var now := Time.get_ticks_msec()
+	control.poll()
+	var state := control.get_status()
+	if state in [StreamPeerTCP.STATUS_ERROR, StreamPeerTCP.STATUS_NONE]:
+		_fail("Conexao com o servico de salas encerrada. Tente criar ou entrar novamente.")
+		return
+	if deadline > 0 and now > deadline:
+		_fail("O servico de salas demorou para responder. Confira sua internet e tente novamente.")
+		return
+	if state != StreamPeerTCP.STATUS_CONNECTED:
+		return
+	if not sent_registration:
+		sent_registration = true
+		control.set_no_delay(true)
+		control.put_data("register-host\n".to_utf8_buffer())
+	var available := control.get_available_bytes()
+	if available > 4096 or buffer.length() + available > 8192:
+		_fail("Resposta invalida do servico de salas.")
+		return
+	if available > 0:
+		buffer += control.get_utf8_string(available)
+	while buffer.contains("\n"):
+		var end := buffer.find("\n")
+		var line := buffer.substr(0, end).strip_edges()
+		buffer = buffer.substr(end + 1)
+		_command(line)
+		if control == null:
+			return
+	if not registered_remote and not open_id.is_empty() and not private_id.is_empty():
+		if udp == null:
+			udp = PacketPeerUDP.new()
+			if udp.bind(0) != OK:
+				_fail("Nao foi possivel preparar a conexao UDP.")
+				return
+			local_port = udp.get_local_port()
+			udp.set_dest_address(address, REGISTRATION_PORT)
+		if now >= retry_at:
+			udp.put_packet(private_id.to_utf8_buffer())
+			retry_at = now + 150
+		while udp.get_available_packet_count() > 0:
+			if udp.get_packet().get_string_from_utf8() == "OK":
+				registered_remote = true
+				deadline = 0
+				if hosting:
+					udp.close()
+					udp = null
+				registered.emit(open_id, local_port)
+				break
+	if not hosting and registered_remote and relay_port > 0 and udp != null:
+		if now >= retry_at:
+			udp.put_packet("$rwx".to_ascii_buffer())
+			retry_at = now + 100
+		while udp.get_available_packet_count() > 0:
+			var packet := udp.get_packet().get_string_from_ascii()
+			if packet.begins_with("$") and packet.contains("x"):
+				udp.put_packet("$rwx".to_ascii_buffer())
+				udp.close()
+				udp = null
+				deadline = 0
+				relayed.emit(address, relay_port, local_port)
+				break
+	for handshake in handshakes.duplicate():
+		if now > int(handshake.until) or host_peer == null or host_peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+			handshakes.erase(handshake)
+		elif now >= int(handshake.next):
+			host_peer.host.socket_send(address, int(handshake.port), "$rwx".to_ascii_buffer())
+			handshake.next = now + 100
+
+func _exit_tree() -> void:
+	stop()
+
+static func public_ipv4(ip: String) -> bool:
+	if not ip.is_valid_ip_address() or ip.contains(":"):
 		return false
-	var parts := address.split(".")
+	var parts := ip.split(".")
 	var a := parts[0].to_int()
 	var b := parts[1].to_int()
 	return not (a in [0,10,127] or a>=224 or (a==100 and b>=64 and b<=127) or (a==169 and b==254) or (a==172 and b>=16 and b<=31) or (a==192 and b==168))
-
-func _renew() -> Dictionary:
-	var result := router.add_port_mapping(PORT,PORT,"CostaLivre","UDP",3600)
-	return {"router":router,"address":router.query_external_address(),"message":"Porta renovada." if result==UPNP.UPNP_RESULT_SUCCESS else "Confira o encaminhamento de porta do anfitriao."}
-
-func _process(delta: float) -> void:
-	if worker==null and router!=null and not stopping:
-		renew_clock+=delta
-		if renew_clock>1800:
-			renew_clock=0
-			worker=Thread.new()
-			if worker.start(_renew)!=OK:
-				worker=null
-	if worker==null or worker.is_alive():
-		return
-	var result: Dictionary=worker.wait_to_finish()
-	worker=null
-	if cleaning:
-		router=null
-		cleaning=false
-		return
-	router=result.get("router")
-	if stopping:
-		stop()
-	else:
-		prepared.emit(result.get("address",""),router!=null,result.get("message",""))
-
-func _exit_tree() -> void:
-	if worker!=null:
-		var result: Dictionary=worker.wait_to_finish()
-		if not cleaning:
-			router=result.get("router")
-	if router!=null:
-		router.delete_port_mapping(PORT,"UDP")

@@ -40,10 +40,16 @@ func run() -> void:
 	client_view.add_child(client)
 	assert(host.station.fleet.size()==27)
 	var initial_cars: int=host.cars.size()
-	host.network.host()
-	client.network.address_field.text=client.network.make_internet_code("127.0.0.1",28960,host.network.code)
+	if "--relay" in OS.get_cmdline_user_args():
+		host.network.host_internet()
+		await wait_for(func(): return not host.network.invitation.text.is_empty(), 25.0)
+		client.network.address_field.text = host.network.invitation.text
+	else:
+		host.network.host()
+		client.network.address_field.text=client.network.make_internet_code("127.0.0.1",28960,host.network.code)
 	client.network.join_room()
-	await wait_for(func(): return client.network.joined and host.network.members.size()==2)
+	await wait_for(func(): return client.network.joined and host.network.members.size()==2, 30.0)
+	host.network.close_menu()
 	await create_timer(0.4).timeout
 	var id: int=client_api.get_unique_id()
 	host.fps_counter.refresh()
@@ -230,7 +236,7 @@ func run() -> void:
 	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.25).timeout
 	client.interact()
-	await create_timer(2.35).timeout
+	await wait_for(func(): return client.active_car == rescue_car)
 	assert(client.active_car == rescue_car)
 	rescue_car.position = client.activities.ACTION_JOBS[RESCUE_JOB].pickup+Vector3.UP*0.3
 	# Seed the host position for this test-only vehicle teleport.
@@ -279,7 +285,7 @@ func run() -> void:
 	host.network.members[id].erase("elevator_target_until")
 	await create_timer(0.25).timeout
 	client.interact()
-	await create_timer(2.35).timeout
+	await wait_for(func(): return client.active_car == purchase)
 	assert(client.active_car==purchase)
 	client.active_car.position=client.activities.GARAGE+Vector3(0,0.2,0)
 	# Seed the host position for this test-only vehicle teleport.
@@ -513,9 +519,9 @@ func run() -> void:
 	client.network.disconnect_room()
 	await wait_for(func(): return host.network.members.size()==1)
 	client.network.announced_version="old-build"
-	client.network.address_field.text=client.network.make_internet_code("127.0.0.1",28960,host.network.code)
+	client.network.address_field.text = host.network.invitation.text if "--relay" in OS.get_cmdline_user_args() else client.network.make_internet_code("127.0.0.1",28960,host.network.code)
 	client.network.join_room()
-	await create_timer(1.0).timeout
+	await wait_for(func(): return host.network.refusal_reason.contains("Versoes diferentes") and client.network.peer == null, 30.0)
 	assert(not client.network.joined and host.network.members.size()==1,"Reject incompatible builds")
 	host.network.disconnect_room()
 	client.network.disconnect_room()
@@ -535,7 +541,7 @@ func add_arena_client(label: String) -> Node:
 	var game = load("res://main.tscn").instantiate()
 	game.name = "World"
 	view.add_child(game)
-	game.network.address_field.text = game.network.make_internet_code("127.0.0.1",28960,host.network.code)
+	game.network.address_field.text = host.network.invitation.text if "--relay" in OS.get_cmdline_user_args() else game.network.make_internet_code("127.0.0.1",28960,host.network.code)
 	game.network.join_room()
-	await wait_for(func(): return game.network.joined)
+	await wait_for(func(): return game.network.joined, 30.0)
 	return game

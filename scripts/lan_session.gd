@@ -28,6 +28,8 @@ var field: LineEdit
 var address_field: LineEdit
 var invitation: LineEdit
 var internet: Node
+var relay_target := ""
+var online_host := false
 var joined := false
 var connecting_since := 0
 var room_list: ItemList
@@ -65,7 +67,8 @@ func _ready() -> void:
 	multiplayer.auth_callback=authenticate
 	multiplayer.auth_timeout=8
 	multiplayer.peer_authenticating.connect(authenticating)
-	multiplayer.peer_authentication_failed.connect(authentication_failed)
+	# Closing ENet from inside its polling callbacks can invalidate the active poll.
+	multiplayer.peer_authentication_failed.connect(authentication_failed, CONNECT_DEFERRED)
 	var layer := CanvasLayer.new()
 	layer.layer = 45
 	add_child(layer)
@@ -151,11 +154,10 @@ func _ready() -> void:
 	ui_button(online,"COPIAR MEU CODIGO",copy_invite)
 	add_help(online,"Quem entra: cole o codigo recebido abaixo.")
 	address_field=LineEdit.new()
-	address_field.max_length=240
-	address_field.placeholder_text="Cole convite ou IP publico:28960"
+	address_field.max_length=272
+	address_field.placeholder_text="Cole aqui o convite recebido"
 	online.add_child(address_field)
-	ui_button(online,"GERAR CONVITE MANUAL",generate_manual_invite)
-	add_help(online,"Se UPnP falhar, encaminhe UDP 28960 para este aparelho e informe o IP publico. Redes moveis/CGNAT podem bloquear hospedagem direta.")
+	add_help(online,"A conexao e preparada automaticamente. Mantenha o jogo aberto enquanto seus amigos entram.")
 	ui_button(online,"ENTRAR COM ESTE CODIGO",join_room)
 	var advanced := CheckButton.new()
 	advanced.text="Opcoes avancadas / entrada manual"
@@ -170,14 +172,21 @@ func _ready() -> void:
 	advanced_help.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	online.add_child(advanced_help)
 	advanced_help.hide()
-	advanced.toggled.connect(func(value): field.visible=value; advanced_help.visible=value)
+	var manual := Button.new()
+	manual.text = "GERAR CONVITE MANUAL POR IP"
+	manual.pressed.connect(generate_manual_invite)
+	online.add_child(manual)
+	manual.hide()
+	advanced.toggled.connect(func(value): field.visible=value; advanced_help.visible=value; manual.visible=value)
 	var footer := HBoxContainer.new()
 	column.add_child(footer)
 	ui_button(footer,"DESCONECTAR",func(): disconnect_room(); status.text="Desconectado.")
 	ui_button(footer,"VOLTAR AO JOGO",close_menu)
 	internet=preload("res://scripts/internet_access.gd").new()
 	add_child(internet)
-	internet.prepared.connect(internet_prepared)
+	internet.registered.connect(internet_registered)
+	internet.relayed.connect(internet_relayed)
+	internet.failed.connect(internet_failed)
 	get_viewport().size_changed.connect(resize_panel)
 	var chat_layer := CanvasLayer.new()
 	chat_layer.layer = 120
@@ -218,8 +227,8 @@ func _ready() -> void:
 	multiplayer.peer_connected.connect(peer_joined)
 	multiplayer.peer_disconnected.connect(peer_left)
 	multiplayer.connected_to_server.connect(connected)
-	multiplayer.connection_failed.connect(connection_failed)
-	multiplayer.server_disconnected.connect(server_left)
+	multiplayer.connection_failed.connect(connection_failed, CONNECT_DEFERRED)
+	multiplayer.server_disconnected.connect(server_left, CONNECT_DEFERRED)
 	var result := discovery.bind(0)
 	if result == OK:
 		discovery.set_broadcast_enabled(true)
@@ -361,12 +370,12 @@ func close_menu() -> void:
 	panel.hide()
 	world.activities.set_menu("" if active() else return_menu)
 
-func host() -> void:
+func host(listening_port := PORT, keep_internet := false) -> void:
 	if world.restart_after_admin():
 		return
-	disconnect_room()
+	disconnect_room(not keep_internet)
 	peer = ENetMultiplayerPeer.new()
-	var error := peer.create_server(PORT,11)
+	var error := peer.create_server(listening_port,11)
 	if error != OK:
 		peer = null
 		status.text = "Nao foi possivel hospedar: " + error_string(error)
@@ -375,7 +384,7 @@ func host() -> void:
 	for i in 5:
 		code += SYMBOLS[randi()%SYMBOLS.length()]
 	discovery.close()
-	var bound := discovery.bind(DISCOVERY)
+	var bound := discovery.bind(0 if keep_internet else DISCOVERY)
 	if bound != OK:
 		disconnect_room()
 		status.text = "Porta de descoberta ocupada."
@@ -387,13 +396,13 @@ func host() -> void:
 	rules.receive_event("spawn",{"position":at})
 	world.start_mode("sandbox")
 	panel.hide()
-	world.notify("Sala: %s / compartilhe o codigo / ate 12 jogadores" % code)
+	world.notify("Sala de internet criada. Copie o convite no menu multiplayer." if keep_internet else "Sala: %s / compartilhe o codigo / ate 12 jogadores" % code)
 
 func join_room() -> void:
 	var requested := field.text.strip_edges().to_upper()
 	var target := parse_target(address_field.text,requested)
 	if not address_field.text.strip_edges().is_empty() and target.is_empty():
-		status.text="Codigo invalido. Cole o codigo inteiro, incluindo CL1-."
+		status.text="Convite invalido. Cole o codigo completo recebido do anfitriao."
 		return
 	if target.is_empty():
 		if requested.length()!=5 or not rooms.has(requested):
@@ -408,6 +417,11 @@ func connect_target(target: Dictionary) -> void:
 	disconnect_room()
 	code=target.code
 	refusal_reason=""
+	if target.has("relay"):
+		relay_target = target.relay
+		status.text = "Preparando conexao com a sala..."
+		internet.start_online(false)
+		return
 	peer=ENetMultiplayerPeer.new()
 	var error := peer.create_client(target.address,target.port)
 	if error!=OK:
@@ -420,6 +434,23 @@ func connect_target(target: Dictionary) -> void:
 
 static func parse_target(text: String, room_code: String) -> Dictionary:
 	var value := text.strip_edges()
+	if value.to_upper().begins_with("CL2-"):
+		var encoded := value.substr(4)
+		if encoded.length() > 268 or encoded.length() % 2 != 0 or encoded.is_empty():
+			return {}
+		for symbol in encoded:
+			if not symbol.to_lower() in "0123456789abcdef":
+				return {}
+		var parts := encoded.hex_decode().get_string_from_utf8().split("|", true)
+		if parts.size() != 2 or parts[0].is_empty() or parts[0].length() > 128 or parts[1].length() != 5:
+			return {}
+		for symbol in parts[0]:
+			if not symbol in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_":
+				return {}
+		for symbol in parts[1]:
+			if not symbol in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789":
+				return {}
+		return {"relay":parts[0],"code":parts[1]}
 	if value.to_upper().begins_with("CL1-"):
 		return decode_internet_code(value)
 	if value.is_empty() or value.length()>240:
@@ -453,30 +484,60 @@ static func parse_target(text: String, room_code: String) -> Dictionary:
 	return {"address":endpoint[0],"port":port,"code":selected}
 
 func host_internet() -> void:
-	host()
-	if not active():
+	if world.restart_after_admin():
 		return
+	disconnect_room()
 	return_menu=""
 	tabs.current_tab=1
 	world.activities.set_menu("network")
 	panel.show()
-	status.text="SALA %s / preparando acesso pela internet..." % code
-	internet.start()
+	status.text="Criando sala pela internet..."
+	internet.start_online(true)
 
-func internet_prepared(address: String, mapped: bool, message: String) -> void:
-	if not active() or not multiplayer.is_server():
+func internet_registered(open_id: String, local_port: int) -> void:
+	if not relay_target.is_empty():
+		internet.request_relay(relay_target)
 		return
-	if not address.is_empty():
-		invitation.text=make_internet_code(address,PORT,code)
-	status.text="Codigo pronto! Copie e envie aos amigos." if mapped and not invitation.text.is_empty() else ("Convite criado, mas a porta nao foi confirmada. Configure UDP 28960 antes de testar." if not invitation.text.is_empty() else "UPnP indisponivel. Encaminhe UDP 28960 no roteador e use GERAR CONVITE MANUAL.")
-	advanced_help.text=message+" Entrada manual: IP:porta acima e codigo curto abaixo."
+	host(local_port, true)
+	if not active():
+		internet.stop()
+		return
+	online_host = true
+	invitation.text = "CL2-" + (open_id + "|" + code).to_utf8_buffer().hex_encode()
+	world.activities.set_menu("network")
+	panel.show()
+	status.text = "Sala pronta! Copie o convite e envie aos amigos."
+
+func internet_relayed(address: String, port: int, local_port: int) -> void:
+	if online_host and active():
+		internet.accept_relay(peer, port)
+		return
+	if relay_target.is_empty():
+		return
+	peer = ENetMultiplayerPeer.new()
+	var error := peer.create_client(address, port, 0, 0, 0, local_port)
+	if error != OK:
+		internet_failed("Nao foi possivel entrar na sala: " + error_string(error))
+		return
+	multiplayer.multiplayer_peer = peer
+	connecting_since = Time.get_ticks_msec()
+	status.text = "Conectando ao anfitriao pelo relay..."
+
+func internet_failed(message: String) -> void:
+	disconnect_room()
+	world.activities.set_menu("network")
+	panel.show()
+	status.text = message
 
 func generate_manual_invite() -> void:
+	if online_host:
+		status.text = "Use COPIAR MEU CODIGO para compartilhar esta sala."
+		return
 	if not active() or not multiplayer.is_server():
 		status.text="Crie uma sala antes de gerar o convite."
 		return
 	var target:=parse_target(address_field.text,code)
-	if target.is_empty():
+	if target.is_empty() or target.has("relay"):
 		status.text="Digite o IP publico e a porta do anfitriao, por exemplo IP:28960."
 		return
 	invitation.text=make_internet_code(target.address,target.port,code)
@@ -487,7 +548,7 @@ func copy_invite() -> void:
 		status.text="Crie uma sala para gerar o convite."
 		return
 	var target := parse_target(address_field.text,code)
-	if not target.is_empty():
+	if not target.is_empty() and not target.has("relay") and not online_host:
 		invitation.text=make_internet_code(target.address,target.port,code)
 	if invitation.text.is_empty():
 		status.text="A sala ainda nao gerou um codigo. Aguarde ou veja Opcoes avancadas."
@@ -524,12 +585,17 @@ func accepted(at: Vector3) -> void:
 	world.notify("Conectado a sala " + code)
 
 func connection_failed() -> void:
+	if peer == null:
+		return
+	var via_relay := not relay_target.is_empty()
 	disconnect_room()
-	status.text = "Falha: confira convite, porta UDP 28960 e firewall do anfitriao."
+	status.text = "Nao foi possivel entrar na sala. Confira o convite e tente novamente." if via_relay else "Falha: confira convite, porta UDP 28960 e firewall do anfitriao."
 	world.activities.set_menu("network")
 	panel.show()
 
 func server_left() -> void:
+	if peer == null:
+		return
 	var was_joined := joined
 	disconnect_room()
 	if was_joined:
@@ -568,7 +634,7 @@ func peer_left(id: int) -> void:
 		if owners[index]==id:
 			owners.erase(index)
 
-func disconnect_room() -> void:
+func disconnect_room(stop_internet := true) -> void:
 	if active() and multiplayer.is_server() and not rules.pvp.is_empty(): rules.finish_pvp(-1)
 	rules.sync_stand_walls([])
 	rules.pvp.clear()
@@ -592,8 +658,10 @@ func disconnect_room() -> void:
 		var offset: Vector3 = world.vehicle_exit_offset(world.active_car)
 		var at: Vector3 = world.active_car.to_global(offset) if offset != Vector3.ZERO else world.SPAWNS[0]
 		rules.receive_event("bus_exit", {"position": at})
-	if internet!=null:
+	if internet!=null and stop_internet:
 		internet.stop()
+	online_host = false
+	relay_target = ""
 	joined=false
 	connecting_since=0
 	invitation.text=""
@@ -789,7 +857,7 @@ func _process(delta: float) -> void:
 		var data = bytes_to_var(discovery.get_packet())
 		var ip := discovery.get_packet_ip()
 		var port := discovery.get_packet_port()
-		if data is Dictionary and data.get("game")=="costa_query" and active() and multiplayer.is_server():
+		if data is Dictionary and data.get("game")=="costa_query" and active() and multiplayer.is_server() and not online_host:
 			discovery.set_dest_address(ip,port)
 			discovery.put_packet(var_to_bytes({"game":"costa_livre_1","code":code,"players":members.size(),"version":announced_version}))
 		if data is Dictionary and data.get("game")=="costa_livre_1" and str(data.get("code","")).length()==5:
@@ -1236,7 +1304,7 @@ func authenticate(id: int,packet: PackedByteArray) -> void:
 		authentication_failed.call_deferred(id)
 
 func authentication_failed(_id: int) -> void:
-	if peer!=null and not multiplayer.is_server():
+	if peer != null and (peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED or not multiplayer.is_server()):
 		var reason := refusal_reason if not refusal_reason.is_empty() else "Conexao recusada. Confira a versao e o codigo da sala."
 		disconnect_room()
 		world.activities.set_menu("network")

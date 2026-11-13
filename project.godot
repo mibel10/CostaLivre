@@ -3,7 +3,7 @@ config_version=5
 
 [application]
 config/name="Costa Livre"
-config/version="1.5.2"
+config/version="1.6.3"
 config/icon="res://icon.svg"
 config/quit_on_go_back=false
 run/main_scene="res://main.tscn"
