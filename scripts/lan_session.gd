@@ -1113,6 +1113,14 @@ func request_hit(index: int, amount: float, vehicle := false) -> void:
 	var target: Node=world.car_by_id(index) if vehicle else (world.life.people[index] if index>=0 and index<world.life.people.size() else null)
 	if car==null or target==null or owners.get(car.net_id,0)!=id or absf(car.speed)<=3.0 or car.position.distance_to(target.position)>5:
 		return
+	var now := Time.get_ticks_msec()
+	var hit_key := "hit:%d:%s:%d" % [id, "vehicle" if vehicle else "pedestrian", index]
+	if now - int(rules.last_actions.get(hit_key, 0)) < 400:
+		return
+	rules.last_actions[hit_key] = now
+	for key in rules.last_actions.keys():
+		if str(key).begins_with("hit:") and now - int(rules.last_actions[key]) > 2000:
+			rules.last_actions.erase(key)
 	rules.attacker=id
 	target.take_hit(minf(100,absf(car.speed)*5))
 	rules.attacker=0
