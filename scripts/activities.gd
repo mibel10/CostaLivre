@@ -279,6 +279,12 @@ func handle_input(event: InputEvent) -> bool:
 		set_menu("map")
 		return true
 	if event.is_action_pressed("activity"):
+		if world.network != null and world.network.rules.golden_arrow_prompt() != "":
+			if world.network.active():
+				world.network.rules.send_action("pickup_arrow")
+			else:
+				world.network.rules.collect_golden_arrow(world.network.rules.local_id())
+			return true
 		if world.active_car != null and world.active_car.tier == Catalog.SUPERCAR and nearby_place() != "garage":
 			if world.network != null and world.network.active():
 				world.network.rules.send_action("hover_mode")
@@ -462,6 +468,10 @@ func nearby_place() -> String:
 func prompt() -> String:
 	if world.prison_stage_for() >= 0:
 		return world.prison_prompt()
+	if world.network != null:
+		var arrow_prompt: String = world.network.rules.golden_arrow_prompt()
+		if arrow_prompt != "":
+			return arrow_prompt
 	if world.active_car != null and not world.bus_passenger and world.near_fuel_station(world.active_car.position):
 		if world.active_car.refuel_time > 0.0:
 			return "Abastecendo…"

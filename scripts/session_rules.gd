@@ -29,6 +29,7 @@ var mission_reveal_time := 0.0
 var mission_round_time := 0.0
 var bank_lookout := 0
 const STAND_NAMES := ["Mão de Concreto", "Passo Reverso", "Sinal Fechado", "Vitrine Quebrada", "Maré Baixa"]
+const GOLDEN_ARROW_SPAWN := Vector3(-2, 0.3, 8)
 const PVP_ARENAS := [Vector3(0,0.3,0), Vector3(84,0.3,84), Vector3(294,0.3,-126), Vector3(546,0.3,-126), Vector3(798,0.3,126)]
 var pvp := {}
 var pvp_queue: Array = []
@@ -39,7 +40,11 @@ var stand_sample := 0.0
 var stand_fields: Array = []
 var stand_objects: Array[Node3D] = []
 var remote_stand_walls := {}
-var offline_stand := {"stand":0,"stand_cooldown":0.0,"stand_slow":0.0}
+var arrow_pickups: Array = []
+var arrow_visuals := {}
+var next_arrow_id := 1
+var initial_arrow_spawned := false
+var offline_stand := {"stand":-1,"golden_arrows":0,"stand_cooldown":0.0,"stand_slow":0.0}
 var phone_contract_index := -1
 var phone_contract_deadline := 0
 
@@ -58,7 +63,7 @@ func inventory() -> Dictionary:
 
 func add_peer(id: int) -> Vector3:
 	var inv := {"weapon":1,"rifle_owned":false,"shotgun_owned":false,"smg_owned":false,"heavy_owned":[false,false,false],"purchased_cars":[],"clips":[0,12,0,0,0,0,0,0],"reserves":[0,36,0,0,0,0,0,0],"fire_cooldown":0.0,"reload_time":0.0,"reload_weapon":0}
-	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0,"home":-1,"homes":[],"building_job":{}}
+	sheets[id]={"health":100.0,"cash":900,"inventory":inv,"dead_until":0,"protected_until":Time.get_ticks_msec()+5000,"life":0,"home":-1,"homes":[],"building_job":{},"stand":-1,"golden_arrows":0,"stand_cooldown":0.0,"stand_slow":0.0}
 	if id==1:
 		sheets[id].cash=world.cash
 		sheets[id].inventory=inventory()
@@ -435,13 +440,16 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		if now - int(last_actions.get(key, 0)) < (50 if kind == "fire" else 150):
 			return
 		last_actions[key] = now
-	if pvp.get("teams", {}).has(id) and kind not in ["fire", "punch", "reload", "stand_use"]:
+	if pvp.get("teams", {}).has(id) and kind not in ["fire", "punch", "reload", "stand_use", "stand_select"]:
 		return
 	match kind:
 		"stand_use": use_stand(id, float(data.get("yaw",0.0)))
 		"stand_select":
-			sheets[id]["stand"] = (int(sheets[id].get("stand",0)) + 1) % STAND_NAMES.size()
-			private_notice(id, STAND_NAMES[sheets[id].stand] + " / H para usar")
+			if pvp.get("teams", {}).has(id):
+				private_notice(id,"No PvP, o Stand é sorteado no início de cada rodada.")
+			else:
+				use_golden_arrow(id)
+		"pickup_arrow": collect_golden_arrow(id)
 		"pvp_join": join_pvp(id)
 		"supply_scene_complete":
 			if id == world.activities.supply_owner and world.activities.supply_stage == 2:
@@ -500,6 +508,8 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				if car.position.distance_to(officer.position)<5:
 					officer.take_hit(absf(car.speed)*5, id)
 		"interact":
+			if collect_golden_arrow(id):
+				return
 			var floor_number: int = world.life.home_floor_at(position_of(id))
 			if floor_number >= 0:
 				with_actor(id,func(): buy_home(id,floor_number))
@@ -841,6 +851,7 @@ func update_bank_lookout() -> void:
 
 func physics(delta: float) -> void:
 	if multiplayer.is_server():
+		ensure_initial_arrow()
 		tick_stands(delta)
 		tick_pvp(delta)
 	tick_mission_offer()
@@ -1025,11 +1036,13 @@ func export_state() -> Dictionary:
 		sheets[1].inventory=inventory()
 	var a: Node=world.activities
 	var bank: Node=a.bank
-	return {"stand_walls":stand_objects.filter(func(object): return is_instance_valid(object) and int(object.get_meta("stand_kind",-1)) == 3).map(func(object): return {"id":object.get_instance_id(),"at":object.position,"yaw":object.rotation.y}),"pvp":pvp,"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"bank_lookout":bank_lookout,"day_time":world.atmosphere_cycle.day_time,"bank_door_angle":bank.door.rotation.y,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
+	return {"stand_walls":stand_objects.filter(func(object): return is_instance_valid(object) and int(object.get_meta("stand_kind",-1)) == 3).map(func(object): return {"id":object.get_instance_id(),"at":object.position,"yaw":object.rotation.y}),"arrow_pickups":arrow_pickups,"pvp":pvp,"elevators":world.life.elevators,"shipment_integrity":a.shipment_integrity,"passenger_car":a.passenger_car,"hill_errand_stage":a.hill_errand_stage,"hill_errand_owner":a.hill_errand_owner,"supply_stage":a.supply_stage,"supply_owner":a.supply_owner,"sheets":sheets,"heat":world.heat,"job":a.job,"stage":a.stage,"clock":a.clock,"progress":a.progress,"completed":a.completed,"robbery_cooldowns":a.robbery_cooldowns,"target_car":a.target_car.net_id if is_instance_valid(a.target_car) else -1,"targets":a.targets.map(func(car): return car.net_id),"bank_owner":bank_owner,"bank_lookout":bank_lookout,"day_time":world.atmosphere_cycle.day_time,"bank_door_angle":bank.door.rotation.y,"mission_hacking_peer":mission_hacking_peer,"mission_pattern":mission_pattern,"mission_entered":mission_entered,"mission_round":mission_round,"mission_mistakes":mission_mistakes,"mission_reveal_time":mission_reveal_time,"mission_round_time":mission_round_time,"bank":{"phase":bank.phase,"taken":bank.taken,"hacking":bank.hacking,"pattern":bank.pattern,"entered":bank.entered,"round_index":bank.round_index,"reveal_time":bank.reveal_time,"round_time":bank.round_time,"mistakes":bank.mistakes,"cooldown":bank.cooldown,"lockout":bank.lockout},"task_progress":world.life.task_progress}
 
 func apply_state(data: Dictionary) -> void:
 	sheets=data.get("sheets",{})
 	pvp=data.get("pvp",{})
+	arrow_pickups=data.get("arrow_pickups",[])
+	sync_arrow_pickups(arrow_pickups)
 	sync_stand_walls(data.get("stand_walls",[]))
 	world.life.apply_elevator_snapshot(data.elevators)
 	world.heat=float(data.get("heat",0))
@@ -1072,17 +1085,163 @@ func apply_state(data: Dictionary) -> void:
 
 func _physics_process(delta: float) -> void:
 	if network != null and not network.active() and not world.finished:
+		ensure_initial_arrow()
 		tick_stands(delta)
 
 func stand_sheet(id: int) -> Dictionary:
 	return sheets.get(id, {}) if network.active() else offline_stand
 
+func ensure_initial_arrow() -> void:
+	if initial_arrow_spawned or (network.active() and not multiplayer.is_server()):
+		return
+	initial_arrow_spawned = true
+	spawn_arrow_pickup(GOLDEN_ARROW_SPAWN)
+
+func spawn_arrow_pickup(at: Vector3) -> void:
+	if not at.is_finite():
+		return
+	var id := next_arrow_id
+	next_arrow_id += 1
+	arrow_pickups.append({"id":id,"at":at})
+	sync_arrow_pickups(arrow_pickups)
+
+func sync_arrow_pickups(states: Array) -> void:
+	var present := {}
+	for pickup in states:
+		if not pickup is Dictionary:
+			continue
+		var id := int(pickup.get("id", -1))
+		var at: Vector3 = pickup.get("at", Vector3.ZERO)
+		if id < 0 or not at.is_finite():
+			continue
+		present[id] = true
+		if arrow_visuals.has(id) and is_instance_valid(arrow_visuals[id]):
+			continue
+		var visual := Node3D.new()
+		world.add_child(visual)
+		visual.position = at
+		var gold := StandardMaterial3D.new()
+		gold.albedo_color = Color("ffd34e")
+		gold.metallic = 0.75
+		gold.roughness = 0.22
+		gold.emission_enabled = true
+		gold.emission = Color("ffb51b")
+		gold.emission_energy_multiplier = 1.5
+		var shaft := MeshInstance3D.new()
+		var shaft_mesh := CylinderMesh.new()
+		shaft_mesh.top_radius = 0.035
+		shaft_mesh.bottom_radius = 0.035
+		shaft_mesh.height = 0.8
+		shaft.mesh = shaft_mesh
+		shaft.material_override = gold
+		shaft.position.y = 0.72
+		visual.add_child(shaft)
+		var point := MeshInstance3D.new()
+		var point_mesh := ConeMesh.new()
+		point_mesh.top_radius = 0.0
+		point_mesh.bottom_radius = 0.14
+		point_mesh.height = 0.3
+		point.mesh = point_mesh
+		point.material_override = gold
+		point.position.y = 1.27
+		visual.add_child(point)
+		var feathers := world.box(visual, Vector3(0,0.31,0), Vector3(0.2,0.12,0.06), Color("fff0a6"), false, true)
+		feathers.rotation.z = 0.5
+		var spin := visual.create_tween().set_loops()
+		spin.tween_property(visual,"rotation:y",TAU,2.4)
+		var bob := visual.create_tween().set_loops()
+		bob.tween_property(visual,"position:y",at.y+0.18,0.7)
+		bob.tween_property(visual,"position:y",at.y,0.7)
+		arrow_visuals[id] = visual
+	for id in arrow_visuals.keys().duplicate():
+		if not present.has(id):
+			if is_instance_valid(arrow_visuals[id]):
+				arrow_visuals[id].queue_free()
+			arrow_visuals.erase(id)
+
+func nearest_arrow_pickup_index(at: Vector3) -> int:
+	var selected := -1
+	var nearest := 2.4
+	for i in arrow_pickups.size():
+		var distance: float = at.distance_to(arrow_pickups[i].at)
+		if distance <= nearest:
+			nearest = distance
+			selected = i
+	return selected
+
+func golden_arrow_prompt() -> String:
+	if world.finished or world.active_car != null or world.car_transition or world.bus_passenger:
+		return ""
+	if network.active() and pvp.get("teams", {}).has(local_id()):
+		return ""
+	if world.life != null and world.life.elevator_rider_position(local_id()) != null:
+		return ""
+	var at: Vector3 = position_of(local_id()) if network.active() else world.player.position
+	return "F · Recolher Flecha Dourada" if nearest_arrow_pickup_index(at) >= 0 else ""
+
+func collect_golden_arrow(id: int) -> bool:
+	var at: Vector3
+	if network.active():
+		if not multiplayer.is_server() or world.finished or not sheets.has(id) or is_dead(id) or pvp.get("teams", {}).has(id):
+			return false
+		if int(network.members.get(id, {}).get("car", -1)) >= 0 or bus_riders.has(id) or world.vehicle_entries.has(id) or world.life.elevator_rider_position(id) != null:
+			return false
+		at = position_of(id)
+	else:
+		if id != local_id() or world.finished or world.active_car != null or world.car_transition or world.bus_passenger:
+			return false
+		at = world.player.position
+	var pickup_index := nearest_arrow_pickup_index(at)
+	if pickup_index < 0:
+		return false
+	var sheet := stand_sheet(id)
+	if sheet.is_empty():
+		return false
+	sheet["golden_arrows"] = int(sheet.get("golden_arrows", 0)) + 1
+	arrow_pickups.remove_at(pickup_index)
+	sync_arrow_pickups(arrow_pickups)
+	var message := "Flecha Dourada obtida! Use o celular (N no PC) > Usar Flecha Dourada para despertar um Stand."
+	if network.active():
+		private_notice(id, message)
+	else:
+		world.notify(message)
+	return true
+
+func use_golden_arrow(id: int) -> void:
+	var sheet := stand_sheet(id)
+	if sheet.is_empty():
+		return
+	var arrows := int(sheet.get("golden_arrows", 0))
+	if arrows <= 0:
+		private_notice(id,"Você não tem Flechas Douradas. Encontre uma no mapa ou derrube um policial (1%).")
+		return
+	var previous := int(sheet.get("stand", -1))
+	var selected := randi_range(0, STAND_NAMES.size() - 1)
+	if previous >= 0 and previous < STAND_NAMES.size() and STAND_NAMES.size() > 1:
+		selected = (previous + randi_range(1, STAND_NAMES.size() - 1)) % STAND_NAMES.size()
+	sheet["golden_arrows"] = arrows - 1
+	sheet["stand"] = selected
+	sheet["stand_cooldown"] = 0.0
+	sheet["stand_slow"] = 0.0
+	stand_history.erase(id)
+	private_notice(id,"A Flecha despertou %s! Pressione H ou use o celular para ativar." % STAND_NAMES[selected])
+
+func officer_killed(at: Vector3) -> void:
+	if network.active() and not multiplayer.is_server():
+		return
+	if randf() >= 0.01:
+		return
+	spawn_arrow_pickup(at)
+	if network.active():
+		notice_all("Um policial derrubou uma Flecha Dourada!")
+	else:
+		world.notify("Um policial derrubou uma Flecha Dourada!")
+
 func local_stand_action(select := false) -> void:
 	if network.active():
 		send_action("stand_select" if select else "stand_use", {"yaw":world.camera_yaw})
 	elif select:
-		offline_stand.stand = (int(offline_stand.stand) + 1) % STAND_NAMES.size()
-		world.notify(STAND_NAMES[offline_stand.stand] + " / H para usar")
+		use_golden_arrow(local_id())
 	else:
 		use_stand(1, world.camera_yaw)
 
@@ -1124,12 +1283,25 @@ func use_stand(id: int, yaw: float) -> void:
 		return
 	var sheet := stand_sheet(id)
 	if float(sheet.get("stand_cooldown",0.0)) > 0.0: return
-	var selected: int = int(sheet.get("stand",0))
+	var selected: int = int(sheet.get("stand",-1))
+	if selected < 0 or selected >= STAND_NAMES.size():
+		private_notice(id,"Você ainda não tem um Stand. Use uma Flecha Dourada pelo celular.")
+		return
 	var forward := Vector3.FORWARD.rotated(Vector3.UP,yaw)
 	var destination := at + forward * 3.0
 	if selected == 1:
-		if not stand_history.has(id) or stand_history[id].size() < 15: return
-		stand_teleport(id, stand_history[id][0])
+		if not stand_history.has(id) or stand_history[id].size() < 15:
+			private_notice(id,"Passo Reverso precisa de mais histórico de movimento.")
+			return
+		var teleported := false
+		for sample in stand_history[id]:
+			var previous: Vector3 = sample
+			if stand_teleport(id,previous):
+				teleported = true
+				break
+		if not teleported:
+			private_notice(id,"Não há um ponto seguro para o Passo Reverso.")
+			return
 		stand_history[id].clear()
 	elif selected == 2:
 		stand_fields.append({"owner":id,"at":destination,"time":4.0})
@@ -1151,7 +1323,9 @@ func use_stand(id: int, yaw: float) -> void:
 					var occupied_vehicle: bool = network.active() and victim in world.cars and int(network.owners.get(victim.net_id,0)) > 0
 					if not occupied_vehicle:
 						victim.move_and_collide(forward*2.0)
-	if selected == 3 and not stand_clear(at,destination): return
+	if selected == 3 and not stand_clear(at,destination):
+		private_notice(id,"Não há espaço livre à frente para erguer a Vitrine Quebrada.")
+		return
 	sheet["stand_cooldown"] = 12.0 if selected != 1 else 16.0
 	var effect := {"stand":selected,"at":at,"target":destination,"yaw":yaw}
 	if network.active():
@@ -1162,8 +1336,11 @@ func stand_clear(from: Vector3, to: Vector3) -> bool:
 	var query := PhysicsRayQueryParameters3D.create(from+Vector3.UP,to+Vector3.UP,1)
 	return world.get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 
-func stand_teleport(id: int, at: Vector3) -> void:
-	if network.active() and not network.valid_session_position(at): return
+func stand_teleport(id: int, at: Vector3) -> bool:
+	if network.active() and (not network.members.has(id) or not network.valid_session_position(at)):
+		return false
+	if not network.active() and id != local_id():
+		return false
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = 0.35
 	capsule.height = 1.8
@@ -1174,21 +1351,29 @@ func stand_teleport(id: int, at: Vector3) -> void:
 	var actor: Node3D = world.player if id == local_id() else network.avatars.get(id, {}).get("node")
 	if actor != null:
 		clearance.exclude = [actor.get_rid()]
-	if not world.get_world_3d().direct_space_state.intersect_shape(clearance,1).is_empty(): return
+	if not world.get_world_3d().direct_space_state.intersect_shape(clearance,1).is_empty():
+		return false
 	var origin: Vector3 = position_of(id) if network.active() else world.player.position
-	if not stand_clear(origin,at): return
+	if not stand_clear(origin,at):
+		return false
 	if network.active():
 		var member: Dictionary = network.members[id]
 		member.position = at
 		member.car_position = at
-		if id != local_id() and network.avatars.has(id):
+		if id == local_id():
+			world.player.position = at
+			world.player.velocity = Vector3.ZERO
+		elif network.avatars.has(id):
 			network.avatars[id].node.position = at
 			network.avatars[id].at = at
 		member["elevator_target"] = at
 		member["elevator_target_until"] = Time.get_ticks_msec()+600
-		send_personal(id,"elevator",{"position":at})
+		if id != local_id():
+			send_personal(id,"elevator",{"position":at})
 	else:
-		world.life.move_elevator_rider(at)
+		world.player.position = at
+		world.player.velocity = Vector3.ZERO
+	return true
 
 func show_stand_effect(data: Dictionary) -> void:
 	var figure := Node3D.new()
@@ -1248,7 +1433,7 @@ func tick_pvp(delta: float) -> void:
 		for i in count:
 			var id: int = pvp_queue.pop_front()
 			teams[id] = i % 2
-			pvp_saved[id] = {"inventory":inventory() if id == local_id() else sheets[id].inventory.duplicate(true),"at":position_of(id),"health":sheets[id].health,"wanted_heat":sheets[id].get("wanted_heat",null),"wanted_grace":sheets[id].get("wanted_grace",null)}
+			pvp_saved[id] = {"inventory":inventory() if id == local_id() else sheets[id].inventory.duplicate(true),"at":position_of(id),"health":sheets[id].health,"stand":sheets[id].get("stand",-1),"stand_cooldown":sheets[id].get("stand_cooldown",0.0),"wanted_heat":sheets[id].get("wanted_heat",null),"wanted_grace":sheets[id].get("wanted_grace",null)}
 			sheets[id].erase("wanted_heat")
 			sheets[id].erase("wanted_grace")
 		pvp = {"teams":teams,"scores":[0,0],"round":0,"phase":"break","time":0.0}
@@ -1324,6 +1509,8 @@ func finish_pvp(winner: int) -> void:
 		var saved: Dictionary = pvp_saved[id]
 		sheets[id].health = saved.health
 		sheets[id].inventory = saved.inventory
+		sheets[id]["stand"] = saved.stand
+		sheets[id]["stand_cooldown"] = saved.stand_cooldown
 		if saved.wanted_heat == null: sheets[id].erase("wanted_heat")
 		else: sheets[id]["wanted_heat"] = saved.wanted_heat
 		if saved.wanted_grace == null: sheets[id].erase("wanted_grace")

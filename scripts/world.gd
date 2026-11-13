@@ -580,6 +580,12 @@ func interact() -> void:
 			return
 		notify("Sem espaço para sair. Afaste o carro da parede.")
 	else:
+		if network != null and network.rules.golden_arrow_prompt() != "":
+			if network.active():
+				network.rules.send_action("pickup_arrow")
+			else:
+				network.rules.collect_golden_arrow(network.rules.local_id())
+			return
 		var closest := nearest_car()
 		if closest == null:
 			return

@@ -72,7 +72,7 @@ func _ready() -> void:
 	phone_panel.add_child(phone_scroll)
 	phone_scroll.add_child(phone_apps)
 	phone_apps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["TROCAR STAND", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
+	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = item[0]
 		app.custom_minimum_size.y = 40
@@ -207,7 +207,12 @@ func _draw() -> void:
 	if world.network != null and world.activities.menu == "":
 		var rules: Node = world.network.rules
 		var sheet: Dictionary = rules.stand_sheet(multiplayer.get_unique_id())
-		text("%s / H / %.0fs" % [rules.STAND_NAMES[int(sheet.get("stand",0))],float(sheet.get("stand_cooldown",0.0))],Vector2(400,95),16)
+		var selected := int(sheet.get("stand",-1))
+		var arrows := int(sheet.get("golden_arrows",0))
+		var stand_status := "Sem Stand · Flechas: %d · use o celular" % arrows
+		if selected >= 0 and selected < rules.STAND_NAMES.size():
+			stand_status = "%s / H / %.0fs · Flechas: %d" % [rules.STAND_NAMES[selected],float(sheet.get("stand_cooldown",0.0)),arrows]
+		text(stand_status,Vector2(400,95),16)
 		if not rules.pvp.is_empty():
 			text("PVP %d/5 / %d x %d / %.0fs" % [rules.pvp.round,rules.pvp.scores[0],rules.pvp.scores[1],rules.pvp.time],Vector2(400,120),18)
 	var a: Node = world.activities

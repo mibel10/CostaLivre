@@ -119,6 +119,8 @@ func take_hit(amount: float, actor := 0) -> void:
 	hp = maxf(0, hp - amount)
 	world.raise_heat(8, actor)
 	if hp <= 0:
+		if world.network != null:
+			world.network.rules.officer_killed(position)
 		model.rotation.z = PI / 2
 		collision_layer = 0
 
@@ -129,6 +131,8 @@ func silent_takedown() -> void:
 	if hp <= 0 or not bool(get_meta("mission_sentinel",false)):
 		return
 	hp = 0
+	if world.network != null:
+		world.network.rules.officer_killed(position)
 	model.rotation.z = PI/2
 	collision_layer = 0
 	world.activities.mission_sentinel_killed()
