@@ -386,7 +386,7 @@ func update_damage_appearance() -> void:
 		var size: Vector3 = Catalog.SIZES[tier]
 		for side in [-1.0, 1.0]:
 			for z in [-0.18, 0.18]:
-				var scratch := world.box(damage_visuals, Vector3(side * (size.x * 0.5 + 0.012), size.y * 0.43, size.z * z), Vector3(0.018, 0.12, 0.62), Color("68615a"))
+				var scratch: MeshInstance3D = world.box(damage_visuals, Vector3(side * (size.x * 0.5 + 0.012), size.y * 0.43, size.z * z), Vector3(0.018, 0.12, 0.62), Color("68615a"))
 				scratch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 				body_damage_marks.append(scratch)
 		var windshield_z: float = -size.z * 0.15 if tier != Catalog.BUS else -size.z * 0.5 + 0.08
@@ -395,7 +395,7 @@ func update_damage_appearance() -> void:
 			var vertical: bool = crack > 0
 			var offset := Vector3(0 if crack == 0 else (-0.12 if crack == 1 else 0.14), 0.0, 0.0)
 			var mark_size := Vector3(0.36, 0.018, 0.018) if not vertical else Vector3(0.018, 0.28, 0.018)
-			var pane_mark := world.box(damage_visuals, Vector3(offset.x, windshield_y + offset.y, windshield_z), mark_size, Color("222a30"))
+			var pane_mark: MeshInstance3D = world.box(damage_visuals, Vector3(offset.x, windshield_y + offset.y, windshield_z), mark_size, Color("222a30"))
 			pane_mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			glass_damage_marks.append(pane_mark)
 	for mark in body_damage_marks:
