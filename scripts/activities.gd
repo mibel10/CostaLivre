@@ -981,7 +981,7 @@ func shoot() -> void:
 	var origin := camera.global_position
 	var end := origin - camera.global_basis.z * (600 if weapon == 6 else 180)
 	var query := PhysicsRayQueryParameters3D.create(origin, end, 7)
-	query.exclude = [world.player.get_rid()]
+	query.exclude = [world.player.get_rid()] + ([world.active_car.get_rid()] if world.active_car != null else [])
 	var hit := world.get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
 		end = hit.position

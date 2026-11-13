@@ -714,7 +714,7 @@ func fire_peer(id: int,data: Dictionary) -> void:
 		if not a.mission_shot_is_quiet(): world.raise_heat(3)
 		var end := origin+direction.normalized()*(600 if selected==6 else 180)
 		var query := PhysicsRayQueryParameters3D.create(origin,end,7)
-		query.exclude=[world.player.get_rid()]
+		query.exclude=[world.player.get_rid()] + ([world.active_car.get_rid()] if world.active_car!=null else [])
 		var hit := world.get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty():
 			end=hit.position
