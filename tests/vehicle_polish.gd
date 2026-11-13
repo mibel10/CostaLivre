@@ -65,6 +65,15 @@ func run() -> void:
 	assert(absf(car.wheels[0].global_position.y-wheel_y)<0.001, "Suspension raises body while wheels stay grounded")
 	car.repaint(car.paint)
 	assert(is_equal_approx(car.suspension_height,0.15))
+	car.apply_network_health(car.MAX_HP * 0.3)
+	assert(car.body_damage_marks[0].visible and car.glass_damage_marks[0].visible)
+	car.repaint(car.paint)
+	await process_frame
+	car.apply_network_health(car.MAX_HP * 0.5)
+	assert(is_instance_valid(car.body_damage_marks[0]) and car.body_damage_marks[0].visible, "Repaint preserves valid damage marks")
+	assert(not car.glass_damage_marks[0].visible)
+	car.apply_network_health(car.MAX_HP)
+	assert(not car.body_damage_marks[0].visible and not car.glass_damage_marks[0].visible, "Replicated repairs clear damage marks")
 	world.active_car = null
 	car.driving = false
 	world.cash = 10000

@@ -377,7 +377,7 @@ func take_hit(amount: float) -> void:
 		show_wreck()
 
 func update_damage_appearance() -> void:
-	if hp >= MAX_HP * 0.7:
+	if hp > MAX_HP * 0.7 and damage_visuals == null:
 		return
 	if damage_visuals == null:
 		damage_visuals = Node3D.new()
@@ -542,7 +542,7 @@ func repaint(color: Color) -> void:
 	rider = null
 	rider_outfit = -1
 	for child in get_children():
-		if child is CollisionShape3D:
+		if child is CollisionShape3D or child == damage_visuals or child == siren_audio:
 			continue
 		remove_child(child)
 		child.queue_free()
