@@ -47,8 +47,8 @@ var supply_owner := 0
 var supply_scene_until := 0
 const HEAVY_SHOP := Vector3(1197.4, 9.9, 14.5)
 const CAPACITIES := [0,12,30,8,32,1,5,20]
-const DAMAGE := [0,34,24,58,18,220,180,450]
-const FIRE_INTERVAL := [0.0,0.32,0.11,0.65,0.075,1.8,1.2,0.12]
+const DAMAGE := [0,34,24,58,18,220,180,100]
+const FIRE_INTERVAL := [0.0,0.32,0.11,0.65,0.075,1.8,1.2,0.5]
 const WEAPON_NAMES := ["Punhos","Pistola","Fuzil","Escopeta","SMG","Bazuca","Sniper","Canhão de pulso"]
 const GUN_SHOP := Vector3(-21, 0, 34)
 const DEALER := Vector3(21, 0, 34)
@@ -1011,7 +1011,7 @@ func weapon_impact(hit: Dictionary, at: Vector3, selected: int) -> void:
 			hit.collider.take_hit(DAMAGE[selected])
 			hit_flash = 0.16
 		return
-	var radius := 6.0 if selected == 5 else 9.0
+	var radius := 6.0 if selected == 5 else 5.5
 	var query := PhysicsShapeQueryParameters3D.new()
 	var sphere := SphereShape3D.new()
 	sphere.radius = radius
@@ -1040,7 +1040,7 @@ func shot_effect(from: Vector3, to: Vector3, selected: int) -> void:
 		world.add_child(blast)
 		blast.global_position = to
 		var tween := blast.create_tween()
-		tween.tween_property(blast,"scale",Vector3.ONE * (6.0 if selected == 5 else 9.0),0.2)
+		tween.tween_property(blast,"scale",Vector3.ONE * (6.0 if selected == 5 else 5.5),0.2)
 		tween.tween_property(blast,"scale",Vector3.ZERO,0.15)
 		tween.tween_callback(blast.queue_free)
 		world.extra.play("explosion", -12)
