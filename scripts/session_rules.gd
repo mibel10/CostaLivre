@@ -628,7 +628,8 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 			award(killer,1500)
 			private_notice(killer,"Jogador eliminado / +$1500")
 			world.raise_heat(35, killer)
-		private_notice(id, "Você foi preso. Acordará na cadeia." if int(sheets[id].get("prison_stage", -1)) >= 0 else "Você foi calado. Renascendo em 3 segundos...")
+		var death_notice := "Você foi preso. Acordará na cadeia." if int(sheets[id].get("prison_stage", -1)) >= 0 else ("Eliminado no PvP. Aguarde a próxima rodada." if teams.has(id) else "Você foi calado. Renascendo em 3 segundos...")
+		private_notice(id, death_notice)
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
@@ -1244,8 +1245,11 @@ func tick_pvp(delta: float) -> void:
 		for i in count:
 			var id: int = pvp_queue.pop_front()
 			teams[id] = i % 2
-			pvp_saved[id] = {"inventory":inventory() if id == local_id() else sheets[id].inventory.duplicate(true),"at":position_of(id),"health":sheets[id].health}
+		pvp_saved[id] = {"inventory":inventory() if id == local_id() else sheets[id].inventory.duplicate(true),"at":position_of(id),"health":sheets[id].health,"wanted_heat":sheets[id].get("wanted_heat",null),"wanted_grace":sheets[id].get("wanted_grace",null)}
+		sheets[id].erase("wanted_heat")
+		sheets[id].erase("wanted_grace")
 		pvp = {"teams":teams,"scores":[0,0],"round":0,"phase":"break","time":0.0}
+		refresh_wanted_heat()
 	for id in pvp.teams.keys():
 		if not network.members.has(id): pvp.teams.erase(id)
 	var team0: bool = pvp.teams.values().has(0)
@@ -1317,6 +1321,10 @@ func finish_pvp(winner: int) -> void:
 		var saved: Dictionary = pvp_saved[id]
 		sheets[id].health = saved.health
 		sheets[id].inventory = saved.inventory
+		if saved.wanted_heat == null: sheets[id].erase("wanted_heat")
+		else: sheets[id]["wanted_heat"] = saved.wanted_heat
+		if saved.wanted_grace == null: sheets[id].erase("wanted_grace")
+		else: sheets[id]["wanted_grace"] = saved.wanted_grace
 		if id == local_id():
 			world.health = saved.health
 			for key in INVENTORY: world.activities.set(key,saved.inventory[key])
@@ -1329,6 +1337,7 @@ func finish_pvp(winner: int) -> void:
 	pvp.clear()
 	pvp_saved.clear()
 	stand_fields.clear()
+	refresh_wanted_heat()
 
 func sync_stand_walls(states: Array) -> void:
 	var present := {}
