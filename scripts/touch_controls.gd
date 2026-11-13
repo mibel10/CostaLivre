@@ -63,13 +63,13 @@ func base_buttons() -> Array:
 		return [[Rect2(510,570,260,70),"RECOMEÇAR","restart"]]
 	if state != "":
 		return [] # Native pause/menu controls use Android touch-to-mouse input.
-	var rows := [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
+	var rows := [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(735,180,150,55),"CELULAR","phone"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]
 	rows.append([Rect2(1085,320,165,80),"DESVIRAR","flip"])
 	return rows if editing else rows.filter(func(entry): return entry[2] in visible_actions)
 
 func gameplay_actions() -> Array[String]:
 	var a: Node = world.activities
-	var result: Array[String] = ["pause", "map", "look"]
+	var result: Array[String] = ["pause", "map", "phone", "look"]
 	var car: Node = world.active_car
 	if not world.car_transition:
 		if car != null:
@@ -112,6 +112,10 @@ func gameplay_actions() -> Array[String]:
 	return result
 
 func action(name: String, pressed: bool) -> void:
+	if name == "phone":
+		if pressed:
+			world.hud.toggle_phone()
+		return
 	if name == "weapon":
 		if pressed:
 			world.extra.selection = world.activities.weapon
@@ -404,3 +408,4 @@ func _draw() -> void:
 
 func _exit_tree() -> void:
 	release_all()
+

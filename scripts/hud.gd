@@ -55,7 +55,7 @@ func _ready() -> void:
 	phone_button.size = Vector2(142,48)
 	phone_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	phone_button.position = Vector2(-158,-66)
-	phone_button.pressed.connect(func(): phone_panel.visible = not phone_panel.visible)
+	phone_button.pressed.connect(toggle_phone)
 	add_child(phone_button)
 	phone_panel = PanelContainer.new()
 	phone_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -91,6 +91,10 @@ func _ready() -> void:
 	back.pressed.connect(func(): phone_messages.hide(); phone_apps.show())
 	phone_messages.add_child(back)
 
+func toggle_phone() -> void:
+	phone_panel.visible = not phone_panel.visible
+	world.restore_pointer()
+
 func phone_app(app: String) -> void:
 	phone_panel.hide()
 	match app:
@@ -108,6 +112,7 @@ func phone_app(app: String) -> void:
 			if world.network.active(): world.network.open_chat()
 			else: world.notify("O chat regional fica disponível durante o multiplayer.")
 		_: world.network.send_emote(app)
+	world.restore_pointer()
 	queue_redraw()
 
 func show_contract_message(index: int) -> void:
@@ -541,3 +546,4 @@ func map_point(pos: Vector3, origin: Vector2, map_size: Vector2, left := INF) ->
 	if not is_finite(left):
 		left = clampf(world.subject_position().x - 186.0, -186.0, world.MAP_EAST - 372.0)
 	return origin + Vector2(clampf((pos.x - left) / 372.0, 0.02, 0.98), clampf((pos.z + 144) / 288.0, 0.02, 0.98)) * map_size
+
