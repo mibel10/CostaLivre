@@ -390,7 +390,8 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 	var cache_key := "%d:%d:%s" % [index, skin_index, police]
 	var clothes := StandardMaterial3D.new()
 	clothes.vertex_color_use_as_albedo = true
-	clothes.roughness = 0.85
+	clothes.roughness = 0.74
+	clothes.metallic_specular = 0.28
 	instance.material_override = clothes
 	if outfit_cache.has(cache_key):
 		instance.mesh = outfit_cache[cache_key]
@@ -410,6 +411,22 @@ func apply_street_clothes(instance: MeshInstance3D) -> void:
 	for surface in source.get_surface_count():
 		var arrays := source.surface_get_arrays(surface)
 		var regions: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var seams := {}
+		for i in vertices.size():
+			var vertex: Vector3 = vertices[i].snapped(Vector3.ONE*0.0001)
+			var key := Vector4(vertex.x,vertex.y,vertex.z,roundf(regions[i].x*16.0))
+			if not seams.has(key): seams[key] = []
+			seams[key].append(i)
+		var smooth := normals.duplicate()
+		for group in seams.values():
+			for i in group:
+				var normal := Vector3.ZERO
+				for other in group:
+					if normals[i].dot(normals[other])>0.55: normal += normals[other]
+				if normal.length_squared()>0.001: smooth[i] = normal.normalized()
+		arrays[Mesh.ARRAY_NORMAL] = smooth
 		var colors := PackedColorArray()
 		for uv in regions:
 			var region := clampi(roundi(uv.x * 16.0), 0, palette.size() - 1)
@@ -454,6 +471,13 @@ func apply_accessory() -> void:
 		cap.material_override = material
 		cap.position = Vector3(0,0.2,0)
 		cosmetic_attachment.add_child(cap)
+		var brim := MeshInstance3D.new()
+		var brim_shape := BoxMesh.new()
+		brim_shape.size = Vector3(0.19,0.015,0.1)
+		brim.mesh = brim_shape
+		brim.material_override = material
+		brim.position = Vector3(0,0.175,-0.1)
+		cosmetic_attachment.add_child(brim)
 	elif accessory_index == 2:
 		var band := MeshInstance3D.new()
 		var shape := BoxMesh.new()
@@ -462,6 +486,14 @@ func apply_accessory() -> void:
 		band.material_override = material
 		band.position = Vector3(0,0.08,-0.02)
 		cosmetic_attachment.add_child(band)
+		var knot := MeshInstance3D.new()
+		var knot_shape := BoxMesh.new()
+		knot_shape.size = Vector3(0.055,0.095,0.035)
+		knot.mesh = knot_shape
+		knot.material_override = material
+		knot.position = Vector3(0,0.045,0.09)
+		knot.rotation.z = 0.25
+		cosmetic_attachment.add_child(knot)
 	else:
 		for side in [-1.0,1.0]:
 			var lens := MeshInstance3D.new()
@@ -471,3 +503,10 @@ func apply_accessory() -> void:
 			lens.material_override = material
 			lens.position = Vector3(side*0.045,0.105,-0.09)
 			cosmetic_attachment.add_child(lens)
+			var temple := MeshInstance3D.new()
+			var temple_shape := BoxMesh.new()
+			temple_shape.size = Vector3(0.012,0.012,0.14)
+			temple.mesh = temple_shape
+			temple.material_override = material
+			temple.position = Vector3(side*0.09,0.11,-0.025)
+			cosmetic_attachment.add_child(temple)
