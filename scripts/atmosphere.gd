@@ -19,6 +19,7 @@ var storm_check := STORM_CHECK_SECONDS
 var thunder_beat := -1
 var shelter_check := 0.0
 var sheltered := false
+var lighting_clock := 0.0
 
 func _ready() -> void:
 	for i in 2:
@@ -84,14 +85,17 @@ func _process(delta: float) -> void:
 	else:
 		storm_remaining = maxf(0.0,storm_remaining-delta)
 	storm = clampf(minf(STORM_DURATION-storm_remaining,storm_remaining)/15.0,0.0,1.0)
-	update_lighting()
+	lighting_clock -= delta
+	if lighting_clock <= 0.0:
+		lighting_clock = 0.1
+		update_lighting()
 	shelter_check -= delta
 	if shelter_check <= 0.0:
 		shelter_check = 0.25
 		var at: Vector3 = world.subject_position()
 		var roof := PhysicsRayQueryParameters3D.create(at+Vector3.UP*1.5,at+Vector3.UP*20,1)
 		sheltered = world.life.inside_public_interior(at) or world.PRISON_INTERIOR.has_point(at) or not get_world_3d().direct_space_state.intersect_ray(roof).is_empty()
-	rain.position = world.subject_position()+Vector3.UP*10
+	if storm > 0.1: rain.position = world.subject_position()+Vector3.UP*10
 	rain.emitting = storm > 0.1 and not sheltered
 	flood_surface.visible = storm > 0.25
 	flood_surface.position.y = 0.05+storm*0.22

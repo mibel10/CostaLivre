@@ -20,6 +20,7 @@ func react_to_threat() -> void:
 	model.show_crouch(true)
 	if model.animation != null and model.animation.has_animation("Flinch"):
 		model.emote_lock = 1.4
+		model.set_process(true)
 		model.animation.play("Flinch",0.08)
 
 func _process(delta: float) -> void:

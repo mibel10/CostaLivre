@@ -22,6 +22,7 @@ var rig: Node3D
 var crouch_tween: Tween
 var emote_lock := 0.0
 var golden_dancing := false
+var idle_sleep := 0.0
 
 class WeaponAim extends SkeletonModifier3D:
 	var visual: Node3D
@@ -172,6 +173,8 @@ func _ready() -> void:
 			library.add_animation(emote,gesture)
 	animation.play("Idle")
 	animation.advance(0)
+	animation.pause()
+	set_process(false)
 	if police:
 		var skeleton: Skeleton3D = actor.find_children("*", "Skeleton3D", true, false)[0]
 		var world: Node3D = get_parent().world
@@ -222,11 +225,15 @@ func animate(speed: float) -> void:
 		return
 	if speed < 0.2:
 		animation.speed_scale = 1
-		if animation.current_animation != "Idle":
+		if animation.assigned_animation != "Idle":
 			animation.play("Idle",0.18)
+			idle_sleep = 0.22
+			set_process(true)
 	else:
+		idle_sleep = 0.0
+		set_process(false)
 		animation.speed_scale = clampf(speed / 3.0, 0.55, 2.5)
-		if animation.current_animation != "Animation":
+		if animation.assigned_animation != "Animation" or not animation.is_playing():
 			animation.play("Animation",0.18)
 
 func play_emote(name: String) -> void:
@@ -238,6 +245,7 @@ func play_emote(name: String) -> void:
 	golden_dancing = gesture == "GoldenWind"
 	rig.rotation.y = PI
 	emote_lock = 8.0 if golden_dancing else (1.8 if gesture != "Griddy" else 2.4)
+	set_process(true)
 	animation.speed_scale = 1.0
 	animation.play(gesture,0.12)
 
@@ -245,10 +253,17 @@ func play_pickup_animation() -> void:
 	if animation == null or not animation.has_animation("DoorWork"):
 		return
 	emote_lock = 0.8
+	set_process(true)
 	animation.speed_scale = 1.0
 	animation.play("DoorWork",0.1)
 
 func _process(delta: float) -> void:
+	if emote_lock <= 0.0:
+		idle_sleep = maxf(0.0,idle_sleep-delta)
+		if idle_sleep == 0.0:
+			if animation != null and animation.assigned_animation == "Idle": animation.pause()
+			set_process(false)
+		return
 	if emote_lock > 0.0:
 		emote_lock = maxf(0.0,emote_lock-delta)
 		if golden_dancing:

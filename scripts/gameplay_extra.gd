@@ -23,6 +23,7 @@ var death_filter: ColorRect
 var battle_marks: Array[Node3D] = []
 var effects_bus := ""
 var rain_audio: AudioStreamPlayer
+var effects_indoors := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -281,12 +282,14 @@ func _process(delta: float) -> void:
 		return
 	var bus := AudioServer.get_bus_index(effects_bus)
 	var indoors: bool = world.life.inside_public_interior(world.subject_position()) or world.PRISON_INTERIOR.has_point(world.subject_position())
-	if bus >= 0: AudioServer.set_bus_effect_enabled(bus,0,indoors)
+	if bus >= 0 and indoors != effects_indoors:
+		AudioServer.set_bus_effect_enabled(bus,0,indoors)
+		effects_indoors = indoors
 	if world.atmosphere_cycle.storm>0.1:
 		if not rain_audio.playing: rain_audio.play()
 		rain_audio.volume_db = -30.0+(world.atmosphere_cycle.storm*8.0)-(10.0 if indoors else 0.0)
-	else: rain_audio.stop()
-	world.activities.shot_audio.bus = effects_bus
+	elif rain_audio.playing: rain_audio.stop()
+	if world.activities.shot_audio.bus != effects_bus: world.activities.shot_audio.bus = effects_bus
 	var chase_heat: float = world.heat
 	if world.network != null and world.network.active():
 		chase_heat = world.network.rules.wanted_heat(multiplayer.get_unique_id())

@@ -25,7 +25,12 @@ func run() -> void:
 	assert(actor.animation.current_animation == "Animation")
 	actor.animate(0)
 	actor.animation.advance(0.3)
-	assert(actor.animation.current_animation == "Idle" and actor.animation.is_playing(), "Stopping blends to an idle pose rather than freezing the walking clip")
+	actor._process(0.3)
+	assert(actor.animation.assigned_animation == "Idle" and not actor.animation.is_playing(), "The single-pose idle sleeps after its walk-to-idle blend")
+	actor.animate(5)
+	assert(actor.animation.is_playing() and actor.animation.current_animation == "Animation", "Walking wakes the animator")
+	actor.play_emote("wave")
+	assert(actor.is_processing() and actor.animation.current_animation == "Wave", "Emotes wake the model timer")
 	for mesh in actor.find_children("*","MeshInstance3D",true,false):
 		if mesh.material_override is StandardMaterial3D:
 			assert(mesh.material_override.albedo_texture == null, "Demo labels must not cover the character")
