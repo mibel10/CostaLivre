@@ -134,11 +134,13 @@ func run() -> void:
 	stand_rules.tick_stands(0.05)
 	assert(stand_target.get_meta("stand_slow_until",0) > Time.get_ticks_msec(), "Low Tide staggers NPCs")
 	print("PASS: each Stand ability, cooldown, healing, crowd control, cover and knockback works offline")
-	world.atmosphere_cycle.set_time(15.0)
+	world.atmosphere_cycle.storm_remaining = 60.0
 	await process_frame
 	assert(world.atmosphere_cycle.storm>0.9 and world.atmosphere_cycle.flooded(Vector3(0,0.3,84)))
+	assert(world.atmosphere_cycle.flooded(Vector3(1260,0.3,126)), "Flooding reaches the far east")
+	assert(world.atmosphere_cycle.DAY_LENGTH_SECONDS == 600.0, "Day and night each last five minutes")
 	assert(not world.atmosphere_cycle.flooded(Vector3(0,6,84)), "Flooding does not affect upper floors")
-	world.atmosphere_cycle.set_time(10.0)
+	world.atmosphere_cycle.storm_remaining = 0.0
 	await process_frame
 	assert(not world.atmosphere_cycle.flooded(Vector3(0,0.3,84)), "Floods recede after the storm")
 	for shot in 65: world.extra.battle_impact(world.player.position+Vector3(0,1,1))

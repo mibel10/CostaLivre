@@ -74,6 +74,12 @@ func run() -> void:
 	host.network.close_menu()
 	await create_timer(0.4).timeout
 	var id: int=client_api.get_unique_id()
+	host.atmosphere_cycle.storm_remaining = 60.0
+	await wait_for(func(): return client.atmosphere_cycle.storm_remaining>45.0 and client.atmosphere_cycle.storm>0.9)
+	assert(client.atmosphere_cycle.flooded(Vector3(1260,0.3,126)), "The host storm floods the distant streets on the client")
+	host.atmosphere_cycle.storm_remaining = 0.0
+	await wait_for(func(): return client.atmosphere_cycle.storm_remaining<=0.0 and client.atmosphere_cycle.storm<=0.0)
+	print("PASS: host-authoritative citywide storm and recession")
 	if "--stands-only" in OS.get_cmdline_user_args():
 		await test_stand_rework(id)
 		host.network.rules.show_stand_effect({"stand":3,"at":host.player.position,"target":host.player.position+Vector3.FORWARD*3,"yaw":0.0})
