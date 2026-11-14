@@ -12,6 +12,7 @@ var phone_panel: PanelContainer
 var phone_scroll: ScrollContainer
 var phone_apps: GridContainer
 var phone_status: Label
+var phone_tween: Tween
 var phone_messages: VBoxContainer
 var phone_message_text: Label
 var phone_contract_index := -1
@@ -99,18 +100,7 @@ func _ready() -> void:
 	screen.add_child(phone_scroll)
 	phone_scroll.add_child(phone_apps)
 	phone_apps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var rematch := Button.new()
-	rematch.text = "REVANCHE\nPVP"
-	rematch.custom_minimum_size = Vector2(145,80)
-	rematch.pressed.connect(phone_app.bind("rematch"))
-	phone_apps.add_child(rematch)
-	for entry in [["DISTRAÇÃO","distraction"],["MISTÉRIO\nCALADO","calado"]]:
-		var shortcut := Button.new()
-		shortcut.text = entry[0]
-		shortcut.custom_minimum_size = Vector2(145,80)
-		shortcut.pressed.connect(phone_app.bind(entry[1]))
-		phone_apps.add_child(shortcut)
-	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["RODA DE EMOTES / B", "emote_wheel"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
+	for item in [["REVANCHE", "rematch"],["DISTRAÇÃO", "distraction"],["MISTÉRIO CALADO", "calado"],["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["RODA DE EMOTES / B", "emote_wheel"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = str(item[0]).replace(" / ","\n").replace(" OU ","\n")
 		app.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -120,6 +110,8 @@ func _ready() -> void:
 		var tile := StyleBoxFlat.new()
 		tile.bg_color = Color("21465a") if phone_apps.get_child_count()%2 == 0 else Color("25404f")
 		tile.set_corner_radius_all(17)
+		tile.border_color = Color("e4b979") if item[1] in ["pvp","rematch"] else Color("79c9c6")
+		tile.border_width_left = 3
 		tile.content_margin_left = 10
 		tile.content_margin_right = 10
 		app.add_theme_stylebox_override("normal",tile)
@@ -127,6 +119,7 @@ func _ready() -> void:
 		highlight.bg_color = Color("347c87")
 		app.add_theme_stylebox_override("hover",highlight)
 		app.add_theme_stylebox_override("pressed",highlight)
+		app.add_theme_stylebox_override("focus",highlight)
 		app.pressed.connect(phone_app.bind(item[1]))
 		phone_apps.add_child(app)
 	phone_messages = VBoxContainer.new()
@@ -158,7 +151,16 @@ func toggle_phone() -> void:
 	if world.extra != null and (world.extra.wheel or world.extra.emote_wheel):
 		world.extra.wheel = false
 		world.extra.finish_emote_wheel()
+	if phone_tween != null: phone_tween.kill()
+	var screen_size := get_viewport_rect().size
+	var fit := maxf(0.1,minf(1.0,minf((screen_size.x-24)/360.0,(screen_size.y-24)/540.0)))
+	phone_panel.scale = Vector2.ONE*fit
+	phone_panel.position = (screen_size-phone_panel.size*fit)*0.5
 	phone_panel.visible = not phone_panel.visible
+	if phone_panel.visible:
+		phone_panel.modulate.a = 0.0
+		phone_tween = create_tween()
+		phone_tween.tween_property(phone_panel,"modulate:a",1.0,0.16)
 	world.restore_pointer()
 
 func phone_app(app: String) -> void:
@@ -287,7 +289,9 @@ func _draw() -> void:
 		var stand_status := "Sem Stand · Flechas: %d · use o celular" % arrows
 		if selected >= 0 and selected < rules.STAND_NAMES.size():
 			stand_status = "%s / H / %.0fs · Flechas: %d" % [rules.STAND_NAMES[selected],float(sheet.get("stand_cooldown",0.0)),arrows]
-		text(stand_status,Vector2(400,95),16)
+		if selected >= 0 or arrows > 0:
+			panel(Rect2(392,74,490,28),navy,8)
+			text(stand_status,Vector2(404,94),15)
 		if not rules.pvp.is_empty():
 			var team: int = int(rules.pvp.teams.get(multiplayer.get_unique_id(),-1))
 			var phase := "PRÓXIMA RODADA" if rules.pvp.phase == "break" else ("ELIMINADO · AGUARDE" if rules.is_dead(multiplayer.get_unique_id()) else "EM COMBATE")
@@ -307,7 +311,7 @@ func _draw() -> void:
 	if world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id()):
 		panel(Rect2(300,285,680,150))
 		text("VOCE FOI CALADO.",Vector2(400,345),40,Color("d34d50"))
-		text("Renascendo em outro ponto da cidade...",Vector2(420,395),19)
+		text("Aguarde a próxima rodada." if not world.network.rules.pvp.is_empty() else "Renascendo em outro ponto da cidade...",Vector2(420,395),19)
 		return
 	if world.extra != null and world.extra.wheel:
 		draw_wheel()
@@ -422,9 +426,19 @@ func draw_sniper_scope(a: Node) -> void:
 	draw_string(font, center + Vector2(-75, radius * 0.82), "%d / %d" % [a.clips[6], a.reserves[6]], HORIZONTAL_ALIGNMENT_CENTER, 150, 18, ink)
 
 func center_note(value: String, y: float, color: Color) -> void:
-	var width := font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 28
-	panel(Rect2((1280 - width) / 2, y - 23, width, 34))
-	text(value, Vector2((1280 - width) / 2 + 14, y), 14, color)
+	var lines: Array[String] = [""]
+	for word in value.split(" "):
+		var candidate: String = lines.back()+ (" " if not lines.back().is_empty() else "")+word
+		if font.get_string_size(candidate,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x>732 and not lines.back().is_empty():
+			lines.append(word)
+		else: lines[lines.size()-1] = candidate
+	var width := 0.0
+	for line in lines: width = maxf(width,font.get_string_size(line,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x+28)
+	var height := 34.0+(lines.size()-1)*18.0
+	var top := y-23-(lines.size()-1)*18.0
+	panel(Rect2((1280-width)/2,top,width,height))
+	for i in lines.size(): text(lines[i],Vector2((1280-width)/2+14,top+23+i*18),14,color)
+
 
 
 func draw_wheel() -> void:

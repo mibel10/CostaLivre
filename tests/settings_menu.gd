@@ -22,6 +22,11 @@ func run() -> void:
 	assert(ui.pages.ending.is_visible_in_tree() and not ui.pause_sidebar.is_visible_in_tree())
 	world.start_mode("sandbox")
 	world.activities.set_menu("")
+	world.hud.toggle_phone()
+	assert(world.hud.phone_panel.position.x>0 and world.hud.phone_panel.position.y>0, "The phone opens centered without flashing in a corner")
+	for app in world.hud.phone_apps.get_children():
+		assert(app.has_theme_stylebox_override("normal") and app.has_theme_stylebox_override("focus"), "All phone apps share visual and keyboard-focus styles")
+	world.hud.toggle_phone()
 	var key := InputEventKey.new()
 	key.physical_keycode = KEY_Q
 	key.pressed = false
