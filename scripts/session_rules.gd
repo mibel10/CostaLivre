@@ -1268,11 +1268,12 @@ func tick_stands(delta: float) -> void:
 		var radius := 8.0 if field_kind == 2 else 10.0
 		var stagger := 0.35 if field_kind == 2 else 0.9
 		for id in ids:
-			if id != field.owner and stand_enemy(field.owner,id) and position_of(id).distance_to(field.at) < radius:
+			if network.active() and (is_dead(id) or Time.get_ticks_msec() < int(stand_sheet(id).get("protected_until",0))): continue
+			if id != field.owner and stand_enemy(field.owner,id) and position_of(id).distance_to(field.at) < radius and stand_clear(field.at,position_of(id)):
 				var sheet := stand_sheet(id)
 				sheet["stand_slow"] = maxf(float(sheet.get("stand_slow",0.0)),stagger)
 		for person in world.life.people + world.activities.officers:
-			if person.hp > 0 and person.position.distance_to(field.at) < radius:
+			if person.hp > 0 and person.position.distance_to(field.at) < radius and stand_clear(field.at,person.position):
 				person.set_meta("stand_slow_until", Time.get_ticks_msec()+int(stagger*1000.0))
 
 func stand_enemy(source: int, target: int) -> bool:

@@ -76,8 +76,13 @@ func run() -> void:
 	var id: int=client_api.get_unique_id()
 	if "--stands-only" in OS.get_cmdline_user_args():
 		await test_stand_rework(id)
+		host.network.rules.show_stand_effect({"stand":3,"at":host.player.position,"target":host.player.position+Vector3.FORWARD*3,"yaw":0.0})
+		var wall_ref: WeakRef = weakref(host.network.rules.stand_objects.back())
 		host.network.disconnect_room()
+		assert(host.network.rules.stand_objects.is_empty(), "Disconnect clears host Stand objects outside PvP")
 		client.network.disconnect_room()
+		await process_frame
+		assert(wall_ref.get_ref() == null, "Disconnect removes the physical Stand barrier")
 		host.queue_free()
 		client.queue_free()
 		await process_frame
@@ -635,6 +640,21 @@ func test_stand_rework(id: int) -> void:
 	rules.sheets[1].stand_cooldown = 0.0
 	rules.sheets[id].stand_slow = 0.0
 	rules.use_stand(1,0.0)
+	rules.sheets[id].protected_until = Time.get_ticks_msec()+5000
+	rules.tick_stands(0.05)
+	assert(rules.sheets[id].stand_slow == 0.0, "Spawn protection blocks Stand fields")
+	rules.sheets[id].protected_until = 0
+	var obstruction := Node3D.new()
+	host.add_child(obstruction)
+	obstruction.position = stand_origin+forward*5.0
+	host.box(obstruction,Vector3(0,1.5,0),Vector3(3,3,0.4),Color.GRAY,true)
+	await physics_frame
+	await physics_frame
+	rules.tick_stands(0.05)
+	assert(rules.sheets[id].stand_slow == 0.0, "Walls block Stand fields")
+	obstruction.queue_free()
+	await physics_frame
+	await physics_frame
 	rules.tick_stands(0.05)
 	assert(rules.stand_fields.size() > 0 and rules.sheets[id].stand_slow > 0.0, "Sinal Fechado applies its slow zone on the host")
 	print("PASS: multiplayer Stand 3/5 Sinal Fechado")

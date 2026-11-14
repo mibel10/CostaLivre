@@ -659,6 +659,9 @@ func peer_left(id: int) -> void:
 func disconnect_room(stop_internet := true) -> void:
 	if active() and multiplayer.is_server() and not rules.pvp.is_empty(): rules.finish_pvp(-1)
 	rules.sync_stand_walls([])
+	for object in rules.stand_objects:
+		if is_instance_valid(object): object.queue_free()
+	rules.stand_objects.clear()
 	rules.pvp.clear()
 	rules.pvp_queue.clear()
 	rules.pvp_saved.clear()
