@@ -12135,42 +12135,6 @@ multimesh = SubResource("MultiMesh_yv4gn")
 material_override = SubResource("StandardMaterial3D_n88e6")
 multimesh = SubResource("MultiMesh_yuguh")
 
-[node name="_MeshInstance3D_390" type="MeshInstance3D" parent="Signs" unique_id=432262789]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0.12, 76)
-material_override = SubResource("StandardMaterial3D_7nnui")
-mesh = SubResource("BoxMesh_6qiva")
-
-[node name="_MeshInstance3D_391" type="MeshInstance3D" parent="Signs" unique_id=1312729657]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 1.1, 75.5)
-material_override = SubResource("StandardMaterial3D_7nnui")
-mesh = SubResource("BoxMesh_r1p44")
-
-[node name="_Node3D_392" type="Node3D" parent="Signs" unique_id=326717993]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 3.1, 76)
-
-[node name="_Label3D_397" type="Label3D" parent="Signs/_Node3D_392" unique_id=66071424]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0.02)
-visibility_range_end = 65.0
-pixel_size = 0.012
-modulate = Color(1, 0.9411765, 0.83137256, 1)
-outline_modulate = Color(0.0627451, 0.09803922, 0.10980392, 1)
-text = "OFICINA  /  PERSONALIZAÇÃO"
-font = ExtResource("2_hb0fj")
-font_size = 48
-outline_size = 6
-
-[node name="_MultiMeshInstance3D_398" type="MultiMeshInstance3D" parent="Signs/_Node3D_392" unique_id=220451489]
-material_override = SubResource("StandardMaterial3D_6hnok")
-multimesh = SubResource("MultiMesh_mik1s")
-
-[node name="_MultiMeshInstance3D_399" type="MultiMeshInstance3D" parent="Signs/_Node3D_392" unique_id=130262024]
-material_override = SubResource("StandardMaterial3D_t5haw")
-multimesh = SubResource("MultiMesh_q2615")
-
-[node name="_MultiMeshInstance3D_400" type="MultiMeshInstance3D" parent="Signs/_Node3D_392" unique_id=976374609]
-material_override = SubResource("StandardMaterial3D_t4nr2")
-multimesh = SubResource("MultiMesh_3j1qf")
-
 [node name="_MeshInstance3D_401" type="MeshInstance3D" parent="Signs" unique_id=845594030]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -63, 0.12, -8)
 material_override = SubResource("StandardMaterial3D_3v3hq")

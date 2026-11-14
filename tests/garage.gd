@@ -10,6 +10,7 @@ func run() -> void:
 	await physics_frame
 	await physics_frame
 	var garage: Node3D = world.get_node("GaragemCosta")
+	assert(not world.interiors.has_node("Signs/_Node3D_392"), "The obsolete sign must not overlap the workshop entrance")
 	var space := garage.get_world_3d().direct_space_state
 	for x in [-1.25, 1.25]:
 		for height in [0.8, 3.5]:
