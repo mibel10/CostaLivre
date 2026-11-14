@@ -346,9 +346,8 @@ func set_custom(key: String, value: int) -> void:
 func apply_texture(mat: StandardMaterial3D, source: Texture2D) -> void:
 	if source == null:
 		return
-	if texture_quality == 0:
-		mat.albedo_texture=source
-		return
+	# Original-resolution imports may lack mipmaps. Build them once as well,
+	# so distant surfaces do not sample full-resolution textures every pixel.
 	var key := str(source.get_instance_id())+":"+str(texture_quality)
 	if not texture_cache.has(key):
 		var image := source.get_image()
@@ -357,7 +356,7 @@ func apply_texture(mat: StandardMaterial3D, source: Texture2D) -> void:
 		if image.is_compressed() and image.decompress()!=OK:
 			return
 		var limit: int = [0,1024,512,256][texture_quality]
-		var ratio := minf(1.0,float(limit)/maxi(image.get_width(),image.get_height()))
+		var ratio := minf(1.0,float(limit)/maxi(image.get_width(),image.get_height())) if limit > 0 else 1.0
 		if ratio<1:
 			image.resize(maxi(1,int(image.get_width()*ratio)),maxi(1,int(image.get_height()*ratio)),Image.INTERPOLATE_BILINEAR)
 		image.generate_mipmaps()

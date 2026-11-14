@@ -25,6 +25,22 @@ func run() -> void:
 	var client = load("res://main.tscn").instantiate()
 	client.name="World"
 	client_view.add_child(client)
+	# Full-resolution textures still need mipmaps; switching presets must keep
+	# the original dimensions and reuse the cached GPU texture.
+	var image := Image.create(64,32,false,Image.FORMAT_RGBA8)
+	image.fill(Color.WHITE)
+	var source := ImageTexture.create_from_image(image)
+	var material := StandardMaterial3D.new()
+	host.settings.texture_quality=0
+	host.settings.apply_texture(material,source)
+	var full_resolution: Texture2D=material.albedo_texture
+	assert(full_resolution.get_width()==64 and full_resolution.get_height()==32)
+	assert(full_resolution.get_image().has_mipmaps(), "Original texture quality generates mipmaps")
+	host.settings.texture_quality=3
+	host.settings.apply_texture(material,source)
+	host.settings.texture_quality=0
+	host.settings.apply_texture(material,source)
+	assert(material.albedo_texture==full_resolution, "Returning to original quality reuses its mipmap cache")
 	host.settings.config_path="res://artifacts/custom_graphics_test.cfg"
 	host.settings.set_quality(1,false)
 	var shadows: int=host.settings.shadow_quality
