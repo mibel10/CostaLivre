@@ -39,6 +39,9 @@ func _ready() -> void:
 	add_child(rain)
 	for at in FLOOD_POINTS:
 		var water: MeshInstance3D = world.box(self,at+Vector3.UP*0.12,Vector3(28,0.06,9),Color("486879"))
+		var water_material := ShaderMaterial.new()
+		water_material.shader = preload("res://shaders/water.gdshader")
+		water.material_override = water_material
 		water.visible = false
 		flood_surfaces.append(water)
 
@@ -47,7 +50,7 @@ func _process(delta: float) -> void:
 	update_lighting()
 	storm = clampf(minf(day_time-14.0,17.0-day_time)*2.0,0.0,1.0)
 	rain.position = world.subject_position()+Vector3.UP*10
-	rain.emitting = storm > 0.1 and not world.life.inside_public_interior(world.subject_position())
+	rain.emitting = storm > 0.1 and not world.life.inside_public_interior(world.subject_position()) and not world.PRISON_INTERIOR.has_point(world.subject_position())
 	for surface in flood_surfaces:
 		surface.visible = storm > 0.25
 		surface.position.y = 0.05+storm*0.22
@@ -87,3 +90,5 @@ func update_lighting() -> void:
 		environment.ambient_light_energy = lerpf(0.16, 0.4, daylight)
 		environment.fog_light_color = Color("29364d").lerp(Color("9aafba"), daylight)
 		environment.background_energy_multiplier = lerpf(0.35, 1.0, daylight)
+		environment.background_energy_multiplier *= lerpf(1.0,0.4,storm)
+		environment.fog_light_color = environment.fog_light_color.lerp(Color("384858"),storm*0.7)

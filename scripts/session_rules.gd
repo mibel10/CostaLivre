@@ -1521,7 +1521,9 @@ func create_distraction(id: int) -> void:
 		if guard.hp>0 and bool(guard.get_meta("mission_sentinel",false)):
 			guard.set_meta("distraction_at",at)
 			guard.set_meta("distraction_until",Time.get_ticks_msec()+12000)
-	if network.active(): notice_all("Distração na entrada! Guardas atraídos por 12s; o parceiro pode se infiltrar.")
+	if network.active():
+		for participant in participants(): send_personal(participant,"sound",{"name":"door"})
+		notice_all("Distração na entrada! Guardas atraídos por 12s; o parceiro pode se infiltrar.")
 	else: world.notify("Guardas distraídos por 12 segundos. Entre pela tubulação!")
 
 func investigate_calado(id: int) -> void:
@@ -1544,6 +1546,7 @@ func investigate_calado(id: int) -> void:
 		return
 	var gathered: Array = []
 	for participant in participants() if network.active() else [id]:
+		if network.active() and is_dead(participant): continue
 		var location: Vector3 = position_of(participant) if network.active() else world.player.position
 		if location.distance_to(world.life.HAUNTED_HOUSE)<8: gathered.append(participant)
 	if id not in gathered or gathered.size() < (2 if network.active() else 1):

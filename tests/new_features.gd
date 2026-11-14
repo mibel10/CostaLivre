@@ -134,6 +134,42 @@ func run() -> void:
 	stand_rules.tick_stands(0.05)
 	assert(stand_target.get_meta("stand_slow_until",0) > Time.get_ticks_msec(), "Low Tide staggers NPCs")
 	print("PASS: each Stand ability, cooldown, healing, crowd control, cover and knockback works offline")
+	world.atmosphere_cycle.set_time(15.0)
+	await process_frame
+	assert(world.atmosphere_cycle.storm>0.9 and world.atmosphere_cycle.flooded(Vector3(0,0.3,84)))
+	assert(not world.atmosphere_cycle.flooded(Vector3(0,6,84)), "Flooding does not affect upper floors")
+	world.atmosphere_cycle.set_time(10.0)
+	await process_frame
+	assert(not world.atmosphere_cycle.flooded(Vector3(0,0.3,84)), "Floods recede after the storm")
+	for shot in 65: world.extra.battle_impact(world.player.position+Vector3(0,1,1))
+	assert(world.extra.battle_marks.size()<=48, "Battle marks have a fixed mobile-safe limit")
+	stand_target.react_to_threat()
+	assert(stand_target.reaction_time>0 and stand_target.model.animation.current_animation == "Flinch")
+	world.player.model.play_emote("torture_dance")
+	assert(world.player.model.animation.get_animation("GoldenWind").length == 8.0)
+	world.player.model._process(5.25)
+	assert(world.player.model.rig.rotation.y>PI, "Torture Dance includes the spin")
+	world.player.model._process(3.0)
+	assert(is_equal_approx(world.player.model.rig.rotation.y,PI))
+	world.activities.job = world.activities.SECRET_DATA_JOB
+	world.activities.stage = 1
+	world.activities.spawn_infiltration_sentinels()
+	world.player.position = Vector3(147,0.3,42)
+	stand_rules.create_distraction(1)
+	assert(world.activities.officers.any(func(guard): return int(guard.get_meta("distraction_until",0))>Time.get_ticks_msec()), "Distraction attracts sentinels")
+	world.activities.job = -1
+	for clue in stand_rules.CALADO_CLUES:
+		world.player.position = clue
+		stand_rules.investigate_calado(1)
+	assert(stand_rules.offline_stand.calado_clues == 7)
+	world.player.position = world.life.HAUNTED_HOUSE
+	var mystery_cash: int = world.cash
+	stand_rules.investigate_calado(1)
+	assert(stand_rules.offline_stand.calado_done and world.cash == mystery_cash+1500)
+	stand_rules.investigate_calado(1)
+	assert(world.cash == mystery_cash+1500, "Mystery reward cannot be claimed twice")
+	world.cutscene.finish()
+	print("PASS: storm, floods, bounded battle marks, NPC reaction, Torture Dance, distraction and solo Calado mystery")
 	world.finish(false)
 	assert(Engine.time_scale == 0.18 and extra.death_filter.visible)
 	world.queue_free()

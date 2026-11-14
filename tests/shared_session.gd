@@ -523,6 +523,13 @@ func run() -> void:
 	assert(pvp_rules.pvp.is_empty() and host.cash == cash_before + 2500)
 	assert(host.activities.weapon == weapon_before and not pvp_rules.is_dead(id))
 	print("PASS: five PvP arenas, random Stands, loadouts, rounds, reward and restoration")
+	assert(1 in pvp_rules.rematch_players and id in pvp_rules.rematch_players)
+	pvp_rules.action(1,"pvp_rematch",{})
+	assert(pvp_rules.pvp_queue.has(1) and not pvp_rules.pvp_queue.has(id), "Rematch never auto-enrolls the opponent")
+	pvp_rules.action(id,"pvp_rematch",{})
+	assert(pvp_rules.pvp_queue.has(id), "The opponent can confirm a rematch")
+	pvp_rules.pvp_queue.clear()
+	pvp_rules.pvp_wait = 0.0
 	await test_stand_rework(id)
 	var partner = await add_arena_client("Partner")
 	var opponent = await add_arena_client("Opponent")
@@ -657,6 +664,8 @@ func test_stand_rework(id: int) -> void:
 	host.box(obstruction,Vector3(0,1.5,0),Vector3(3,3,0.4),Color.GRAY,true)
 	await physics_frame
 	await physics_frame
+	host.network.members[id].car_position = remote_at
+	assert(not rules.stand_clear(rules.stand_fields.back().at,remote_at), "The fixture wall must occlude the remote target")
 	rules.sheets[id].stand_slow = 0.0
 	rules.tick_stands(0.05)
 	assert(rules.sheets[id].stand_slow == 0.0, "Walls block Stand fields")
@@ -692,6 +701,42 @@ func test_stand_rework(id: int) -> void:
 	assert(rules.sheets[id].health == 75.0 and rules.position_of(id).z < stand_origin.z-8.0, "Maré Baixa host result hp=%s at=%s" % [rules.sheets[id].health,rules.position_of(id)])
 	print("PASS: multiplayer Stand 5/5 Maré Baixa")
 	await process_frame
+	# Shared clues belong to the host; two players must meet for the ending.
+	for i in rules.CALADO_CLUES.size():
+		var collector: int = 1 if i%2 == 0 else id
+		if collector == 1: host.player.position = rules.CALADO_CLUES[i]
+		else: host.network.members[id].car_position = rules.CALADO_CLUES[i]
+		rules.investigate_calado(collector)
+	assert(int(rules.sheets[1].calado_clues) | int(rules.sheets[id].calado_clues) == 7)
+	host.player.position = host.life.HAUNTED_HOUSE
+	host.network.members[id].car_position = Vector3.ZERO
+	rules.investigate_calado(1)
+	assert(not bool(rules.sheets[1].get("calado_done",false)), "One player cannot claim the collective ending")
+	host.network.members[id].car_position = host.life.HAUNTED_HOUSE+Vector3.RIGHT
+	var before_calado: int = host.cash
+	rules.investigate_calado(1)
+	assert(rules.sheets[1].calado_done and rules.sheets[id].calado_done and host.cash == before_calado+1500)
+	rules.investigate_calado(1)
+	assert(host.cash == before_calado+1500)
+	await wait_for(func(): return bool(client.network.rules.sheets.get(id,{}).get("calado_done",false)))
+	host.cutscene.finish()
+	client.cutscene.finish()
+	print("PASS: collective Calado clues, gathering, replicated reward and duplicate protection")
+	host.activities.job = host.activities.SECRET_DATA_JOB
+	host.activities.stage = 1
+	var officers_before: int = host.activities.officers.size()
+	host.activities.spawn_infiltration_sentinels()
+	host.network.members[id].car_position = Vector3(147,0.3,42)
+	rules.create_distraction(id)
+	var distracted_guard: Node = host.activities.officers.back()
+	assert(int(distracted_guard.get_meta("distraction_until",0))>Time.get_ticks_msec())
+	assert(distracted_guard.get_meta("distraction_at") == Vector3(147,0.3,42), "Host validates and applies the remote distraction")
+	var until: int = distracted_guard.get_meta("distraction_until")
+	rules.create_distraction(id)
+	assert(int(distracted_guard.get_meta("distraction_until")) == until, "Distraction cooldown blocks repeated activation")
+	while host.activities.officers.size()>officers_before: host.activities.officers.pop_back().queue_free()
+	host.activities.job = -1
+	print("PASS: remote infiltration distraction and host cooldown")
 
 func add_arena_client(label: String) -> Node:
 	var view := SubViewport.new()

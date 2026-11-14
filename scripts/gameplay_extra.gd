@@ -22,6 +22,7 @@ var death_started := 0
 var death_filter: ColorRect
 var battle_marks: Array[Node3D] = []
 var effects_bus := ""
+var rain_audio: AudioStreamPlayer
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -53,11 +54,12 @@ func _ready() -> void:
 		emote_music.stream = load("res://assets/audio/golden_wind.ogg") as AudioStream
 		emote_music.volume_db = -8.0
 		add_child(emote_music)
-	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit", "thunder", "impact", "clue", "splash"]:
+	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit", "thunder", "impact", "clue", "splash", "rain"]:
 		var wav := AudioStreamWAV.new()
 		wav.format = AudioStreamWAV.FORMAT_16_BITS
 		wav.mix_rate = 22050
 		var count := 22050 if name == "death" else (11025 if name=="explosion" else 6600)
+		if name in ["rain","thunder"]: count = 44100
 		var data := PackedByteArray()
 		data.resize(count * 2)
 		for i in count:
@@ -71,9 +73,17 @@ func _ready() -> void:
 			var value := sin(TAU * frequency * t) * exp(-t * (3 if name == "death" else (7 if name=="explosion" else 20)))
 			if name=="explosion": value=(value*0.35+randf_range(-1.0,1.0)*exp(-t*11))*minf(1.0,t*90)
 			if name in ["thunder","impact","splash"]: value = (value*0.3+randf_range(-0.6,0.6))*exp(-t*(5.0 if name == "thunder" else 18.0))
+			if name == "rain": value = randf_range(-0.3,0.3)
 			data.encode_s16(i * 2, int(value * 14000))
 		wav.data = data
+		if name == "rain":
+			wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+			wav.loop_end = count
 		sounds[name] = wav
+	rain_audio = AudioStreamPlayer.new()
+	rain_audio.stream = sounds.rain
+	rain_audio.bus = effects_bus
+	add_child(rain_audio)
 	punch_arm = world.box(world.player.model, Vector3.ZERO, Vector3(0.14, 0.14, 0.42), Color("c9af91"))
 	punch_arm.visible = false
 	death_filter = ColorRect.new()
@@ -89,6 +99,16 @@ func _ready() -> void:
 
 func battle_impact(at: Vector3) -> void:
 	if world.subject_position().distance_to(at)>100: return
+	battle_marks.assign(battle_marks.filter(func(mark): return is_instance_valid(mark)))
+	var impact := AudioStreamPlayer3D.new()
+	impact.stream = sounds.impact
+	impact.bus = effects_bus
+	impact.volume_db = -24
+	impact.max_distance = 45
+	world.add_child(impact)
+	impact.position = at
+	impact.finished.connect(impact.queue_free)
+	impact.play()
 	while battle_marks.size() >= 48:
 		var old := battle_marks.pop_front() as Node3D
 		if is_instance_valid(old): old.queue_free()
@@ -255,6 +275,10 @@ func _process(delta: float) -> void:
 	var bus := AudioServer.get_bus_index(effects_bus)
 	var indoors: bool = world.life.inside_public_interior(world.subject_position()) or world.PRISON_INTERIOR.has_point(world.subject_position())
 	if bus >= 0: AudioServer.set_bus_effect_enabled(bus,0,indoors)
+	if world.atmosphere_cycle.storm>0.1:
+		if not rain_audio.playing: rain_audio.play()
+		rain_audio.volume_db = -30.0+(world.atmosphere_cycle.storm*8.0)-(10.0 if indoors else 0.0)
+	else: rain_audio.stop()
 	world.activities.shot_audio.bus = effects_bus
 	var chase_heat: float = world.heat
 	if world.network != null and world.network.active():
@@ -288,7 +312,7 @@ func _process(delta: float) -> void:
 		world.player.model.rotation.z = 0
 	step_clock -= delta
 	if world.active_car == null and world.player.is_on_floor() and world.player.roll_time <= 0 and world.player.velocity.length() > 1 and step_clock <= 0:
-		play("step", -29)
+		play("splash" if world.atmosphere_cycle.flooded(world.player.position) else "step", -29)
 		step_clock = 0.3
 	siren_clock -= delta
 	if world.heat > 0 and siren_clock <= 0 and not siren_audio.playing:
