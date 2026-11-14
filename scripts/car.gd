@@ -281,6 +281,7 @@ func _physics_process(delta: float) -> void:
 		if world.life.inside_public_interior(nose) and not world.life.inside_public_interior(position):
 			pursuit_blocked = true
 			speed = 0.0
+	if not hovering and world.atmosphere_cycle.flooded(position): speed = move_toward(speed,clampf(speed,-7.0,7.0),delta*18.0)
 	velocity.x = forward.x * speed
 	velocity.z = forward.z * speed
 	velocity.y = -5 if is_on_floor() else velocity.y - 22 * delta

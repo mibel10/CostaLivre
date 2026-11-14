@@ -20,9 +20,19 @@ var step_clock := 0.0
 var siren_clock := 0.0
 var death_started := 0
 var death_filter: ColorRect
+var battle_marks: Array[Node3D] = []
+var effects_bus := ""
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	effects_bus = "Interior_"+str(get_instance_id())
+	AudioServer.add_bus()
+	var bus := AudioServer.bus_count-1
+	AudioServer.set_bus_name(bus,effects_bus)
+	var lowpass := AudioEffectLowPassFilter.new()
+	lowpass.cutoff_hz = 1800
+	AudioServer.add_bus_effect(bus,lowpass)
+	AudioServer.set_bus_effect_enabled(bus,0,false)
 	audio = AudioStreamPlayer.new()
 	audio.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(audio)
@@ -43,7 +53,7 @@ func _ready() -> void:
 		emote_music.stream = load("res://assets/audio/golden_wind.ogg") as AudioStream
 		emote_music.volume_db = -8.0
 		add_child(emote_music)
-	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit"]:
+	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit", "thunder", "impact", "clue", "splash"]:
 		var wav := AudioStreamWAV.new()
 		wav.format = AudioStreamWAV.FORMAT_16_BITS
 		wav.mix_rate = 22050
@@ -56,8 +66,11 @@ func _ready() -> void:
 			if name == "door": frequency = 125.0 + 65.0 * exp(-t * 18.0)
 			elif name == "reload": frequency = 380.0 + 110.0 * fmod(floor(t * 20.0), 2.0)
 			elif name == "digit": frequency = 920.0
+			elif name == "clue": frequency = 440.0+sin(t*12)*220.0
+			elif name == "thunder": frequency = 38.0+sin(t*16)*18.0
 			var value := sin(TAU * frequency * t) * exp(-t * (3 if name == "death" else (7 if name=="explosion" else 20)))
 			if name=="explosion": value=(value*0.35+randf_range(-1.0,1.0)*exp(-t*11))*minf(1.0,t*90)
+			if name in ["thunder","impact","splash"]: value = (value*0.3+randf_range(-0.6,0.6))*exp(-t*(5.0 if name == "thunder" else 18.0))
 			data.encode_s16(i * 2, int(value * 14000))
 		wav.data = data
 		sounds[name] = wav
@@ -72,6 +85,19 @@ func _ready() -> void:
 	death_filter.visible = false
 	world.hud.get_parent().add_child(death_filter)
 	world.hud.get_parent().move_child(death_filter, 0)
+	for voice in [audio,step_audio,siren_audio]: voice.bus = effects_bus
+
+func battle_impact(at: Vector3) -> void:
+	if world.subject_position().distance_to(at)>100: return
+	while battle_marks.size() >= 48:
+		var old := battle_marks.pop_front() as Node3D
+		if is_instance_valid(old): old.queue_free()
+	var mark: MeshInstance3D = world.box(world,at,Vector3(0.12,0.12,0.12),Color("353035"))
+	battle_marks.append(mark)
+	var fade := mark.create_tween()
+	fade.tween_interval(12)
+	fade.tween_property(mark,"scale",Vector3.ONE*0.01,3)
+	fade.tween_callback(mark.queue_free)
 
 func play(name: String, volume := -18.0) -> void:
 	var voice := step_audio if name == "step" else (siren_audio if name == "siren" else audio)
@@ -226,6 +252,10 @@ func _process(delta: float) -> void:
 		return
 	if world.get_tree().paused:
 		return
+	var bus := AudioServer.get_bus_index(effects_bus)
+	var indoors: bool = world.life.inside_public_interior(world.subject_position()) or world.PRISON_INTERIOR.has_point(world.subject_position())
+	if bus >= 0: AudioServer.set_bus_effect_enabled(bus,0,indoors)
+	world.activities.shot_audio.bus = effects_bus
 	var chase_heat: float = world.heat
 	if world.network != null and world.network.active():
 		chase_heat = world.network.rules.wanted_heat(multiplayer.get_unique_id())
@@ -269,6 +299,8 @@ func _process(delta: float) -> void:
 		siren_clock = 0.7
 
 func _exit_tree() -> void:
+	var bus := AudioServer.get_bus_index(effects_bus)
+	if bus > 0: AudioServer.remove_bus(bus)
 	Engine.time_scale = 1
 	audio.stop()
 	step_audio.stop()

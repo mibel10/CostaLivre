@@ -12,6 +12,18 @@ var shopping_pause := 0.0
 var robbed := false
 var scared := false
 var appearance_index := 0
+var reaction_time := 0.0
+
+func react_to_threat() -> void:
+	if hp<=0 or reaction_time>0: return
+	reaction_time = 1.4
+	model.show_crouch(true)
+	model.play_emote("wave")
+
+func _process(delta: float) -> void:
+	if reaction_time <= 0: return
+	reaction_time = maxf(0.0,reaction_time-delta)
+	if reaction_time == 0 and hp>0: model.show_crouch(false)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE

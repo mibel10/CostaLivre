@@ -81,6 +81,7 @@ func _physics_process(delta: float) -> void:
 	var direction := Vector3(input.x, 0, input.y).rotated(Vector3.UP, world.camera_yaw)
 	var sprinting: bool = sprint_latched if world.settings.toggle_sprint else Input.is_action_pressed("sprint")
 	var speed := (1.8 if is_crouching else (9.0 if sprinting else 5.0))
+	if world.atmosphere_cycle.flooded(position): speed *= 0.65
 	if float(world.network.rules.stand_sheet(multiplayer.get_unique_id()).get("stand_slow",0.0)) > 0.0:
 		speed *= 0.22
 	velocity.x = move_toward(velocity.x, direction.x * speed, delta * 30)
