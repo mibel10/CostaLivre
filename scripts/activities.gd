@@ -1049,7 +1049,7 @@ func weapon_impact(hit: Dictionary, at: Vector3, selected: int) -> void:
 		victim.take_hit(DAMAGE[selected])
 
 func shot_effect(from: Vector3, to: Vector3, selected: int) -> void:
-	world.extra.battle_impact(to)
+	world.extra.battle_impact(to,(to-from).normalized())
 	for person in world.life.people:
 		if person.hp>0 and person.position.distance_to(to)<12:
 			person.react_to_threat()

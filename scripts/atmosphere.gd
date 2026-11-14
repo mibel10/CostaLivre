@@ -17,6 +17,8 @@ var flood_regions: Array[Rect2] = []
 var storm_remaining := 0.0
 var storm_check := STORM_CHECK_SECONDS
 var thunder_beat := -1
+var shelter_check := 0.0
+var sheltered := false
 
 func _ready() -> void:
 	for i in 2:
@@ -71,7 +73,6 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	day_time = fposmod(day_time + delta * 24.0 / DAY_LENGTH_SECONDS, 24.0)
-	update_lighting()
 	if not world.network.is_client():
 		if storm_remaining > 0.0:
 			storm_remaining = maxf(0.0,storm_remaining-delta)
@@ -83,8 +84,15 @@ func _process(delta: float) -> void:
 	else:
 		storm_remaining = maxf(0.0,storm_remaining-delta)
 	storm = clampf(minf(STORM_DURATION-storm_remaining,storm_remaining)/15.0,0.0,1.0)
+	update_lighting()
+	shelter_check -= delta
+	if shelter_check <= 0.0:
+		shelter_check = 0.25
+		var at: Vector3 = world.subject_position()
+		var roof := PhysicsRayQueryParameters3D.create(at+Vector3.UP*1.5,at+Vector3.UP*20,1)
+		sheltered = world.life.inside_public_interior(at) or world.PRISON_INTERIOR.has_point(at) or not get_world_3d().direct_space_state.intersect_ray(roof).is_empty()
 	rain.position = world.subject_position()+Vector3.UP*10
-	rain.emitting = storm > 0.1 and not world.life.inside_public_interior(world.subject_position()) and not world.PRISON_INTERIOR.has_point(world.subject_position())
+	rain.emitting = storm > 0.1 and not sheltered
 	flood_surface.visible = storm > 0.25
 	flood_surface.position.y = 0.05+storm*0.22
 	var beat := int(day_time*20.0)
@@ -99,8 +107,12 @@ func _process(delta: float) -> void:
 
 func flooded(at: Vector3) -> bool:
 	if storm < 0.5 or at.y > 0.8 or at.y < -0.5: return false
-	for region in flood_regions:
-		if region.has_point(Vector2(at.x,at.z)): return true
+	# Same fixed road grid as the water batch, without scanning every strip per car.
+	var row := clampf(roundf(at.z/42.0)*42.0,-126,126)
+	if at.x >= -147 and at.x < world.MAP_EAST and at.z >= row-4 and at.z < row+4: return true
+	if at.z >= -126 and at.z < 126:
+		var column := clampf(roundf(at.x/42.0)*42.0,-126,126) if at.x < 168 else clampf(210+roundf((at.x-210)/84.0)*84.0,210,1302)
+		return at.x >= column-4 and at.x < column+4
 	return false
 
 func set_time(value: float) -> void:

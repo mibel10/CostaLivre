@@ -97,8 +97,11 @@ func _ready() -> void:
 	world.hud.get_parent().move_child(death_filter, 0)
 	for voice in [audio,step_audio,siren_audio]: voice.bus = effects_bus
 
-func battle_impact(at: Vector3) -> void:
+func battle_impact(at: Vector3, direction := Vector3.FORWARD) -> void:
 	if world.subject_position().distance_to(at)>100: return
+	var ray := PhysicsRayQueryParameters3D.create(at-direction*0.25,at+direction*0.25,7)
+	var hit := world.get_world_3d().direct_space_state.intersect_ray(ray)
+	if hit.is_empty(): return
 	battle_marks.assign(battle_marks.filter(func(mark): return is_instance_valid(mark)))
 	var impact := AudioStreamPlayer3D.new()
 	impact.stream = sounds.impact
@@ -112,7 +115,11 @@ func battle_impact(at: Vector3) -> void:
 	while battle_marks.size() >= 48:
 		var old := battle_marks.pop_front() as Node3D
 		if is_instance_valid(old): old.queue_free()
-	var mark: MeshInstance3D = world.box(world,at,Vector3(0.12,0.12,0.12),Color("353035"))
+	var normal: Vector3 = hit.normal
+	var mark: MeshInstance3D = world.box(world,hit.position+normal*0.012,Vector3(0.14,0.14,0.008),Color("353035"))
+	mark.look_at(mark.global_position+normal,Vector3.RIGHT if absf(normal.dot(Vector3.UP))>0.95 else Vector3.UP)
+	mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if hit.collider is Node3D: mark.reparent(hit.collider,true)
 	battle_marks.append(mark)
 	var fade := mark.create_tween()
 	fade.tween_interval(12)
@@ -120,7 +127,7 @@ func battle_impact(at: Vector3) -> void:
 	fade.tween_callback(mark.queue_free)
 
 func play(name: String, volume := -18.0) -> void:
-	var voice := step_audio if name == "step" else (siren_audio if name == "siren" else audio)
+	var voice := step_audio if name in ["step","splash"] else (siren_audio if name == "siren" else audio)
 	voice.stream = sounds[name]
 	voice.volume_db = volume
 	voice.play()

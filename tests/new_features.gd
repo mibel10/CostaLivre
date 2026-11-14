@@ -140,11 +140,35 @@ func run() -> void:
 	assert(world.atmosphere_cycle.flooded(Vector3(1260,0.3,126)), "Flooding reaches the far east")
 	assert(world.atmosphere_cycle.DAY_LENGTH_SECONDS == 600.0, "Day and night each last five minutes")
 	assert(not world.atmosphere_cycle.flooded(Vector3(0,6,84)), "Flooding does not affect upper floors")
+	for sample in 500:
+		var at := Vector3(-160+sample*3.1,0.3,-135+posmod(sample*37,270))
+		var expected := false
+		for region in world.atmosphere_cycle.flood_regions:
+			if region.has_point(Vector2(at.x,at.z)): expected = true
+		assert(world.atmosphere_cycle.flooded(at) == expected, "Fast flood detection matches the rendered road grid")
+	world.player.position = world.activities.GARAGE
+	world.atmosphere_cycle.shelter_check = 0.0
+	world.atmosphere_cycle._process(0.01)
+	assert(world.atmosphere_cycle.sheltered and not world.atmosphere_cycle.rain.emitting, "The workshop roof shelters the player from rain")
 	world.atmosphere_cycle.storm_remaining = 0.0
 	await process_frame
 	assert(not world.atmosphere_cycle.flooded(Vector3(0,0.3,84)), "Floods recede after the storm")
 	for shot in 65: world.extra.battle_impact(world.player.position+Vector3(0,1,1))
 	assert(world.extra.battle_marks.size()<=48, "Battle marks have a fixed mobile-safe limit")
+	world.player.position = Vector3(900,50,900)
+	world.extra.battle_impact(Vector3(900,51,900))
+	assert(world.extra.battle_marks.is_empty(), "Gunshots into empty air do not leave floating marks")
+	var impact_wall := Node3D.new()
+	world.add_child(impact_wall)
+	impact_wall.position = Vector3(900,50,898)
+	world.box(impact_wall,Vector3(0,1,0),Vector3(3,3,0.2),Color.GRAY,true)
+	await physics_frame
+	await physics_frame
+	world.extra.battle_impact(Vector3(900,51,898.1),Vector3.FORWARD)
+	assert(world.extra.battle_marks.size() == 1 and world.extra.battle_marks[0].get_parent() != world, "Impact marks attach to the surface they hit")
+	impact_wall.queue_free()
+	await process_frame
+	world.extra.battle_impact(Vector3(900,51,900))
 	stand_target.react_to_threat()
 	assert(stand_target.reaction_time>0 and stand_target.model.animation.current_animation == "Flinch")
 	world.player.model.play_emote("torture_dance")
