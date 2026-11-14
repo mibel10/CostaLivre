@@ -444,6 +444,7 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		last_actions[key] = now
 	if pvp.get("teams", {}).has(id) and kind not in ["fire", "punch", "reload", "stand_use", "stand_select"]:
 		return
+	if pvp.get("teams", {}).has(id) and pvp.get("phase", "") != "fight": return
 	match kind:
 		"stand_use": use_stand(id, float(data.get("yaw",0.0)))
 		"stand_select":
@@ -1575,13 +1576,14 @@ func start_pvp_round() -> void:
 		var inv: Dictionary = sheets[id].inventory
 		inv.weapon = 2
 		inv.rifle_owned = true
-		inv.shotgun_owned = false
+		inv.shotgun_owned = true
 		inv.smg_owned = false
 		inv.heavy_owned = [false,false,false]
-		inv.clips = [0,12,30,0,0,0,0,0]
-		inv.reserves = [0,72,180,0,0,0,0,0]
+		inv.clips = [0,12,30,6,0,0,0,0]
+		inv.reserves = [0,24,60,12,0,0,0,0]
 		inv.fire_cooldown = 0.0
 		inv.reload_time = 0.0
+		inv.reload_weapon = 0
 		if id == local_id():
 			world.health = 100.0
 			for key in INVENTORY: world.activities.set(key,inv[key])

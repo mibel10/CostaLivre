@@ -10,7 +10,8 @@ var panel_styles := {}
 var phone_button: Button
 var phone_panel: PanelContainer
 var phone_scroll: ScrollContainer
-var phone_apps: VBoxContainer
+var phone_apps: GridContainer
+var phone_status: Label
 var phone_messages: VBoxContainer
 var phone_message_text: Label
 var phone_contract_index := -1
@@ -60,27 +61,67 @@ func _ready() -> void:
 	phone_button.pressed.connect(toggle_phone)
 	add_child(phone_button)
 	phone_panel = PanelContainer.new()
-	phone_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	phone_panel.position = Vector2(-340,-484)
-	phone_panel.custom_minimum_size = Vector2(320,410)
-	phone_panel.size = Vector2(320,410)
+	phone_panel.custom_minimum_size = Vector2(360,540)
+	phone_panel.size = Vector2(360,540)
+	phone_panel.z_index = 20
+	var shell := StyleBoxFlat.new()
+	shell.bg_color = Color("102b40")
+	shell.border_color = Color("080e17")
+	shell.set_border_width_all(7)
+	shell.set_corner_radius_all(32)
+	shell.content_margin_left = 20
+	shell.content_margin_right = 20
+	shell.content_margin_top = 14
+	shell.content_margin_bottom = 14
+	phone_panel.add_theme_stylebox_override("panel",shell)
 	phone_panel.hide()
 	add_child(phone_panel)
-	phone_apps = VBoxContainer.new()
+	var screen := VBoxContainer.new()
+	screen.add_theme_constant_override("separation",12)
+	phone_panel.add_child(screen)
+	phone_status = Label.new()
+	phone_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	phone_status.add_theme_font_size_override("font_size",13)
+	screen.add_child(phone_status)
+	var brand := Label.new()
+	brand.text = "COSTA\nLIVRE"
+	brand.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	brand.add_theme_font_size_override("font_size",28)
+	brand.add_theme_color_override("font_color",Color("81e8dd"))
+	screen.add_child(brand)
+	phone_apps = GridContainer.new()
+	phone_apps.columns = 2
+	phone_apps.add_theme_constant_override("h_separation",10)
+	phone_apps.add_theme_constant_override("v_separation",10)
 	phone_scroll = ScrollContainer.new()
-	phone_scroll.custom_minimum_size = Vector2(300,390)
-	phone_panel.add_child(phone_scroll)
+	phone_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	phone_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	screen.add_child(phone_scroll)
 	phone_scroll.add_child(phone_apps)
 	phone_apps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["RODA DE EMOTES / B", "emote_wheel"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
-		app.text = item[0]
-		app.custom_minimum_size.y = 40
+		app.text = str(item[0]).replace(" / ","\n").replace(" OU ","\n")
+		app.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		app.custom_minimum_size = Vector2(145,80)
+		app.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		app.add_theme_font_size_override("font_size",14)
+		var tile := StyleBoxFlat.new()
+		tile.bg_color = Color("21465a") if phone_apps.get_child_count()%2 == 0 else Color("25404f")
+		tile.set_corner_radius_all(17)
+		tile.content_margin_left = 10
+		tile.content_margin_right = 10
+		app.add_theme_stylebox_override("normal",tile)
+		var highlight := tile.duplicate() as StyleBoxFlat
+		highlight.bg_color = Color("347c87")
+		app.add_theme_stylebox_override("hover",highlight)
+		app.add_theme_stylebox_override("pressed",highlight)
 		app.pressed.connect(phone_app.bind(item[1]))
 		phone_apps.add_child(app)
 	phone_messages = VBoxContainer.new()
 	phone_messages.hide()
-	phone_panel.add_child(phone_messages)
+	phone_messages.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	screen.add_child(phone_messages)
 	phone_message_text = Label.new()
 	phone_message_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	phone_messages.add_child(phone_message_text)
@@ -96,6 +137,11 @@ func _ready() -> void:
 	back.text = "VOLTAR"
 	back.pressed.connect(func(): phone_messages.hide(); phone_scroll.show())
 	phone_messages.add_child(back)
+	var home := Button.new()
+	home.text = "FECHAR  ━"
+	home.custom_minimum_size.y = 44
+	home.pressed.connect(toggle_phone)
+	screen.add_child(home)
 
 func toggle_phone() -> void:
 	if world.extra != null and (world.extra.wheel or world.extra.emote_wheel):
@@ -184,6 +230,13 @@ func show_tutorial() -> void:
 
 func _process(_delta: float) -> void:
 	if world != null and is_instance_valid(phone_button):
+		if phone_panel.visible:
+			var screen_size := get_viewport_rect().size
+			var fit := minf(1.0,minf((screen_size.x-24)/360.0,(screen_size.y-24)/540.0))
+			phone_panel.scale = Vector2.ONE*fit
+			phone_panel.position = (screen_size-phone_panel.size*fit)*0.5
+			var clock := Time.get_time_dict_from_system()
+			phone_status.text = "%02d:%02d     ●●●  COSTA NET     ▰" % [clock.hour,clock.minute]
 		if world.finished or world.activities.menu not in ["", "chat"] or world.cutscene.active:
 			phone_panel.hide()
 		phone_button.visible = not OS.has_feature("android") and not world.finished and world.activities.menu in ["", "chat"] and not world.cutscene.active
@@ -218,7 +271,11 @@ func _draw() -> void:
 			stand_status = "%s / H / %.0fs · Flechas: %d" % [rules.STAND_NAMES[selected],float(sheet.get("stand_cooldown",0.0)),arrows]
 		text(stand_status,Vector2(400,95),16)
 		if not rules.pvp.is_empty():
-			text("PVP %d/5 / %d x %d / %.0fs" % [rules.pvp.round,rules.pvp.scores[0],rules.pvp.scores[1],rules.pvp.time],Vector2(400,120),18)
+			var team: int = int(rules.pvp.teams.get(multiplayer.get_unique_id(),-1))
+			var phase := "PRÓXIMA RODADA" if rules.pvp.phase == "break" else ("ELIMINADO · AGUARDE" if rules.is_dead(multiplayer.get_unique_id()) else "EM COMBATE")
+			panel(Rect2(392,102,490,62),navy,10)
+			text("PVP %d/5  ·  %d x %d  ·  %.0fs  ·  EQUIPE %d" % [rules.pvp.round,rules.pvp.scores[0],rules.pvp.scores[1],ceilf(rules.pvp.time),team+1],Vector2(404,126),17)
+			text(phase,Vector2(404,151),15,gold)
 	var a: Node = world.activities
 	if world.finished:
 		draw_rect(Rect2(0, 270, 1280, 155), Color(0, 0, 0, 0.45))

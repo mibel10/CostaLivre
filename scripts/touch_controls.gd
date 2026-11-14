@@ -66,7 +66,7 @@ func base_buttons() -> Array:
 	if state == "death":
 		return [[Rect2(510,570,260,70),"RECOMEÇAR","restart"]]
 	if state == "phone":
-		return [[Rect2(735,245,150,55),"CELULAR","phone"]]
+		return [] # The phone has its own native close button.
 	if state != "":
 		return [] # Native pause/menu controls use Android touch-to-mouse input.
 	var rows := [[Rect2(1090,105,160,65),"PAUSA","pause"], [Rect2(905,105,160,65),"MAPA","map"], [Rect2(735,245,150,55),"CELULAR","phone"], [Rect2(1085,530,165,85),"ATIRAR","shoot"], [Rect2(900,530,160,85),"MIRAR","aim"], [Rect2(1085,425,165,80),"ENTRAR/SAIR","interact"], [Rect2(900,425,160,80),"USAR / F","activity"], [Rect2(705,530,165,85),"PULAR/FREIO","jump"], [Rect2(705,425,165,80),"CORRER","sprint"], [Rect2(40,105,160,65),"MISSÕES","jobs"], [Rect2(220,105,160,65),"ARMA","weapon"], [Rect2(400,105,160,65),"RECARGA","reload"], [Rect2(585,105,130,65),"ROLAR","roll"], [Rect2(735,105,150,65),"AGACHAR","crouch"], [Rect2(40,180,130,55),"RESGATE","reset"]]

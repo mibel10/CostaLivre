@@ -510,6 +510,10 @@ func run() -> void:
 
 	for round_index in 5:
 		assert(pvp_rules.pvp.round == round_index + 1)
+		for participant in [1,id]:
+			var round_inventory: Dictionary = pvp_rules.sheets[participant].inventory
+			assert(round_inventory.rifle_owned and round_inventory.shotgun_owned, "Every round grants rifle and shotgun")
+			assert(round_inventory.clips == [0,12,30,6,0,0,0,0] and round_inventory.reserves == [0,24,60,12,0,0,0,0], "Each round resets all three weapons to limited ammo")
 		assert(int(pvp_rules.sheets[id].stand) in range(5))
 		pvp_rules.sheets[id].protected_until = 0
 		pvp_rules.damage_peer(id,100.0,1)
@@ -542,6 +546,9 @@ func run() -> void:
 	pvp_rules.damage_peer(opponent_id,100.0,1)
 	pvp_rules.tick_pvp(0.1)
 	assert(pvp_rules.pvp.scores[0] == 1 and pvp_rules.pvp.phase == "break")
+	var break_ammo: int = pvp_rules.sheets[1].inventory.clips[2]
+	pvp_rules.action(1,"fire",{"weapon":2,"origin":host.player.position+Vector3.UP,"direction":Vector3.FORWARD})
+	assert(pvp_rules.sheets[1].inventory.clips[2] == break_ammo, "Combat cannot consume ammo during the round break")
 	pvp_rules.tick_pvp(5.0)
 	opponent.network.disconnect_room()
 	await wait_for(func(): return host.network.members.size() == 3)
@@ -650,6 +657,7 @@ func test_stand_rework(id: int) -> void:
 	host.box(obstruction,Vector3(0,1.5,0),Vector3(3,3,0.4),Color.GRAY,true)
 	await physics_frame
 	await physics_frame
+	rules.sheets[id].stand_slow = 0.0
 	rules.tick_stands(0.05)
 	assert(rules.sheets[id].stand_slow == 0.0, "Walls block Stand fields")
 	obstruction.queue_free()
