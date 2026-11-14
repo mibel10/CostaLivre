@@ -664,6 +664,7 @@ func disconnect_room(stop_internet := true) -> void:
 	rules.stand_objects.clear()
 	rules.pvp.clear()
 	rules.pvp_queue.clear()
+	rules.rematch_players.clear()
 	rules.pvp_saved.clear()
 	rules.stand_history.clear()
 	rules.stand_fields.clear()

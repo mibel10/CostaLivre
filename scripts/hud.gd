@@ -99,6 +99,11 @@ func _ready() -> void:
 	screen.add_child(phone_scroll)
 	phone_scroll.add_child(phone_apps)
 	phone_apps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var rematch := Button.new()
+	rematch.text = "REVANCHE\nPVP"
+	rematch.custom_minimum_size = Vector2(145,80)
+	rematch.pressed.connect(phone_app.bind("rematch"))
+	phone_apps.add_child(rematch)
 	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["RODA DE EMOTES / B", "emote_wheel"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = str(item[0]).replace(" / ","\n").replace(" OU ","\n")
@@ -153,6 +158,9 @@ func toggle_phone() -> void:
 func phone_app(app: String) -> void:
 	phone_panel.hide()
 	match app:
+		"rematch":
+			if world.network.active(): world.network.rules.send_action("pvp_rematch")
+			else: world.notify("Entre em uma sala para disputar uma revanche.")
 		"pvp":
 			if world.network.active(): world.network.rules.send_action("pvp_join")
 			else: world.notify("Conecte-se a uma sala multiplayer para convidar ao PvP.")

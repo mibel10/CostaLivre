@@ -37,6 +37,7 @@ var pvp := {}
 var pvp_queue: Array = []
 var pvp_wait := 0.0
 var pvp_saved := {}
+var rematch_players: Array = []
 var stand_history := {}
 var stand_sample := 0.0
 var stand_fields: Array = []
@@ -454,6 +455,8 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 				use_golden_arrow(id)
 		"pickup_arrow": collect_golden_arrow(id)
 		"pvp_join": join_pvp(id)
+		"pvp_rematch":
+			if id in rematch_players: join_pvp(id)
 		"supply_scene_complete":
 			if id == world.activities.supply_owner and world.activities.supply_stage == 2:
 				world.activities.complete_supply_scene()
@@ -1594,6 +1597,7 @@ func start_pvp_round() -> void:
 		private_notice(id,"PvP %d/5 / Equipe %d / %s / H ou celular para usar" % [pvp.round,team+1,STAND_NAMES[sheets[id].stand]])
 
 func finish_pvp(winner: int) -> void:
+	rematch_players = pvp.get("teams",{}).keys()
 	for object in stand_objects:
 		if is_instance_valid(object): object.queue_free()
 	stand_objects.clear()
@@ -1617,6 +1621,7 @@ func finish_pvp(winner: int) -> void:
 			award(id,2500)
 			private_notice(id,"Vitória no PvP! +$2500")
 		else: private_notice(id,"PvP encerrado. Resultado %d x %d." % [pvp.scores[0],pvp.scores[1]])
+		private_notice(id,"Revanche disponível no celular. Cada participante precisa confirmar para entrar novamente na fila.")
 	pvp.clear()
 	pvp_saved.clear()
 	stand_fields.clear()
