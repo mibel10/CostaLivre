@@ -38,6 +38,7 @@ var pvp_queue: Array = []
 var pvp_wait := 0.0
 var pvp_saved := {}
 var rematch_players: Array = []
+const CALADO_CLUES := [Vector3(-8,0.3,12),Vector3(294,0.3,126),Vector3(798,0.3,126)]
 var stand_history := {}
 var stand_sample := 0.0
 var stand_fields: Array = []
@@ -457,6 +458,8 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		"pvp_join": join_pvp(id)
 		"pvp_rematch":
 			if id in rematch_players: join_pvp(id)
+		"distraction": create_distraction(id)
+		"calado": investigate_calado(id)
 		"supply_scene_complete":
 			if id == world.activities.supply_owner and world.activities.supply_stage == 2:
 				world.activities.complete_supply_scene()
@@ -650,6 +653,10 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
 		"stand_effect": show_stand_effect(data)
+		"calado_reveal":
+			world.extra.play("clue",-12)
+			world.player.model.play_emote("wave")
+			world.play_cutscene("O SEGREDO DO CALADO","As vozes eram pedidos de ajuda. Juntos, vocês devolveram a paz à casa. +$1500")
 		"prison_escape":
 			if sheets.has(local_id()): sheets[local_id()]["prison_stage"] = -1
 			world.life.apply_elevator_arrival(Vector3(1035, 0.3, 79))
@@ -1498,6 +1505,60 @@ func build_stand_wall_visual(parent: Node3D) -> void:
 	crack.rotation.z = -0.48
 	crack = world.box(parent,Vector3(0.32,1.78,-0.2),Vector3(1.0,0.06,0.04),Color("d7fbff"),false,true)
 	crack.rotation.z = 0.52
+
+func create_distraction(id: int) -> void:
+	if world.activities.job != world.activities.SECRET_DATA_JOB or world.activities.stage not in [1,2]:
+		private_notice(id,"Distração disponível durante a infiltração da Operação Tubulação.")
+		return
+	var at: Vector3 = position_of(id) if network.active() else world.player.position
+	if at.distance_to(Vector3(147,0.3,42))>5:
+		private_notice(id,"Use a distração na calçada em frente ao Data Center (147, 42).")
+		return
+	var sheet := stand_sheet(id)
+	if Time.get_ticks_msec()<int(sheet.get("distraction_until",0)): return
+	sheet["distraction_until"] = Time.get_ticks_msec()+30000
+	for guard in world.activities.officers:
+		if guard.hp>0 and bool(guard.get_meta("mission_sentinel",false)):
+			guard.set_meta("distraction_at",at)
+			guard.set_meta("distraction_until",Time.get_ticks_msec()+12000)
+	if network.active(): notice_all("Distração na entrada! Guardas atraídos por 12s; o parceiro pode se infiltrar.")
+	else: world.notify("Guardas distraídos por 12 segundos. Entre pela tubulação!")
+
+func investigate_calado(id: int) -> void:
+	var at: Vector3 = position_of(id) if network.active() else world.player.position
+	var sheet := stand_sheet(id)
+	if bool(sheet.get("calado_done",false)):
+		private_notice(id,"O mistério foi resolvido. Calado lembra da sua ajuda.")
+		return
+	for i in CALADO_CLUES.size():
+		if at.distance_to(CALADO_CLUES[i])<3:
+			sheet["calado_clues"] = int(sheet.get("calado_clues",0)) | (1<<i)
+			private_notice(id,["Uma gravação: procure o símbolo na avenida do mercado oeste.","Um bilhete: a última testemunha espera no mercado leste.","A mensagem completa aponta para a casa do Calado. Reúnam-se lá."][i])
+			if id == local_id(): world.extra.play("clue")
+			return
+	var mask := int(sheet.get("calado_clues",0))
+	if network.active():
+		for participant in participants(): mask |= int(stand_sheet(participant).get("calado_clues",0))
+	if mask != 7:
+		private_notice(id,"Mistério de Calado: procure pistas em (-8,12), (294,126) e (798,126). Use este app perto delas.")
+		return
+	var gathered: Array = []
+	for participant in participants() if network.active() else [id]:
+		var location: Vector3 = position_of(participant) if network.active() else world.player.position
+		if location.distance_to(world.life.HAUNTED_HOUSE)<8: gathered.append(participant)
+	if id not in gathered or gathered.size() < (2 if network.active() else 1):
+		private_notice(id,"Pistas reunidas. Encontrem-se na casa assombrada: dois jogadores na mesma sala, ou sozinho no modo solo.")
+		return
+	for participant in gathered:
+		var record := stand_sheet(participant)
+		if bool(record.get("calado_done",false)): continue
+		record["calado_done"] = true
+		if network.active():
+			award(participant,1500)
+			send_personal(participant,"calado_reveal",{})
+		else:
+			world.cash += 1500
+			receive_event("calado_reveal",{})
 
 func join_pvp(id: int) -> void:
 	if int(network.members.get(id,{}).get("car",-1)) >= 0 or bus_riders.has(id) or world.vehicle_entries.has(id) or world.life.elevator_rider_position(id) != null:

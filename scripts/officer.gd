@@ -34,10 +34,12 @@ func _physics_process(delta: float) -> void:
 		return
 	var contract: bool = has_meta("mission_contract")
 	if contract and int(get_meta("mission_contract")) != world.activities.job: return
-	if bool(get_meta("mission_sentinel",false)) and world.activities.stage in [0,1] and world.heat <= 0:
+	var distracted := Time.get_ticks_msec()<int(get_meta("distraction_until",0))
+	if bool(get_meta("mission_sentinel",false)) and world.activities.stage in [0,1] and world.heat <= 0 and not distracted:
 		model.animate(0)
 		return
 	var player_target: Vector3=world.police_target(self)
+	if distracted: player_target = get_meta("distraction_at",position)
 	if not player_target.is_finite():
 		model.animate(0)
 		return
@@ -56,6 +58,7 @@ func _physics_process(delta: float) -> void:
 	var prison_guard: bool = bool(get_meta("prison_guard", false))
 	var infiltration_tactical: bool = bool(get_meta("mission_heavy", false)) and int(get_meta("mission_contract", -1)) == world.activities.SECRET_DATA_JOB
 	var moving: bool = climbing or ((world.heat > 0 or contract or prison_guard) and offset.length() > (7.0 if prison_guard else 10.0))
+	if distracted: moving = offset.length()>1.5
 	if climbing:
 		velocity=direction*3.2
 	elif prison_guard:
@@ -71,6 +74,9 @@ func _physics_process(delta: float) -> void:
 		velocity.z *= 0.22
 	move_and_slide()
 	model.animate(Vector2(velocity.x, velocity.z).length())
+	if distracted:
+		model.rotation.y = atan2(-offset.x,-offset.z)
+		return
 	if world.heat > 0 or contract or prison_guard:
 		model.rotation.y = atan2(-offset.x, -offset.z)
 	fire_time -= delta

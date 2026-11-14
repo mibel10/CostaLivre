@@ -104,6 +104,12 @@ func _ready() -> void:
 	rematch.custom_minimum_size = Vector2(145,80)
 	rematch.pressed.connect(phone_app.bind("rematch"))
 	phone_apps.add_child(rematch)
+	for entry in [["DISTRAÇÃO","distraction"],["MISTÉRIO\nCALADO","calado"]]:
+		var shortcut := Button.new()
+		shortcut.text = entry[0]
+		shortcut.custom_minimum_size = Vector2(145,80)
+		shortcut.pressed.connect(phone_app.bind(entry[1]))
+		phone_apps.add_child(shortcut)
 	for item in [["PVP / ENTRAR OU SAIR DA FILA", "pvp"],["USAR STAND / H", "stand"],["USAR FLECHA DOURADA", "stand_select"],["CONTRATOS / MENSAGENS", "messages"],["CONVITES", "invites"],["MISSÕES", "jobs"],["MAPA", "map"],["CHAT DA REGIÃO", "chat"],["RODA DE EMOTES / B", "emote_wheel"],["CUMPRIMENTAR", "wave"],["GRIDDY", "griddy"],["DANÇA", "dance"],["GOLDEN WIND / TORTURE DANCE", "torture_dance"],["TAKE THE L", "take_l"]]:
 		var app := Button.new()
 		app.text = str(item[0]).replace(" / ","\n").replace(" OU ","\n")
@@ -158,6 +164,10 @@ func toggle_phone() -> void:
 func phone_app(app: String) -> void:
 	phone_panel.hide()
 	match app:
+		"distraction", "calado":
+			if world.network.active(): world.network.rules.send_action(app)
+			elif app == "distraction": world.network.rules.create_distraction(1)
+			else: world.network.rules.investigate_calado(1)
 		"rematch":
 			if world.network.active(): world.network.rules.send_action("pvp_rematch")
 			else: world.notify("Entre em uma sala para disputar uma revanche.")
