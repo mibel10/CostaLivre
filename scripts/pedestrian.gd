@@ -13,6 +13,9 @@ var robbed := false
 var scared := false
 var appearance_index := 0
 var reaction_time := 0.0
+var avoidance_time := 0.0
+var vehicle_check_time := 0.0
+var avoidance_direction := Vector3.ZERO
 
 func react_to_threat() -> void:
 	if hp<=0 or reaction_time>0: return
@@ -52,15 +55,38 @@ func _physics_process(delta: float) -> void:
 		shopping_pause -= delta
 		model.animate(0)
 		return
-	var direction := route[point] - position
-	direction.y = 0
-	if direction.length() < 0.8:
+	vehicle_check_time -= delta
+	if avoidance_time <= 0.0 and vehicle_check_time <= 0.0:
+		vehicle_check_time = 0.2
+		for car in world.cars:
+			if car.hp <= 0.0 or absf(car.speed) < 4.5:
+				continue
+			var offset: Vector3 = position - car.position
+			offset.y = 0.0
+			if offset.length_squared() > 100.0:
+				continue
+			var travel: Vector3 = -car.global_basis.z * signf(car.speed)
+			if offset.normalized().dot(travel) < 0.5:
+				continue
+			var side := Vector3(-travel.z, 0.0, travel.x)
+			avoidance_direction = (side * signf(offset.dot(side)) + offset.normalized() * 0.35).normalized()
+			avoidance_time = 0.9
+			break
+	var avoiding := avoidance_time > 0.0
+	var direction: Vector3
+	if avoiding:
+		avoidance_time = maxf(0.0, avoidance_time - delta)
+		direction = avoidance_direction
+	else:
+		direction = route[point] - position
+		direction.y = 0.0
+	if not avoiding and direction.length() < 0.8:
 		if shopper:
 			shopping_pause = 2.5 if point in [1,3,5] else 0.0
 			if point in [1,5]: model.rotation.y = PI/2
 		point = (point + 1) % route.size()
 		return
-	var speed := 0.4 if scared else (3.8 if world.heat > 20 and position.distance_to(world.subject_position()) < 25 else 1.6)
+	var speed := 3.2 if avoiding else (0.4 if scared else (3.8 if world.heat > 20 and position.distance_to(world.subject_position()) < 25 else 1.6))
 	if Time.get_ticks_msec() < int(get_meta("stand_slow_until",0)): speed *= 0.22
 	velocity = direction.normalized() * speed + Vector3(0, -4, 0)
 	move_and_slide()
