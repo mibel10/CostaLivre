@@ -124,15 +124,20 @@ func set_time(value: float) -> void:
 func update_lighting() -> void:
 	var sun_height := cos((day_time - 12.0) / 12.0 * PI)
 	var daylight := clampf((sun_height + 0.12) / 1.12, 0.0, 1.0)
+	var extreme: bool = world.settings != null and world.settings.quality == 5
 	var light_color := Color("7085bc").lerp(Color("fff0d1"), daylight)
 	if sun != null:
 		sun.rotation.x = -sun_height * deg_to_rad(60.0)
 		sun.light_color = light_color
 		sun.light_energy = lerpf(0.08, 0.85, daylight)
 		sun.light_energy *= lerpf(1.0,0.35,storm)
+		if extreme:
+			sun.light_energy *= 1.25
+			sun.light_color = sun.light_color.lerp(Color("ffd7aa"),clampf(1.0-absf(sun_height)*2.0,0.0,1.0)*0.35)
 	if environment != null:
 		environment.ambient_light_color = Color("38465f").lerp(Color("b4ced8"), daylight)
 		environment.ambient_light_energy = lerpf(0.16, 0.4, daylight)
+		if extreme: environment.ambient_light_energy = lerpf(0.18,0.55,daylight)
 		environment.fog_light_color = Color("29364d").lerp(Color("9aafba"), daylight)
 		environment.background_energy_multiplier = lerpf(0.35, 1.0, daylight)
 		environment.background_energy_multiplier *= lerpf(1.0,0.4,storm)

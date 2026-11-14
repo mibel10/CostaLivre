@@ -24,6 +24,18 @@ func run() -> void:
 	world.activities.set_menu("")
 	world.hud.toggle_phone()
 	assert(world.hud.phone_panel.position.x>0 and world.hud.phone_panel.position.y>0, "The phone opens centered without flashing in a corner")
+	assert(world.hud.phone_backdrop.visible)
+	var phone_position: Vector3 = world.player.position
+	Input.action_press("forward")
+	Input.action_press("shoot")
+	world.player._physics_process(0.05)
+	assert(Vector2(world.player.position.x-phone_position.x,world.player.position.z-phone_position.z).length()<0.01, "Phone input does not move the player")
+	var phone_ammo: int = world.activities.clips[1]
+	world.activities.weapon = 1
+	world.activities.tick(0.05)
+	assert(world.activities.clips[1] == phone_ammo, "Phone clicks cannot fire a weapon")
+	Input.action_release("forward")
+	Input.action_release("shoot")
 	for app in world.hud.phone_apps.get_children():
 		assert(app.has_theme_stylebox_override("normal") and app.has_theme_stylebox_override("focus"), "All phone apps share visual and keyboard-focus styles")
 	world.hud.toggle_phone()
@@ -158,9 +170,11 @@ func run() -> void:
 	var environment: Environment = world.find_children("*", "WorldEnvironment", false, false)[0].environment
 	var sea: ShaderMaterial = world.get_node("MarCosta").material_override
 	assert(environment.glow_enabled and environment.fog_mode == Environment.FOG_MODE_DEPTH)
+	assert(settings.reflection_probe.visible and settings.reflection_probe.update_mode == ReflectionProbe.UPDATE_ONCE)
 	assert(sea.get_shader_parameter("extreme_surface") == true)
 	settings.set_quality(0, false)
 	assert(not environment.glow_enabled and environment.fog_mode == Environment.FOG_MODE_EXPONENTIAL)
+	assert(not settings.reflection_probe.visible, "Local reflection capture is exclusive to Extreme")
 	assert(sea.get_shader_parameter("extreme_surface") == false)
 	var old_extreme := ConfigFile.new()
 	assert(old_extreme.load(settings.config_path) == OK)

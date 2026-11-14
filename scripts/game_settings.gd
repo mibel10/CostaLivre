@@ -30,6 +30,9 @@ var texture_cache := {}
 var tracked := {}
 var upscaler_layer: CanvasLayer
 var upscaler: ColorRect
+var reflection_probe: ReflectionProbe
+var reflection_clock := 0.0
+var reflection_lighting := Vector2(-1,-1)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -46,7 +49,27 @@ func _ready() -> void:
 	upscaler.material = shader_material
 	upscaler_layer.add_child(upscaler)
 	world.add_child(upscaler_layer)
+	reflection_probe = ReflectionProbe.new()
+	reflection_probe.name = "LocalReflections"
+	reflection_probe.size = Vector3(96,48,96)
+	reflection_probe.max_distance = 80
+	reflection_probe.intensity = 0.75
+	reflection_probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	reflection_probe.enable_shadows = true
+	reflection_probe.ambient_mode = ReflectionProbe.AMBIENT_DISABLED
+	world.add_child(reflection_probe)
 	apply()
+
+func _process(delta: float) -> void:
+	if quality != 5 or reflection_probe == null: return
+	reflection_clock -= delta
+	if reflection_clock > 0.0: return
+	reflection_clock = 5.0
+	var subject: Vector3 = world.subject_position()+Vector3.UP*3.0
+	var lighting := Vector2(world.atmosphere_cycle.day_time,world.atmosphere_cycle.storm)
+	if reflection_probe.position.distance_to(subject)>24.0 or absf(lighting.x-reflection_lighting.x)>1.0 or absf(lighting.y-reflection_lighting.y)>0.4:
+		reflection_probe.position = subject+Vector3(0.001 if reflection_probe.position.x == subject.x else 0.0,0,0)
+		reflection_lighting = lighting
 
 func load_settings() -> void:
 	var config := ConfigFile.new()
@@ -156,6 +179,10 @@ func register_material(mat: Material) -> void:
 		var id := mat.get_instance_id()
 		if not tracked.has(id):
 			var original := {"material": weakref(mat), "normal": mat.normal_enabled, "shading": mat.shading_mode, "texture": mat.albedo_texture}
+			original["roughness"] = mat.roughness
+			original["clearcoat_enabled"] = mat.clearcoat_enabled
+			original["clearcoat"] = mat.clearcoat
+			original["clearcoat_roughness"] = mat.clearcoat_roughness
 			tracked[id] = original
 			apply_material(mat, original)
 
@@ -163,6 +190,11 @@ func apply_material(mat: StandardMaterial3D, original: Dictionary) -> void:
 	apply_texture(mat, original.texture)
 	mat.normal_enabled = original.normal and detail_maps
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if quality == 4 else original.shading
+	var polished := quality == 5 and mat.metallic >= 0.2
+	mat.roughness = maxf(0.16,float(original.roughness)*0.78) if polished else float(original.roughness)
+	mat.clearcoat_enabled = polished or bool(original.clearcoat_enabled)
+	mat.clearcoat = 0.65 if polished else float(original.clearcoat)
+	mat.clearcoat_roughness = 0.18 if polished else float(original.clearcoat_roughness)
 
 func register_visuals(node: Node) -> void:
 	if node is GeometryInstance3D:
@@ -199,6 +231,10 @@ func apply_range(node: GeometryInstance3D) -> void:
 
 func apply() -> void:
 	var extreme := quality == 5
+	if reflection_probe != null:
+		reflection_probe.visible = extreme
+		reflection_probe.position = world.subject_position()+Vector3.UP*3.0
+		reflection_clock = 5.0
 	var long_shadows := extreme and shadow_quality == 3
 	set_fps_limit(fps_limit, false)
 	apply_upscaling()
@@ -216,6 +252,7 @@ func apply() -> void:
 	for child in world.get_children():
 		if child is DirectionalLight3D:
 			child.shadow_enabled = shadow_quality > 0
+			child.shadow_opacity = 0.82 if extreme else 1.0
 			child.directional_shadow_max_distance = (74.0 if OS.has_feature("android") else 105.0) if long_shadows else [0.0, 22.0, 29.0, 35.0][shadow_quality]
 			child.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if long_shadows else DirectionalLight3D.SHADOW_ORTHOGONAL
 			child.directional_shadow_split_1 = 0.28
@@ -224,6 +261,7 @@ func apply() -> void:
 			child.light_energy = 1.08 if extreme else 0.85
 		elif child is WorldEnvironment:
 			var environment: Environment = child.environment
+			environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR if extreme else Environment.AMBIENT_SOURCE_SKY
 			environment.ambient_light_energy = 0.52 if extreme else 0.4
 			environment.tonemap_mode = Environment.TONE_MAPPER_ACES if extreme else Environment.TONE_MAPPER_FILMIC
 			environment.tonemap_exposure = 0.89 if extreme else 0.8
