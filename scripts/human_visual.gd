@@ -21,6 +21,7 @@ var weapon_aim: WeaponAim
 var rig: Node3D
 var crouch_tween: Tween
 var emote_lock := 0.0
+var golden_dancing := false
 
 class WeaponAim extends SkeletonModifier3D:
 	var visual: Node3D
@@ -105,17 +106,18 @@ func _ready() -> void:
 			work.track_insert_key(i,0.21,rest*Quaternion(Vector3.RIGHT,0.68)*Quaternion(Vector3.FORWARD,side*0.27))
 			work.track_insert_key(i,0.42,work.track_get_key_value(i,0))
 		library.add_animation("DoorWork",work)
-	for emote in ["Wave","Griddy","TakeTheL","Dance","GoldenWind"]:
+	for emote in ["Wave","Griddy","TakeTheL","Dance","GoldenWind","Flinch"]:
 		if not library.has_animation(emote):
 			var gesture: Animation = library.get_animation("Idle").duplicate()
-			gesture.length = 3.2 if emote == "GoldenWind" else 1.4
+			gesture.length = 8.0 if emote == "GoldenWind" else 1.4
 			gesture.loop_mode = Animation.LOOP_LINEAR if emote in ["Griddy","Dance"] else Animation.LOOP_NONE
 			if emote == "GoldenWind":
 				gesture.loop_mode = Animation.LOOP_LINEAR
-				var arm_swing := [0.0,0.7,-0.7,0.9,-0.9,0.55,-0.55,0.7,0.0]
-				var arm_lift := [0.0,0.5,0.85,1.05,0.25,-0.55,0.7,1.0,0.0]
-				var leg_step := [0.0,0.25,0.4,-0.25,-0.4,0.25,0.4,-0.25,0.0]
-				var torso_sway := [0.0,0.08,-0.08,0.14,-0.14,0.07,-0.07,0.12,0.0]
+				# Slide, air guitar, arms up/down, crossed hug, spin, hands on thighs.
+				var arm_swing := [0.0,0.35,-0.35,0.45,-0.45,0.3,-0.3,0.15,0.15,-1.0,-1.0,-1.0,0.2,-0.2,0.35,-0.35,0.0]
+				var arm_lift := [0.0,0.5,0.85,0.5,0.85,0.5,0.85,2.5,0.2,1.1,1.1,1.1,-0.25,-0.25,0.65,0.85,0.0]
+				var leg_step := [0.0,0.4,-0.4,0.4,-0.4,0.35,-0.35,0.2,0.35,0.4,-0.4,0.2,0.4,0.35,-0.35,0.3,0.0]
+				var torso_sway := [0.0,0.08,-0.08,0.12,-0.12,0.08,-0.08,0.0,0.12,0.1,-0.1,0.0,0.12,-0.12,0.08,-0.08,0.0]
 				for track in gesture.get_track_count():
 					var path := String(gesture.track_get_path(track)).to_lower()
 					if gesture.track_get_type(track) != Animation.TYPE_ROTATION_3D:
@@ -142,17 +144,17 @@ func _ready() -> void:
 								step = maxf(0.0,-step)*0.8
 							elif "leg_joint_l_3" in path or "leg_joint_r_3" in path or "leg_joint_l_5" in path or "leg_joint_r_5" in path:
 								step *= -0.3
-							pose = rest*Quaternion(Vector3.RIGHT,step)
+							pose = rest*Quaternion(Vector3.RIGHT,step)*Quaternion(Vector3.FORWARD,side*absf(leg_step[beat])*0.35)
 						else:
 							pose = rest*Quaternion(Vector3.FORWARD,torso_sway[beat])*Quaternion(Vector3.RIGHT,-0.1 if beat % 2 == 1 else 0.0)
-						gesture.track_insert_key(track,beat*0.4,pose)
+						gesture.track_insert_key(track,beat*0.5,pose)
 			else:
 				for track in gesture.get_track_count():
 					var path := String(gesture.track_get_path(track))
 					if gesture.track_get_type(track) != Animation.TYPE_ROTATION_3D or not ("arm_joint" in path and ("__2_" in path or "__3_" in path)):
 						continue
 					var side := -1.0 if "joint_L" in path else 1.0
-					var raises_arm: bool = emote in ["Griddy","Dance"] or (emote == "Wave" and side > 0) or (emote == "TakeTheL" and side < 0)
+					var raises_arm: bool = emote in ["Griddy","Dance","Flinch"] or (emote == "Wave" and side > 0) or (emote == "TakeTheL" and side < 0)
 					if not raises_arm:
 						continue
 					var rest: Quaternion = gesture.track_get_key_value(track,0)
@@ -233,7 +235,9 @@ func play_emote(name: String) -> void:
 	var gesture: String = str({"wave":"Wave","griddy":"Griddy","take_l":"TakeTheL","dance":"Dance","torture_dance":"GoldenWind"}.get(name,""))
 	if gesture.is_empty() or not animation.has_animation(gesture):
 		return
-	emote_lock = 3.2 if gesture == "GoldenWind" else (1.8 if gesture != "Griddy" else 2.4)
+	golden_dancing = gesture == "GoldenWind"
+	rig.rotation.y = PI
+	emote_lock = 8.0 if golden_dancing else (1.8 if gesture != "Griddy" else 2.4)
 	animation.speed_scale = 1.0
 	animation.play(gesture,0.12)
 
@@ -247,7 +251,12 @@ func play_pickup_animation() -> void:
 func _process(delta: float) -> void:
 	if emote_lock > 0.0:
 		emote_lock = maxf(0.0,emote_lock-delta)
+		if golden_dancing:
+			var elapsed := 8.0-emote_lock
+			rig.rotation.y = PI+TAU*clampf((elapsed-5.0)/0.5,0.0,1.0)
 		if emote_lock == 0.0:
+			golden_dancing = false
+			rig.rotation.y = PI
 			animate(0.0)
 
 func show_crouch(crouched: bool) -> void:

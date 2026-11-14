@@ -18,7 +18,9 @@ func react_to_threat() -> void:
 	if hp<=0 or reaction_time>0: return
 	reaction_time = 1.4
 	model.show_crouch(true)
-	model.play_emote("wave")
+	if model.animation != null and model.animation.has_animation("Flinch"):
+		model.emote_lock = 1.4
+		model.animation.play("Flinch",0.08)
 
 func _process(delta: float) -> void:
 	if reaction_time <= 0: return
