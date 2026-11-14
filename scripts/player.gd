@@ -48,6 +48,14 @@ func _physics_process(delta: float) -> void:
 	if world.active_car != null or world.car_transition or world.finished or world.activities == null or world.activities.menu != "" or world.activities.bank.local_hacking() or (world.network!=null and world.network.active() and world.network.rules.local_mission_hacking()):
 		model.set_weapon_aim(false, 0.0, delta)
 		return
+	if world.hud != null and world.hud.phone_panel.visible:
+		velocity.x = 0.0
+		velocity.z = 0.0
+		velocity.y = -4.0 if is_on_floor() else velocity.y-delta*24.0
+		move_and_slide()
+		model.set_weapon_aim(false,0.0,delta)
+		model.animate(0.0)
+		return
 	roll_cooldown = maxf(0,roll_cooldown-delta)
 	if Input.is_physical_key_pressed(KEY_CTRL):
 		start_roll()

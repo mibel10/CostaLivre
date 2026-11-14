@@ -13,6 +13,7 @@ var phone_scroll: ScrollContainer
 var phone_apps: GridContainer
 var phone_status: Label
 var phone_tween: Tween
+var phone_backdrop: ColorRect
 var phone_messages: VBoxContainer
 var phone_message_text: Label
 var phone_contract_index := -1
@@ -61,6 +62,16 @@ func _ready() -> void:
 	phone_button.visible = not OS.has_feature("android")
 	phone_button.pressed.connect(toggle_phone)
 	add_child(phone_button)
+	phone_backdrop = ColorRect.new()
+	phone_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	phone_backdrop.color = Color(0.01,0.02,0.04,0.45)
+	phone_backdrop.z_index = 19
+	phone_backdrop.hide()
+	phone_backdrop.gui_input.connect(func(event):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			toggle_phone()
+			Input.action_release("shoot"))
+	add_child(phone_backdrop)
 	phone_panel = PanelContainer.new()
 	phone_panel.custom_minimum_size = Vector2(360,540)
 	phone_panel.size = Vector2(360,540)
@@ -77,6 +88,7 @@ func _ready() -> void:
 	phone_panel.add_theme_stylebox_override("panel",shell)
 	phone_panel.hide()
 	add_child(phone_panel)
+	phone_panel.visibility_changed.connect(func(): phone_backdrop.visible = phone_panel.visible)
 	var screen := VBoxContainer.new()
 	screen.add_theme_constant_override("separation",12)
 	phone_panel.add_child(screen)
@@ -158,6 +170,9 @@ func toggle_phone() -> void:
 	phone_panel.position = (screen_size-phone_panel.size*fit)*0.5
 	phone_panel.visible = not phone_panel.visible
 	if phone_panel.visible:
+		Input.action_release("shoot")
+		Input.action_release("aim")
+		if world.touch_controls != null: world.touch_controls.release_all()
 		phone_panel.modulate.a = 0.0
 		phone_tween = create_tween()
 		phone_tween.tween_property(phone_panel,"modulate:a",1.0,0.16)
@@ -165,6 +180,8 @@ func toggle_phone() -> void:
 
 func phone_app(app: String) -> void:
 	phone_panel.hide()
+	Input.action_release("shoot")
+	Input.action_release("aim")
 	match app:
 		"distraction", "calado":
 			if world.network.active(): world.network.rules.send_action(app)

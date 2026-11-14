@@ -728,7 +728,7 @@ func receive_event(kind: String, data: Dictionary) -> void:
 			Engine.time_scale=1
 
 func fire_local() -> void:
-	if Time.get_ticks_msec()-shot_send<60 or world.activities.menu!="":
+	if Time.get_ticks_msec()-shot_send<60 or world.activities.menu!="" or world.hud.phone_panel.visible:
 		return
 	shot_send=Time.get_ticks_msec()
 	send_action("fire",{"origin":world.camera.global_position,"direction":-world.camera.global_basis.z,"weapon":world.activities.weapon})

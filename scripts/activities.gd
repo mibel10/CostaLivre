@@ -775,7 +775,7 @@ func tick(delta: float) -> void:
 			var count := mini(capacity - clips[reload_weapon], reserves[reload_weapon])
 			clips[reload_weapon] += count
 			reserves[reload_weapon] -= count
-	if Input.is_action_pressed("shoot"):
+	if Input.is_action_pressed("shoot") and not world.hud.phone_panel.visible:
 		shoot()
 	for i in robbery_cooldowns.size():
 		robbery_cooldowns[i] = maxf(0, robbery_cooldowns[i] - delta)

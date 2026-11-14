@@ -472,6 +472,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if vehicle_falls.has(vehicle_local_id()):
 		return
+	if hud != null and hud.phone_panel.visible:
+		if event.is_action_pressed("pause"):
+			hud.toggle_phone()
+			get_viewport().set_input_as_handled()
+		return
 	if network != null and network.offer_panel.visible:
 		return
 	if extra != null and extra.handle_input(event):

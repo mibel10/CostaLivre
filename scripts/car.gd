@@ -212,7 +212,7 @@ func _physics_process(delta: float) -> void:
 	if driving and world.finished:
 		speed = move_toward(speed, 0, delta * 2)
 	elif driving and not world.finished:
-		var throttle := (Input.get_action_strength("forward") - Input.get_action_strength("back")) if fuel > 0.0 and world.activities.menu=="" and not (world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id())) else 0.0
+		var throttle := (Input.get_action_strength("forward") - Input.get_action_strength("back")) if fuel > 0.0 and world.activities.menu=="" and not world.hud.phone_panel.visible and not (world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id())) else 0.0
 		var top_speed: float = Catalog.SPEEDS[tier] + engine_upgrade
 		var acceleration: float = Catalog.ACCEL[tier] + engine_upgrade
 		if tier == Catalog.BUS:
@@ -229,6 +229,7 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_pressed("jump"):
 			speed = move_toward(speed, 0, delta * 28)
 		steer = (Input.get_action_strength("left") - Input.get_action_strength("right")) * lerpf(0.45, 1.0, clampf(hp / MAX_HP, 0.0, 1.0))
+		if world.hud.phone_panel.visible: steer = 0.0
 	elif police and police_phase=="parked":
 		speed=0
 		velocity=Vector3(0,-4,0)
