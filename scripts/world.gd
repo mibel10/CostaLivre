@@ -18,6 +18,8 @@ var camera_pitch := 0.34
 var mouse_idle := 0.0
 var heat := 0.0
 const HEAT_DECAY_RATE := 8.0
+const RADIO_STATIONS := ["COSTA WAVE 104.5", "LOS SANTOS ROCK", "NON-STOP POP FM", "BAIXADA RIO BEATS", "RÁDIO DESLIGADA"]
+var current_radio_index := 0
 const CRIME_GRACE_SECONDS := 6.0
 var response_delay := 0.0
 var crime_grace := 0.0
@@ -470,6 +472,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		hud.toggle_phone()
 		get_viewport().set_input_as_handled()
 		return
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_R and event.shift_pressed and activities.menu == "" and active_car != null and not bus_passenger:
+		cycle_radio_station()
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_B and activities.menu == "" and active_car != null and not bus_passenger:
+		car_horn()
+		get_viewport().set_input_as_handled()
+		return
 	if vehicle_falls.has(vehicle_local_id()):
 		return
 	if hud != null and hud.phone_panel.visible:
@@ -794,6 +804,29 @@ func finish_vehicle_entry(car: Node3D) -> void:
 	player.collision_layer = 0
 	player.velocity = Vector3.ZERO
 	camera_yaw = car.heading
+	if car.model_name != "":
+		notify("%s · 📻 %s" % [car.model_name.to_upper(), RADIO_STATIONS[current_radio_index]])
+
+func cycle_radio_station() -> void:
+	current_radio_index = (current_radio_index + 1) % RADIO_STATIONS.size()
+	notify("📻 " + RADIO_STATIONS[current_radio_index])
+
+func car_horn() -> void:
+	if active_car == null or finished:
+		return
+	if network != null and network.active():
+		network.rules.send_action("horn", {})
+		return
+	apply_car_horn(active_car.position)
+
+func apply_car_horn(at: Vector3) -> void:
+	if extra != null:
+		if subject_position().distance_to(at) < 60.0:
+			extra.play("horn", -8.0)
+	if life != null and (network == null or not network.is_client()):
+		for person in life.people:
+			if person.hp > 0 and person.position.distance_to(at) < 22.0:
+				person.react_to_threat()
 
 func nearest_car() -> CharacterBody3D:
 	var nearest: CharacterBody3D
@@ -1244,7 +1277,10 @@ func _physics_process(delta: float) -> void:
 					last_seen = true
 					can_arrest = can_arrest or close
 		if not last_seen and crime_grace <= 0:
+			var prev_heat := heat
 			heat = maxf(0, heat - delta * HEAT_DECAY_RATE)
+			if prev_heat > 0.0 and heat == 0.0:
+				notify("★ POLÍCIA DESPISTADA ★")
 		if can_arrest:
 			bust_progress += delta
 			if bust_progress >= 3.5:
@@ -1286,7 +1322,8 @@ func _process(delta: float) -> void:
 			focus += Vector3(0.65, 0, 0).rotated(Vector3.UP, camera_yaw)
 		if aiming:
 			distance = 3.2
-		camera.fov = lerpf(camera.fov, (18.0 if activities.weapon == 6 else 52.0) if aiming else 68.0, 1 - exp(-delta * 10))
+		var base_fov := (18.0 if activities.weapon == 6 else 52.0) if aiming else (68.0 + (clampf(absf(active_car.speed) / 38.0, 0.0, 1.0) * 14.0 if active_car != null else 0.0))
+		camera.fov = lerpf(camera.fov, base_fov, 1 - exp(-delta * 10))
 		var offset := Vector3(0, sin(camera_pitch) * distance + (0.6 if indoors else 1.2), cos(camera_pitch) * distance).rotated(Vector3.UP, camera_yaw)
 		var desired := focus + offset
 		camera_check_timer -= delta

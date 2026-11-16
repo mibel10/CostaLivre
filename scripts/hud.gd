@@ -19,6 +19,11 @@ var phone_message_text: Label
 var phone_contract_index := -1
 var invite_available := false
 var tutorial_panel: PanelContainer
+var previous_health := -1.0
+var damage_flash := 0.0
+var previous_cash := -1
+var cash_diff := 0
+var cash_diff_timer := 0.0
 const CHOICE_MENUS := ["jobs", "guns", "heavy_guns", "cars", "garage_cars", "owned_cars", "garage", "credits"]
 const PAGE_MENUS := ["jobs", "cars", "garage_cars", "owned_cars"]
 const MENU_CLOSE := Rect2(762, 590, 156, 52)
@@ -265,7 +270,25 @@ func show_tutorial() -> void:
 	content.add_child(skip)
 	world.hud.get_parent().add_child(tutorial_panel)
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if world != null:
+		if previous_health >= 0.0 and world.health < previous_health:
+			damage_flash = clampf(damage_flash + (previous_health - world.health) * 0.02, 0.15, 0.5)
+			queue_redraw()
+		previous_health = world.health
+		if damage_flash > 0.0:
+			damage_flash = maxf(0.0, damage_flash - delta * 2.5)
+			queue_redraw()
+		if previous_cash < 0:
+			previous_cash = world.cash
+		elif world.cash != previous_cash:
+			cash_diff = world.cash - previous_cash
+			cash_diff_timer = 2.8
+			previous_cash = world.cash
+			queue_redraw()
+		if cash_diff_timer > 0.0:
+			cash_diff_timer = maxf(0.0, cash_diff_timer - delta)
+			queue_redraw()
 	if world != null and is_instance_valid(phone_button):
 		if phone_panel.visible:
 			var screen_size := get_viewport_rect().size
@@ -274,9 +297,10 @@ func _process(_delta: float) -> void:
 			phone_panel.position = (screen_size-phone_panel.size*fit)*0.5
 			var clock := Time.get_time_dict_from_system()
 			phone_status.text = "%02d:%02d     ●●●  COSTA NET     ▰" % [clock.hour,clock.minute]
-		if world.finished or world.activities.menu not in ["", "chat"] or world.cutscene.active:
+		var in_cutscene: bool = world.cutscene != null and world.cutscene.active
+		if world.finished or world.activities.menu not in ["", "chat"] or in_cutscene:
 			phone_panel.hide()
-		phone_button.visible = not OS.has_feature("android") and not world.finished and world.activities.menu in ["", "chat"] and not world.cutscene.active
+		phone_button.visible = not OS.has_feature("android") and not world.finished and world.activities.menu in ["", "chat"] and not in_cutscene
 
 func text(value: String, at: Vector2, size: int = 16, color := Color("edf1ed")) -> void:
 	draw_string(font, at, value, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
@@ -298,6 +322,8 @@ func _draw() -> void:
 	if world == null or font == null or world.activities == null:
 		return
 	draw_set_transform(Vector2.ZERO, 0, get_viewport_rect().size / Vector2(1280, 720))
+	if damage_flash > 0.0:
+		draw_rect(Rect2(Vector2.ZERO, Vector2(1280, 720)), Color(0.85, 0.08, 0.08, damage_flash * 0.45))
 	if world.network != null and world.activities.menu == "":
 		var rules: Node = world.network.rules
 		var sheet: Dictionary = rules.stand_sheet(multiplayer.get_unique_id())
@@ -317,18 +343,22 @@ func _draw() -> void:
 			text(phase,Vector2(404,151),15,gold)
 	var a: Node = world.activities
 	if world.finished:
-		draw_rect(Rect2(0, 270, 1280, 155), Color(0, 0, 0, 0.45))
-		text("VOCÊ FOI CALADO.", Vector2(340, 365), 57, Color("d34d50"))
-		text("Renascendo...", Vector2(550, 459), 18)
+		draw_rect(Rect2(0, 275, 1280, 150), Color(0.04, 0.04, 0.05, 0.8))
+		draw_line(Vector2(0, 275), Vector2(1280, 275), Color("b71c1c"), 2.0)
+		draw_line(Vector2(0, 425), Vector2(1280, 425), Color("b71c1c"), 2.0)
+		text("SE FODEU", Vector2(468, 360), 62, Color("d32f2f"))
+		text("WASTED · Renascendo...", Vector2(512, 396), 16, Color("e0e0e0"))
 		return
 	if a.menu in ["pause", "map", "mode", "cutscene", "campaign_complete", "touch_layout", "elevator", "building_contact", "network"]:
 		return
 	if world.network != null and world.network.active():
 		text("SALA %s / %d DE 12" % [world.network.code,world.network.members.size()],Vector2(440,25),15,gold)
 	if world.network!=null and world.network.active() and world.network.rules.is_dead(multiplayer.get_unique_id()):
-		panel(Rect2(300,285,680,150))
-		text("VOCE FOI CALADO.",Vector2(400,345),40,Color("d34d50"))
-		text("Aguarde a próxima rodada." if not world.network.rules.pvp.is_empty() else "Renascendo em outro ponto da cidade...",Vector2(420,395),19)
+		draw_rect(Rect2(0, 275, 1280, 150), Color(0.04, 0.04, 0.05, 0.8))
+		draw_line(Vector2(0, 275), Vector2(1280, 275), Color("b71c1c"), 2.0)
+		draw_line(Vector2(0, 425), Vector2(1280, 425), Color("b71c1c"), 2.0)
+		text("SE FODEU", Vector2(468, 360), 62, Color("d32f2f"))
+		text("Aguarde a próxima rodada." if not world.network.rules.pvp.is_empty() else "WASTED · Renascendo em outro ponto...", Vector2(430, 396), 16, Color("e0e0e0"))
 		return
 	if world.extra != null and world.extra.wheel:
 		draw_wheel()
@@ -353,20 +383,33 @@ func _draw() -> void:
 	text(detail, Vector2(38, 63), 11, muted)
 	panel(Rect2(1070, 24, 186, 45))
 	text("$ %d" % world.cash, Vector2(1086, 53), 23, gold)
+	if cash_diff_timer > 0.0 and cash_diff != 0:
+		var diff_text := ("+ $ %d" % cash_diff) if cash_diff > 0 else ("- $ %d" % abs(cash_diff))
+		var diff_color: Color = Color("2ecc71") if cash_diff > 0 else Color("e74c3c")
+		text(diff_text, Vector2(1100, 84), 16, diff_color)
 	var wanted: float = world.network.rules.wanted_heat(multiplayer.get_unique_id()) if world.network != null and world.network.active() else world.heat
 	if wanted > 0:
+		var flash_on: bool = posmod(int(Time.get_ticks_msec() / 250), 2) == 0
 		for i in 5:
-			star(Vector2(1136 + i * 24, 87), gold if wanted > i * 20 else Color("42535c"))
+			var has_star: bool = wanted > i * 20
+			var star_color: Color = (Color("ff4444") if flash_on else gold) if has_star else Color("42535c")
+			star(Vector2(1136 + i * 24, 87), star_color)
 		bar(Vector2(1126, 104), 125, wanted / 100, gold)
-	minimap(Vector2(24, 210 if OS.has_feature("android") else 520), Vector2(164, 164))
-	bar(Vector2(24, 385 if OS.has_feature("android") else 692), 164, world.health / 100, Color("8ddbb5"))
+	var map_pos := Vector2(24, 210 if OS.has_feature("android") else 520)
+	text("COSTA LIVRE", map_pos + Vector2(2, -6), 11, muted)
+	minimap(map_pos, Vector2(164, 164))
+	var bar_y := 385 if OS.has_feature("android") else 692
+	bar(Vector2(24, bar_y), 164, world.health / 100.0, Color("2ecc71"))
 	if world.active_car != null:
 		if not OS.has_feature("android") and not world.bus_passenger and world.active_car.can_right_vehicle():
 			center_note("V · Desvirar carro", 560, gold)
 		text("%03d" % roundi(absf(world.active_car.speed) * 3.6), Vector2(1120, 659), 36)
 		text("km/h", Vector2(1200, 657), 13, muted)
-		text(world.active_car.model_name, Vector2(1120, 684), 14, muted)
-		text("Combustível %d%%" % roundi(world.active_car.fuel * 100.0), Vector2(1105, 706), 14, Color("ef9b70") if world.active_car.fuel <= 0.1 else muted)
+		var classes := ["COMPACTO", "ESPORTIVO", "SEDAN", "SUV", "ESPORTIVO", "SUPER", "SUPER", "COMPACTO", "SEDAN", "MOTO", "TRANSPORTE", "HIPERCARRO"]
+		var v_class: String = classes[world.active_car.tier] if world.active_car.tier >= 0 and world.active_car.tier < classes.size() else "VEÍCULO"
+		text(world.active_car.model_name.to_upper(), Vector2(1110, 682), 15, Color(1, 1, 1, 0.95))
+		text(v_class, Vector2(1110, 698), 11, muted)
+		text("Combustível %d%%" % roundi(world.active_car.fuel * 100.0), Vector2(1105, 715), 13, Color("ef9b70") if world.active_car.fuel <= 0.1 else muted)
 		if world.active_car.fuel <= 0.1:
 			text("Abasteça!", Vector2(1154, 626), 15, Color("ff846e"))
 		if world.active_car.tier == a.Catalog.SUPERCAR:
@@ -385,9 +428,15 @@ func _draw() -> void:
 		if a.reload_time > 0:
 			text("Recarregando…", Vector2(1094, 626), 14, gold)
 		if a.menu == "" and not get_tree().paused and not world.finished and (Input.is_action_pressed("aim") or Input.is_action_pressed("shoot")):
-			var color := gold if a.hit_flash > 0 else Color(1, 1, 1, 0.7)
-			for offset in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
-				draw_line(Vector2(640, 360) + offset * 4, Vector2(640, 360) + offset * 9, color, 1.4)
+			var center := Vector2(640, 360)
+			if a.hit_flash > 0:
+				var hit_color := Color("ff3333")
+				for d in [Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]:
+					draw_line(center + d * 4, center + d * 10, hit_color, 2.0)
+			else:
+				draw_circle(center, 2.2, Color(1, 1, 1, 0.95))
+				for offset in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+					draw_line(center + offset * 6, center + offset * 11, Color(1, 1, 1, 0.65), 1.2)
 	var prompt: String = a.prompt()
 	if prompt != "":
 		center_note(prompt, 205 if OS.has_feature("android") else 611, gold)

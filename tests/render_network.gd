@@ -140,7 +140,9 @@ func run() -> void:
 	assert(host.network.members[client_id].position.distance_to(client.player.position)<2)
 	var wrong_model: Node = client.car_by_id(1)
 	wrong_model.tier = 6
-	await create_timer(0.7).timeout
+	var deadline := Time.get_ticks_msec() + 2000
+	while is_instance_valid(wrong_model) and Time.get_ticks_msec() < deadline:
+		await process_frame
 	assert(not is_instance_valid(wrong_model) and client.car_by_id(1).tier == host.car_by_id(1).tier)
 	var loan: Node = host.spawn_car(client.player.position + Vector3(0, 0.3, 2.0), Color.BLUE, false, 4)
 	var loan_id: int = loan.net_id
@@ -149,6 +151,11 @@ func run() -> void:
 	client.interact()
 	await create_timer(2.35).timeout
 	assert(client.active_car == remote_loan)
+	host.player.position = loan.position + Vector3(3, 0, 0)
+	client.car_horn()
+	await create_timer(0.1).timeout
+	assert(host.extra.audio.stream == host.extra.sounds.horn, "Client horn reaches host")
+	assert(client.extra.audio.stream == client.extra.sounds.horn, "Host confirms horn to client")
 	host.activities.remove_car(loan)
 	await create_timer(0.3).timeout
 	assert(not is_instance_valid(remote_loan) and client.active_car == null and client.player.visible)
@@ -164,6 +171,7 @@ func run() -> void:
 	while host.network.members.size()<2 or client.network.members.size()<2:
 		await process_frame
 	assert(client.network.code==code)
+	assert(int(host.network.rules.sheets[client_api.get_unique_id()].protected_until) > Time.get_ticks_msec(), "Reconnect renews spawn protection")
 	client.network.disconnect_room()
 	await create_timer(0.3).timeout
 	host.network.disconnect_room()

@@ -448,6 +448,14 @@ func action(id: int, kind: String, data: Dictionary) -> void:
 		return
 	if pvp.get("teams", {}).has(id) and pvp.get("phase", "") != "fight": return
 	match kind:
+		"horn":
+			var car_id: int = int(network.members.get(id, {}).get("car", -1))
+			var car: Node = world.car_by_id(car_id)
+			if car != null and network.owners.get(car_id, 0) == id and car.hp > 0:
+				world.apply_car_horn(car.position)
+				for peer_id in participants():
+					if peer_id != local_id():
+						send_personal(peer_id, "horn", {"at": car.position})
 		"stand_use": use_stand(id, float(data.get("yaw",0.0)))
 		"stand_select":
 			if pvp.get("teams", {}).has(id):
@@ -652,6 +660,7 @@ func damage_peer(id: int, amount: float, killer := 0, by_police := false) -> voi
 
 func receive_event(kind: String, data: Dictionary) -> void:
 	match kind:
+		"horn": world.apply_car_horn(data.at)
 		"stand_effect": show_stand_effect(data)
 		"calado_reveal":
 			world.extra.play("clue",-12)
@@ -1031,6 +1040,8 @@ func physics(delta: float) -> void:
 		sheets[id]["wanted_grace"] = grace
 		if grace <= 0.0 and not seen.has(id):
 			sheets[id]["wanted_heat"] = maxf(0.0, wanted_heat(id) - delta * world.HEAT_DECAY_RATE)
+			if wanted_heat(id) == 0.0:
+				private_notice(id, "★ POLÍCIA DESPISTADA ★")
 			wanted_changed = true
 	if wanted_changed:
 		refresh_wanted_heat()

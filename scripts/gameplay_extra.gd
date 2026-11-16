@@ -55,7 +55,7 @@ func _ready() -> void:
 		emote_music.stream = load("res://assets/audio/golden_wind.ogg") as AudioStream
 		emote_music.volume_db = -8.0
 		add_child(emote_music)
-	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit", "thunder", "impact", "clue", "splash", "rain"]:
+	for name in ["step", "punch", "cash", "siren", "death", "hack", "explosion", "door", "reload", "digit", "thunder", "impact", "clue", "splash", "rain", "horn"]:
 		var wav := AudioStreamWAV.new()
 		wav.format = AudioStreamWAV.FORMAT_16_BITS
 		wav.mix_rate = 22050
@@ -75,6 +75,7 @@ func _ready() -> void:
 			if name=="explosion": value=(value*0.35+randf_range(-1.0,1.0)*exp(-t*11))*minf(1.0,t*90)
 			if name in ["thunder","impact","splash"]: value = (value*0.3+randf_range(-0.6,0.6))*exp(-t*(5.0 if name == "thunder" else 18.0))
 			if name == "rain": value = randf_range(-0.3,0.3)
+			if name == "horn": value = (sin(TAU * 350.0 * t) + sin(TAU * 440.0 * t)) * 0.4 * minf(1.0, t * 100.0) * minf(1.0, (float(count - i) / 22050.0) * 50.0)
 			data.encode_s16(i * 2, int(value * 14000))
 		wav.data = data
 		if name == "rain":

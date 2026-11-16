@@ -622,6 +622,10 @@ func load_campaign() -> void:
 	world.life.owned_homes.clear()
 	if world.life.owned_home >= 0: world.life.owned_homes.append(world.life.owned_home)
 	world.health = float(save.get_value("story", "health", world.health))
+	world.hud.previous_health = world.health
+	world.hud.previous_cash = world.cash
+	world.hud.damage_flash = 0.0
+	world.hud.cash_diff_timer = 0.0
 	completed = int(save.get_value("story", "completed", campaign_index))
 	weapon = clampi(save.get_value("story", "weapon", 1), 0, 7)
 	clips = save.get_value("story", "clips", clips).duplicate()
@@ -665,6 +669,10 @@ func new_campaign() -> void:
 	completed = 0
 	world.cash = 900
 	world.health = 100
+	world.hud.previous_health = world.health
+	world.hud.previous_cash = world.cash
+	world.hud.damage_flash = 0.0
+	world.hud.cash_diff_timer = 0.0
 	weapon = 1
 	clips = [0, 12, 30, 8, 32, 0, 0, 0]
 	reserves = [0, 36, 0, 0, 0, 0, 0, 0]

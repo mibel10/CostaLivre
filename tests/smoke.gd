@@ -21,6 +21,20 @@ func run() -> void:
 	await physics_frame
 	await physics_frame
 	var a = world.activities
+	world.hud.previous_health = -1.0
+	world.health = 80.0
+	world.hud._process(0.0)
+	assert(world.hud.damage_flash == 0.0, "Initial health does not flash as damage")
+	world.health = 70.0
+	world.hud._process(0.0)
+	assert(world.hud.damage_flash > 0.0, "Actual damage flashes")
+	world.hud.damage_flash = 0.0
+	world.health = 100.0
+	var saved_cutscene = world.cutscene
+	world.cutscene = null
+	world.hud._process(0.0)
+	world.cutscene = saved_cutscene
+	assert(world.extra.sounds.has("horn"), "Horn has a dedicated sound")
 	assert(world.cars.size() == 92 and world.station.fleet.size() == 27, "Expanded city traffic, parked cars and police fleet")
 	world.player.position = Vector3(-5, 0.3, 7)
 	world.interact()

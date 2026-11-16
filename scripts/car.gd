@@ -272,7 +272,8 @@ func _physics_process(delta: float) -> void:
 	else:
 		speed = move_toward(speed, 0, delta * 9)
 	var turn := clampf(absf(speed) / 7.0, 0, 1) * (1 if speed >= 0 else -1)
-	heading += steer * delta * (2.0 if tier == 9 else 1.65) * turn
+	var drift_factor := 1.65 if (driving and Input.is_action_pressed("jump") and steer != 0.0) else 1.0
+	heading += steer * delta * (2.0 if tier == 9 else 1.65) * turn * drift_factor
 	if tier == 9:
 		get_node("CustomVehicle").rotation.z = lerpf(get_node("CustomVehicle").rotation.z,-steer*minf(absf(speed)/30,1)*0.2,delta*6)
 	rotation.y = heading
