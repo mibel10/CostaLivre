@@ -18,4 +18,5 @@
 - `tools/`: scripts de bake, benchmark, perfil, inspeção e preview; `bake_far_car.gd`, `bake_visuals.gd`, `benchmark_all_presets.gd`, `benchmark_game.gd`, `profile_render.gd`, `inspect_vehicle.gd`, `playthrough.gd`, `preview_fleet.gd`, `preview_multiplayer.gd`, `preview_profile.gd`, `preview_station.gd`, `fetch_android_templates.py`, `fetch_visual_assets.py`.
 - `tests/`: verificações de campanha, banco, cidade, elevadores, sessão, multiplayer, controles Android, veículos e previews; arquivos `.gd` de teste.
 - `assets/models/`, `assets/fonts/`, `assets/licenses/`, `assets/sky/`, `assets/textures/`, `assets/ui/`: modelos e recursos visuais por pasta.
-- `.build-tools/`, `artifacts/`, `build/`: ferramentas, resultados e builds gerados.
+- `.build-tools/`, `artifacts/`, `build/`: ferramentas, resultados e builds gerados; `build/windows/` (executável e PCK Windows), `build/android/` (APK Android).
+- `artifacts/fleet/`, `artifacts/playthrough/`: evidências visuais e resultados de verificação; `artifacts/cleanup-2026-11-16.md` (lista de arquivos arquivados e motivos). Previews e logs temporários podem ser recriados; builds atuais ficam em `build/windows/` e `build/android/`.

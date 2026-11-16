@@ -1,4 +1,4 @@
-﻿# Costa Livre
+# Costa Livre
 
 Costa Livre é um jogo de mundo aberto em versão antecipada, com exploração, direção, campanha, modo livre e multiplayer entre PC e Android. Desenvolvido por Mibel10, do Calado Studios.
 
@@ -18,7 +18,7 @@ Para executar no editor, pressione F6 para a cena atual ou F5 para iniciar o pro
 
 ## Exportar para Windows
 
-No editor, abra **Project > Export**, selecione **Windows Desktop**, escolha **Export Project** e salve como `CostaLivre.exe`. A exportação gera um `CostaLivre.pck` separado: distribua os dois arquivos juntos, na mesma pasta. O preset é para Windows x86-64; não há presets Linux ou macOS configurados.
+No editor, abra **Project > Export**, selecione **Windows Desktop**, escolha **Export Project** e salve como `CostaLivre.exe`. O preset embute os dados no executável, que pode ser distribuído sozinho. Para gerar também um PCK separado, execute `godot_console.exe --headless --path . --export-pack "Windows Desktop" build/windows/CostaLivre.pck`. O preset é para Windows x86-64; não há presets Linux ou macOS configurados.
 
 Pelo PowerShell, na pasta do projeto, com `godot_console.exe` no PATH:
 
@@ -56,4 +56,4 @@ Se já houver uma instalação com o mesmo nome de pacote assinada por outra cha
 
 ## Multiplayer
 
-PC e Android precisam usar builds com o mesmo protocolo multiplayer. A versão do projeto é `1.5.2`; o protocolo é definido em `scripts/build_version.gd`. Gere os dois builds a partir do mesmo commit para manter a compatibilidade.
+PC e Android precisam usar builds com o mesmo protocolo multiplayer. A versão do projeto é `1.6.3`; o protocolo é definido em `scripts/build_version.gd`. Gere os dois builds a partir do mesmo commit para manter a compatibilidade.

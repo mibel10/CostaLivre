@@ -1,4 +1,4 @@
-﻿# Godot generated cache/import data
+# Godot generated cache/import data
 .godot/
 .import/
 *.import
@@ -41,8 +41,14 @@ preview.png
 preview_*.png
 
 # OS/editor noise
+.codex-remote-attachments/
+__pycache__/
+*.pyc
 .DS_Store
 Thumbs.db
 Desktop.ini
 .vscode/
 .idea/
+
+# Local generated reports (existing tracked evidence stays versioned)
+artifacts/
